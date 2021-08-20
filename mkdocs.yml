@@ -1,7 +1,7 @@
 # mkdocs.yml
 site_name: "Probability Estimation"
 site_author: CPE
-site_description: "Some Summaries on Probability Estimation"
+site_description: "Summary of Probability Estimation Models"
 site_url: "https://neuronstar.github.io/cpe"
 repo_url: "https://github.com/neuronstar/cpe"
 edit_uri: "blob/main/cpe/"
