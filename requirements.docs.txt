@@ -1,0 +1,6 @@
+mkdocs==1.2.2
+mkdocs-material==7.2.4
+mkdocs-material-extensions==1.0.1
+mkdocs-autorefs==0.2.1
+mkdocstrings==0.15.2
+mkdocs-with-pdf==0.9.3

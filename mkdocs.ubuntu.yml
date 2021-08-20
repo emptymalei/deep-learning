@@ -1,0 +1,93 @@
+# mkdocs.yml
+site_name: "Probability Estimation"
+site_author: CPE
+site_description: "Some Summaries on Probability Estimation"
+site_url: "https://neuronstar.github.io/cpe"
+repo_url: "https://github.com/neuronstar/cpe"
+edit_uri: "blob/main/cpe/"
+repo_name: "neuronstar/cpe"
+docs_dir: "cpe"
+
+
+
+theme:
+  name: "material"
+  # Don't include MkDocs' JavaScript
+  include_search_page: false
+  search_index_only: true
+
+  # Default values, taken from mkdocs_theme.yml
+  language: en
+  features:
+    # - navigation.instant
+    - navigation.sections
+    - navigation.tabs
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: red
+      accent: red
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  favicon: assets/logo.png
+  logo: assets/logo_badge.svg
+
+
+
+markdown_extensions:
+  - admonition
+  - pymdownx.emoji
+  - pymdownx.magiclink
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist
+  - pymdownx.arithmatex:
+      generic: true
+  - toc:
+      permalink: "¤"
+  - footnotes
+
+
+extra_javascript:
+  # - assets/js/config.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+
+
+
+plugins:
+  - autorefs
+  - search
+  - with-pdf:
+      author: CPE
+      output_path: pdf/cpe.pdf
+      cover_logo: assets/logo_badge.svg
+      cover_subtitle: "Summary of Probability Estimation Methods"
+      two_columns_level: 3
+      enabled_if_env: ENABLE_PDF_EXPORT
+      render_js: true
+      headless_chrome_path: "google-chrome"
+
+
+
+nav:
+  - "Home": index.md
+  - "Self-supervised Learning":
+    - "Introduction": self-supervised-learning/intro.md
+    - "Generative": self-supervised-learning/generative.md
+    - "Contrastive": self-supervised-learning/contrastive.md
+    - "Adversarial": self-supervised-learning/adversarial.md
+  - "Changelog": changelog.md
+

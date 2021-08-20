@@ -1,0 +1,21 @@
+name: Publish Docs without PDF
+
+on:
+  workflow_dispatch:
+    inputs:
+      directory:
+        description: 'Release it'
+        default: 'gogogo'
+        required: false
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - run: pip install -r requirements.docs.txt
+      - run: mkdocs gh-deploy --force

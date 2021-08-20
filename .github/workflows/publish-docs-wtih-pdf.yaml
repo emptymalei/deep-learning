@@ -1,0 +1,28 @@
+name: Publish Docs with PDF
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+    inputs:
+      directory:
+        description: 'Release it'
+        default: 'gogogo'
+        required: false
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - run: google-chrome --version
+      - run: echo $(which chrome)
+      - run: sudo apt update && sudo apt install python3-cffi python3-brotli libpango-1.0-0 libpangoft2-1.0-0
+      - run: pip install -r requirements.docs.txt
+      - run: export ENABLE_PDF_EXPORT=1 && mkdocs gh-deploy -f mkdocs.ubuntu.yml --force
