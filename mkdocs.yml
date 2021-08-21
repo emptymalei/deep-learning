@@ -2,10 +2,10 @@
 site_name: "Probability Estimation"
 site_author: CPE
 site_description: "Summary of Probability Estimation Models"
-site_url: "https://neuronstar.github.io/cpe"
-repo_url: "https://github.com/neuronstar/cpe"
-edit_uri: "blob/main/cpe/"
-repo_name: "neuronstar/cpe"
+site_url: "https://neuronstar.github.io/cpe-docs"
+repo_url: "https://github.com/neuronstar/cpe-docs"
+edit_uri: "blob/main/cpe-docs/"
+repo_name: "neuronstar/cpe-docs"
 docs_dir: "cpe"
 
 
@@ -74,10 +74,28 @@ plugins:
 
 nav:
   - "Home": index.md
-  - "Self-supervised Learning":
-    - "Introduction": self-supervised-learning/intro.md
-    - "Generative": self-supervised-learning/generative.md
-    - "Contrastive": self-supervised-learning/contrastive.md
-    - "Adversarial": self-supervised-learning/adversarial.md
+  - "Bayes":
+    - "Introduction": bayes/intro.md
+    - "Basics": bayes/basics.md
+    - "EM Algorithm": bayes/em.md
+  - "Generative":
+    - "Introduction": generative/intro.md
+    - "Autoregressive": generative/autoregressive.md
+    - "AE": generative/ae.md
+    - "VAE": generative/vae.md
+    - "Flow": generative/flow.md
+    - "MADE": generative/made.md
+    - "MAF": generative/maf.md
+  - "Energy-based Models":
+    - "Introduction": energy-based-models/intro.md
+  - "Contrastive":
+    - "Introduction": contrastive/intro.md
+  - "Adversarial":
+    - "Introduction": adversarial/intro.md
+    - "GAN": adversarial/gan.md
+  - "Topics":
+    - "Introduction": topics/intro.md
+    - "Predictive Coding": topics/predictive-coding.md
+    - "LTD/LTP": topics/ltd-ltp.md
   - "Changelog": changelog.md
 

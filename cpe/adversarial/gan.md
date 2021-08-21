@@ -1,6 +1,3 @@
-# Adversarial
-
-
 ## GAN
 
 The task of GAN is to generate features $X$ from some noise $\xi$ and class labels $Y$,
