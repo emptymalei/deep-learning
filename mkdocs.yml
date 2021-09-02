@@ -97,5 +97,12 @@ nav:
     - "Introduction": topics/intro.md
     - "Predictive Coding": topics/predictive-coding.md
     - "LTD/LTP": topics/ltd-ltp.md
+  - "Appendices":
+    - "Introduction": appendices/intro.md
+    - "Entropy": appendices/entropy.md
+    - "Mutual Information": appendices/mutual-information.md
+    - "KL Divergence": appendices/kl-divergence.md
+    - "f-divergence": appendices/f-divergence.md
+    - "ELBO": appendices/elbo.md
   - "Changelog": changelog.md
 
