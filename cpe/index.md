@@ -6,3 +6,13 @@
 
 
 We are compiling this compendium out of the bi-weekly discussions we had.
+
+
+## Notations
+
+
+In this document, we use the following notations.
+
+- Sets, domains, abstract variables, $X$, $Y$;
+- Probability distribution $P$, $Q$;
+- Probability density $p$, $q$.
