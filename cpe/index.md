@@ -16,3 +16,10 @@ In this document, we use the following notations.
 - Sets, domains, abstract variables, $X$, $Y$;
 - Probability distribution $P$, $Q$;
 - Probability density $p$, $q$.
+
+
+## Contributors
+
+<a href="https://github.com/neuronstar/cpe-docs/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=neuronstar/cpe-docs" />
+</a>
