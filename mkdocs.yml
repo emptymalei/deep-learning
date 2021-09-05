@@ -72,6 +72,10 @@ plugins:
   - search
 
 
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/neuronstar/cpe-docs
 
 nav:
   - "Home": index.md
