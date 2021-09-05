@@ -70,6 +70,7 @@ extra_javascript:
 plugins:
   - autorefs
   - search
+  - git-authors
   - with-pdf:
       author: CPE
       output_path: pdf/cpe.pdf

@@ -11,6 +11,7 @@ docs_dir: "cpe"
 
 theme:
   name: "material"
+  custom_dir: theme/overrides
   # Don't include MkDocs' JavaScript
   include_search_page: false
   search_index_only: true
@@ -69,6 +70,7 @@ extra_javascript:
 plugins:
   - autorefs
   - search
+  - git-authors
 
 
 
