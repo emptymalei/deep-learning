@@ -4,6 +4,7 @@
   {{ super() }}
 
   {% if git_page_authors %}
+    <hr>
     <div class="md-source-date">
       <small>
           Contributors: {{ git_page_authors | default('enable mkdocs-git-authors-plugin') }}
