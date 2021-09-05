@@ -18,8 +18,3 @@ In this document, we use the following notations.
 - Probability density $p$, $q$.
 
 
-## Contributors
-
-<a href="https://github.com/neuronstar/cpe-docs/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=neuronstar/cpe-docs" />
-</a>

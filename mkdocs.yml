@@ -70,7 +70,6 @@ extra_javascript:
 plugins:
   - autorefs
   - search
-  - git-authors
 
 
 
