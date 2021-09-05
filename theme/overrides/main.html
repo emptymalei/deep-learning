@@ -13,18 +13,8 @@
   {% endif %}
 {% endblock %}
 
-
-{% block footer %}
-  {{ super() }}
-
-  <div class="md-footer-meta__inner md-grid">
-    <div class="md-footer-copyright">
-      <div>
-        <p class="md-footer-copyright__highlight">Contributors:</p>
-        <a href="https://github.com/neuronstar/cpe-docs/graphs/contributors">
-          <img src="https://contrib.rocks/image?repo=neuronstar/cpe-docs" style="height: 3em;"/>
-        </a>
-        </div>
-    </div>
-
-{% endblock %}
+{% set extracopyright %}
+<span style="margin-left: 2em;">Contributors: <a href="https://github.com/neuronstar/cpe-docs/graphs/contributors">
+          <img src="https://contrib.rocks/image?repo=neuronstar/cpe-docs" style="height: 1em;"/>
+        </a></span>
+{% endset %}
