@@ -1,31 +1,67 @@
 ## GAN
 
-The task of GAN is to generate features $X$ from some noise $\xi$ and class labels $Y$,
+GAN is a **generative neural sampler**[^Nowozin2016]. To train the sampler, the task of GAN is designed to generate features $X$ from a latent space $\xi$ and class labels $Y$,
 
 $$\xi, Y \to X.$$
 
-Many different GANs are proposed. As an introduction to this topic, we will discuss the vanilla GAN model in this section.
+Many different formulations of GANs are proposed. As an introduction to this topic, we will discuss vanilla GAN in this section[^Goodfellow2014].
+
+
+
 
 ### Theory
 
-!!! failure "The Minmax Game"
-    ...
+#### The Minimax Game Loss
+
+The minimax game is a game to "minimizing the possible loss for a worst case"[^minimax_wiki]. In GAN, the game is to train the generator $G$ to fool the discriminator $D$ while minimizing the discrimination error of $D$.
+
+Goodfellow prosed a loss[^Goodfellow2014]
+
+$$
+\begin{equation}
+\underset{G}{\operatorname{min}}\underset{D}{\operatorname{max}} V(D, G) = \mathbb E_{x\sim p_{data}} \left[ \log D(x) \right] + \mathbb E_{z\sim p_z} \left[ \log( 1- D(G(z)) ) \right].
+\end{equation}
+$$
 
 
-!!! failure "Loss"
-    ...
+#### Divergence
+
+Goodfellow et al proved that the global minimum of such a setup is reached only and if only $p_{G} = p_\text{data}$. GAN is comparing the generated distribution to the data distribution, using the Jensen-Shannon divergence[^Goodfellow2014],
+
+$$
+\operatorname{D}_{\text{JS}}(p_\text{data}\Vert p_{G}) = \frac{1}{2}\left[ \operatorname{D}_\text{KL} \left( p_\text{data} \bigg\Vert \frac{p_\text{data} + p_G}{2} \right) + \operatorname{D}_\text{KL} \left( p_{G} \bigg\Vert \frac{p_\text{data} + p_G}{2} \right) \right].
+$$
+
+!!! warning "Off by a Constant"
+
+    The value function of GAN for fixed $G$ is slightly different from JS divergence[^Goodfellow2014],
+
+    $$
+    \underset{G}{\operatorname{max}}V(G,D) = 2 \operatorname{D}_\text{JS}( p_\text{data} \Vert p_G ) - \log 4.
+    $$
 
 
-!!! failure "Architecture"
-    ...
+#### Alternating Training
+
+GAN training requires two stages,
+
+- train discriminator $D$, and
+- train generator $G$.
+
+
+![](assets/gan/gan_alternating_training.png)
+
 
 ### Code
+
+We built a simple GAN using MNIST dataset.
+
 
 === "Result"
 
     The generated images looks quite close to hand writings.
 
-    ![](assets/adversarial/generated_image_samples_animation.gif)
+    ![](assets/gan/generated_image_samples_animation.gif)
 
 
 === "Code"
@@ -242,15 +278,12 @@ Many different GANs are proposed. As an introduction to this topic, we will disc
 
 
 
+[^Nowozin2016]: Nowozin S, Cseke B, Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization. arXiv [stat.ML]. 2016. Available: http://arxiv.org/abs/1606.00709
 
-## Wasserstein GAN
-
-
-!!! failure "Why"
-    ...
+[^minimax_wiki]: Contributors to Wikimedia projects. Minimax. In: Wikipedia [Internet]. 5 Aug 2021 [cited 6 Sep 2021]. Available: https://en.wikipedia.org/wiki/Minimax
 
 
-
+[^Goodfellow2014]: Goodfellow IJ, Pouget-Abadie J, Mirza M, Xu B, Warde-Farley D, Ozair S, et al. Generative Adversarial Networks. arXiv [stat.ML]. 2014. Available: http://arxiv.org/abs/1406.2661
 
 [^Liu2020]: Liu X, Zhang F, Hou Z, Wang Z, Mian L, Zhang J, et al. Self-supervised Learning: Generative or Contrastive. arXiv [cs.LG]. 2020. Available: http://arxiv.org/abs/2006.08218
 
