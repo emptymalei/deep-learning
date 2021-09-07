@@ -58,6 +58,7 @@ markdown_extensions:
   - toc:
       permalink: "¶"
   - footnotes
+  - pymdownx.details
 
 
 extra_javascript:
@@ -83,6 +84,14 @@ plugins:
 
 
 
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/neuronstar/cpe-docs
+
+
+
 nav:
   - "Home": index.md
   - "Bayes":
@@ -104,6 +113,7 @@ nav:
   - "Adversarial":
     - "Introduction": adversarial/intro.md
     - "GAN": adversarial/gan.md
+    - "f-GAN": adversarial/f-gan.md
   - "Topics":
     - "Introduction": topics/intro.md
     - "Predictive Coding": topics/predictive-coding.md

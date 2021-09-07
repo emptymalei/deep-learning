@@ -13,13 +13,13 @@ Many different formulations of GANs are proposed. As an introduction to this top
 
 #### The Minimax Game Loss
 
-The minimax game is a game to "minimizing the possible loss for a worst case"[^minimax_wiki]. In GAN, the game is to train the generator $G$ to fool the discriminator $D$ while minimizing the discrimination error of $D$.
+The minimax game is a game to "minimizing the possible loss for a worst case"[^minimax_wiki]. In GAN, the game is to train the generator ${\color{red}G}$ to fool the discriminator ${\color{green}D}$ while minimizing the discrimination error of ${\color{green}D}$.
 
 Goodfellow prosed a loss[^Goodfellow2014]
 
 $$
 \begin{equation}
-\underset{G}{\operatorname{min}}\underset{D}{\operatorname{max}} V(D, G) = \mathbb E_{x\sim p_{data}} \left[ \log D(x) \right] + \mathbb E_{z\sim p_z} \left[ \log( 1- D(G(z)) ) \right].
+\underset{{\color{red}G}}{\operatorname{min}}\underset{{\color{green}D}}{\operatorname{max}} V({\color{green}D}, {\color{red}G}) = \mathbb E_{x\sim p_{data}} \left[ \log {\color{green}D}(x) \right] + \mathbb E_{z\sim p_z} \left[ \log( 1- {\color{green}D}({\color{red}G}(z)) ) \right].
 \end{equation}
 $$
 
@@ -29,7 +29,7 @@ $$
 Goodfellow et al proved that the global minimum of such a setup is reached only and if only $p_{G} = p_\text{data}$. GAN is comparing the generated distribution to the data distribution, using the Jensen-Shannon divergence[^Goodfellow2014],
 
 $$
-\operatorname{D}_{\text{JS}}(p_\text{data}\Vert p_{G}) = \frac{1}{2}\left[ \operatorname{D}_\text{KL} \left( p_\text{data} \bigg\Vert \frac{p_\text{data} + p_G}{2} \right) + \operatorname{D}_\text{KL} \left( p_{G} \bigg\Vert \frac{p_\text{data} + p_G}{2} \right) \right].
+\operatorname{D}_{\text{JS}}(p_\text{data}\Vert p_{{\color{red}G}}) = \frac{1}{2}\left[ \operatorname{D}_\text{KL} \left( p_\text{data} \bigg\Vert \frac{p_\text{data} + p_{\color{red}G}}{2} \right) + \operatorname{D}_\text{KL} \left( p_{{\color{red}G}} \bigg\Vert \frac{p_\text{data} + p_{\color{red}G}}{2} \right) \right].
 $$
 
 !!! warning "Off by a Constant"
@@ -37,7 +37,7 @@ $$
     The value function of GAN for fixed $G$ is slightly different from JS divergence[^Goodfellow2014],
 
     $$
-    \underset{G}{\operatorname{max}}V(G,D) = 2 \operatorname{D}_\text{JS}( p_\text{data} \Vert p_G ) - \log 4.
+    \underset{G}{\operatorname{max}}V({\color{red}G},{\color{green}D}) = 2 \operatorname{D}_\text{JS}( p_\text{data} \Vert p_{\color{red}G} ) - \log 4.
     $$
 
 
@@ -45,8 +45,8 @@ $$
 
 GAN training requires two stages,
 
-- train discriminator $D$, and
-- train generator $G$.
+- train discriminator ${\color{green}D}$, and
+- train generator ${\color{red}G}$.
 
 
 ![](assets/gan/gan_alternating_training.png)
