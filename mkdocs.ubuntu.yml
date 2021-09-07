@@ -114,6 +114,7 @@ nav:
     - "Introduction": adversarial/intro.md
     - "GAN": adversarial/gan.md
     - "f-GAN": adversarial/f-gan.md
+    - "InfoGAN": adversarial/infogan.md
   - "Topics":
     - "Introduction": topics/intro.md
     - "Predictive Coding": topics/predictive-coding.md
