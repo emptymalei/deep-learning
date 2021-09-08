@@ -2,9 +2,9 @@ name: Publish Docs with PDF
 
 on:
   push:
-    branches:
-      - master
-      - main
+#     branches:
+#       - master
+#       - main
   workflow_dispatch:
     inputs:
       directory:
