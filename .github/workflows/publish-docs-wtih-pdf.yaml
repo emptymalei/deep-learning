@@ -1,7 +1,7 @@
 name: Publish Docs with PDF
 
 on:
-  push:
+#   push:
 #     branches:
 #       - master
 #       - main
