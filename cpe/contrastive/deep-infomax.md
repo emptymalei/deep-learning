@@ -5,9 +5,9 @@
 
     Why not just use the global mutual information of the input and encoder output as the objective?
 
-    ... maximizing MI between the complete input and the encoder output (i.e.,globalMI) is ofteninsufficient for learning useful representations.
-
-    -- Devon et al[^Devon2018]
+    > ... maximizing MI between the complete input and the encoder output (i.e.,globalMI) is ofteninsufficient for learning useful representations.
+    >
+    > -- Devon et al[^Devon2018]
 
 
 Mutual information maximization is performed on the input of the encoder $X$ and the encoded feature $\hat X=E_\theta (X)$,
