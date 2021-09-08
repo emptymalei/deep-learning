@@ -110,6 +110,7 @@ nav:
     - "Introduction": energy-based-models/intro.md
   - "Contrastive":
     - "Introduction": contrastive/intro.md
+    - "Deep Infomax": contrastive/deep-infomax.md
   - "Adversarial":
     - "Introduction": adversarial/intro.md
     - "GAN": adversarial/gan.md

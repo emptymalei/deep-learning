@@ -64,6 +64,11 @@ We estimate
     $$
 
 
+## Code
+
+- [minlee077/f-GAN-pytorch](https://github.com/minlee077/f-GAN-pytorch)
+- [shayneobrien/generative-models](https://github.com/shayneobrien/generative-models/blob/master/src/f_gan.py)
+
 
 
 [^f-divergence_wiki]: Contributors to Wikimedia projects. F-divergence. In: Wikipedia [Internet]. 17 Jul 2021 [cited 6 Sep 2021]. Available: https://en.wikipedia.org/wiki/F-divergence#Instances_of_f-divergences
