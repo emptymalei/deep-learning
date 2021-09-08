@@ -77,7 +77,7 @@ plugins:
       output_path: pdf/cpe.pdf
       cover_logo: assets/logo_badge.svg
       cover_subtitle: "Summary of Probability Estimation Methods"
-      two_columns_level: 3
+      # two_columns_level: 3
       enabled_if_env: ENABLE_PDF_EXPORT
       render_js: true
       headless_chrome_path: "google-chrome"
