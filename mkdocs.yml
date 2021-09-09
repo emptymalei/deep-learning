@@ -71,6 +71,15 @@ extra_javascript:
 plugins:
   - autorefs
   - search
+  # - with-pdf:
+  #     author: CPE
+  #     output_path: pdf/cpe.pdf
+  #     cover_logo: assets/logo_badge.svg
+  #     cover_subtitle: "Summary of Probability Estimation Methods"
+  #     two_columns_level: 3
+  #     enabled_if_env: ENABLE_PDF_EXPORT
+  #     render_js: true
+  #     headless_chrome_path: "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 
 
 extra:
@@ -99,6 +108,7 @@ nav:
   - "Contrastive":
     - "Introduction": contrastive/intro.md
     - "Deep Infomax": contrastive/deep-infomax.md
+    - "Contrastive Predictive Coding": contrastive/contrastive-predictive-coding.md
   - "Adversarial":
     - "Introduction": adversarial/intro.md
     - "GAN": adversarial/gan.md

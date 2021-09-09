@@ -111,6 +111,7 @@ nav:
   - "Contrastive":
     - "Introduction": contrastive/intro.md
     - "Deep Infomax": contrastive/deep-infomax.md
+    - "Contrastive Predictive Coding": contrastive/contrastive-predictive-coding.md
   - "Adversarial":
     - "Introduction": adversarial/intro.md
     - "GAN": adversarial/gan.md
