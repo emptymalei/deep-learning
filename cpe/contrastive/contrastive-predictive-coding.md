@@ -31,11 +31,10 @@ where $f_k(x_{x+i}, c_t)$ is estimated using a log-bilinear model, $f_k(x_{x+i},
 Minimizing $\mathcal L$ leads to a $f_k$ that estimates the ratio[^Oord2018]
 
 $$
-p(x_{t+k}\mid c_t)/p(x_{t+k}),
+\frac{p(x_{t+k}\mid c_t)}{p(x_{t+k})} = \frac{p(x_{t+k}, c_t)}{p(x_{t+k})p(c_t)}.
 $$
 
-with which we can estimate future samples.
-
+We can perform downstream tasks such as classifications using the encoders.
 
 
 
