@@ -95,6 +95,8 @@ nav:
     - "Introduction": bayes/intro.md
     - "Basics": bayes/basics.md
     - "EM Algorithm": bayes/em.md
+  - "Energy-based Models":
+    - "Introduction": energy-based-models/intro.md
   - "Generative":
     - "Introduction": generative/intro.md
     - "Autoregressive": generative/autoregressive.md
@@ -103,8 +105,6 @@ nav:
     - "Flow": generative/flow.md
     - "MADE": generative/made.md
     - "MAF": generative/maf.md
-  - "Energy-based Models":
-    - "Introduction": energy-based-models/intro.md
   - "Contrastive":
     - "Introduction": contrastive/intro.md
     - "Deep Infomax": contrastive/deep-infomax.md
