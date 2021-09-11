@@ -125,5 +125,6 @@ nav:
     - "KL Divergence": appendices/kl-divergence.md
     - "f-divergence": appendices/f-divergence.md
     - "ELBO": appendices/elbo.md
+    - "Alignment and Uniformity": appendices/alignment-and-uniformity.md
   - "Changelog": changelog.md
 

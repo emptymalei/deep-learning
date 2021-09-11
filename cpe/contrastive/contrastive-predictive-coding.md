@@ -36,6 +36,9 @@ $$
 
 We can perform downstream tasks such as classifications using the encoders.
 
+!!! warning "Maximizing this lower bound?"
+    This so-called lower bound for mutual information in this case is not always going to work[^Newell2020]. In some cases, the representations learned using this lower bound doesn't help or even worsen the performance of downstream tasks.
+
 
 
 ## Code
