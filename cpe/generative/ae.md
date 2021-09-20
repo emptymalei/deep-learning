@@ -26,3 +26,12 @@ where in this simple example,
 
 
 For binary labels, we can use a simple cross entropy as the loss.
+
+
+## Code
+
+See Lippe[^Lippe].
+
+
+[^Lippe]: Lippe P. Tutorial 9: Deep Autoencoders — UvA DL Notebooks v1.1 documentation. In: UvA Deep Learning Tutorials [Internet]. [cited 20 Sep 2021]. Available: https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/tutorial9/AE_CIFAR10.html
+
