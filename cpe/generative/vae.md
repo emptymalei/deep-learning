@@ -121,5 +121,12 @@ Another key component of VAE is the **reparametrization trick**. The variational
 > VAE Loss Explained [^Doersch2016]
 
 
+## Code
+
+See Lippe[^Lippe].
+
 
 [^Doersch2016]: Doersch C. Tutorial on Variational Autoencoders. arXiv [stat.ML]. 2016. Available: http://arxiv.org/abs/1606.05908
+
+[^Lippe]: Lippe P. Tutorial 9: Deep Autoencoders — UvA DL Notebooks v1.1 documentation. In: UvA Deep Learning Tutorials [Internet]. [cited 20 Sep 2021]. Available: https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/tutorial9/AE_CIFAR10.html
+
