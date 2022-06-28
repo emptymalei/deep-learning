@@ -1,12 +1,12 @@
 # mkdocs.yml
-site_name: "Probability Estimation"
-site_author: CPE
-site_description: "Summary of Probability Estimation Models"
-site_url: "https://neuronstar.github.io/cpe-docs"
-repo_url: "https://github.com/neuronstar/cpe-docs"
-edit_uri: "blob/main/cpe-docs/"
-repo_name: "neuronstar/cpe-docs"
-docs_dir: "cpe"
+site_name: "Deep Learning"
+site_author: LM
+site_description: "Deep Learning"
+site_url: "https://emptymalei.github.io/deep-learning"
+repo_url: "https://github.com/emptymalei/deep-learning"
+edit_uri: "blob/main/deep-learning/"
+repo_name: "emptymalei/deep-learning"
+docs_dir: "dl"
 
 
 
@@ -74,10 +74,10 @@ plugins:
   - autorefs
   - search
   - with-pdf:
-      author: CPE
-      output_path: pdf/cpe.pdf
+      author: "Lei Ma"
+      output_path: pdf/dl-lm.pdf
       cover_logo: assets/logo_badge.svg
-      cover_subtitle: "Summary of Probability Estimation Methods"
+      cover_subtitle: "Deep Learning"
       two_columns_level: 3
       enabled_if_env: ENABLE_PDF_EXPORT
       render_js: true
@@ -89,7 +89,7 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/neuronstar/cpe-docs
+      link: https://github.com/emptymalei/deep-learning
 
 
 

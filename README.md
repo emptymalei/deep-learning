@@ -6,13 +6,13 @@
 Create python environment (>=3.7):
 
 ```python
-conda create -n cpe python=3.7 pip
+conda create -n deep-learning python=3.7 pip
 ```
 
 Activate environment:
 
 ```python
-conda activate cpe
+conda activate deep-learning
 ```
 
 Validate the environment:
