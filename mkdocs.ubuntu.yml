@@ -101,23 +101,28 @@ nav:
     - "EM Algorithm": bayes/em.md
   - "Energy-based Models":
     - "Introduction": energy-based-models/intro.md
-  - "Generative":
-    - "Introduction": generative/intro.md
-    - "Autoregressive": generative/autoregressive.md
-    - "AE": generative/ae.md
-    - "VAE": generative/vae.md
-    - "Flow": generative/flow.md
-    - "MADE": generative/made.md
-    - "MAF": generative/maf.md
-  - "Contrastive":
-    - "Introduction": contrastive/intro.md
-    - "Deep Infomax": contrastive/deep-infomax.md
-    - "Contrastive Predictive Coding": contrastive/contrastive-predictive-coding.md
-  - "Adversarial":
-    - "Introduction": adversarial/intro.md
-    - "GAN": adversarial/gan.md
-    - "f-GAN": adversarial/f-gan.md
-    - "InfoGAN": adversarial/infogan.md
+  - "Self-supervised Learning":
+    - "Generative":
+      - "Introduction": generative/intro.md
+      - "Autoregressive": generative/autoregressive.md
+      - "AE": generative/ae.md
+      - "VAE": generative/vae.md
+      - "Flow": generative/flow.md
+      - "MADE": generative/made.md
+      - "MAF": generative/maf.md
+    - "Contrastive":
+      - "Introduction": contrastive/intro.md
+      - "Deep Infomax": contrastive/deep-infomax.md
+      - "Contrastive Predictive Coding": contrastive/contrastive-predictive-coding.md
+    - "Adversarial":
+      - "Introduction": adversarial/intro.md
+      - "GAN": adversarial/gan.md
+      - "f-GAN": adversarial/f-gan.md
+      - "InfoGAN": adversarial/infogan.md
+  - "Time Series Forecasting":
+    - "Forecasting": forecasting/index.md
+    - "Data":
+      - "Augmentation": forecasting/data.augmentation.md
   - "Topics":
     - "Introduction": topics/intro.md
     - "Predictive Coding": topics/predictive-coding.md
