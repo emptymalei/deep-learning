@@ -3,7 +3,7 @@ site_name: "Deep Learning"
 site_author: LM
 site_description: "Deep Learning"
 site_url: "https://emptymalei.github.io/deep-learning"
-repo_url: "https://github.com/emptymalei/deel-learning"
+repo_url: "https://github.com/emptymalei/deep-learning"
 edit_uri: "blob/main/deep-learning/"
 repo_name: "emptymalei/machine-learning"
 docs_dir: "dl"
