@@ -72,6 +72,8 @@ extra_javascript:
 plugins:
   - autorefs
   - search
+  - bibtex:
+      bib_dir: "dl/assets/references"
   # - with-pdf:
   #     author: CPE
   #     output_path: pdf/cpe.pdf
