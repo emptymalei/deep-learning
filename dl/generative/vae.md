@@ -23,7 +23,7 @@ In the above derivation,
     - Instead of modeling a complex likelihood $p(x\mid z)$ directly, we only need to model parameters of Gaussian distributions, e.g., a function $f(z, \theta)$ for the mean of the Gaussian distribution.
 
 
-![](assets/vae/1606.05908-fig2-gaussian-latent.png)
+![Gaussian Latent Space](assets/vae/1606.05908-fig2-gaussian-latent.png)
 > From simple distribution in latent space to a more complex distribution. [Doersch2016]
 
 The demo looks great. However, sampling from latent space becomes more difficult as the dimension of the latent space increase. We need a more efficient way to sample from the latent space. We use the variational method which uses a model that samples $z$ based on $x$ to sample $z$, i.e., introduce a function $q(z\mid x)$ to help us with sampling.
@@ -74,8 +74,6 @@ We also dropped the term $D_{\mathrm{KL}}( q(z\mid x)\parallel p(z\mid x) )$ whi
     where ${\color{blue}q(z\mid x) }$ is our encoder which encodes data $x$ to the latent data $z$, and ${\color{red}p(x\mid z)}$ is our decoder. The second term ensures our encoder is similar to our priors.
 
 
-
-
 ## Using Neural networks
 
 
@@ -104,11 +102,9 @@ $$
     If we are sort of minimizing the KL divergence $\operatorname{KL} \left( {\color{blue}q(z\mid x) }\parallel p(z) \right)$ too, why don't we simply draw $q$ from $p(z)$? First of all, we also have to take care of the first term. Secondly, we need a latent space that connects to the actual data for reconstruction.
 
 
-
-
 ## Structure
 
-![](assets/vae/simple-vae.png)
+![Simple VAE](assets/vae/simple-vae.png)
 
 Doersch wrote a very nice tutorial on VAE[^Doersch2016]. We can find the detailed structures of VAE.
 
@@ -117,7 +113,7 @@ Another key component of VAE is the **reparametrization trick**. The variational
 
 ## Loss Explanation
 
-![](assets/vae/vae-loss-explained.png)
+![VAE Loss](assets/vae/vae-loss-explained.png)
 > VAE Loss Explained [^Doersch2016]
 
 
@@ -129,4 +125,3 @@ See Lippe[^Lippe].
 [^Doersch2016]: Doersch C. Tutorial on Variational Autoencoders. arXiv [stat.ML]. 2016. Available: http://arxiv.org/abs/1606.05908
 
 [^Lippe]: Lippe P. Tutorial 9: Deep Autoencoders — UvA DL Notebooks v1.1 documentation. In: UvA Deep Learning Tutorials [Internet]. [cited 20 Sep 2021]. Available: https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/tutorial9/AE_CIFAR10.html
-

@@ -11,11 +11,7 @@ H(p) = \mathbb E_{p}\left[ -\log \left(p\right) \right].
 
 
 
-
 [^shannon_entropy_wiki]: Contributors to Wikimedia projects. Entropy (information theory). In: Wikipedia [Internet]. 29 Aug 2021 [cited 4 Sep 2021]. Available: https://en.wikipedia.org/wiki/Entropy_(information_theory)
-
-
-
 
 
 ## Cross Entropy
@@ -39,7 +35,3 @@ Cross entropy is widely used in classification problems, e.g., logistic regressi
 
 
 [^cross_entropy_wiki]: Contributors to Wikimedia projects. Cross entropy. In: Wikipedia [Internet]. 4 Jul 2021 [cited 4 Sep 2021]. Available: https://en.wikipedia.org/wiki/Cross_entropy
-
-
-
-

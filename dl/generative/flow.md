@@ -1,6 +1,6 @@
 # Flow
 
-![](assets/flow/generative-flow-encoding-decoding.png)
+![Generative Flow](assets/flow/generative-flow-encoding-decoding.png)
 
 For a probability density $p(x)$ and a transformation of coordinate $x=g(z)$ or $z=f(x)$, the density can be expressed using the coordinate transformations, i.e.,
 
@@ -24,7 +24,6 @@ The operation $g_{*}\circ \tilde p(z)$ is the push forward of $\tilde p(z)$. The
 - The normalizing direction: "simplify" $p(x)$ to some simple distribution $\tilde p(z)$.
 
 
-
 The key to the flow model is the chaining of the transformations
 
 $$
@@ -39,7 +38,6 @@ x_i &= g_i \circ \cdots \circ g_1 (z)\\
 &= f_{i+1} \circ \cdots \circ f_N (x).
 \end{align}
 $$
-
 
 
 

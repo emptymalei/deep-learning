@@ -13,6 +13,4 @@ Wang et al proposed two concepts that matches the above two ideas, alignment and
 
 
 
-
-
 [^Wang2005]: Wang T, Isola P. Understanding Contrastive Representation Learning through Alignment and Uniformity on the Hypersphere. arXiv [cs.LG]. 2020. Available: http://arxiv.org/abs/2005.10242

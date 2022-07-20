@@ -1,6 +1,6 @@
 # Autoregressive Model
 
-![](assets/autoregressive/generative-ar-basics-1.jpg)
+![Generative AR basics](assets/autoregressive/generative-ar-basics-1.jpg)
 
 An autoregressive (AR) model is autoregressive,
 
@@ -25,14 +25,6 @@ $$
     In the current review, we expanded the vector notation $\mathbf x_{<t}$ into a set notation as it is not necessarily a vector.
 
 
-
-
-
-
-
-
-
-
 [^Uria2016]: Uria B, Côté M-A, Gregor K, Murray I, Larochelle H. Neural Autoregressive Distribution Estimation. arXiv [cs.LG]. 2016. Available: http://arxiv.org/abs/1605.02226
 
 [^Triebe2019]: Triebe O, Laptev N, Rajagopal R. AR-Net: A simple Auto-Regressive Neural Network for time-series. arXiv [cs.LG]. 2019. Available: http://arxiv.org/abs/1911.12436
@@ -49,5 +41,3 @@ $$
 
 
 [^rogen]: rogen-george. rogen-george/Deep-Autoregressive-Model. In: GitHub [Internet]. [cited 20 Sep 2021]. Available: https://github.com/rogen-george/Deep-Autoregressive-Model
-
-

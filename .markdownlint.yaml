@@ -1,0 +1,17 @@
+# Default state for all rules
+default: true
+
+# Path to configuration file to extend
+extends: null
+
+MD012:
+  # Consecutive blank lines
+  maximum: 3
+
+MD013: false
+
+MD033: false
+
+MD034: false
+
+MD049: false

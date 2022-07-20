@@ -24,7 +24,7 @@ Using the lambda multiplier, we punish the model if the generator loses informat
 
 ## Training
 
-![](assets/infogan/infogan-structure-1.jpeg)
+![InfoGAN](assets/infogan/infogan-structure-1.jpeg)
 
 The training steps are almost the same as [GAN](gan.md) but with one extra loss to be calculated in each mini-batch.
 
@@ -33,7 +33,6 @@ The training steps are almost the same as [GAN](gan.md) but with one extra loss 
 3. Apply Constraint:
     1. Sample data from mini-batch;
     2. Calculate loss $\lambda_{l} H(l';l)+\lambda_c \operatorname{MSE}(c,c')$
-
 
 
 ## Code

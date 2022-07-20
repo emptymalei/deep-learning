@@ -2,7 +2,7 @@
 
 Autoencoders (AE) are machines that encodes inputs into a compact latent space.
 
-![](assets/ae/autoencoder-basic-1.jpg)
+![AE](assets/ae/autoencoder-basic-1.jpg)
 
 
 ??? tip "Notation: dot ($\cdot$)"
@@ -34,4 +34,3 @@ See Lippe[^Lippe].
 
 
 [^Lippe]: Lippe P. Tutorial 9: Deep Autoencoders — UvA DL Notebooks v1.1 documentation. In: UvA Deep Learning Tutorials [Internet]. [cited 20 Sep 2021]. Available: https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/tutorial9/AE_CIFAR10.html
-

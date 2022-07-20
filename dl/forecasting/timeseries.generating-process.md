@@ -1,2 +1,1 @@
-## Generating Processes for Time Series
-
+# Generating Processes for Time Series

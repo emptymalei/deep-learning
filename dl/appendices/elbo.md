@@ -102,5 +102,3 @@ which also indicates that $L$ is the lower bound of $\log p(x)$.
 
 
 [^Yang2017]: Yang X. Understanding the Variational Lower Bound. 14 Apr 2017 [cited 5 Sep 2021]. Available: https://xyang35.github.io/2017/04/14/variational-lower-bound/
-
-

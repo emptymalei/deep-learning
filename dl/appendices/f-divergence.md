@@ -31,7 +31,6 @@ For more special cases of f-divergence, please refer to wikipedia[^f-divergence_
 
 
 
-
 [^f-divergence_wiki]: Contributors to Wikimedia projects. F-divergence. In: Wikipedia [Internet]. 17 Jul 2021 [cited 4 Sep 2021]. Available: https://en.wikipedia.org/wiki/F-divergence
 
 

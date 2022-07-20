@@ -1,6 +1,6 @@
 # Generative Models
 
-![](assets/generative-models-1.jpg)
+![Generative Models](assets/generative-models-1.jpg)
 
 Generative models comes with
 

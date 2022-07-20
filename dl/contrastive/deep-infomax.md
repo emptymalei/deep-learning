@@ -17,7 +17,6 @@ $$
 $$
 
 
-
 Being a quantity that is notoriously hard to compute, mutual information $I(X;E_\theta (X))$ is usually estimated using its lower bound, which depends on a choice of a functional $T_\omega$. Thus the objective will be maximizing a parametrized mutual information estimation,
 
 $$
@@ -32,7 +31,7 @@ $$
     - Local mutual information of local patches of input full encoding. This is useful for classification.
 
 
-##  Local Mutual Information
+## Local Mutual Information
 
 To compare local features to the encoder output, we need to extract values from inside the encoder, i.e.,
 
@@ -46,7 +45,7 @@ $$
 \operatorname{arg~max}_{\theta_f, \theta_C, \omega}\mathbb E_{i} \left[ \hat I_\omega( C_{\theta_C}^{(i)} ;E_\theta (X)) \right].
 $$
 
-![](assets/deep-infomax/deep-infomax-local-mi-architecture.jpg)
+![Deep InfoMAX Local](assets/deep-infomax/deep-infomax-local-mi-architecture.jpg)
 
 !!! tip "Why does local mutual information help"
     Devon et al explained the idea behind choosing local mutual information[^Devon2018].
@@ -56,19 +55,10 @@ $$
     Local mutual information splits the input into patches, and calculate the mutual information between each patch and the encoding. If the model only uses some information from a few local patches, the mutual information objective will be small after averaging all the patches. Thus local mutual information forces the model to use information that is global in the input.
 
 
-
-
-
-
 ## Code
 
 - [rdevon/DIM](https://github.com/rdevon/DIM): by the authors
 - [DuaneNielsen/DeepInfomaxPytorch](https://github.com/DuaneNielsen/DeepInfomaxPytorch): a clean implementation
-
-
-
-
-
 
 
 [^Devon2018]: Devon Hjelm R, Fedorov A, Lavoie-Marchildon S, Grewal K, Bachman P, Trischler A, et al. Learning deep representations by mutual information estimation and maximization. arXiv [stat.ML]. 2018. Available: http://arxiv.org/abs/1808.06670

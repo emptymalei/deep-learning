@@ -1,8 +1,6 @@
 # Introduction
 
 
-
-
 ## Notations
 
 
@@ -16,7 +14,8 @@ In this document, we use the following notations.
 ## Why Self-supervised Learning
 
 Self-supervised learning helps with downstream visual tasks[^Newell2020].
-![](assets/index/newell2020-fig-1-c.png)
+
+![Self-supervised Learning](assets/index/newell2020-fig-1-c.png)
 > Image from [Newell2020](http://arxiv.org/abs/2003.14323)
 
 

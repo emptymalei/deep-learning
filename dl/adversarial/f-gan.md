@@ -79,5 +79,3 @@ We estimate
 
 
 [^convex_conjugate_wiki]: Contributors to Wikimedia projects. Convex conjugate. In: Wikipedia [Internet]. 20 Feb 2021 [cited 7 Sep 2021]. Available: https://en.wikipedia.org/wiki/Convex_conjugate
-
-

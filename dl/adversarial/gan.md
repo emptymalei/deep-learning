@@ -1,4 +1,4 @@
-## GAN
+# GAN
 
 GAN is a **generative neural sampler**[^Nowozin2016]. To train the sampler, the task of GAN is designed to generate features $X$ from a latent space $\xi$ and class labels $Y$,
 
@@ -7,11 +7,9 @@ $$\xi, Y \to X.$$
 Many different formulations of GANs are proposed. As an introduction to this topic, we will discuss vanilla GAN in this section[^Goodfellow2014].
 
 
+## Theory
 
-
-### Theory
-
-#### The Minimax Game Loss
+### The Minimax Game Loss
 
 The minimax game is a game to "minimizing the possible loss for a worst case"[^minimax_wiki]. In GAN, the game is to train the generator ${\color{red}G}$ to fool the discriminator ${\color{green}D}$ while minimizing the discrimination error of ${\color{green}D}$.
 
@@ -24,7 +22,7 @@ $$
 $$
 
 
-#### Divergence
+### Divergence
 
 Goodfellow et al proved that the global minimum of such a setup is reached only and if only $p_{G} = p_\text{data}$. GAN is comparing the generated distribution to the data distribution, using the Jensen-Shannon divergence[^Goodfellow2014],
 
@@ -41,7 +39,7 @@ $$
     $$
 
 
-#### Alternating Training
+### Alternating Training
 
 GAN training requires two stages,
 
@@ -49,10 +47,10 @@ GAN training requires two stages,
 - train generator ${\color{red}G}$.
 
 
-![](assets/gan/gan_alternating_training.png)
+![GAN Alternating Training](assets/gan/gan_alternating_training.png)
 
 
-### Code
+## Code
 
 We built a simple GAN using MNIST dataset.
 
@@ -274,7 +272,6 @@ We built a simple GAN using MNIST dataset.
     if __name__ == "__main__":
         main()
     ```
-
 
 
 
