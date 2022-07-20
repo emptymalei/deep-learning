@@ -9,6 +9,14 @@ I do not have a finished blueprint yet. But I have a framework in my mind: I wan
 
 ## How to Contribute
 
+This repository contains mostly markdown files. To make sure we have the same conventions, we have added markdownlint tools to pre-commit. So please install [pre-commit](https://pre-commit.com/) then run the following command the first time you cloned the repository.
+
+```bash
+pre-commit install
+```
+
+### Preview Requires Python
+
 Create python environment (>=3.7):
 
 ```python
@@ -32,6 +40,12 @@ Install requirements:
 
 ```python
 pip install -r requirements.txt
+```
+
+Preview the docs:
+
+```python
+mkdocs serve -s
 ```
 
 
