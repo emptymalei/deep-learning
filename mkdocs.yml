@@ -94,6 +94,9 @@ extra:
 
 nav:
   - "Home": index.md
+  - "Onboarding":
+    - onboarding/index.md
+    - "Python": onboarding/python.md
   - "Bayes":
     - "Introduction": bayes/intro.md
     - "Basics": bayes/basics.md
