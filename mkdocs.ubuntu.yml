@@ -47,7 +47,9 @@ theme:
 markdown_extensions:
   - admonition
   - attr_list
-  - pymdownx.emoji
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
   - pymdownx.magiclink
   - pymdownx.snippets:
       check_paths: true
@@ -73,6 +75,8 @@ extra_javascript:
 plugins:
   - autorefs
   - search
+  - tags:
+      tags_file: tags.md
   - bibtex:
       bib_dir: "dl/assets/references"
   - with-pdf:
