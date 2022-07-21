@@ -4,6 +4,10 @@ default: true
 # Path to configuration file to extend
 extends: null
 
+MD007:
+  # Spaces for indent
+  indent: 4
+
 MD012:
   # Consecutive blank lines
   maximum: 3
