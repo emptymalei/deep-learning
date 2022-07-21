@@ -43,7 +43,7 @@ $$
 
 In the derivation, we used $\int dz q(z\mid x) = 1$.
 
-The term $F(x)$ is the free energy, while the negative of it, $-F(x)=\mathcal L$, is the so-called [Evidence Lower Bound (ELBO)](../appendices/elbo.md),
+The term $F(x)$ is the free energy, while the negative of it, $-F(x)=\mathcal L$, is the so-called [Evidence Lower Bound (ELBO)](../../supplementary/elbo.md),
 
 $$
 \mathcal L = - D_{\mathrm{KL}} ( q_{\phi}(z\mid x) \mathrel{\Vert} p(z)  )  +  \mathbb E_q ( \ln p_\theta (x\mid z) ).

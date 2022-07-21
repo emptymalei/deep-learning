@@ -5,7 +5,7 @@ Contrastive Predictive Coding, CPC, is an autoregressive model combined with Inf
 
 !!! note "Predictive Coding"
 
-    Refer to [predictive coding](../topics/predictive-coding.md).
+    Refer to [predictive coding](../../topics/predictive-coding.md).
 
 
 There are two key ideas in CPC:

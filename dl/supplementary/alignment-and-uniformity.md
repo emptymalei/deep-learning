@@ -8,7 +8,7 @@ A good representation should be able to
 
 Wang et al proposed two concepts that matches the above two ideas, alignment and uniformity, on a hypersphere[^Wang2005].
 
-![From Wang et al](../assets/alignment-and-uniformity/wang2005-alignment-uniformity.png)
+![From Wang et al](assets/alignment-and-uniformity/wang2005-alignment-uniformity.png)
 > From Wang et al[^Wang2005].
 
 

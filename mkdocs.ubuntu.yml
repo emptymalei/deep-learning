@@ -1,7 +1,7 @@
 # mkdocs.yml
-site_name: "Deep Learning"
-site_author: LM
-site_description: "Deep Learning"
+site_name: "Deep Learning Quick Bite"
+site_author: "Lei Ma"
+site_description: "Deep Learning Quick Bite"
 site_url: "https://emptymalei.github.io/deep-learning"
 repo_url: "https://github.com/emptymalei/deep-learning"
 edit_uri: "blob/main/deep-learning/"
@@ -79,7 +79,7 @@ plugins:
       author: "Lei Ma"
       output_path: pdf/dl-lm.pdf
       cover_logo: assets/logo_badge.svg
-      cover_subtitle: "Deep Learning"
+      cover_subtitle: "Deep Learning Quick Bite"
       two_columns_level: 3
       enabled_if_env: ENABLE_PDF_EXPORT
       render_js: true
@@ -97,44 +97,44 @@ extra:
 
 nav:
   - "Home": index.md
-  - "Bayes":
-    - "Introduction": bayes/intro.md
-    - "Basics": bayes/basics.md
-    - "EM Algorithm": bayes/em.md
+  - "Onboarding":
+    - onboarding/index.md
+    - "Python": onboarding/python.md
   - "Energy-based Models":
     - "Introduction": energy-based-models/intro.md
+    - "Supplementary":
+      - "Entropy": supplementary/entropy.md
   - "Self-supervised Learning":
     - "Generative":
-      - "Introduction": generative/intro.md
-      - "Autoregressive": generative/autoregressive.md
-      - "AE": generative/ae.md
-      - "VAE": generative/vae.md
-      - "Flow": generative/flow.md
-      - "MADE": generative/made.md
-      - "MAF": generative/maf.md
+      - "Introduction": self-supervised/generative/intro.md
+      - "Autoregressive": self-supervised/generative/autoregressive.md
+      - "AE": self-supervised/generative/ae.md
+      - "VAE": self-supervised/generative/vae.md
+      - "Flow": self-supervised/generative/flow.md
+      - "MADE": self-supervised/generative/made.md
+      - "MAF": self-supervised/generative/maf.md
     - "Contrastive":
-      - "Introduction": contrastive/intro.md
-      - "Deep Infomax": contrastive/deep-infomax.md
-      - "Contrastive Predictive Coding": contrastive/contrastive-predictive-coding.md
+      - "Introduction": self-supervised/contrastive/intro.md
+      - "Deep Infomax": self-supervised/contrastive/deep-infomax.md
+      - "Contrastive Predictive Coding": self-supervised/contrastive/contrastive-predictive-coding.md
     - "Adversarial":
-      - "Introduction": adversarial/intro.md
-      - "GAN": adversarial/gan.md
-      - "f-GAN": adversarial/f-gan.md
-      - "InfoGAN": adversarial/infogan.md
-  - "Time Series Forecasting":
-    - "Forecasting": forecasting/index.md
+      - "Introduction": self-supervised/adversarial/intro.md
+      - "GAN": self-supervised/adversarial/gan.md
+      - "f-GAN": self-supervised/adversarial/f-gan.md
+      - "InfoGAN": self-supervised/adversarial/infogan.md
+    - "Supplementary":
+      - supplementary/index.md
+      - "Mutual Information": supplementary/mutual-information.md
+      - "KL Divergence": supplementary/kl-divergence.md
+      - "f-divergence": supplementary/f-divergence.md
+      - "ELBO": supplementary/elbo.md
+      - "Alignment and Uniformity": supplementary/alignment-and-uniformity.md
+  - "Time Series":
+    - time-series/index.md
     - "Data":
-      - "Augmentation": forecasting/data.augmentation.md
+      - "Augmentation": time-series/data.augmentation.md
   - "Topics":
     - "Introduction": topics/intro.md
     - "Predictive Coding": topics/predictive-coding.md
     - "LTD/LTP": topics/ltd-ltp.md
-  - "Appendices":
-    - "Introduction": appendices/intro.md
-    - "Entropy": appendices/entropy.md
-    - "Mutual Information": appendices/mutual-information.md
-    - "KL Divergence": appendices/kl-divergence.md
-    - "f-divergence": appendices/f-divergence.md
-    - "ELBO": appendices/elbo.md
-    - "Alignment and Uniformity": appendices/alignment-and-uniformity.md
   - "Changelog": changelog.md
