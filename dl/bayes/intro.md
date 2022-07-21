@@ -1,4 +1,0 @@
-# Conditional Probability and Bayes
-
-
-

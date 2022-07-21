@@ -1,12 +1,26 @@
-# probability-estimation
+# Deep Learning
+
+When I switched to data science, I built [my digital garden, datumorphism](https://datumorphism.leima.is/). I deliberately designed this digital garden as my second brain. As a result, most of the articles are fragments of knowledge and require context to understand them.
+
+Making bricks is easy but assembling them into a house is not easy. So I have decided to use this repository to practice my house-building techniques.
+
+I do not have a finished blueprint yet. But I have a framework in my mind: I want to consolidate some of my thoughts and learnings in a good way. However, I do not want to compile a reference book, as [datumorphism](https://datumorphism.leima.is/) already serves this purpose. I should create stories.
 
 
-## Development
+## How to Contribute
+
+This repository contains mostly markdown files. To make sure we have the same conventions, we have added markdownlint tools to pre-commit. So please install [pre-commit](https://pre-commit.com/) then run the following command the first time you cloned the repository.
+
+```bash
+pre-commit install
+```
+
+### Preview Requires Python
 
 Create python environment (>=3.7):
 
 ```python
-conda create -n deep-learning python=3.7 pip
+conda create -n deep-learning python=3.8 pip
 ```
 
 Activate environment:
@@ -25,7 +39,13 @@ which python
 Install requirements:
 
 ```python
-pip install -r requirements.docs.txt
+pip install -r requirements.txt
+```
+
+Preview the docs:
+
+```python
+mkdocs serve -s
 ```
 
 
@@ -44,6 +64,3 @@ When installing pango on Mac using homebrew, the path for `DYLD_LIBRARY_PATH` ar
 ```
 export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/itsme/homebrew/Cellar/pango/1.48.8/lib:/Users/itsme/homebrew/Cellar/harfbuzz/2.8.2/lib:/Users/itsme/homebrew/Cellar/fontconfig/2.13.1/lib
 ```
-
-
-
