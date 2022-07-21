@@ -94,7 +94,6 @@ extra:
       link: https://github.com/emptymalei/deep-learning
 
 
-
 nav:
   - "Home": index.md
   - "Onboarding":
@@ -105,6 +104,7 @@ nav:
     - "Supplementary":
       - "Entropy": supplementary/entropy.md
   - "Self-supervised Learning":
+    - "Introduction": self-supervised/index.md
     - "Generative":
       - "Introduction": self-supervised/generative/intro.md
       - "Autoregressive": self-supervised/generative/autoregressive.md
