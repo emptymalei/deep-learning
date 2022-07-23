@@ -102,6 +102,21 @@ In a Python project, it is important to have some certain conventions or styles.
             name: isort (python)
     ```
 
+## Write docstrings
+
+Writing [docstrings](https://peps.python.org/pep-0257/) for functions and classes can help our future self understand them more easily. There are different styles for docstrings. Two of the popular ones are
+
+- [reStructuredText Docstring Format](https://peps.python.org/pep-0287/), and
+- [Google style docstrings](https://google.github.io/styleguide/pyguide.html#383-functions-and-methods).
+
+## Test Saves Time
+
+Adding tests to your code can save you time. We will not list all these benefits of having tests. But tests can help us debug our code and ship results more confidently. For example, suppose we are developing a function and spot a bug. One of the best ways of debugging it is to write a test and put a debugger at the suspicious bug in the code. With the help of IDEs such as Visual Studio Code, this process can save us a lot of time in debugging.
+
+??? info "Use `pytest`"
+
+    Use [pytest](https://pytest.org). RealPython provides a [good short introduction](https://realpython.com/pytest-python-testing/#what-makes-pytest-so-useful).
+
 
 [^isort]: Pre Commit. In: isort [Internet]. [cited 22 Jul 2022]. Available: https://pycqa.github.io/isort/docs/configuration/pre-commit.html
 [^pch]: pre-commit-config-pre-commit-hooks.yaml. In: Gist [Internet]. [cited 22 Jul 2022]. Available: https://gist.github.com/lynnkwong/f7591525cfc903ec592943e0f2a61ed9
