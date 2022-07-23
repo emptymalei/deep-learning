@@ -38,7 +38,7 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
-  favicon: assets/logo.png
+  favicon: assets/logo_badge.svg
   logo: assets/logo_badge.svg
 
 
@@ -53,7 +53,8 @@ markdown_extensions:
   - pymdownx.snippets:
       check_paths: true
   - pymdownx.superfences
-  - pymdownx.tabbed
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.tasklist
   - pymdownx.arithmatex:
       generic: true
