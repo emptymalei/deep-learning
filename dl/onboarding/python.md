@@ -44,23 +44,24 @@ We have a few choices to specify the dependencies. The most used method at the m
 
 ??? info "Modern Python with `pyproject.toml` and `poetry`"
 
-    Python introduced `pyproject.toml` in [PEP518](https://peps.python.org/pep-0518/). `pyproject.toml` can be used together with [`poetry`](https://python-poetry.org) to [sepcify dependencies](https://python-poetry.org/docs/pyproject/#packages).
+    Python introduced `pyproject.toml` in [PEP518](https://peps.python.org/pep-0518/) which can be used together with [`poetry`](https://python-poetry.org) to [sepcify dependencies](https://python-poetry.org/docs/pyproject/#packages).
 
-    Both `conda` and `pyenv` have trouble solving the actual full dependency graphs of all the packages used. This problem is solved easily by `poetry`. However, this also means `poetry` can be very slow as it has to load many different versions of the packages.
+    Both `conda` and `pyenv` have trouble solving the actual full dependency graphs of all the packages used. This problem is solved by `poetry`. However, this also means `poetry` can be very slow as it has to load many different versions of the packages to try out.[^slowpoetry]
 
-    We highly recommend using `poetry` in a formal project. However, tutorials on how to use `poetry` is not within the scope of this book.
+    While tutorials on how to use `poetry` is not within the scope of this book, we highly recommend using `poetry` in a formal project.
 
 
 ## Python Styles and `pre-commit`
 
-In a Python project, it is important to have some certain conventions or styles. To be self-consistent, one could follow some style guides for python. There are official proposals, such as [PEP8](https://peps.python.org/pep-0008/), and "third party" style guides, such as [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).[^pep8][^gpsg] And use [pre-commit](https://pre-commit.com/).
+In a Python project, it is important to have some certain conventions or styles. To be consistent, one could follow some style guides for python. There are official proposals, such as [PEP8](https://peps.python.org/pep-0008/), and "third party" style guides, such as [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).[^pep8][^gpsg]
 
+We also recommend using [`pre-commit`](https://pre-commit.com/). `pre-commit` helps us manage git hooks to be executed before each commit. Once installed, every time we run `git commit -m "my commit message here"`, a series of commands will be executed first based on the configurations.
 
 === "Some pre-commit Configs"
 
     `pre-commit` [officially provides some hooks](https://github.com/pre-commit/pre-commit-hooks) already, e.g., `trailing-whitespace`.[^pch]
 
-    We also recommend using some other hooks, namely,
+    We also recommend the following hooks,
 
     - `black`, which formats the code based on pre-defined styles,
     - `isort`, which orders the Python imports[^isort],
@@ -111,7 +112,7 @@ Writing [docstrings](https://peps.python.org/pep-0257/) for functions and classe
 
 ## Test Saves Time
 
-Adding tests to your code can save you time. We will not list all these benefits of having tests. But tests can help us debug our code and ship results more confidently. For example, suppose we are developing a function and spot a bug. One of the best ways of debugging it is to write a test and put a debugger at the suspicious bug in the code. With the help of IDEs such as Visual Studio Code, this process can save us a lot of time in debugging.
+Adding tests to our code can save us time. We will not list all these benefits of having tests. But tests can help us debug our code and ship results more confidently. For example, suppose we are developing a function and spot a bug. One of the best ways of debugging it is to write a test and put a debugger breakpoint at the suspicious line of the code. With the help of IDEs such as Visual Studio Code, this process can save us a lot of time in debugging.
 
 ??? info "Use `pytest`"
 
@@ -122,3 +123,4 @@ Adding tests to your code can save you time. We will not list all these benefits
 [^pch]: pre-commit-config-pre-commit-hooks.yaml. In: Gist [Internet]. [cited 22 Jul 2022]. Available: https://gist.github.com/lynnkwong/f7591525cfc903ec592943e0f2a61ed9
 [^pep8]: Guido van Rossum, Barry Warsaw, Nick Coghlan. PEP 8 – Style Guide for Python Code. In: peps.python.org [Internet]. 5 Jul 2001 [cited 23 Jul 2022]. Available: https://peps.python.org/pep-0008/
 [^gpsg]: Google Python Style Guide. In: Google Python Style Guide [Internet]. [cited 22 Jul 2022]. Available: https://google.github.io/styleguide/pyguide.html
+[^slowpoetry]: Poetry is extremely slow when resolving the dependencies · Issue #2094 · python-poetry/poetry. In: GitHub [Internet]. [cited 23 Jul 2022]. Available: https://github.com/python-poetry/poetry/issues/2094
