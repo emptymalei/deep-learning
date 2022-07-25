@@ -30,30 +30,30 @@ I am trying out a more "agile" method. Instead of finishing the whole project at
 The following is an initial design of the blueprint.
 
 - [ ] Tech Onboarding
-  - [ ] Python, Environment, VSCode, Git, ...
-  - [ ] Pytorch Lightning
+    - [ ] Python, Environment, VSCode, Git, ...
+    - [ ] Pytorch Lightning
 - [ ] Time Series
-  - [ ] Data
-    - [ ] Datasets
-    - [ ] Data Generating Process (DGP)
-    - [ ] Data Processing
-    - [ ] Data Augmentation
-    - [ ] Metrics
-  - [ ] Tasks
-    - [ ] Forecasting
-    - [ ] Classification
-    - [ ] Generation
-  - [ ] Models (Focus on Deep Models)
-    - [ ] AR and Variants
-    - [ ] RNN, e.g., LSTM
-    - [ ] DeepAR
-    - [ ] Conformal Prediction
-    - [ ] Transformer
-    - [ ] Spatial-temporal Models, e.g., GNN
+    - [ ] Data
+        - [ ] Datasets
+        - [ ] Data Generating Process (DGP)
+        - [ ] Data Processing
+        - [ ] Data Augmentation
+        - [ ] Metrics
+    - [ ] Tasks
+        - [ ] Forecasting
+        - [ ] Classification
+        - [ ] Generation
+    - [ ] Models (Focus on Deep Models)
+        - [ ] AR and Variants
+        - [ ] RNN, e.g., LSTM
+        - [ ] DeepAR
+        - [ ] Conformal Prediction
+        - [ ] Transformer
+        - [ ] Spatial-temporal Models, e.g., GNN
 - [ ] Energy-based Models
 - [ ] Self-supervised Learning
 - [ ] Graph Neural Networks
 - [ ] Other Topics
-  - [ ] Graph Neural Networks
-  - [ ] Spiking Neural Networks
-  - [ ] Transformers
+    - [ ] Graph Neural Networks
+    - [ ] Spiking Neural Networks
+    - [ ] Transformers
