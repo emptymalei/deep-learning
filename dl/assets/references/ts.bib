@@ -171,3 +171,199 @@ file      = "All Papers/LE GUENNEC/Le Guennec et al. 2016 - Data augmentation fo
   primaryClass  = "cs.LG",
   arxivid       = "2007.15951"
 }
+
+
+
+@online{Gao2020-qr,
+  title         = "{RobustTAD}: Robust Time Series Anomaly Detection via
+                   Decomposition and Convolutional Neural Networks",
+  author        = "Gao, Jingkun and Song, Xiaomin and Wen, Qingsong and Wang,
+                   Pichao and Sun, Liang and Xu, Huan",
+  abstract      = "The monitoring and management of numerous and diverse time
+                   series data at Alibaba Group calls for an effective and
+                   scalable time series anomaly detection service. In this
+                   paper, we propose RobustTAD, a Robust Time series Anomaly
+                   Detection framework by integrating robust seasonal-trend
+                   decomposition and convolutional neural network for time
+                   series data. The seasonal-trend decomposition can
+                   effectively handle complicated patterns in time series, and
+                   meanwhile significantly simplifies the architecture of the
+                   neural network, which is an encoder-decoder architecture
+                   with skip connections. This architecture can effectively
+                   capture the multi-scale information from time series, which
+                   is very useful in anomaly detection. Due to the limited
+                   labeled data in time series anomaly detection, we
+                   systematically investigate data augmentation methods in both
+                   time and frequency domains. We also introduce label-based
+                   weight and value-based weight in the loss function by
+                   utilizing the unbalanced nature of the time series anomaly
+                   detection problem. Compared with the widely used
+                   forecasting-based anomaly detection algorithms,
+                   decomposition-based algorithms, traditional statistical
+                   algorithms, as well as recent neural network based
+                   algorithms, RobustTAD performs significantly better on
+                   public benchmark datasets. It is deployed as a public online
+                   service and widely adopted in different business scenarios
+                   at Alibaba Group.",
+  month         =  "21~" # feb,
+  year          =  2020,
+  url           = "http://arxiv.org/abs/2002.09545",
+  file          = "All Papers/GAO/Gao et al. 2020 - RobustTAD - Robust Time Series Anomaly Detection via Decomposition and Convolutional Neural Networks.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "2002.09545",
+  primaryClass  = "cs.LG",
+  arxivid       = "2002.09545"
+}
+
+
+@online{Takahashi2017-yz,
+  title         = "{AENet}: Learning Deep Audio Features for Video Analysis",
+  author        = "Takahashi, Naoya and Gygli, Michael and Van Gool, Luc",
+  abstract      = "We propose a new deep network for audio event recognition,
+                   called AENet. In contrast to speech, sounds coming from
+                   audio events may be produced by a wide variety of sources.
+                   Furthermore, distinguishing them often requires analyzing an
+                   extended time period due to the lack of clear sub-word units
+                   that are present in speech. In order to incorporate this
+                   long-time frequency structure of audio events, we introduce
+                   a convolutional neural network (CNN) operating on a large
+                   temporal input. In contrast to previous works this allows us
+                   to train an audio event detection system end-to-end. The
+                   combination of our network architecture and a novel data
+                   augmentation outperforms previous methods for audio event
+                   detection by 16\%. Furthermore, we perform transfer learning
+                   and show that our model learnt generic audio features,
+                   similar to the way CNNs learn generic features on vision
+                   tasks. In video analysis, combining visual features and
+                   traditional audio features such as MFCC typically only leads
+                   to marginal improvements. Instead, combining visual features
+                   with our AENet features, which can be computed efficiently
+                   on a GPU, leads to significant performance improvements on
+                   action recognition and video highlight detection. In video
+                   highlight detection, our audio features improve the
+                   performance by more than 8\% over visual features alone.",
+  month         =  "3~" # jan,
+  year          =  2017,
+  url           = "http://arxiv.org/abs/1701.00599",
+  file          = "All Papers/TAKAHASHI/Takahashi et al. 2017 - AENet - Learning Deep Audio Features for Video Analysis.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1701.00599",
+  primaryClass  = "cs.MM",
+  arxivid       = "1701.00599"
+}
+
+
+@INCOLLECTION{Stock2016-mh,
+  title     = "Chapter 8 - Dynamic Factor Models, {Factor-Augmented} Vector
+               Autoregressions, and Structural Vector Autoregressions in
+               Macroeconomics",
+  booktitle = "Handbook of Macroeconomics",
+  author    = "Stock, J H and Watson, M W",
+  editor    = "Taylor, John B and Uhlig, Harald",
+  abstract  = "This chapter provides an overview of and user's guide to dynamic
+               factor models (DFMs), their estimation, and their uses in
+               empirical macroeconomics. It also surveys recent developments in
+               methods for identifying and estimating SVARs, an area that has
+               seen important developments over the past 15 years. The chapter
+               begins by introducing DFMs and the associated statistical tools,
+               both parametric (state-space forms) and nonparametric (principal
+               components and related methods). After reviewing two mature
+               applications of DFMs, forecasting and macroeconomic monitoring,
+               the chapter lays out the use of DFMs for analysis of structural
+               shocks, a special case of which is factor-augmented vector
+               autoregressions (FAVARs). A main focus of the chapter is how to
+               extend methods for identifying shocks in structural vector
+               autoregression (SVAR) to structural DFMs. The chapter provides a
+               unification of SVARs, FAVARs, and structural DFMs and shows both
+               in theory and through an empirical application to oil shocks how
+               the same identification strategies can be applied to each type
+               of model.",
+  publisher = "Elsevier",
+  volume    =  2,
+  pages     = "415--525",
+  month     =  "1~" # jan,
+  year      =  2016,
+  url       = "https://www.sciencedirect.com/science/article/pii/S1574004816300027",
+  file      = "All Papers/STOCK/Stock and Watson 2016 - Chapter 8 - Dynamic Factor Models, Factor-Augmen ... oregressions, and Structural Vector Autoregressions in Macroeconomics.pdf",
+  keywords  = "State-space models; Structural vector autoregressions;
+               Factor-augmented vector autoregressions; Principal components;
+               Large-model forecasting; Nowcasting; Structural shocks",
+  doi       = "10.1016/bs.hesmac.2016.04.002"
+}
+
+
+@INPROCEEDINGS{Cui2014-de,
+  title     = "Data Augmentation for deep neural network acoustic modeling",
+  booktitle = "2014 {IEEE} International Conference on Acoustics, Speech and
+               Signal Processing ({ICASSP})",
+  author    = "Cui, Xiaodong and Goel, Vaibhava and Kingsbury, Brian",
+  abstract  = "Data augmentation using label preserving transformations has
+               been shown to be effective for neural network training to make
+               invariant predictions. In this paper we focus on data
+               augmentation approaches to acoustic modeling using deep neural
+               networks (DNNs) for automatic speech recognition (ASR). We first
+               investigate a modified version of a previously studied approach
+               using vocal tract length perturbation (VTLP) and then propose a
+               novel data augmentation approach based on stochastic feature
+               mapping (SFM) in a speaker adaptive feature space. Experiments
+               were conducted on Bengali and Assamese limited language packs
+               (LLPs) from the IARPA Babel program. Improved recognition
+               performance has been observed after both cross-entropy (CE) and
+               state-level minimum Bayes risk (sMBR) training of DNN models.",
+  pages     = "5582--5586",
+  month     =  may,
+  year      =  2014,
+  url       = "http://dx.doi.org/10.1109/ICASSP.2014.6854671",
+  file      = "All Papers/CUI/Cui et al. 2014 - Data Augmentation for deep neural network acoustic modeling.pdf",
+  keywords  = "Training;Hidden Markov models;Speech;Acoustics;Neural
+               networks;Data models;Training data;deep neural networks;data
+               augmentation;vocal tract length perturbation;stochastic feature
+               mapping;automatic speech recognition",
+  issn      = "2379-190X",
+  doi       = "10.1109/ICASSP.2014.6854671"
+}
+
+
+@ARTICLE{Cao2014-mt,
+  title    = "A parsimonious mixture of Gaussian trees model for oversampling
+              in imbalanced and multimodal time-series classification",
+  author   = "Cao, Hong and Tan, Vincent Y F and Pang, John Z F",
+  abstract = "We propose a novel framework of using a parsimonious statistical
+              model, known as mixture of Gaussian trees, for modeling the
+              possibly multimodal minority class to solve the problem of
+              imbalanced time-series classification. By exploiting the fact
+              that close-by time points are highly correlated due to smoothness
+              of the time-series, our model significantly reduces the number of
+              covariance parameters to be estimated from O(d(2)) to O(Ld),
+              where L is the number of mixture components and d is the
+              dimensionality. Thus, our model is particularly effective for
+              modeling high-dimensional time-series with limited number of
+              instances in the minority positive class. In addition, the
+              computational complexity for learning the model is only of the
+              order O(Ln+d(2)) where n+ is the number of positively labeled
+              samples. We conduct extensive classification experiments based on
+              several well-known time-series data sets (both single- and
+              multimodal) by first randomly generating synthetic instances from
+              our learned mixture model to correct the imbalance. We then
+              compare our results with several state-of-the-art oversampling
+              techniques and the results demonstrate that when our proposed
+              model is used in oversampling, the same support vector machines
+              classifier achieves much better classification accuracy across
+              the range of data sets. In fact, the proposed method achieves the
+              best average performance 30 times out of 36 multimodal data sets
+              according to the F-value metric. Our results are also highly
+              competitive compared with nonoversampling-based classifiers for
+              dealing with imbalanced time-series data sets.",
+  journal  = "IEEE transactions on neural networks and learning systems",
+  volume   =  25,
+  number   =  12,
+  pages    = "2226--2239",
+  month    =  dec,
+  year     =  2014,
+  url      = "http://dx.doi.org/10.1109/TNNLS.2014.2308321",
+  file     = "All Papers/CAO/Cao et al. 2014 - A parsimonious mixture of Gaussian trees model for oversampling in imbalanced and multimodal time-series classification.pdf",
+  language = "en",
+  issn     = "2162-2388, 2162-237X",
+  pmid     = "25420245",
+  doi      = "10.1109/TNNLS.2014.2308321"
+}
