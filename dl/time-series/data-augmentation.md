@@ -42,10 +42,19 @@ Both the time scale and magnitude can be warped. For example,
 
 ### Series Mixing
 
-Another class of data augmentation methods is mixing the series. For example, we take two random drawn series and average them using DTW Barycenter Averaging (**DBA**).[@Petitjean2011-sj] (DTW, dynamic time warping, is an algorithm to calculate the distance between sequential datasets by matching the data points on each of the series.[@Petitjean2011-sj; @Hewamalage2019-tv]) Some other similar methods are
+Another class of data augmentation methods is mixing the series. For example, we take two random drawn series and average them using DTW Barycenter Averaging (**DBA**).[@Petitjean2011-sj] (DTW, dynamic time warping, is an algorithm to calculate the distance between sequential datasets by matching the data points on each of the series.[@Petitjean2011-sj; @Hewamalage2019-tv]) To augment a dataset, we can choose from a list of strategies:[@Bandara2020-yp; @Forestier2017-uk]
+
+- Average All series using different sets of weights to create new synthetic series.
+- Average Selected series based on some strategies. For example, Forestier et al proposed to choose an initial series and combine it with its nearest neighbors.[@Forestier2017-uk]
+- Average Selected with Distance is Average Selected but neighbors that are far from the initial series is down weighted.[@Forestier2017-uk]
+
+
+Some other similar methods are
 
 - Equalized Mixture Data Augmentation (**EMDA**) calculates the weighted average of spectrograms of the same class label.[@Takahashi2017-yz]
 - Stochastic Feature Mapping (**SFM**) is a data augmentation method in audio data.[@Cui2014-de]
+
+
 
 ### Data Generating Process
 
