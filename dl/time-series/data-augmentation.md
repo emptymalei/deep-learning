@@ -17,42 +17,58 @@ There are many different ways of augmenting time series data. We list some of th
 | Pattern Mixing  | EMDA, SFM  | Guided Warping  | DFM, Interpolation, DTW  |
 
 
-- In Fourier domain, for each the amplitude and phase at a specific frequency, we can perform[@Gao2020-qr]
+#### Perturbation in Fourier Domain
+
+In Fourier domain, for each the amplitude $A_f$ and phase $\phi_f$ at a specific frequency, we can perform[@Gao2020-qr]
     - magnitude replacement using a Gaussian distribution, and
     - phase shift by adding a Gaussian noise.
 
-    We perform such perturbations at some chosen frequency.
+We perform such perturbations at some chosen frequency.
 
-- Permutation: Slice the series into segments then permute the segments.
-- Time Warping: Distort time intervals.
+#### Slicing, Permutation, and Bootstrapping
 
-- Equalized Mixture Data Augmentation (EMDA): weighted average of spectrograms of the same class label.[@Takahashi2017-yz]
+We can slice a series into small segments. With the slices, we can perform different operations to create new series.
 
-- Stochastic Feature Mapping (SFM) is a data augmentation method in audio data.[@Cui2014-de]
+- Window Slicing (**WS**): In a classification tasks, we can take the slices from the original series and assign the same class label to the slice.[@Le_Guennec2016-zi] The slices can also be interpolated to match the length of the original series.[@Iwana2020-oc]
+- Permutation: We take the slices and permute them to form a new series.[@Um2017-oq]
+- Moving Block Bootstrapping (**MBB**): First, we remove the trend and seasonability. Then we draw blocks of fixed length from the residual of the series, until the desired length of series is met. Finally, we combine the newly formed residual with trend and seasonality to form a new series.[@Bergmeir2016-eh]
 
+#### Warping
 
-??? note "DFM: dynamic factor model"
+Both the time scale and magnitude can be warped. For example,
 
-    For example, we have a series $X(t)$ which depends on a latent variable $f(t)$,[@Stock2016-mh]
+- Time Warping: We distort time intervals by taking a range of data points and up sample or down sample it.[@Wen2020-ez]
+- Magnitude Warping: the magnitude of the time series is rescaled.
 
-    $$
-    X(t) = \mathbf A f(t) + \eta(t),
-    $$
+### Series Mixing
 
-    where $f(t)$ is determined by a differential equation
+Another class of data augmentation methods is mixing the series. For example, we take two random drawn series and average them using DTW Barycenter Averaging (**DBA**).[@Petitjean2011-sj] (DTW, dynamic time warping, is an algorithm to calculate the distance between sequential datasets by matching the data points on each of the series.[@Petitjean2011-sj; @Hewamalage2019-tv]) Some other similar methods are
 
-    $$
-    \frac{f(t)}{dt} = \mathbf B f(t) + \xi(t).
-    $$
+- Equalized Mixture Data Augmentation (**EMDA**) calculates the weighted average of spectrograms of the same class label.[@Takahashi2017-yz]
+- Stochastic Feature Mapping (**SFM**) is a data augmentation method in audio data.[@Cui2014-de]
 
-    In the above equations, $\eta(t)$ and $\xi(t)$ are the irreducible noise.
+### Data Generating Process
 
-    The above two equatioins can be combined into one first-order differential equation.
+Time series data can also be augmented using some assumed data generating process (**DGP**). Some methods, such as GRATIS[@Kang2019-cl], utilizes simple generic methods such as AR/MAR. Some other methods, such as Gaussian Trees[@Cao2014-mt], utilizes more complicated hidden structure using graphs, which can approximate more complicated data generating process. These methods do not necessarily reflect the actual data generating process but the data is generated using some parsimonious phenomenological models. Some other methods are more tuned towards the detailed mechanisms. There are also methods using generative deep neural networks such as [GAN](../self-supervised/adversarial/gan.md).
 
+#### Dynamic Factor Model (**DFM**)
 
-### Generative Models
+For example, we have a series $X(t)$ which depends on a latent variable $f(t)$,[@Stock2016-mh]
 
+$$
+X(t) = \mathbf A f(t) + \eta(t),
+$$
 
-- Gaussian Trees [@Cao2014-mt]
+where $f(t)$ is determined by a differential equation
+
+$$
+\frac{f(t)}{dt} = \mathbf B f(t) + \xi(t).
+$$
+
+In the above equations, $\eta(t)$ and $\xi(t)$ are the irreducible noise.
+
+The above two equatioins can be combined into one first-order differential equation.
+
+Once the model is fit, it can be used to generate new data points. However, we will have to understand whether the data is generated in such processes.
 
 ## Applying the Augmented Data to Model Training

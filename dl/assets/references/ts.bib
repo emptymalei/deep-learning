@@ -29,8 +29,7 @@ file          = "All Papers/WEN/Wen et al. 2020 - Time Series Data Augmentation 
 archivePrefix = "arXiv",
 eprint        = "2002.12478",
 primaryClass  = "cs.LG",
-arxivid       = "2002.12478",
-journal       = "arXiv"
+arxivid       = "2002.12478"
 }
 
 
@@ -366,4 +365,196 @@ file      = "All Papers/LE GUENNEC/Le Guennec et al. 2016 - Data augmentation fo
   issn     = "2162-2388, 2162-237X",
   pmid     = "25420245",
   doi      = "10.1109/TNNLS.2014.2308321"
+}
+
+
+% The entry below contains non-ASCII chars that could not be converted
+% to a LaTeX equivalent.
+@ARTICLE{Bergmeir2016-eh,
+  title     = "Bagging exponential smoothing methods using {STL} decomposition
+               and {Box--Cox} transformation",
+  author    = "Bergmeir, Christoph and Hyndman, Rob J and Ben{\'\i}tez,
+               Jos{\'e} M",
+  abstract  = "Exponential smoothing is one of the most popular forecasting
+               methods. We present a technique for the bootstrap aggregation
+               (bagging) of exponential smoothing methods, which results in
+               significant improvements in the forecasts. The bagging uses a
+               Box--Cox transformation followed by an STL decomposition to
+               separate the time series into the trend, seasonal part, and
+               remainder. The remainder is then bootstrapped using a moving
+               block bootstrap, and a new series is assembled using this
+               bootstrapped remainder. An ensemble of exponential smoothing
+               models is then estimated on the bootstrapped series, and the
+               resulting point forecasts are combined. We evaluate this new
+               method on the M3 data set, and show that it outperforms the
+               original exponential smoothing models consistently. On the
+               monthly data, we achieve better results than any of the original
+               M3 participants.",
+  journal   = "International journal of forecasting",
+  publisher = "Elsevier BV",
+  volume    =  32,
+  number    =  2,
+  pages     = "303--312",
+  month     =  "1~" # apr,
+  year      =  2016,
+  url       = "https://www.sciencedirect.com/science/article/pii/S0169207015001120",
+  file      = "All Papers/BERGMEIR/Bergmeir et al. 2016 - Bagging exponential smoothing methods using STL decomposition and Box–Cox transformation.pdf",
+  keywords  = "Bagging; Bootstrapping; Exponential smoothing; STL decomposition",
+  language  = "en",
+  issn      = "0169-2070, 1872-8200",
+  doi       = "10.1016/j.ijforecast.2015.07.002"
+}
+
+
+
+@online{Um2017-oq,
+  title         = "Data Augmentation of Wearable Sensor Data for Parkinson's
+                   Disease Monitoring using Convolutional Neural Networks",
+  author        = "Um, Terry Taewoong and Pfister, Franz Michael Josef and
+                   Pichler, Daniel and Endo, Satoshi and Lang, Muriel and
+                   Hirche, Sandra and Fietzek, Urban and Kuli{\'c}, Dana",
+  abstract      = "While convolutional neural networks (CNNs) have been
+                   successfully applied to many challenging classification
+                   applications, they typically require large datasets for
+                   training. When the availability of labeled data is limited,
+                   data augmentation is a critical preprocessing step for CNNs.
+                   However, data augmentation for wearable sensor data has not
+                   been deeply investigated yet. In this paper, various data
+                   augmentation methods for wearable sensor data are proposed.
+                   The proposed methods and CNNs are applied to the
+                   classification of the motor state of Parkinson's Disease
+                   patients, which is challenging due to small dataset size,
+                   noisy labels, and large intra-class variability. Appropriate
+                   augmentation improves the classification performance from
+                   77.54\% to 86.88\%.",
+  month         =  "2~" # jun,
+  year          =  2017,
+  url           = "http://arxiv.org/abs/1706.00527",
+  file          = "All Papers/UM/Um et al. 2017 - Data Augmentation of Wearable Sensor Data for Parkinson's Disease Monitoring using Convolutional Neural Networks.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1706.00527",
+  primaryClass  = "cs.CV",
+  arxivid       = "1706.00527"
+}
+
+
+
+@online{Kang2019-cl,
+  title         = "{GRATIS}: {GeneRAting} {TIme} Series with diverse and
+                   controllable characteristics",
+  author        = "Kang, Yanfei and Hyndman, Rob J and Li, Feng",
+  abstract      = "The explosion of time series data in recent years has
+                   brought a flourish of new time series analysis methods, for
+                   forecasting, clustering, classification and other tasks. The
+                   evaluation of these new methods requires either collecting
+                   or simulating a diverse set of time series benchmarking data
+                   to enable reliable comparisons against alternative
+                   approaches. We propose GeneRAting TIme Series with diverse
+                   and controllable characteristics, named GRATIS, with the use
+                   of mixture autoregressive (MAR) models. We simulate sets of
+                   time series using MAR models and investigate the diversity
+                   and coverage of the generated time series in a time series
+                   feature space. By tuning the parameters of the MAR models,
+                   GRATIS is also able to efficiently generate new time series
+                   with controllable features. In general, as a costless
+                   surrogate to the traditional data collection approach,
+                   GRATIS can be used as an evaluation tool for tasks such as
+                   time series forecasting and classification. We illustrate
+                   the usefulness of our time series generation process through
+                   a time series forecasting application.",
+  month         =  "7~" # mar,
+  year          =  2019,
+  url           = "http://arxiv.org/abs/1903.02787",
+  file          = "All Papers/KANG/Kang et al. 2019 - GRATIS - GeneRAting TIme Series with diverse and controllable characteristics.pdf",
+  copyright     = "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+  archivePrefix = "arXiv",
+  eprint        = "1903.02787",
+  primaryClass  = "stat.ML",
+  arxivid       = "1903.02787"
+}
+
+
+@ARTICLE{Petitjean2011-sj,
+  title    = "A global averaging method for dynamic time warping, with
+              applications to clustering",
+  author   = "Petitjean, Fran{\c c}ois and Ketterlin, Alain and Gan{\c c}arski,
+              Pierre",
+  abstract = "Mining sequential data is an old topic that has been revived in
+              the last decade, due to the increasing availability of sequential
+              datasets. Most works in this field are centred on the definition
+              and use of a distance (or, at least, a similarity measure)
+              between sequences of elements. A measure called dynamic time
+              warping (DTW) seems to be currently the most relevant for a large
+              panel of applications. This article is about the use of DTW in
+              data mining algorithms, and focuses on the computation of an
+              average of a set of sequences. Averaging is an essential tool for
+              the analysis of data. For example, the K-means clustering
+              algorithm repeatedly computes such an average, and needs to
+              provide a description of the clusters it forms. Averaging is here
+              a crucial step, which must be sound in order to make algorithms
+              work accurately. When dealing with sequences, especially when
+              sequences are compared with DTW, averaging is not a trivial task.
+              Starting with existing techniques developed around DTW, the
+              article suggests an analysis framework to classify averaging
+              techniques. It then proceeds to study the two major questions
+              lifted by the framework. First, we develop a global technique for
+              averaging a set of sequences. This technique is original in that
+              it avoids using iterative pairwise averaging. It is thus
+              insensitive to ordering effects. Second, we describe a new
+              strategy to reduce the length of the resulting average sequence.
+              This has a favourable impact on performance, but also on the
+              relevance of the results. Both aspects are evaluated on standard
+              datasets, and the evaluation shows that they compare favourably
+              with existing methods. The article ends by describing the use of
+              averaging in clustering. The last section also introduces a new
+              application domain, namely the analysis of satellite image time
+              series, where data mining techniques provide an original
+              approach.",
+  journal  = "Pattern recognition",
+  volume   =  44,
+  number   =  3,
+  pages    = "678--693",
+  month    =  "1~" # mar,
+  year     =  2011,
+  url      = "https://www.sciencedirect.com/science/article/pii/S003132031000453X",
+  file     = "All Papers/PETITJEAN/Petitjean et al. 2011 - A global averaging method for dynamic time warping, with applications to clustering.pdf",
+  keywords = "Sequence analysis; Time series clustering; Dynamic time warping;
+              Distance-based clustering; Time series averaging; DTW barycenter
+              averaging; Global averaging; Satellite image time series",
+  issn     = "0031-3203",
+  doi      = "10.1016/j.patcog.2010.09.013"
+}
+
+
+@online{Hewamalage2019-tv,
+  title         = "Recurrent Neural Networks for Time Series Forecasting:
+                   Current Status and Future Directions",
+  author        = "Hewamalage, Hansika and Bergmeir, Christoph and Bandara,
+                   Kasun",
+  abstract      = "Recurrent Neural Networks (RNN) have become competitive
+                   forecasting methods, as most notably shown in the winning
+                   method of the recent M4 competition. However, established
+                   statistical models such as ETS and ARIMA gain their
+                   popularity not only from their high accuracy, but they are
+                   also suitable for non-expert users as they are robust,
+                   efficient, and automatic. In these areas, RNNs have still a
+                   long way to go. We present an extensive empirical study and
+                   an open-source software framework of existing RNN
+                   architectures for forecasting, that allow us to develop
+                   guidelines and best practices for their use. For example, we
+                   conclude that RNNs are capable of modelling seasonality
+                   directly if the series in the dataset possess homogeneous
+                   seasonal patterns, otherwise we recommend a
+                   deseasonalization step. Comparisons against ETS and ARIMA
+                   demonstrate that the implemented (semi-)automatic RNN models
+                   are no silver bullets, but they are competitive alternatives
+                   in many situations.",
+  month         =  "2~" # sep,
+  year          =  2019,
+  url           = "http://arxiv.org/abs/1909.00590",
+  file          = "All Papers/HEWAMALAGE/Hewamalage et al. 2019 - Recurrent Neural Networks for Time Series Forecasting - Current Status and Future Directions.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1909.00590",
+  primaryClass  = "cs.LG",
+  arxivid       = "1909.00590"
 }
