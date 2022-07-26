@@ -80,4 +80,11 @@ The above two equatioins can be combined into one first-order differential equat
 
 Once the model is fit, it can be used to generate new data points. However, we will have to understand whether the data is generated in such processes.
 
-## Applying the Augmented Data to Model Training
+## Applying the Synthetic Data to Model Training
+
+Once we prepared the synthetic dataset, there are two strategies to use them in our model training.[@Bandara2020-yp]
+
+| Strategy  |  Description |
+|---|---|
+| Pooled Strategy  | Synthetic data + original data -> model  |
+| Transfer Strategy | Synthetic data -> pretrained model; pretrained model + original data -> model  |
