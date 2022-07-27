@@ -136,6 +136,7 @@ nav:
     - time-series/index.md
     - "Data":
       - "Augmentation": time-series/data-augmentation.md
+      - "DBA": time-series/dtw-barycenter-averaging.md
   - "Topics":
     - "Introduction": topics/intro.md
     - "Predictive Coding": topics/predictive-coding.md

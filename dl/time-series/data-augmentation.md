@@ -88,3 +88,5 @@ Once we prepared the synthetic dataset, there are two strategies to use them in 
 |---|---|
 | Pooled Strategy  | Synthetic data + original data -> model  |
 | Transfer Strategy | Synthetic data -> pretrained model; pretrained model + original data -> model  |
+
+The pooled strategy takes the synthetic data and original data, then feed them together into the training pipeline. The transfer strategy uses the synthetic data to pretrain the model, then using transfer learning methods (e.g., freeze weights of some layers) to train the model on the original data.
