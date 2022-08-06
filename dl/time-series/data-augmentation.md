@@ -14,7 +14,7 @@ There are many different ways of augmenting time series data.[@Iwana2020-oc; @We
 - Generative models, e.g.,
     - phenomenological generative models such as AR,[@Kang2019-cl]
     - first principle models such as economical models,[@Stock2016-mh]
-    - deep generative models such as TS GAN.[@Yoon_undated-gs]
+    - deep generative models such as TimeGAN or TS GAN.[@Yoon_undated-gs; @Brophy2021-vn]
 
 We also treat the first two methods, random transformations and pattern mixing as basic methods.
 
