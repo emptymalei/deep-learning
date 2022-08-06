@@ -25,7 +25,7 @@ In the following table, we group some of the data augmentation methods by two di
 |   |  Projected Domain  | Time Scale | Magnitude |
 |---|---|---|---|
 | Random Transformation | Frequency Masking, Frequency Warping, Fourier Transform, STFT  | Permutation, Slicing, Time Warping, Time Masking, Cropping   | Jittering, Flipping, Scaling, Magnitude Warping  |
-| Pattern Mixing  | EMDA[@Takahashi2017-yz], SFM[@Cui2014-de]  | Guided Warping  | DFM[@Stock2016-mh], Interpolation, DBA[@Petitjean2011-sj]  |
+| Pattern Mixing  | EMDA[@Takahashi2017-yz], SFM[@Cui2014-de]  | Guided Warping[@Iwana2020-fe]  | DFM[@Stock2016-mh], Interpolation, DBA[@Petitjean2011-sj]  |
 
 For completeness, we will explain some of the methods in more details in the following.
 
