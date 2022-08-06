@@ -7,15 +7,27 @@ We will cover two topics in this section: Augmenting the dataset and application
 
 ## Augmenting the Dataset
 
-There are many different ways of augmenting time series data. We list some of the methods based on the reviews by Iwana2020 and Wen2020.[@Iwana2020-oc; @Wen2020-ez]
+There are many different ways of augmenting time series data.[@Iwana2020-oc; @Wen2020-ez] We categorize the methods into the following groups:
+
+- Random transformations, e.g., jittering;
+- Pattern mixing, e.g., DBA;[@Petitjean2011-sj]
+- Generative models, e.g.,
+    - phenomenological generative models such as AR,[@Kang2019-cl]
+    - first principle models such as economical models,[@Stock2016-mh]
+    - deep generative models such as TS GAN.[@Yoon_undated-gs]
+
+We also treat the first two methods, random transformations and pattern mixing as basic methods.
 
 ### Basic Methods
 
-|   |  Projected Domain  | Time Domain | Magnitude |
+In the following table, we group the methods by two directions, the category of the method, and domain of where the method is applied.
+
+|   |  Projected Domain  | Time Scale | Magnitude |
 |---|---|---|---|
 | Random Transformation | Frequency Masking, Frequency Warping, Fourier Transform, STFT  | Permutation, Slicing, Time Warping, Time Masking, Cropping   | Jittering, Flipping, Scaling, Magnitude Warping  |
-| Pattern Mixing  | EMDA, SFM  | Guided Warping  | DFM, Interpolation, DTW  |
+| Pattern Mixing  | EMDA[@Takahashi2017-yz], SFM[@Cui2014-de]  | Guided Warping  | DFM[@Stock2016-mh], Interpolation, DBA[@Petitjean2011-sj]  |
 
+For completeness, we will explain some of the methods in more details.
 
 #### Perturbation in Fourier Domain
 
