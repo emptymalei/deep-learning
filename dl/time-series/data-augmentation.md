@@ -20,20 +20,21 @@ We also treat the first two methods, random transformations and pattern mixing a
 
 ### Basic Methods
 
-In the following table, we group the methods by two directions, the category of the method, and domain of where the method is applied.
+In the following table, we group some of the data augmentation methods by two dimensions, the category of the method, and domain of where the method is applied.
 
 |   |  Projected Domain  | Time Scale | Magnitude |
 |---|---|---|---|
 | Random Transformation | Frequency Masking, Frequency Warping, Fourier Transform, STFT  | Permutation, Slicing, Time Warping, Time Masking, Cropping   | Jittering, Flipping, Scaling, Magnitude Warping  |
 | Pattern Mixing  | EMDA[@Takahashi2017-yz], SFM[@Cui2014-de]  | Guided Warping  | DFM[@Stock2016-mh], Interpolation, DBA[@Petitjean2011-sj]  |
 
-For completeness, we will explain some of the methods in more details.
+For completeness, we will explain some of the methods in more details in the following.
 
 #### Perturbation in Fourier Domain
 
-In Fourier domain, for each the amplitude $A_f$ and phase $\phi_f$ at a specific frequency, we can perform[@Gao2020-qr]
-    - magnitude replacement using a Gaussian distribution, and
-    - phase shift by adding a Gaussian noise.
+In the Fourier domain, for each the amplitude $A_f$ and phase $\phi_f$ at a specific frequency, we can perform[@Gao2020-qr]
+
+- magnitude replacement using a Gaussian distribution, and
+- phase shift by adding a Gaussian noise.
 
 We perform such perturbations at some chosen frequency.
 
@@ -94,11 +95,11 @@ Once the model is fit, it can be used to generate new data points. However, we w
 
 ## Applying the Synthetic Data to Model Training
 
-Once we prepared the synthetic dataset, there are two strategies to use them in our model training.[@Bandara2020-yp]
+Once we prepared the synthetic dataset, there are two strategies to include them in our model training.[@Bandara2020-yp]
 
 | Strategy  |  Description |
 |---|---|
 | Pooled Strategy  | Synthetic data + original data -> model  |
-| Transfer Strategy | Synthetic data -> pretrained model; pretrained model + original data -> model  |
+| Transfer Strategy | Synthetic data -> pre-trained model; pre-trained model + original data -> model  |
 
-The pooled strategy takes the synthetic data and original data, then feed them together into the training pipeline. The transfer strategy uses the synthetic data to pretrain the model, then using transfer learning methods (e.g., freeze weights of some layers) to train the model on the original data.
+The pooled strategy takes the synthetic data and original data, then feed them together into the training pipeline. The transfer strategy uses the synthetic data to pre-train the model, then using transfer learning methods (e.g., freeze weights of some layers) to train the model on the original data.
