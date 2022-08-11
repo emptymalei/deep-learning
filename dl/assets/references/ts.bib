@@ -29,8 +29,7 @@ file          = "All Papers/WEN/Wen et al. 2020 - Time Series Data Augmentation 
 archivePrefix = "arXiv",
 eprint        = "2002.12478",
 primaryClass  = "cs.LG",
-arxivid       = "2002.12478",
-journal       = "arXiv"
+arxivid       = "2002.12478"
 }
 
 
@@ -43,4 +42,825 @@ author    = "Le Guennec, Arthur and Malinowski, Simon and Tavenard, Romain",
 year      =  2016,
 url       = "https://halshs.archives-ouvertes.fr/halshs-01357973/document",
 file      = "All Papers/LE GUENNEC/Le Guennec et al. 2016 - Data augmentation for time series classification using convolutional neural networks.pdf"
+}
+
+
+@ARTICLE{Shorten2019-ty,
+  title     = "A survey on Image Data Augmentation for Deep Learning",
+  author    = "Shorten, Connor and Khoshgoftaar, Taghi M",
+  abstract  = "Deep convolutional neural networks have performed remarkably
+               well on many Computer Vision tasks. However, these networks are
+               heavily reliant on big data to avoid overfitting. Overfitting
+               refers to the phenomenon when a network learns a function with
+               very high variance such as to perfectly model the training data.
+               Unfortunately, many application domains do not have access to
+               big data, such as medical image analysis. This survey focuses on
+               Data Augmentation, a data-space solution to the problem of
+               limited data. Data Augmentation encompasses a suite of
+               techniques that enhance the size and quality of training
+               datasets such that better Deep Learning models can be built
+               using them. The image augmentation algorithms discussed in this
+               survey include geometric transformations, color space
+               augmentations, kernel filters, mixing images, random erasing,
+               feature space augmentation, adversarial training, generative
+               adversarial networks, neural style transfer, and meta-learning.
+               The application of augmentation methods based on GANs are
+               heavily covered in this survey. In addition to augmentation
+               techniques, this paper will briefly discuss other
+               characteristics of Data Augmentation such as test-time
+               augmentation, resolution impact, final dataset size, and
+               curriculum learning. This survey will present existing methods
+               for Data Augmentation, promising developments, and meta-level
+               decisions for implementing Data Augmentation. Readers will
+               understand how Data Augmentation can improve the performance of
+               their models and expand limited datasets to take advantage of
+               the capabilities of big data.",
+  journal   = "Journal of Big Data",
+  publisher = "SpringerOpen",
+  volume    =  6,
+  number    =  1,
+  pages     = "1--48",
+  month     =  "6~" # jul,
+  year      =  2019,
+  url       = "https://journalofbigdata.springeropen.com/articles/10.1186/s40537-019-0197-0",
+  file      = "All Papers/SHORTEN/Shorten and Khoshgoftaar 2019 - A survey on Image Data Augmentation for Deep Learning.pdf",
+  language  = "en",
+  issn      = "2196-1115, 2196-1115",
+  doi       = "10.1186/s40537-019-0197-0"
+}
+
+
+@online{Hasibi2019-in,
+  title         = "Augmentation Scheme for Dealing with Imbalanced Network
+                   Traffic Classification Using Deep Learning",
+  author        = "Hasibi, Ramin and Shokri, Matin and Dehghan, Mehdi",
+  abstract      = "One of the most important tasks in network management is
+                   identifying different types of traffic flows. As a result, a
+                   type of management service, called Network Traffic
+                   Classifier (NTC), has been introduced. One type of NTCs that
+                   has gained huge attention in recent years applies deep
+                   learning on packets in order to classify flows. Internet is
+                   an imbalanced environment i.e., some classes of applications
+                   are a lot more populated than others e.g., HTTP.
+                   Additionally, one of the challenges in deep learning methods
+                   is that they do not perform well in imbalanced environments
+                   in terms of evaluation metrics such as precision, recall,
+                   and $\mathrm\{F_1\}$ measure. In order to solve this
+                   problem, we recommend the use of augmentation methods to
+                   balance the dataset. In this paper, we propose a novel data
+                   augmentation approach based on the use of Long Short Term
+                   Memory (LSTM) networks for generating traffic flow patterns
+                   and Kernel Density Estimation (KDE) for replicating the
+                   numerical features of each class. First, we use the LSTM
+                   network in order to learn and generate the sequence of
+                   packets in a flow for classes with less population. Then, we
+                   complete the features of the sequence with generating random
+                   values based on the distribution of a certain feature, which
+                   will be estimated using KDE. Finally, we compare the
+                   training of a Convolutional Recurrent Neural Network (CRNN)
+                   in large-scale imbalanced, sampled, and augmented datasets.
+                   The contribution of our augmentation scheme is then
+                   evaluated on all of the datasets through measurements of
+                   precision, recall, and F1 measure for every class of
+                   application. The results demonstrate that our scheme is well
+                   suited for network traffic flow datasets and improves the
+                   performance of deep learning algorithms when it comes to
+                   above-mentioned metrics.",
+  month         =  "1~" # jan,
+  year          =  2019,
+  url           = "http://arxiv.org/abs/1901.00204",
+  file          = "All Papers/HASIBI/Hasibi et al. 2019 - Augmentation Scheme for Dealing with Imbalanced Network Traffic Classification Using Deep Learning.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1901.00204",
+  primaryClass  = "cs.NI",
+  arxivid       = "1901.00204"
+}
+
+
+@online{Iwana2020-oc,
+  title         = "An Empirical Survey of Data Augmentation for Time Series
+                   Classification with Neural Networks",
+  author        = "Iwana, Brian Kenji and Uchida, Seiichi",
+  abstract      = "In recent times, deep artificial neural networks have
+                   achieved many successes in pattern recognition. Part of this
+                   success can be attributed to the reliance on big data to
+                   increase generalization. However, in the field of time
+                   series recognition, many datasets are often very small. One
+                   method of addressing this problem is through the use of data
+                   augmentation. In this paper, we survey data augmentation
+                   techniques for time series and their application to time
+                   series classification with neural networks. We propose a
+                   taxonomy and outline the four families in time series data
+                   augmentation, including transformation-based methods,
+                   pattern mixing, generative models, and decomposition
+                   methods. Furthermore, we empirically evaluate 12 time series
+                   data augmentation methods on 128 time series classification
+                   datasets with six different types of neural networks.
+                   Through the results, we are able to analyze the
+                   characteristics, advantages and disadvantages, and
+                   recommendations of each data augmentation method. This
+                   survey aims to help in the selection of time series data
+                   augmentation for neural network applications.",
+  month         =  "31~" # jul,
+  year          =  2020,
+  url           = "http://arxiv.org/abs/2007.15951",
+  file          = "All Papers/IWANA/Iwana and Uchida 2020 - An Empirical Survey of Data Augmentation for Time Series Classification with Neural Networks.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "2007.15951",
+  primaryClass  = "cs.LG",
+  arxivid       = "2007.15951"
+}
+
+
+
+@online{Gao2020-qr,
+  title         = "{RobustTAD}: Robust Time Series Anomaly Detection via
+                   Decomposition and Convolutional Neural Networks",
+  author        = "Gao, Jingkun and Song, Xiaomin and Wen, Qingsong and Wang,
+                   Pichao and Sun, Liang and Xu, Huan",
+  abstract      = "The monitoring and management of numerous and diverse time
+                   series data at Alibaba Group calls for an effective and
+                   scalable time series anomaly detection service. In this
+                   paper, we propose RobustTAD, a Robust Time series Anomaly
+                   Detection framework by integrating robust seasonal-trend
+                   decomposition and convolutional neural network for time
+                   series data. The seasonal-trend decomposition can
+                   effectively handle complicated patterns in time series, and
+                   meanwhile significantly simplifies the architecture of the
+                   neural network, which is an encoder-decoder architecture
+                   with skip connections. This architecture can effectively
+                   capture the multi-scale information from time series, which
+                   is very useful in anomaly detection. Due to the limited
+                   labeled data in time series anomaly detection, we
+                   systematically investigate data augmentation methods in both
+                   time and frequency domains. We also introduce label-based
+                   weight and value-based weight in the loss function by
+                   utilizing the unbalanced nature of the time series anomaly
+                   detection problem. Compared with the widely used
+                   forecasting-based anomaly detection algorithms,
+                   decomposition-based algorithms, traditional statistical
+                   algorithms, as well as recent neural network based
+                   algorithms, RobustTAD performs significantly better on
+                   public benchmark datasets. It is deployed as a public online
+                   service and widely adopted in different business scenarios
+                   at Alibaba Group.",
+  month         =  "21~" # feb,
+  year          =  2020,
+  url           = "http://arxiv.org/abs/2002.09545",
+  file          = "All Papers/GAO/Gao et al. 2020 - RobustTAD - Robust Time Series Anomaly Detection via Decomposition and Convolutional Neural Networks.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "2002.09545",
+  primaryClass  = "cs.LG",
+  arxivid       = "2002.09545"
+}
+
+
+@online{Takahashi2017-yz,
+  title         = "{AENet}: Learning Deep Audio Features for Video Analysis",
+  author        = "Takahashi, Naoya and Gygli, Michael and Van Gool, Luc",
+  abstract      = "We propose a new deep network for audio event recognition,
+                   called AENet. In contrast to speech, sounds coming from
+                   audio events may be produced by a wide variety of sources.
+                   Furthermore, distinguishing them often requires analyzing an
+                   extended time period due to the lack of clear sub-word units
+                   that are present in speech. In order to incorporate this
+                   long-time frequency structure of audio events, we introduce
+                   a convolutional neural network (CNN) operating on a large
+                   temporal input. In contrast to previous works this allows us
+                   to train an audio event detection system end-to-end. The
+                   combination of our network architecture and a novel data
+                   augmentation outperforms previous methods for audio event
+                   detection by 16\%. Furthermore, we perform transfer learning
+                   and show that our model learnt generic audio features,
+                   similar to the way CNNs learn generic features on vision
+                   tasks. In video analysis, combining visual features and
+                   traditional audio features such as MFCC typically only leads
+                   to marginal improvements. Instead, combining visual features
+                   with our AENet features, which can be computed efficiently
+                   on a GPU, leads to significant performance improvements on
+                   action recognition and video highlight detection. In video
+                   highlight detection, our audio features improve the
+                   performance by more than 8\% over visual features alone.",
+  month         =  "3~" # jan,
+  year          =  2017,
+  url           = "http://arxiv.org/abs/1701.00599",
+  file          = "All Papers/TAKAHASHI/Takahashi et al. 2017 - AENet - Learning Deep Audio Features for Video Analysis.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1701.00599",
+  primaryClass  = "cs.MM",
+  arxivid       = "1701.00599"
+}
+
+
+@INCOLLECTION{Stock2016-mh,
+  title     = "Chapter 8 - Dynamic Factor Models, {Factor-Augmented} Vector
+               Autoregressions, and Structural Vector Autoregressions in
+               Macroeconomics",
+  booktitle = "Handbook of Macroeconomics",
+  author    = "Stock, J H and Watson, M W",
+  editor    = "Taylor, John B and Uhlig, Harald",
+  abstract  = "This chapter provides an overview of and user's guide to dynamic
+               factor models (DFMs), their estimation, and their uses in
+               empirical macroeconomics. It also surveys recent developments in
+               methods for identifying and estimating SVARs, an area that has
+               seen important developments over the past 15 years. The chapter
+               begins by introducing DFMs and the associated statistical tools,
+               both parametric (state-space forms) and nonparametric (principal
+               components and related methods). After reviewing two mature
+               applications of DFMs, forecasting and macroeconomic monitoring,
+               the chapter lays out the use of DFMs for analysis of structural
+               shocks, a special case of which is factor-augmented vector
+               autoregressions (FAVARs). A main focus of the chapter is how to
+               extend methods for identifying shocks in structural vector
+               autoregression (SVAR) to structural DFMs. The chapter provides a
+               unification of SVARs, FAVARs, and structural DFMs and shows both
+               in theory and through an empirical application to oil shocks how
+               the same identification strategies can be applied to each type
+               of model.",
+  publisher = "Elsevier",
+  volume    =  2,
+  pages     = "415--525",
+  month     =  "1~" # jan,
+  year      =  2016,
+  url       = "https://www.sciencedirect.com/science/article/pii/S1574004816300027",
+  file      = "All Papers/STOCK/Stock and Watson 2016 - Chapter 8 - Dynamic Factor Models, Factor-Augmen ... oregressions, and Structural Vector Autoregressions in Macroeconomics.pdf",
+  keywords  = "State-space models; Structural vector autoregressions;
+               Factor-augmented vector autoregressions; Principal components;
+               Large-model forecasting; Nowcasting; Structural shocks",
+  doi       = "10.1016/bs.hesmac.2016.04.002"
+}
+
+
+@INPROCEEDINGS{Cui2014-de,
+  title     = "Data Augmentation for deep neural network acoustic modeling",
+  booktitle = "2014 {IEEE} International Conference on Acoustics, Speech and
+               Signal Processing ({ICASSP})",
+  author    = "Cui, Xiaodong and Goel, Vaibhava and Kingsbury, Brian",
+  abstract  = "Data augmentation using label preserving transformations has
+               been shown to be effective for neural network training to make
+               invariant predictions. In this paper we focus on data
+               augmentation approaches to acoustic modeling using deep neural
+               networks (DNNs) for automatic speech recognition (ASR). We first
+               investigate a modified version of a previously studied approach
+               using vocal tract length perturbation (VTLP) and then propose a
+               novel data augmentation approach based on stochastic feature
+               mapping (SFM) in a speaker adaptive feature space. Experiments
+               were conducted on Bengali and Assamese limited language packs
+               (LLPs) from the IARPA Babel program. Improved recognition
+               performance has been observed after both cross-entropy (CE) and
+               state-level minimum Bayes risk (sMBR) training of DNN models.",
+  pages     = "5582--5586",
+  month     =  may,
+  year      =  2014,
+  url       = "http://dx.doi.org/10.1109/ICASSP.2014.6854671",
+  file      = "All Papers/CUI/Cui et al. 2014 - Data Augmentation for deep neural network acoustic modeling.pdf",
+  keywords  = "Training;Hidden Markov models;Speech;Acoustics;Neural
+               networks;Data models;Training data;deep neural networks;data
+               augmentation;vocal tract length perturbation;stochastic feature
+               mapping;automatic speech recognition",
+  issn      = "2379-190X",
+  doi       = "10.1109/ICASSP.2014.6854671"
+}
+
+
+@ARTICLE{Cao2014-mt,
+  title    = "A parsimonious mixture of Gaussian trees model for oversampling
+              in imbalanced and multimodal time-series classification",
+  author   = "Cao, Hong and Tan, Vincent Y F and Pang, John Z F",
+  abstract = "We propose a novel framework of using a parsimonious statistical
+              model, known as mixture of Gaussian trees, for modeling the
+              possibly multimodal minority class to solve the problem of
+              imbalanced time-series classification. By exploiting the fact
+              that close-by time points are highly correlated due to smoothness
+              of the time-series, our model significantly reduces the number of
+              covariance parameters to be estimated from O(d(2)) to O(Ld),
+              where L is the number of mixture components and d is the
+              dimensionality. Thus, our model is particularly effective for
+              modeling high-dimensional time-series with limited number of
+              instances in the minority positive class. In addition, the
+              computational complexity for learning the model is only of the
+              order O(Ln+d(2)) where n+ is the number of positively labeled
+              samples. We conduct extensive classification experiments based on
+              several well-known time-series data sets (both single- and
+              multimodal) by first randomly generating synthetic instances from
+              our learned mixture model to correct the imbalance. We then
+              compare our results with several state-of-the-art oversampling
+              techniques and the results demonstrate that when our proposed
+              model is used in oversampling, the same support vector machines
+              classifier achieves much better classification accuracy across
+              the range of data sets. In fact, the proposed method achieves the
+              best average performance 30 times out of 36 multimodal data sets
+              according to the F-value metric. Our results are also highly
+              competitive compared with nonoversampling-based classifiers for
+              dealing with imbalanced time-series data sets.",
+  journal  = "IEEE transactions on neural networks and learning systems",
+  volume   =  25,
+  number   =  12,
+  pages    = "2226--2239",
+  month    =  dec,
+  year     =  2014,
+  url      = "http://dx.doi.org/10.1109/TNNLS.2014.2308321",
+  file     = "All Papers/CAO/Cao et al. 2014 - A parsimonious mixture of Gaussian trees model for oversampling in imbalanced and multimodal time-series classification.pdf",
+  language = "en",
+  issn     = "2162-2388, 2162-237X",
+  pmid     = "25420245",
+  doi      = "10.1109/TNNLS.2014.2308321"
+}
+
+
+% The entry below contains non-ASCII chars that could not be converted
+% to a LaTeX equivalent.
+@ARTICLE{Bergmeir2016-eh,
+  title     = "Bagging exponential smoothing methods using {STL} decomposition
+               and {Box--Cox} transformation",
+  author    = "Bergmeir, Christoph and Hyndman, Rob J and Ben{\'\i}tez,
+               Jos{\'e} M",
+  abstract  = "Exponential smoothing is one of the most popular forecasting
+               methods. We present a technique for the bootstrap aggregation
+               (bagging) of exponential smoothing methods, which results in
+               significant improvements in the forecasts. The bagging uses a
+               Box--Cox transformation followed by an STL decomposition to
+               separate the time series into the trend, seasonal part, and
+               remainder. The remainder is then bootstrapped using a moving
+               block bootstrap, and a new series is assembled using this
+               bootstrapped remainder. An ensemble of exponential smoothing
+               models is then estimated on the bootstrapped series, and the
+               resulting point forecasts are combined. We evaluate this new
+               method on the M3 data set, and show that it outperforms the
+               original exponential smoothing models consistently. On the
+               monthly data, we achieve better results than any of the original
+               M3 participants.",
+  journal   = "International journal of forecasting",
+  publisher = "Elsevier BV",
+  volume    =  32,
+  number    =  2,
+  pages     = "303--312",
+  month     =  "1~" # apr,
+  year      =  2016,
+  url       = "https://www.sciencedirect.com/science/article/pii/S0169207015001120",
+  file      = "All Papers/BERGMEIR/Bergmeir et al. 2016 - Bagging exponential smoothing methods using STL decomposition and Box–Cox transformation.pdf",
+  keywords  = "Bagging; Bootstrapping; Exponential smoothing; STL decomposition",
+  language  = "en",
+  issn      = "0169-2070, 1872-8200",
+  doi       = "10.1016/j.ijforecast.2015.07.002"
+}
+
+
+
+@online{Um2017-oq,
+  title         = "Data Augmentation of Wearable Sensor Data for Parkinson's
+                   Disease Monitoring using Convolutional Neural Networks",
+  author        = "Um, Terry Taewoong and Pfister, Franz Michael Josef and
+                   Pichler, Daniel and Endo, Satoshi and Lang, Muriel and
+                   Hirche, Sandra and Fietzek, Urban and Kuli{\'c}, Dana",
+  abstract      = "While convolutional neural networks (CNNs) have been
+                   successfully applied to many challenging classification
+                   applications, they typically require large datasets for
+                   training. When the availability of labeled data is limited,
+                   data augmentation is a critical preprocessing step for CNNs.
+                   However, data augmentation for wearable sensor data has not
+                   been deeply investigated yet. In this paper, various data
+                   augmentation methods for wearable sensor data are proposed.
+                   The proposed methods and CNNs are applied to the
+                   classification of the motor state of Parkinson's Disease
+                   patients, which is challenging due to small dataset size,
+                   noisy labels, and large intra-class variability. Appropriate
+                   augmentation improves the classification performance from
+                   77.54\% to 86.88\%.",
+  month         =  "2~" # jun,
+  year          =  2017,
+  url           = "http://arxiv.org/abs/1706.00527",
+  file          = "All Papers/UM/Um et al. 2017 - Data Augmentation of Wearable Sensor Data for Parkinson's Disease Monitoring using Convolutional Neural Networks.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1706.00527",
+  primaryClass  = "cs.CV",
+  arxivid       = "1706.00527"
+}
+
+
+
+@online{Kang2019-cl,
+  title         = "{GRATIS}: {GeneRAting} {TIme} Series with diverse and
+                   controllable characteristics",
+  author        = "Kang, Yanfei and Hyndman, Rob J and Li, Feng",
+  abstract      = "The explosion of time series data in recent years has
+                   brought a flourish of new time series analysis methods, for
+                   forecasting, clustering, classification and other tasks. The
+                   evaluation of these new methods requires either collecting
+                   or simulating a diverse set of time series benchmarking data
+                   to enable reliable comparisons against alternative
+                   approaches. We propose GeneRAting TIme Series with diverse
+                   and controllable characteristics, named GRATIS, with the use
+                   of mixture autoregressive (MAR) models. We simulate sets of
+                   time series using MAR models and investigate the diversity
+                   and coverage of the generated time series in a time series
+                   feature space. By tuning the parameters of the MAR models,
+                   GRATIS is also able to efficiently generate new time series
+                   with controllable features. In general, as a costless
+                   surrogate to the traditional data collection approach,
+                   GRATIS can be used as an evaluation tool for tasks such as
+                   time series forecasting and classification. We illustrate
+                   the usefulness of our time series generation process through
+                   a time series forecasting application.",
+  month         =  "7~" # mar,
+  year          =  2019,
+  url           = "http://arxiv.org/abs/1903.02787",
+  file          = "All Papers/KANG/Kang et al. 2019 - GRATIS - GeneRAting TIme Series with diverse and controllable characteristics.pdf",
+  copyright     = "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+  archivePrefix = "arXiv",
+  eprint        = "1903.02787",
+  primaryClass  = "stat.ML",
+  arxivid       = "1903.02787"
+}
+
+
+@ARTICLE{Petitjean2011-sj,
+  title    = "A global averaging method for dynamic time warping, with
+              applications to clustering",
+  author   = "Petitjean, Fran{\c c}ois and Ketterlin, Alain and Gan{\c c}arski,
+              Pierre",
+  abstract = "Mining sequential data is an old topic that has been revived in
+              the last decade, due to the increasing availability of sequential
+              datasets. Most works in this field are centred on the definition
+              and use of a distance (or, at least, a similarity measure)
+              between sequences of elements. A measure called dynamic time
+              warping (DTW) seems to be currently the most relevant for a large
+              panel of applications. This article is about the use of DTW in
+              data mining algorithms, and focuses on the computation of an
+              average of a set of sequences. Averaging is an essential tool for
+              the analysis of data. For example, the K-means clustering
+              algorithm repeatedly computes such an average, and needs to
+              provide a description of the clusters it forms. Averaging is here
+              a crucial step, which must be sound in order to make algorithms
+              work accurately. When dealing with sequences, especially when
+              sequences are compared with DTW, averaging is not a trivial task.
+              Starting with existing techniques developed around DTW, the
+              article suggests an analysis framework to classify averaging
+              techniques. It then proceeds to study the two major questions
+              lifted by the framework. First, we develop a global technique for
+              averaging a set of sequences. This technique is original in that
+              it avoids using iterative pairwise averaging. It is thus
+              insensitive to ordering effects. Second, we describe a new
+              strategy to reduce the length of the resulting average sequence.
+              This has a favourable impact on performance, but also on the
+              relevance of the results. Both aspects are evaluated on standard
+              datasets, and the evaluation shows that they compare favourably
+              with existing methods. The article ends by describing the use of
+              averaging in clustering. The last section also introduces a new
+              application domain, namely the analysis of satellite image time
+              series, where data mining techniques provide an original
+              approach.",
+  journal  = "Pattern recognition",
+  volume   =  44,
+  number   =  3,
+  pages    = "678--693",
+  month    =  "1~" # mar,
+  year     =  2011,
+  url      = "https://www.sciencedirect.com/science/article/pii/S003132031000453X",
+  file     = "All Papers/PETITJEAN/Petitjean et al. 2011 - A global averaging method for dynamic time warping, with applications to clustering.pdf",
+  keywords = "Sequence analysis; Time series clustering; Dynamic time warping;
+              Distance-based clustering; Time series averaging; DTW barycenter
+              averaging; Global averaging; Satellite image time series",
+  issn     = "0031-3203",
+  doi      = "10.1016/j.patcog.2010.09.013"
+}
+
+
+
+@online{Hewamalage2019-tv,
+  title         = "Recurrent Neural Networks for Time Series Forecasting:
+                   Current Status and Future Directions",
+  author        = "Hewamalage, Hansika and Bergmeir, Christoph and Bandara,
+                   Kasun",
+  abstract      = "Recurrent Neural Networks (RNN) have become competitive
+                   forecasting methods, as most notably shown in the winning
+                   method of the recent M4 competition. However, established
+                   statistical models such as ETS and ARIMA gain their
+                   popularity not only from their high accuracy, but they are
+                   also suitable for non-expert users as they are robust,
+                   efficient, and automatic. In these areas, RNNs have still a
+                   long way to go. We present an extensive empirical study and
+                   an open-source software framework of existing RNN
+                   architectures for forecasting, that allow us to develop
+                   guidelines and best practices for their use. For example, we
+                   conclude that RNNs are capable of modelling seasonality
+                   directly if the series in the dataset possess homogeneous
+                   seasonal patterns, otherwise we recommend a
+                   deseasonalization step. Comparisons against ETS and ARIMA
+                   demonstrate that the implemented (semi-)automatic RNN models
+                   are no silver bullets, but they are competitive alternatives
+                   in many situations.",
+  month         =  "2~" # sep,
+  year          =  2019,
+  url           = "http://arxiv.org/abs/1909.00590",
+  file          = "All Papers/HEWAMALAGE/Hewamalage et al. 2019 - Recurrent Neural Networks for Time Series Forecasting - Current Status and Future Directions.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1909.00590",
+  primaryClass  = "cs.LG",
+  arxivid       = "1909.00590"
+}
+
+
+@online{Bandara2020-yp,
+  title         = "Improving the Accuracy of Global Forecasting Models using
+                   Time Series Data Augmentation",
+  author        = "Bandara, Kasun and Hewamalage, Hansika and Liu, Yuan-Hao and
+                   Kang, Yanfei and Bergmeir, Christoph",
+  abstract      = "Forecasting models that are trained across sets of many time
+                   series, known as Global Forecasting Models (GFM), have shown
+                   recently promising results in forecasting competitions and
+                   real-world applications, outperforming many state-of-the-art
+                   univariate forecasting techniques. In most cases, GFMs are
+                   implemented using deep neural networks, and in particular
+                   Recurrent Neural Networks (RNN), which require a sufficient
+                   amount of time series to estimate their numerous model
+                   parameters. However, many time series databases have only a
+                   limited number of time series. In this study, we propose a
+                   novel, data augmentation based forecasting framework that is
+                   capable of improving the baseline accuracy of the GFM models
+                   in less data-abundant settings. We use three time series
+                   augmentation techniques: GRATIS, moving block bootstrap
+                   (MBB), and dynamic time warping barycentric averaging (DBA)
+                   to synthetically generate a collection of time series. The
+                   knowledge acquired from these augmented time series is then
+                   transferred to the original dataset using two different
+                   approaches: the pooled approach and the transfer learning
+                   approach. When building GFMs, in the pooled approach, we
+                   train a model on the augmented time series alongside the
+                   original time series dataset, whereas in the transfer
+                   learning approach, we adapt a pre-trained model to the new
+                   dataset. In our evaluation on competition and real-world
+                   time series datasets, our proposed variants can
+                   significantly improve the baseline accuracy of GFM models
+                   and outperform state-of-the-art univariate forecasting
+                   methods.",
+  month         =  "6~" # aug,
+  year          =  2020,
+  url           = "http://arxiv.org/abs/2008.02663",
+  file          = "All Papers/BANDARA/Bandara et al. 2020 - Improving the Accuracy of Global Forecasting Models using Time Series Data Augmentation.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "2008.02663",
+  primaryClass  = "cs.LG",
+  arxivid       = "2008.02663"
+}
+
+
+@INPROCEEDINGS{Forestier2017-uk,
+  title     = "Generating Synthetic Time Series to Augment Sparse Datasets",
+  booktitle = "2017 {IEEE} International Conference on Data Mining ({ICDM})",
+  author    = "Forestier, Germain and Petitjean, Fran{\c c}ois and Dau, Hoang
+               Anh and Webb, Geoffrey I and Keogh, Eamonn",
+  abstract  = "In machine learning, data augmentation is the process of
+               creating synthetic examples in order to augment a dataset used
+               to learn a model. One motivation for data augmentation is to
+               reduce the variance of a classifier, thereby reducing error. In
+               this paper, we propose new data augmentation techniques
+               specifically designed for time series classification, where the
+               space in which they are embedded is induced by Dynamic Time
+               Warping (DTW). The main idea of our approach is to average a set
+               of time series and use the average time series as a new
+               synthetic example. The proposed methods rely on an extension of
+               DTW Barycentric Averaging (DBA), the averaging technique that is
+               specifically developed for DTW. In this paper, we extend DBA to
+               be able to calculate a weighted average of time series under
+               DTW. In this case, instead of each time series contributing
+               equally to the final average, some can contribute more than
+               others. This extension allows us to generate an infinite number
+               of new examples from any set of given time series. To this end,
+               we propose three methods that choose the weights associated to
+               the time series of the dataset. We carry out experiments on the
+               85 datasets of the UCR archive and demonstrate that our method
+               is particularly useful when the number of available examples is
+               limited (e.g. 2 to 6 examples per class) using a 1-NN DTW
+               classifier. Furthermore, we show that augmenting full datasets
+               is beneficial in most cases, as we observed an increase of
+               accuracy on 56 datasets, no effect on 7 and a slight decrease on
+               only 22.",
+  pages     = "865--870",
+  month     =  nov,
+  year      =  2017,
+  url       = "http://dx.doi.org/10.1109/ICDM.2017.106",
+  file      = "All Papers/FORESTIER/Forestier et al. 2017 - Generating Synthetic Time Series to Augment Sparse Datasets.pdf",
+  keywords  = "Time series analysis;Training;Data models;Heuristic
+               algorithms;Manifolds;Conferences;Data mining;time series
+               classification;dynamic time warping;data augmentation",
+  issn      = "2374-8486",
+  doi       = "10.1109/ICDM.2017.106"
+}
+
+
+@INPROCEEDINGS{Yoon_undated-gs,
+  title           = "Time-series generative adversarial networks",
+  booktitle       = "Advances in Neural Information Processing Systems",
+  author          = "Yoon, Jinsung and Jarrett, Daniel and van der Schaar,
+                     Mihaela",
+  editor          = "Wallach, H and Larochell, H and Beygelzime, A and dAlche
+                     Buc, F and Fox, E and Garnett, R",
+  abstract        = "A good generative model for time-series data should
+                     preserve temporal dynamics, in the sense that new
+                     sequences respect the original relationships between
+                     variables across time. Existing methods that bring
+                     generative adversarial networks (GANs) into the sequential
+                     setting do not adequately attend to the temporal
+                     correlations unique to time-series data. At the same time,
+                     supervised models for sequence prediction - which allow
+                     finer control over network dynamics - are inherently
+                     deterministic. We propose a novel framework for generating
+                     realistic time-series data that combines the flexibility
+                     of the unsupervised paradigm with the control afforded by
+                     supervised training. Through a learned embedding space
+                     jointly optimized with both supervised and adversarial
+                     objectives, we encourage the network to adhere to the
+                     dynamics of the training data during sampling.
+                     Empirically, we evaluate the ability of our method to
+                     generate realistic samples using a variety of real and
+                     synthetic time-series datasets. Qualitatively and
+                     quantitatively, we find that the proposed framework
+                     consistently and significantly outperforms
+                     state-of-the-art benchmarks with respect to measures of
+                     similarity and predictive ability.",
+  publisher       = "Curran Associates, Inc.",
+  volume          =  32,
+  url             = "https://papers.nips.cc/paper/2019/hash/c9efe5f26cd17ba6216bbe2a7d26d490-Abstract.html",
+  file            = "All Papers/YOON/Yoon et al. - Time-series generative adversarial networks.pdf",
+  year            = 2019
+}
+
+
+
+@online{Brophy2021-vn,
+  title         = "Generative adversarial networks in time series: A survey and
+                   taxonomy",
+  author        = "Brophy, Eoin and Wang, Zhengwei and She, Qi and Ward, Tomas",
+  abstract      = "Generative adversarial networks (GANs) studies have grown
+                   exponentially in the past few years. Their impact has been
+                   seen mainly in the computer vision field with realistic
+                   image and video manipulation, especially generation, making
+                   significant advancements. While these computer vision
+                   advances have garnered much attention, GAN applications have
+                   diversified across disciplines such as time series and
+                   sequence generation. As a relatively new niche for GANs,
+                   fieldwork is ongoing to develop high quality, diverse and
+                   private time series data. In this paper, we review GAN
+                   variants designed for time series related applications. We
+                   propose a taxonomy of discrete-variant GANs and
+                   continuous-variant GANs, in which GANs deal with discrete
+                   time series and continuous time series data. Here we
+                   showcase the latest and most popular literature in this
+                   field; their architectures, results, and applications. We
+                   also provide a list of the most popular evaluation metrics
+                   and their suitability across applications. Also presented is
+                   a discussion of privacy measures for these GANs and further
+                   protections and directions for dealing with sensitive data.
+                   We aim to frame clearly and concisely the latest and
+                   state-of-the-art research in this area and their
+                   applications to real-world technologies.",
+  month         =  "23~" # jul,
+  year          =  2021,
+  url           = "http://arxiv.org/abs/2107.11098",
+  archivePrefix = "arXiv",
+  eprint        = "2107.11098",
+  primaryClass  = "cs.LG",
+  arxivid       = "2107.11098"
+}
+
+
+
+@ARTICLE{Dorffner1996-rd,
+  title    = "Neural Networks for Time Series Processing",
+  author   = "Dorffner, Georg",
+  abstract = "This paper provides an overview over the most common neural
+              network types for time series processing, i.e. pattern
+              recognition and forecasting in spatio-temporal patterns. Emphasis
+              is put on the relationships between neural network models and
+              more classical approaches to time series processing, in
+              particular, forecasting. The paper begins with an introduction of
+              the basics of time series processing, and discusses feedforward
+              as well as recurrent neural networks, with respect to their
+              ability to model non-linear dependencies in spatio-temporal
+              patterns.",
+  journal  = "Neural Network World",
+  volume   =  6,
+  pages    = "447--468",
+  year     =  1996,
+  url      = "http://machine-learning.martinsewell.com/ann/Dorf96.pdf",
+  file     = "All Papers/DORFFNER/Dorffner 1996 - Neural Networks for Time Series Processing.pdf"
+}
+
+
+
+@online{Hewamalage2022-sc,
+  title         = "Forecast Evaluation for Data Scientists: Common Pitfalls and
+                   Best Practices",
+  author        = "Hewamalage, Hansika and Ackermann, Klaus and Bergmeir,
+                   Christoph",
+  abstract      = "Machine Learning (ML) and Deep Learning (DL) methods are
+                   increasingly replacing traditional methods in many domains
+                   involved with important decision making activities. DL
+                   techniques tailor-made for specific tasks such as image
+                   recognition, signal processing, or speech analysis are being
+                   introduced at a fast pace with many improvements. However,
+                   for the domain of forecasting, the current state in the ML
+                   community is perhaps where other domains such as Natural
+                   Language Processing and Computer Vision were at several
+                   years ago. The field of forecasting has mainly been fostered
+                   by statisticians/econometricians; consequently the related
+                   concepts are not the mainstream knowledge among general ML
+                   practitioners. The different non-stationarities associated
+                   with time series challenge the data-driven ML models.
+                   Nevertheless, recent trends in the domain have shown that
+                   with the availability of massive amounts of time series, ML
+                   techniques are quite competent in forecasting, when related
+                   pitfalls are properly handled. Therefore, in this work we
+                   provide a tutorial-like compilation of the details of one of
+                   the most important steps in the overall forecasting process,
+                   namely the evaluation. This way, we intend to impart the
+                   information of forecast evaluation to fit the context of ML,
+                   as means of bridging the knowledge gap between traditional
+                   methods of forecasting and state-of-the-art ML techniques.
+                   We elaborate on the different problematic characteristics of
+                   time series such as non-normalities and non-stationarities
+                   and how they are associated with common pitfalls in forecast
+                   evaluation. Best practices in forecast evaluation are
+                   outlined with respect to the different steps such as data
+                   partitioning, error calculation, statistical testing, and
+                   others. Further guidelines are also provided along selecting
+                   valid and suitable error measures depending on the specific
+                   characteristics of the dataset at hand.",
+  month         =  "21~" # mar,
+  year          =  2022,
+  url           = "http://arxiv.org/abs/2203.10716",
+  file          = "All Papers/HEWAMALAGE/Hewamalage et al. 2022 - Forecast Evaluation for Data Scientists - Common Pitfalls and Best Practices.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "2203.10716",
+  primaryClass  = "cs.LG",
+  arxivid       = "2203.10716"
+}
+
+
+
+@ARTICLE{Januschowski2020-ys,
+  title    = "Criteria for classifying forecasting methods",
+  author   = "Januschowski, Tim and Gasthaus, Jan and Wang, Yuyang and Salinas,
+              David and Flunkert, Valentin and Bohlke-Schneider, Michael and
+              Callot, Laurent",
+  abstract = "Classifying forecasting methods as being either of a ``machine
+              learning'' or ``statistical'' nature has become commonplace in
+              parts of the forecasting literature and community, as exemplified
+              by the M4 competition and the conclusion drawn by the organizers.
+              We argue that this distinction does not stem from fundamental
+              differences in the methods assigned to either class. Instead,
+              this distinction is probably of a tribal nature, which limits the
+              insights into the appropriateness and effectiveness of different
+              forecasting methods. We provide alternative characteristics of
+              forecasting methods which, in our view, allow to draw meaningful
+              conclusions. Further, we discuss areas of forecasting which could
+              benefit most from cross-pollination between the ML and the
+              statistics communities.",
+  journal  = "International journal of forecasting",
+  volume   =  36,
+  number   =  1,
+  pages    = "167--177",
+  month    =  "1~" # jan,
+  year     =  2020,
+  url      = "https://www.sciencedirect.com/science/article/pii/S0169207019301529",
+  file     = "All Papers/JANUSCHOWSKI/Januschowski et al. 2020 - Criteria for classifying forecasting methods.pdf",
+  issn     = "0169-2070",
+  doi      = "10.1016/j.ijforecast.2019.05.008"
+}
+
+
+
+@online{Iwana2020-fe,
+  title         = "Time Series Data Augmentation for Neural Networks by Time
+                   Warping with a Discriminative Teacher",
+  author        = "Iwana, Brian Kenji and Uchida, Seiichi",
+  abstract      = "Neural networks have become a powerful tool in pattern
+                   recognition and part of their success is due to
+                   generalization from using large datasets. However, unlike
+                   other domains, time series classification datasets are often
+                   small. In order to address this problem, we propose a novel
+                   time series data augmentation called guided warping. While
+                   many data augmentation methods are based on random
+                   transformations, guided warping exploits the element
+                   alignment properties of Dynamic Time Warping (DTW) and
+                   shapeDTW, a high-level DTW method based on shape
+                   descriptors, to deterministically warp sample patterns. In
+                   this way, the time series are mixed by warping the features
+                   of a sample pattern to match the time steps of a reference
+                   pattern. Furthermore, we introduce a discriminative teacher
+                   in order to serve as a directed reference for the guided
+                   warping. We evaluate the method on all 85 datasets in the
+                   2015 UCR Time Series Archive with a deep convolutional
+                   neural network (CNN) and a recurrent neural network (RNN).
+                   The code with an easy to use implementation can be found at
+                   https://github.com/uchidalab/time\_series\_augmentation .",
+  month         =  "19~" # apr,
+  year          =  2020,
+  url           = "http://arxiv.org/abs/2004.08780",
+  file          = "All Papers/IWANA/Iwana and Uchida 2020 - Time Series Data Augmentation for Neural Networks by Time Warping with a Discriminative Teacher.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "2004.08780",
+  primaryClass  = "cs.LG",
+  arxivid       = "2004.08780"
 }

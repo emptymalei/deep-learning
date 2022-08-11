@@ -46,13 +46,18 @@ theme:
 markdown_extensions:
   - admonition
   - attr_list
+  - md_in_html
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
   - pymdownx.magiclink
   - pymdownx.snippets:
       check_paths: true
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.tasklist
@@ -135,7 +140,8 @@ nav:
   - "Time Series":
     - time-series/index.md
     - "Data":
-      - "Augmentation": time-series/data.augmentation.md
+      - "Augmentation": time-series/data-augmentation.md
+      - "DBA": time-series/dtw-barycenter-averaging.md
   - "Topics":
     - "Introduction": topics/intro.md
     - "Predictive Coding": topics/predictive-coding.md
