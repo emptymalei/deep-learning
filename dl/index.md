@@ -30,14 +30,14 @@ I am trying out a more "agile" method. Instead of finishing the whole project at
 The following is an initial design of the blueprint.
 
 - [ ] Tech Onboarding
-    - [ ] Python, Environment, VSCode, Git, ...
+    - [x] Python, Environment, VSCode, Git, ...
     - [ ] Pytorch Lightning
 - [ ] Time Series
     - [ ] Data
         - [ ] Datasets
         - [ ] Data Generating Process (DGP)
         - [ ] Data Processing
-        - [ ] Data Augmentation
+        - [x] Data Augmentation
         - [ ] Metrics
     - [ ] Tasks
         - [ ] Forecasting
