@@ -144,6 +144,9 @@ nav:
       - "DBA": time-series/dtw-barycenter-averaging.md
     - "Kindergarten Models":
       - "AR": "time-series/basic-ar.md"
+    - Useful Datasets:
+      - time-series/timeseries-datasets.md
+      - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md
   - "Topics":
     - "Introduction": topics/intro.md
     - "Predictive Coding": topics/predictive-coding.md
