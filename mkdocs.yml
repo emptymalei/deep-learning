@@ -145,6 +145,7 @@ nav:
     - Useful Datasets:
       - time-series/timeseries-datasets.md
       - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md
+      - "Electricity": time-series/timeseries-datasets.uci-electricity.md
   - "Topics":
     - "Introduction": topics/intro.md
     - "Predictive Coding": topics/predictive-coding.md
