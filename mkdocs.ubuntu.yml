@@ -150,6 +150,9 @@ nav:
       - "NREL Solar Power Data": time-series/timeseries-datasets.nrel-solar-energy.md
       - "Electricity": time-series/timeseries-datasets.uci-electricity.md
       - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
+    - Synthetic Datasets:
+      - time-series/timeseries-synthetic.md
+      - time-series/timeseries-generating-process.md
   - "Topics":
     - "Introduction": topics/intro.md
     - "Predictive Coding": topics/predictive-coding.md
