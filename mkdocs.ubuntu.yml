@@ -147,8 +147,9 @@ nav:
       - "Augmentation": time-series/timeseries-data.data-augmentation.md
       - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
     - Synthetic Datasets:
-      - time-series/timeseries-synthetic.md
-      - time-series/timeseries-generating-process.md
+      - "Synthetic Time Series": time-series/timeseries-synthetic.md
+      - "DGP": time-series/timeseries-generating-process.md
+      - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
     - Useful Datasets:
       - time-series/timeseries-datasets.md
       - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md

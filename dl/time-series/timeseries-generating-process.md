@@ -35,18 +35,6 @@ The data generating processes (DGP) for time series is diverse. For example, in 
     ![random gaussian series](assets/timeseries-generating-process/random-guassian-time-series.png)
     ![random gaussian series](assets/timeseries-generating-process/random-guassian-time-series-autocorrelation.png)
 
-
-??? note "GluonTS Synthetic Data Generator"
-
-    The time series deep learning package comes with a handy synthetic data generator. For example, to generate a time series of random Gaussian, we only need the following code.
-
-    ```python
-    from gluonts.dataset.artificial import recipe as rcp
-    g_rg = rcp.RandomGaussian(stddev=2)
-    g_rp_series = rcp.evaluate(g_rg, 100)
-    ```
-
-
 ## General Linear Processes
 
 A popular model for modeling as well as generating time series is the autoregressive (AR) model. An AR is formulated as
