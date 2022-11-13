@@ -24,8 +24,8 @@ theme:
     - navigation.tabs
   palette:
     - scheme: default
-      primary: indigo
-      accent: indigo
+      primary: black
+      accent: deep orange
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
@@ -45,6 +45,7 @@ theme:
 
 markdown_extensions:
   - admonition
+  - abbr
   - attr_list
   - md_in_html
   - pymdownx.emoji:
@@ -140,8 +141,13 @@ nav:
   - "Time Series":
     - time-series/index.md
     - "Data":
-      - "Augmentation": time-series/data-augmentation.md
-      - "DBA": time-series/dtw-barycenter-averaging.md
+      - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
+      - "Augmentation": time-series/timeseries-data.data-augmentation.md
+      - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
+    - Synthetic Datasets:
+      - "Synthetic Time Series": time-series/timeseries-synthetic.md
+      - "DGP": time-series/timeseries-generating-process.md
+      - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
     - Useful Datasets:
       - time-series/timeseries-datasets.md
       - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md
