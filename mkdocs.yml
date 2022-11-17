@@ -147,6 +147,7 @@ nav:
     - Synthetic Datasets:
       - "Synthetic Time Series": time-series/timeseries-synthetic.md
       - "DGP": time-series/timeseries-generating-process.md
+      - "DGP: Langevin Equation": time-series/timeseries-datasets.dgp.langevin.md
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
     - Useful Datasets:
       - time-series/timeseries-datasets.md
