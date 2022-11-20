@@ -4,7 +4,7 @@ Among the many data generating processes (DGP), Langevin equation is one of the 
 
 ## Brownian Motion
 
-Brownian motion as a very simple stochastic process can be described by the Langevin equation[^ma-sp]. In this section, we simulate a time series from Brownian motion.
+Brownian motion as a very simple stochastic process can be described by the Langevin equation[^ma-sp]. In this section, we simulate a time series dataset from Brownian motion.
 
 Macroscopically, Brownian Motion can be described by the notion of random forces on the particles,
 
@@ -30,6 +30,19 @@ $$
 v(N\Delta t) = v(0) e^{-\gamma N\Delta t} + \sum_{n=0}^N  e^{-\gamma (N - n)\Delta t} R(n\Delta t) \Delta t.
 $$
 
+The first term in the solution is responsible for the exponential decay and the second term calculates the effect of the stochastic force.
+
+To simulate a Brownian motion, we can either use the formal solution or the differential equation itself. Here we choose to use the differential equation itself. To simulate the process numerically, we rewrite
+
+$$
+\frac{d}{dt} v(t) + \gamma v(t) = R(t),
+$$
+
+as
+
+$$
+\Delta v (t+1) = R(t) \Delta t - \gamma v(t) \Delta t.
+$$
 
 
 === "Brownian Motion"
@@ -40,69 +53,91 @@ $$
 
 === "Python Code"
 
+    We create a stepper to calculate the next steps.
 
     ```python
     import numpy as np
+    import copy
     import matplotlib.pyplot as plt
     import seaborn as sns; sns.set()
 
     ## Define Brownian Motion
-    def gaussian_forece_density(mu: float, sigma: float, length: int) -> np.ndarray:
-        """Generate the full history of the force density
+    class GaussianForce:
+    """A Gaussian stochastic force iterator.
+    Each iteration returns a single sample from the corresponding
+    Gaussian distribution.
 
-        :param mu: the mean of the Guassian distribution
-        :param sigma: the variance of the Gaussian distribution
-        :param length: the total length of the time series
+    :param mu: mean of the Gaussian distribution
+    :param std: standard deviation of the Gaussian distribution
+    :param seed: seed for the random generator
+    """
+
+    def __init__(self, mu: float, std: float, seed: Optional[float] = None):
+        self.mu = mu
+        self.std = std
+        self.rng = np.random.default_rng(seed=seed)
+
+    def __next__(self) -> float:
+        return self.rng.normal(self.mu, self.std)
+
+
+    class BrownianMotionStepper:
+        """Calculates the next step in a brownian motion.
+
+        :param gamma: the damping factor $\gamma$ of the Brownian motion.
+        :param delta_t: the minimum time step $\Delta t$.
+        :param force_densities: the stochastic force densities, e.g. [`GaussianForce`][eerily.data.generators.brownian.GaussianForce].
+        :param initial_state: the initial velocity $v(0)$.
         """
-        return np.random.default_rng().normal(mu, sigma, length)
 
+        def __init__(
+            self,
+            gamma: float,
+            delta_t: float,
+            force_densities: Iterator,
+            initial_state: Dict[str, float],
+        ):
+            self.gamma = gamma
+            self.delta_t = delta_t
+            self.forece_densities = copy.deepcopy(force_densities)
+            self.current_state = copy.deepcopy(initial_state)
 
-    def brownian_motion(
-        gamma: float, force_density_history: np.ndarray, v_0: float, delta_t: float, length: int
-    ) -> np.ndarray:
-        """Generates the full history of simulated 1D brownian motion.
+        def __iter__(self):
+            return self
 
-        :param gamma: decay factor in Brownian motion
-        :param force_density_history: the full history of the force density,
-        e.g., an array of Gaussian distribution
-        :param v_0: initial velocity
-        :param delta_t: the time step size when simulating Brownian motion
-        :param length: total length of the time series
-        """
+        def __next__(self) -> Dict[str, float]:
 
-        n_steps = np.linspace(0, length - 1, num=length)
-        decay_history = v_0 * np.exp(-1 * gamma * n_steps * delta_t)
-        integrand_decay_history = np.exp(-1 * gamma * (length - n_steps) * delta_t )
+            force_density = next(self.forece_densities)
+            v_current = self.current_state["v"]
 
-        dynamic_history = [0]
-        for step in range(1, length):
-            v_step =  (
-                dynamic_history[-1]
-                + integrand_decay_history[step] * force_density_history[step] * delta_t
-            )
+            v_next = v_current + force_density * self.delta_t - self.gamma * v_current * self.delta_t
 
-            dynamic_history.append(v_step)
+            self.current_state["force_density"] = force_density
+            self.current_state["v"] = v_next
 
-
-        return decay_history + dynamic_history
-
-
+            return copy.deepcopy(self.current_state)
 
     ## Generating time series
-    length = 200
     delta_t = 0.1
+    stepper = BrownianMotionStepper(
+        gamma=0,
+        delta_t=delta_t,
+        force_densities=GaussianForece(mu=0, std=1),
+        initial_state={"v": 0},
+    )
 
-    bm_fd = gaussian_forece_density(0, 1, length)
+    length = 200
 
-    bm_history = brownian_motion(0, bm_fd, v_0=0, delta_t=delta_t, length=length)
+    history = []
+    for _ in range(length):
+        history.append(next(stepper))
 
+    df = pd.DataFrame(history)
 
-    ## Visualizations
     fig, ax = plt.subplots(figsize=(10, 6.18))
-
     sns.lineplot(
         x=np.linspace(0, length-1, length) * delta_t,
-        y=bm_history,
+        y=df.v,
         ax=ax,
         marker="o",
     )
