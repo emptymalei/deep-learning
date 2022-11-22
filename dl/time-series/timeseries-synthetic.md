@@ -8,6 +8,8 @@ Another application of synthetic data is to improve model performance. Synthetic
 
 A third application of synthetic data is data sharing without compromising  privacy and business secret[^Lin2019].
 
+Though being useful, synthesizing proper artificial time series data can be very complicated as there are enormous amount of diverse theories associated with time series data. In this chapter, we will explain the basic ideas and demonstrate our generic programming framework for synthetic time series. With the basics explored, we will focus on a special cases of synthetic time series: time series with interactions.
+
 
 [^Rotem2022]: Rotem Y, Shimoni N, Rokach L, Shapira B. Transfer learning for time series classification using synthetic data generation. arXiv [cs.LG]. 2022. Available: http://arxiv.org/abs/2207.07897
 [^Bandara2020]: Bandara K, Hewamalage H, Liu Y-H, Kang Y, Bergmeir C. Improving the Accuracy of Global Forecasting Models using Time Series Data Augmentation. arXiv [cs.LG]. 2020. Available: http://arxiv.org/abs/2008.02663
