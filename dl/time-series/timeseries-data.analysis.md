@@ -17,7 +17,7 @@ $$
 \end{align}
 $$
 
-In deep learning, a lot of models requires the training data to be I.I.D.[^Schoelkopf2021]. The I.I.D. requirements in time series is stationarity.
+In deep learning, a lot of models requires the training data to be I.I.D.[^Schoelkopf2021][^Dawid2022]. The I.I.D. requirements in time series is stationarity.
 
 Stationary time series is clean and pure. However, real world data is not necessarily stationary, e.g., macroeconomic series data are nonstationary[^Das2019].
 
@@ -38,3 +38,4 @@ One naive expectation is that the autocorrelation diminishes if $\delta \to \inf
 [^Schoelkopf2021]: Schölkopf B, Locatello F, Bauer S, Ke NR, Kalchbrenner N, Goyal A, et al. Toward Causal Representation Learning. Proc IEEE. 2021;109: 612–634. doi:10.1109/JPROC.2021.3058954
 [^wiki-autocorrelation]: Contributors to Wikimedia projects. Autocorrelation. In: Wikipedia [Internet]. 10 Nov 2022 [cited 13 Nov 2022]. Available: https://en.wikipedia.org/wiki/Autocorrelation
 [^Das2019]: Das P. Econometrics in Theory and Practice. Springer Nature Singapore; [doi:10.1007/978-981-32-9019-8](https://link.springer.com/book/10.1007/978-981-32-9019-8)
+[^Dawid2022]: Dawid P, Tewari A. On learnability under general stochastic processes. Harvard Data Science Review. 2022;4. [doi:10.1162/99608f92.dec7d780](https://hdsr.mitpress.mit.edu/pub/qixx99zn/release/1)
