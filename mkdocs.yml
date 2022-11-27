@@ -171,7 +171,7 @@ nav:
       - "Augmentation": time-series/timeseries-data.data-augmentation.md
       - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
     - "Kindergarten Models":
-      - "Multivariate": time-series/timeseries-basics.multivariate.md
+      - "Statistical Models": time-series/timeseries-basics.statistical-models.md
       - "AR": "time-series/timeseries-basics.ar.md"
     - Synthetic Datasets:
       - "Synthetic Time Series": time-series/timeseries-synthetic.md
