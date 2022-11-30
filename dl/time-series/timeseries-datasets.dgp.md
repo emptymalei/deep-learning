@@ -2,6 +2,7 @@
 
 The data generating processes (DGP) for time series is diverse. For example, in physics, we have all sort of dynamical systems that generates time series data and many dynamics models are formulated based on the time series data. In industries, time series data are often coming from stochastic processes.
 
+
 ## Simple Examples of DGP
 
 
@@ -37,7 +38,7 @@ The data generating processes (DGP) for time series is diverse. For example, in 
 
 ## General Linear Processes
 
-A popular model for modeling as well as generating time series is the autoregressive (AR) model. An AR is formulated as
+A popular model for modeling as well as generating time series is the [autoregressive (AR)](timeseries-basics.ar.md) model. An AR is formulated as
 
 $$
 x_t = \phi_0 + \phi_1 x_{t-1} + \epsilon_t.
@@ -85,4 +86,10 @@ $$
 The general linear process is the Taylor expansion of a arbitrary DGP $x_t = \operatorname{DGP}(\epsilon_t, ...)$[^Das2019].
 
 
+## Interactions between Series
+
+The interactions between the series can be modeled as explicit interactions, e.g., many spiking neurons, or through hidden variables, e.g., hidden state model[^hmm]. Among these models, [Vector Autoregressive model, aka VAR,](timeseries-basics.var.md) is a simple but popular model.
+
+
 [^Das2019]: Das P. Econometrics in Theory and Practice. Springer Nature Singapore; [doi:10.1007/978-981-32-9019-8](https://link.springer.com/book/10.1007/978-981-32-9019-8)
+[^hmm]: Contributors to Wikimedia projects. Hidden Markov model. In: Wikipedia [Internet]. 22 Oct 2022 [cited 22 Nov 2022]. Available: https://en.wikipedia.org/wiki/Hidden_Markov_model

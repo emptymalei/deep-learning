@@ -1,6 +1,6 @@
 # Synthetic Time Series
 
-With a proper understanding of the [DGP](timeseries-generating-process.md), we can build data generators around the DGP we choose.
+With a proper understanding of the [DGP](timeseries-datasets.dgp.md), we can build data generators around the DGP we choose.
 
 ## GluonTS
 
