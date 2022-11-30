@@ -1,12 +1,9 @@
-# Time Series Data Generating Process: Interactions
+# VAR
 
-The interactions between the series can be modeled as explicit interactions, e.g., many spiking neurons, or through hidden variables, e.g., hidden state model[^hmm].
 
-## Explicit Interactions
+## VAR(1)
 
-### VAR(1)
-
-We use a very simple VAR(p) model to generate a time series dataset with two variables.
+VAR(1) is similar to [AR(1)](timeseries-basics.ar.md) but models time series with interactions between the series. For example, a two dimensional VAR(1) model is
 
 $$
 \begin{pmatrix}s^{(1)}(t+1) \\ s^{(2)}(t+1) \end{pmatrix} = \begin{pmatrix} \phi^{(1)}_0 \\ \phi^{(2)}_0 \end{pmatrix} +  \begin{pmatrix}\phi_{1, 11} & \phi_{1, 12}\\ \phi_{1, 21} & \phi_{1, 22} \end{pmatrix} \begin{pmatrix}s^{(1)}(t) \\ s^{(2)}(t) \end{pmatrix} + \begin{pmatrix}\epsilon^{(1)} \\ \epsilon^{(2)} \end{pmatrix}.
@@ -260,6 +257,4 @@ $$
     ```
 
 
-
-[^hmm]: Contributors to Wikimedia projects. Hidden Markov model. In: Wikipedia [Internet]. 22 Oct 2022 [cited 22 Nov 2022]. Available: https://en.wikipedia.org/wiki/Hidden_Markov_model
 [^Zvot2006]: Zivot E, Wang J. Modeling Financial Time Series with S-PLUS®. Springer New York; 2006. [doi:10.1007/978-0-387-32348-0](https://link.springer.com/book/10.1007/978-0-387-21763-5)

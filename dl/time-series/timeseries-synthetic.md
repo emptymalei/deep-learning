@@ -2,7 +2,7 @@
 
 Synthetic time series data is useful in time series modeling, such as forecasting.
 
-Real world time series data often comes with complex dynamics in the [data generating process](timeseries-generating-process.md). Benchmarking models using real world data often doesn't reflect the special designs in forecasting models. Synthetic time series data provides a good playground for benchmarking models as it can provide useful insights.
+Real world time series data often comes with complex dynamics in the [data generating process](timeseries-datasets.dgp.md). Benchmarking models using real world data often doesn't reflect the special designs in forecasting models. Synthetic time series data provides a good playground for benchmarking models as it can provide useful insights.
 
 Another application of synthetic data is to improve model performance. Synthetic data can be used to [augment the training data](timeseries-data.data-augmentation.md)[^Bandara2020] as well as in transfer learning[^Rotem2022].
 

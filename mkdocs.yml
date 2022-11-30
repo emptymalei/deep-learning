@@ -176,7 +176,7 @@ nav:
       - "VAR: Interactions": time-series/timeseries-basics.var.md
     - Synthetic Datasets:
       - "Synthetic Time Series": time-series/timeseries-synthetic.md
-      - "DGP": time-series/timeseries-generating-process.md
+      - "DGP": time-series/timeseries-datasets.dgp.md
       - "DGP: Langevin Equation": time-series/timeseries-datasets.dgp.langevin.md
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
     - Useful Datasets:
