@@ -173,11 +173,11 @@ nav:
     - "Kindergarten Models":
       - "Statistical Models": time-series/timeseries-basics.statistical-models.md
       - "AR": "time-series/timeseries-basics.ar.md"
+      - "VAR: Interactions": time-series/timeseries-basics.var.md
     - Synthetic Datasets:
       - "Synthetic Time Series": time-series/timeseries-synthetic.md
       - "DGP": time-series/timeseries-generating-process.md
       - "DGP: Langevin Equation": time-series/timeseries-datasets.dgp.langevin.md
-      - "DGP: Interactions": time-series/timeseries-datasets.dgp.interactions.md
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
     - Useful Datasets:
       - time-series/timeseries-datasets.md
