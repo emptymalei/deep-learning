@@ -2,6 +2,8 @@
 
 The data generating processes (DGP) for time series is diverse. For example, in physics, we have all sort of dynamical systems that generates time series data and many dynamics models are formulated based on the time series data. In industries, time series data are often coming from stochastic processes.
 
+We present some data generating processes to help us build up intuition when modeling real-world data.
+
 
 ## Simple Examples of DGP
 
