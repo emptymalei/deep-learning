@@ -1,6 +1,6 @@
 # Time Series Forecasting using Deep Learning
 
-Time series forecasting using deep learning is a fast growing topic in the research community. To get a grasp of the trend, we created the following chart using [the keyword "deep learning forecasting" on dimensions.ai](https://app.dimensions.ai/analytics/publication/overview/timeline?search_mode=content&search_text=deep%20learning%20forecasting&search_type=kws&search_field=full_search&year_from=2015&year_to=2021)).[@dimensionsai]
+Forecasting the future is a valuable superpower. As the amount of data increases, time series forecasting using deep learning is a grow fast. To get a grasp of the trend, we created the following chart using [the keyword "deep learning forecasting" on dimensions.ai](https://app.dimensions.ai/analytics/publication/overview/timeline?search_mode=content&search_text=deep%20learning%20forecasting&search_type=kws&search_field=full_search&year_from=2015&year_to=2021)).[@dimensionsai]
 
 <figure markdown>
   ![deep-learning-forecasting-dimension-ai](assets/deep-learning-forecasting-dimension-ai.png)
@@ -35,28 +35,6 @@ where ${}^{(i)}$ indicates the $i$th variable, ${}_ t$ denotes time. In a foreca
 ![time series forecasting problem](assets/time-series-forecasting-problem.jpg)
 
 A forecasting model $f$ will use $x^{(i)} _ {t-K:t}$ and $u^{(i)} _ {t-K:t+H}$ to forecast $y^{(i)} _ {t+1:t+H}$.
-
-
-## The Time Delay Embedding Representation
-
-The time delay embedding representation of a time series forecasting problem is a concise representation of the forecasting problem [@Hewamalage2022-sc].
-
-For simplicity, we only write down the representation for a problem with time series $y_{1}, \cdots, y_{t}$, and forecasting $y_{t+1}$. We rewrite the series into a matrix, in an autoregressive way,
-
-$$
-\begin{align}
-\mathbf Y = \begin{bmatrix}
-y_1 & y_2 & \cdots & y_p &\Big| & {\color{red}y_{p+1}} \\
-y_{1+1} & y_{1+2} & \cdots & y_{1+p} &\Big| &  {\color{red}y_{1+p+1}} \\
-\vdots & \vdots & \ddots & \vdots &\Big| &  {\color{red}\vdots} \\
-y_{i-p+1} & y_{i-p+2} & \cdots & y_{i} &\Big| &  {\color{red}y_{i+1}} \\
-\vdots & \vdots & \ddots & \vdots &\Big| &  {\color{red}\vdots} \\
-y_{t-p+1} & y_{t-p+2} & \cdots & y_{t} &\Big| &  {\color{red}y_{t+1}} \\
-\end{bmatrix}
-\end{align}
-$$
-
-which indicates that we will use everything on the left, a matrix of shape $(t-p+1,p)$, to predict the vector on the right (in red).
 
 
 ## Methods of Forecasting Methods
