@@ -137,6 +137,6 @@ $$
 
 where $W_{h} = \mathbb E\left[ \tilde{\boldsymbol \epsilon} \tilde{\boldsymbol \epsilon}^T \right] = \mathbb E \left[ (\mathbf y(t) - \tilde{\mathbf y}(t))(\mathbf y(t) - \tilde{\mathbf y}(t))^T \right]$.
 
-MinT is easy to calculate but it assumes the forecasts are unbiased. To solve this problem Van Erven & Cugliari (2013) proposed a geme theoretic method called GTOP[@Van_Erven2015-ht]. Here we redirect the readers to the original paper.
+MinT is easy to calculate but it assumes the forecasts are unbiased. To solve this problem Van Erven & Cugliari (2013) proposed a geme theoretic method called GTOP[@Van_Erven2015-ht]. Rangapuram et al. developed an end-to-end model for coherent probabilistic hierarchical forecasts[@Rangapuram2021-xi]. For these advanced topics, we redirect the readers to the original papers.
 
 [^Hyndman2021]: Hyndman, R.J., & Athanasopoulos, G. (2021) Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 2022-11-27.
