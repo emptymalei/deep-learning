@@ -118,13 +118,13 @@ $$
 
 There are more than one $\mathbf P$ that can map the forecasts to the bottom level forecasts. Three of the so-called single level approaches[^Hyndman2021] are bottom-up, top-down, and middle-out[@Rangapuram2021-xi].
 
-Apart from these intuitive methods, Wickramasuriya et al. proposed the MinT method to find the optimal $\mathbf G$ matrix that gives us the minimal variance the **reconciled forecast errors**[@Wickramasuriya2019-cv],
+Apart from these intuitive methods, Wickramasuriya et al. (2017) proposed the MinT method to find the optimal $\mathbf G$ matrix that gives us the minimal variance the **reconciled forecast errors**[@Wickramasuriya2019-cv],
 
 $$
 \tilde{\boldsymbol \epsilon} = \mathbf y(t) - \tilde{\mathbf y}(t),
 $$
 
-with $\mathbf y$ being the ground truth and $\tilde{\mathbf y}$ being the coherent forecasts. Wickramasuriya et al. showed the optimal $\mathbf P$ is
+with $\mathbf y$ being the ground truth and $\tilde{\mathbf y}$ being the coherent forecasts. Wickramasuriya et al. (2017) showed the optimal $\mathbf P$ is
 
 $$
 \hat{\mathbf P} = (\mathbf S^T \mathbf W(t)^{-1} \mathbf S)^{-1} (\mathbf S^{T}\mathbf W(t)^{-1}),
@@ -132,6 +132,6 @@ $$
 
 where $W_{h} = \mathbb E\left[ \tilde{\boldsymbol \epsilon} \tilde{\boldsymbol \epsilon}^T \right] = \mathbb E \left[ (\mathbf y(t) - \tilde{\mathbf y}(t))(\mathbf y(t) - \tilde{\mathbf y}(t))^T \right]$.
 
-MinT is easy to calculate but it assumes the forecasts are unbiased. To solve this problem Van Erven & Cugliari (2013) proposed a geme theoretic method called GTOP[@Van_Erven2015-ht]. Rangapuram et al. developed an end-to-end model for coherent probabilistic hierarchical forecasts[@Rangapuram2021-xi]. For these advanced topics, we redirect the readers to the original papers.
+MinT is easy to calculate but it assumes the forecasts are unbiased. To solve this problem Van Erven & Cugliari (2013) proposed a geme theoretic method called GTOP[@Van_Erven2015-ht]. Rangapuram et al. (2021) developed an end-to-end model for coherent probabilistic hierarchical forecasts[@Rangapuram2021-xi]. For these advanced topics, we redirect the readers to the original papers.
 
 [^Hyndman2021]: Hyndman, R.J., & Athanasopoulos, G. (2021) Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 2022-11-27.
