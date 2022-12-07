@@ -1,12 +1,12 @@
 # Hierarchical Time Series Reconciliation
 
-Reconciliation is post-processing method to adjust the forecasts to be coherent. Given forecasts $\hat{\mathbf y}(t)$ for all levels which were forecasted independently, we use $\mathbf P$ to map them to the base forecasts
+Reconciliation is a post-processing method to adjust the forecasts to be coherent. Given **base forecasts** $\hat{\mathbf y}(t)$ for all levels which were forecasted independently, we use $\mathbf P$ to map them to the bottom level forecasts
 
 \begin{equation}
 \hat{\mathbf b}(t) = \mathbf P \hat{\mathbf y}(t).
 \end{equation}
 
-To generate the coherent forecasts $\tilde{\mathbf y}(t)$, we use [the summing matrix](timeseries-hierarchical.data.md#summing-matrix) to map the base forecasts to all levels[^Hyndman2021][@Rangapuram2021-xi]
+To generate the coherent forecasts $\tilde{\mathbf y}(t)$, we use [the summing matrix](timeseries-hierarchical.data.md#summing-matrix) to map the bottom level forecasts to base forecasts of all levels[^Hyndman2021][@Rangapuram2021-xi]
 
 $$
 \begin{equation}
@@ -17,7 +17,7 @@ $$
 
 !!! example "Walmart Sales in Stores"
 
-    We reuse the example of the [Walmart sales data](timeseries-hierarchical.data.md). The original forecasts for all levels are
+    We reuse the example of the [Walmart sales data](timeseries-hierarchical.data.md). The base forecasts for all levels are
 
     $$
     \hat{\mathbf y}(t) = \begin{pmatrix}
@@ -28,7 +28,7 @@ $$
     \end{pmatrix}.
     $$
 
-    The base forecasts are
+    The bottom level forecasts are
 
     $$
     \hat{\mathbf b}(t) = \begin{pmatrix}
@@ -38,7 +38,7 @@ $$
     \end{pmatrix}.
     $$
 
-    The simplest mapping to the base forecasts is
+    The simplest mapping to the bottom level forecasts is
 
     $$
     \hat{\mathbf b}(t) = \begin{pmatrix}
@@ -115,13 +115,8 @@ $$
     \tilde y_i = S_{ij} G_{jk} \hat y_k.
     $$
 
-    Though we "derived" this form using two stages, the result is really about finding a matrix $\mathbf X$ so that
 
-    $$
-    \tilde y_i = X_{ik} \hat y_k.
-    $$
-
-There are more than one $\mathbf P$ to map the all level forecasts to the base forecasts. Three of the so-called single level approaches[^Hyndman2021] are bottom-up, top-down, and middle-out[@Rangapuram2021-xi].
+There are more than one $\mathbf P$ that can map the forecasts to the bottom level forecasts. Three of the so-called single level approaches[^Hyndman2021] are bottom-up, top-down, and middle-out[@Rangapuram2021-xi].
 
 Apart from these intuitive methods, Wickramasuriya et al. proposed the MinT method to find the optimal $\mathbf G$ matrix that gives us the minimal variance the **reconciled forecast errors**[@Wickramasuriya2019-cv],
 
