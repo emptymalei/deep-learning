@@ -71,7 +71,7 @@ markdown_extensions:
 
 
 extra_javascript:
-  # - assets/js/config.js
+  # - assets/js/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
@@ -182,6 +182,7 @@ nav:
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
     - "Hierarchical Time Series":
       - "Hierarchical Time Series Data": time-series/timeseries-hierarchical.data.md
+      - "Hierarchical Time Series Reconciliation": time-series/timeseries-hierarchical.reconciliation.md
     - Useful Datasets:
       - time-series/timeseries-datasets.md
       - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md

@@ -74,8 +74,10 @@ Many real world time series data asserts some internal structure among the serie
 The relations between the series is represented using an **summing matrix** $\mathbf S$, which connects the bottom level series $\mathbf b$ and all the possible levels $\mathbf s$[^Hyndman2021]
 
 $$
-\mathbf y(t) = \mathbf S \mathbf b.
+\mathbf y(t) = \mathbf S \mathbf b(t).
 $$
+
+If our forecasts satisfy this relation, we claim our forecasts to be **coherent**[^Hyndman2021].
 
 !!! example "Summing Matrix Example"
 
