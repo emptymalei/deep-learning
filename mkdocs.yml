@@ -1,7 +1,7 @@
 # mkdocs.yml
-site_name: "Deep Learning Quick Bite"
+site_name: "Time Series with Deep Learning Quick Bite"
 site_author: "Lei Ma"
-site_description: "Deep Learning Quick Bite"
+site_description: "Time Series with Deep Learning Quick Bite"
 site_url: "https://emptymalei.github.io/deep-learning"
 repo_url: "https://github.com/emptymalei/deep-learning"
 edit_uri: "blob/main/deep-learning/"
