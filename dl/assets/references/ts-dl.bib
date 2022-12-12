@@ -1,0 +1,81 @@
+@misc{Elsayed2021-ug,
+title         = "Do We Really Need Deep Learning Models for Time Series
+                 Forecasting?",
+author        = "Elsayed, Shereen and Thyssens, Daniela and Rashed, Ahmed and
+                 Jomaa, Hadi Samer and Schmidt-Thieme, Lars",
+abstract      = "Time series forecasting is a crucial task in machine
+                 learning, as it has a wide range of applications including
+                 but not limited to forecasting electricity consumption,
+                 traffic, and air quality. Traditional forecasting models
+                 rely on rolling averages, vector auto-regression and
+                 auto-regressive integrated moving averages. On the other
+                 hand, deep learning and matrix factorization models have
+                 been recently proposed to tackle the same problem with more
+                 competitive performance. However, one major drawback of such
+                 models is that they tend to be overly complex in comparison
+                 to traditional techniques. In this paper, we report the
+                 results of prominent deep learning models with respect to a
+                 well-known machine learning baseline, a Gradient Boosting
+                 Regression Tree (GBRT) model. Similar to the deep neural
+                 network (DNN) models, we transform the time series
+                 forecasting task into a window-based regression problem.
+                 Furthermore, we feature-engineered the input and output
+                 structure of the GBRT model, such that, for each training
+                 window, the target values are concatenated with external
+                 features, and then flattened to form one input instance for
+                 a multi-output GBRT model. We conducted a comparative study
+                 on nine datasets for eight state-of-the-art deep-learning
+                 models that were presented at top-level conferences in the
+                 last years. The results demonstrate that the window-based
+                 input transformation boosts the performance of a simple GBRT
+                 model to levels that outperform all state-of-the-art DNN
+                 models evaluated in this paper.",
+month         =  "6~" # jan,
+year          =  2021,
+url           = "http://arxiv.org/abs/2101.02118",
+file          = "All Papers/ELSAYED/Elsayed et al. 2021 - Do We Really Need Deep Learning Models for Time Series Forecasting.pdf",
+archivePrefix = "arXiv",
+eprint        = "2101.02118",
+primaryClass  = "cs.LG",
+arxivid       = "2101.02118",
+doi           = "10.48550/ARXIV.2101.02118"
+}
+
+
+
+@misc{Grinsztajn2022-mu,
+  title         = "Why do tree-based models still outperform deep learning on
+                   tabular data?",
+  author        = "Grinsztajn, L{\'e}o and Oyallon, Edouard and Varoquaux,
+                   Ga{\"e}l",
+  abstract      = "While deep learning has enabled tremendous progress on text
+                   and image datasets, its superiority on tabular data is not
+                   clear. We contribute extensive benchmarks of standard and
+                   novel deep learning methods as well as tree-based models
+                   such as XGBoost and Random Forests, across a large number of
+                   datasets and hyperparameter combinations. We define a
+                   standard set of 45 datasets from varied domains with clear
+                   characteristics of tabular data and a benchmarking
+                   methodology accounting for both fitting models and finding
+                   good hyperparameters. Results show that tree-based models
+                   remain state-of-the-art on medium-sized data ($\sim$10K
+                   samples) even without accounting for their superior speed.
+                   To understand this gap, we conduct an empirical
+                   investigation into the differing inductive biases of
+                   tree-based models and Neural Networks (NNs). This leads to a
+                   series of challenges which should guide researchers aiming
+                   to build tabular-specific NNs: 1. be robust to uninformative
+                   features, 2. preserve the orientation of the data, and 3. be
+                   able to easily learn irregular functions. To stimulate
+                   research on tabular architectures, we contribute a standard
+                   benchmark and raw data for baselines: every point of a 20
+                   000 compute hours hyperparameter search for each learner.",
+  month         =  "18~" # jul,
+  year          =  2022,
+  url           = "http://arxiv.org/abs/2207.08815",
+  archivePrefix = "arXiv",
+  eprint        = "2207.08815",
+  primaryClass  = "cs.LG",
+  arxivid       = "2207.08815",
+  doi           = "10.48550/ARXIV.2207.08815"
+}

@@ -1,12 +1,4 @@
-# Time Series Forecasting using Deep Learning
-
-Forecasting the future is a valuable superpower. As the amount of data increases, time series forecasting using deep learning is a grow fast. To get a grasp of the trend, we created the following chart using [the keyword "deep learning forecasting" on dimensions.ai](https://app.dimensions.ai/analytics/publication/overview/timeline?search_mode=content&search_text=deep%20learning%20forecasting&search_type=kws&search_field=full_search&year_from=2015&year_to=2021)).[@dimensionsai]
-
-<figure markdown>
-  ![deep-learning-forecasting-dimension-ai](assets/deep-learning-forecasting-dimension-ai.png)
-  <figcaption>This chart is obtained on 2022-08-06, from Digital Science’s Dimensions platform, available at https://app.dimensions.ai</figcaption>
-</figure>
-
+# Time Series Data and Statistical Forecasting Mothods
 
 
 ## Time Series Data
