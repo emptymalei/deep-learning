@@ -1,7 +1,7 @@
 # mkdocs.yml
-site_name: "Deep Learning Quick Bite"
+site_name: "Time Series with Deep Learning Quick Bite"
 site_author: "Lei Ma"
-site_description: "Deep Learning Quick Bite"
+site_description: "Time Series with Deep Learning Quick Bite"
 site_url: "https://emptymalei.github.io/deep-learning"
 repo_url: "https://github.com/emptymalei/deep-learning"
 edit_uri: "blob/main/deep-learning/"
@@ -71,7 +71,7 @@ markdown_extensions:
 
 
 extra_javascript:
-  # - assets/js/config.js
+  # - assets/js/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
@@ -131,15 +131,13 @@ extra:
 
 nav:
   - "Home": index.md
-  - "Onboarding":
+  - "Coding Tips":
     - onboarding/index.md
     - "Python": onboarding/python.md
-  - "Energy-based Models":
-    - "Introduction": energy-based-models/intro.md
-    - "Supplementary":
-      - "Entropy": supplementary/entropy.md
-  - "Self-supervised Learning":
-    - "Introduction": self-supervised/index.md
+  - "Deep Learning Fundamentals":
+    - "Deep Learning Introduction": deep-learning-fundamentals/index.md
+    - "Energy-based Models":
+      - "Introduction": energy-based-models/intro.md
     - "Generative":
       - "Introduction": self-supervised/generative/intro.md
       - "Autoregressive": self-supervised/generative/autoregressive.md
@@ -159,17 +157,19 @@ nav:
       - "InfoGAN": self-supervised/adversarial/infogan.md
     - "Supplementary":
       - supplementary/index.md
+      - "Entropy": supplementary/entropy.md
       - "Mutual Information": supplementary/mutual-information.md
       - "KL Divergence": supplementary/kl-divergence.md
       - "f-divergence": supplementary/f-divergence.md
       - "ELBO": supplementary/elbo.md
       - "Alignment and Uniformity": supplementary/alignment-and-uniformity.md
-  - "Time Series":
+  - "Time Series Forecasting Fundamentals":
     - time-series/index.md
     - "Data":
       - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
       - "Augmentation": time-series/timeseries-data.data-augmentation.md
       - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
+      - "Time Delayed Embedding": time-series/timeseries-data.time-delayed-embedding.md
     - "Kindergarten Models":
       - "Statistical Models": time-series/timeseries-basics.statistical-models.md
       - "AR": "time-series/timeseries-basics.ar.md"
@@ -179,14 +179,17 @@ nav:
       - "DGP": time-series/timeseries-datasets.dgp.md
       - "DGP: Langevin Equation": time-series/timeseries-datasets.dgp.langevin.md
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
+    - "Hierarchical Time Series":
+      - "Hierarchical Time Series Data": time-series/timeseries-hierarchical.data.md
+      - "Hierarchical Time Series Reconciliation": time-series/timeseries-hierarchical.reconciliation.md
     - Useful Datasets:
       - time-series/timeseries-datasets.md
       - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md
       - "NREL Solar Power Data": time-series/timeseries-datasets.nrel-solar-energy.md
       - "Electricity": time-series/timeseries-datasets.uci-electricity.md
       - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
-  - "Topics":
-    - "Introduction": topics/intro.md
-    - "Predictive Coding": topics/predictive-coding.md
-    - "LTD/LTP": topics/ltd-ltp.md
-  - "Changelog": changelog.md
+  - "Time Series Forecasting with Deep Learning":
+    - "Introduction": "time-series-deep-learning/index.md"
+  - "About":
+    - "Roadmap": meta/roadmap.md
+    - "Changelog": meta/changelog.md
