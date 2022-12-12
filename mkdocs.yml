@@ -131,15 +131,13 @@ extra:
 
 nav:
   - "Home": index.md
-  - "Onboarding":
+  - "Coding Tips":
     - onboarding/index.md
     - "Python": onboarding/python.md
-  - "Energy-based Models":
-    - "Introduction": energy-based-models/intro.md
-    - "Supplementary":
-      - "Entropy": supplementary/entropy.md
-  - "Self-supervised Learning":
-    - "Introduction": self-supervised/index.md
+  - "Deep Learning Fundamentals":
+    - "Deep Learning Introduction": deep-learning-fundamentals/index.md
+    - "Energy-based Models":
+      - "Introduction": energy-based-models/intro.md
     - "Generative":
       - "Introduction": self-supervised/generative/intro.md
       - "Autoregressive": self-supervised/generative/autoregressive.md
@@ -159,12 +157,13 @@ nav:
       - "InfoGAN": self-supervised/adversarial/infogan.md
     - "Supplementary":
       - supplementary/index.md
+      - "Entropy": supplementary/entropy.md
       - "Mutual Information": supplementary/mutual-information.md
       - "KL Divergence": supplementary/kl-divergence.md
       - "f-divergence": supplementary/f-divergence.md
       - "ELBO": supplementary/elbo.md
       - "Alignment and Uniformity": supplementary/alignment-and-uniformity.md
-  - "Time Series":
+  - "Time Series Forecasting Fundamentals":
     - time-series/index.md
     - "Data":
       - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
@@ -189,8 +188,8 @@ nav:
       - "NREL Solar Power Data": time-series/timeseries-datasets.nrel-solar-energy.md
       - "Electricity": time-series/timeseries-datasets.uci-electricity.md
       - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
-  - "Topics":
-    - "Introduction": topics/intro.md
-    - "Predictive Coding": topics/predictive-coding.md
-    - "LTD/LTP": topics/ltd-ltp.md
-  - "Changelog": changelog.md
+  - "Time Series Forecasting with Deep Learning":
+    - "Introduction": "time-series-deep-learning/index.md"
+  - "About":
+    - "Roadmap": meta/roadmap.md
+    - "Changelog": meta/changelog.md

@@ -5,7 +5,7 @@ Contrastive Predictive Coding, CPC, is an autoregressive model combined with Inf
 
 !!! note "Predictive Coding"
 
-    Refer to [predictive coding](../../topics/predictive-coding.md).
+    As a related topic, predictive coding is a different scheme than backpropagation. Predictive coding updates the weights using local updating rules only[@Millidge2020-mr].
 
 
 There are two key ideas in CPC:
