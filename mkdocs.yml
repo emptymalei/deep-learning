@@ -1,7 +1,7 @@
 # mkdocs.yml
-site_name: "Deep Learning Quick Bite"
+site_name: "Time Series with Deep Learning Quick Bite"
 site_author: "Lei Ma"
-site_description: "Deep Learning Quick Bite"
+site_description: "Time Series with Deep Learning Quick Bite"
 site_url: "https://emptymalei.github.io/deep-learning"
 repo_url: "https://github.com/emptymalei/deep-learning"
 edit_uri: "blob/main/deep-learning/"
@@ -24,8 +24,8 @@ theme:
     - navigation.tabs
   palette:
     - scheme: default
-      primary: indigo
-      accent: indigo
+      primary: black
+      accent: deep orange
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
@@ -45,6 +45,7 @@ theme:
 
 markdown_extensions:
   - admonition
+  - abbr
   - attr_list
   - md_in_html
   - pymdownx.emoji:
@@ -70,7 +71,7 @@ markdown_extensions:
 
 
 extra_javascript:
-  # - assets/js/config.js
+  # - assets/js/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
@@ -96,23 +97,47 @@ plugins:
 
 
 extra:
+  analytics:
+    provider: google
+    property: G-9XN0RGHSE1
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/emoticon-happy-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/emoticon-sad-outline
+          name: This page could be improved
+          data: 0
+          note: >-
+            Thanks for your feedback! Help us improve this page by
+            using our <a href="https://github.com/emptymalei/deep-learning/issues" target="_blank" rel="noopener">GitHub Issues or Discussions</a>.
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/emptymalei/deep-learning
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/leima137/
 
 
 
 nav:
   - "Home": index.md
-  - "Onboarding":
+  - "Coding Tips":
     - onboarding/index.md
     - "Python": onboarding/python.md
-  - "Energy-based Models":
-    - "Introduction": energy-based-models/intro.md
-    - "Supplementary":
-      - "Entropy": supplementary/entropy.md
-  - "Self-supervised Learning":
-    - "Introduction": self-supervised/index.md
+  - "Deep Learning Fundamentals":
+    - "Deep Learning Introduction": deep-learning-fundamentals/index.md
+    - "Energy-based Models":
+      - "Introduction": energy-based-models/intro.md
     - "Generative":
       - "Introduction": self-supervised/generative/intro.md
       - "Autoregressive": self-supervised/generative/autoregressive.md
@@ -132,18 +157,39 @@ nav:
       - "InfoGAN": self-supervised/adversarial/infogan.md
     - "Supplementary":
       - supplementary/index.md
+      - "Entropy": supplementary/entropy.md
       - "Mutual Information": supplementary/mutual-information.md
       - "KL Divergence": supplementary/kl-divergence.md
       - "f-divergence": supplementary/f-divergence.md
       - "ELBO": supplementary/elbo.md
       - "Alignment and Uniformity": supplementary/alignment-and-uniformity.md
-  - "Time Series":
+  - "Time Series Forecasting Fundamentals":
     - time-series/index.md
     - "Data":
-      - "Augmentation": time-series/data-augmentation.md
-      - "DBA": time-series/dtw-barycenter-averaging.md
-  - "Topics":
-    - "Introduction": topics/intro.md
-    - "Predictive Coding": topics/predictive-coding.md
-    - "LTD/LTP": topics/ltd-ltp.md
-  - "Changelog": changelog.md
+      - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
+      - "Augmentation": time-series/timeseries-data.data-augmentation.md
+      - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
+      - "Time Delayed Embedding": time-series/timeseries-data.time-delayed-embedding.md
+    - "Kindergarten Models":
+      - "Statistical Models": time-series/timeseries-basics.statistical-models.md
+      - "AR": "time-series/timeseries-basics.ar.md"
+      - "VAR": time-series/timeseries-basics.var.md
+    - Synthetic Datasets:
+      - "Synthetic Time Series": time-series/timeseries-synthetic.md
+      - "DGP": time-series/timeseries-datasets.dgp.md
+      - "DGP: Langevin Equation": time-series/timeseries-datasets.dgp.langevin.md
+      - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
+    - "Hierarchical Time Series":
+      - "Hierarchical Time Series Data": time-series/timeseries-hierarchical.data.md
+      - "Hierarchical Time Series Reconciliation": time-series/timeseries-hierarchical.reconciliation.md
+    - Useful Datasets:
+      - time-series/timeseries-datasets.md
+      - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md
+      - "NREL Solar Power Data": time-series/timeseries-datasets.nrel-solar-energy.md
+      - "Electricity": time-series/timeseries-datasets.uci-electricity.md
+      - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
+  - "Time Series Forecasting with Deep Learning":
+    - "Introduction": "time-series-deep-learning/index.md"
+  - "About":
+    - "Roadmap": meta/roadmap.md
+    - "Changelog": meta/changelog.md
