@@ -9,7 +9,7 @@ Python will be our primary programming language. Thus we assume the readers have
 
 ## Environment Management
 
-Python is notorious in environment management. We recommend using `conda` to manage our environments.
+Python is notorious in environment management. The simple and out of the box solution is `conda` for environment management.
 
 !!! note "`conda` cheatsheet"
 
@@ -27,26 +27,26 @@ Python is notorious in environment management. We recommend using `conda` to man
 
 
 
-??? note "Alternative to `conda`"
+??? note "`pyenv` is a good alternative to `conda`"
 
-    [`pyenv`](https://github.com/pyenv/pyenv) is also a good tool for managing different versions and environments of python.
+    [`pyenv`](https://github.com/pyenv/pyenv) is also a good tool for managing different versions and environments of python. However, `pyenv` only provides python version management. It is to be combined with [`venv`](https://docs.python.org/3/library/venv.html) to create local python environments.
 
 
 ## Dependency Management
 
-We have a few choices to specify the dependencies. The most used method at the moment is `requirements.txt`.
+We have a few choices to specify the dependencies. The most used method at the moment is `requirements.txt` + pip.
 
 
-??? info "`conda`'s `environment.yml`"
+??? note "`conda`'s `environment.yml` is an alternative to `requirements.txt`"
 
     Alternatively, `conda` [provides its own requirement specification using `environment.yaml`](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file). However, this method doesn't make things better. If we ever need to make it more complicated than `requirements.txt`, `pyproject.toml` is the way to go.
 
 
-??? info "Modern Python with `pyproject.toml` and `poetry`"
+??? note "Modern Python with `pyproject.toml` and `poetry`"
 
     Python introduced `pyproject.toml` in [PEP518](https://peps.python.org/pep-0518/) which can be used together with [`poetry`](https://python-poetry.org) to [sepcify dependencies](https://python-poetry.org/docs/pyproject/#packages).
 
-    Both `conda` and `pyenv` have trouble solving the actual full dependency graphs of all the packages used. This problem is solved by `poetry`. However, this also means `poetry` can be very slow as it has to load many different versions of the packages to try out.[^slowpoetry]
+    Both `conda` and `pyenv` have trouble solving the actual full dependency graphs of all the packages used, sometimes. This problem is solved by `poetry`. However, this also means `poetry` can be very slow as it has to load many different versions of the packages to try out.[^slowpoetry]
 
     While tutorials on how to use `poetry` is not within the scope of this book, we highly recommend using `poetry` in a formal project.
 
@@ -101,6 +101,7 @@ We also recommend using [`pre-commit`](https://pre-commit.com/). `pre-commit` he
         hooks:
         - id: isort
             name: isort (python)
+            args: ["--profile", "black"]
     ```
 
 ## Write docstrings
@@ -116,7 +117,7 @@ Adding tests to our code can save us time. We will not list all these benefits o
 
 ??? info "Use `pytest`"
 
-    Use [pytest](https://pytest.org). RealPython provides a [good short introduction](https://realpython.com/pytest-python-testing/#what-makes-pytest-so-useful).
+    Use [pytest](https://pytest.org). RealPython provides a [good short introduction](https://realpython.com/pytest-python-testing/#what-makes-pytest-so-useful). The Alan Turing Institue provides [some lectures on testing and pytest](https://alan-turing-institute.github.io/rse-course/html/module05_testing_your_code/index.html).
 
 
 [^isort]: Pre Commit. In: isort [Internet]. [cited 22 Jul 2022]. Available: https://pycqa.github.io/isort/docs/configuration/pre-commit.html
