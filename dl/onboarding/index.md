@@ -81,6 +81,8 @@ The Alan Turing Institute also has a [Research Software Engineering with Python 
 
     python["Python Code Quality"]
     test["Test Your Code"]
+    formatter["Formatter"]
+    linter["Linter"]
     pytest["pytest"]:::highlight
     black["black"]:::highlight
     isort["isort"]:::highlight
