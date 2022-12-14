@@ -1,4 +1,4 @@
-# Tech Onboarding
+# Coding Tips
 
 In this book, we focus on python-based deep learning projects. In the main chapters, we will focus on the theories and actual code. Thus all the tech stack related topics are shoved into this chapter as references.
 
