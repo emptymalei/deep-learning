@@ -35,7 +35,7 @@ The Alan Turing Institute also has a [Research Software Engineering with Python 
     ide["Integrated Development Environment (IDE)"]
     vscode["Visual Studio Code"]:::highlight
     pycharm["PyCharm"]
-    jupyter["Jupyter"]
+    jupyter["Jupyter Notebooks"]
     python["Python Environment"]
     py_env["Python Environment Management"]
     conda["Anaconda"]:::highlight

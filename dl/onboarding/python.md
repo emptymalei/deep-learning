@@ -57,7 +57,7 @@ In a Python project, it is important to have some certain conventions or styles.
 
 We also recommend using [`pre-commit`](https://pre-commit.com/). `pre-commit` helps us manage git hooks to be executed before each commit. Once installed, every time we run `git commit -m "my commit message here"`, a series of commands will be executed first based on the configurations.
 
-=== "Some pre-commit Configs"
+=== ":simple-abstract: Some pre-commit Configs"
 
     `pre-commit` [officially provides some hooks](https://github.com/pre-commit/pre-commit-hooks) already, e.g., `trailing-whitespace`.[^pch]
 
@@ -67,7 +67,7 @@ We also recommend using [`pre-commit`](https://pre-commit.com/). `pre-commit` he
     - `isort`, which orders the Python imports[^isort],
     - `mypy`, which is a linter for Python.
 
-=== "An Example Config"
+=== ":material-cursor-default-click: An Example Config"
 
     The following is an example `.pre-commit-config.yaml` file for a Python project.
 
