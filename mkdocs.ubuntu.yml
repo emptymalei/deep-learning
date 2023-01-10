@@ -108,9 +108,9 @@ extra:
 
 nav:
   - "Home": index.md
-  - "Onboarding":
-    - onboarding/index.md
-    - "Python": onboarding/python.md
+  - "Coding Tips":
+    - engineering/index.md
+    - "Python": engineering/python.md
   - "Energy-based Models":
     - "Introduction": energy-based-models/intro.md
     - "Supplementary":

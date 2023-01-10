@@ -132,8 +132,8 @@ extra:
 nav:
   - "Home": index.md
   - "Coding Tips":
-    - onboarding/index.md
-    - "Python": onboarding/python.md
+    - engineering/index.md
+    - "Python": engineering/python.md
   - "Deep Learning Fundamentals":
     - "Deep Learning Introduction": deep-learning-fundamentals/index.md
     - "Energy-based Models":
