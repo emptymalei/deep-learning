@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # Autoencoders
 
 Autoencoders (AE) are machines that encodes inputs into a compact latent space.

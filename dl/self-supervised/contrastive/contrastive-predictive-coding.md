@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # Contrastive Predictive Coding
 
 Contrastive Predictive Coding, CPC, is an autoregressive model combined with InfoNCE loss[^Oord2018].

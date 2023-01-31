@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # InfoGAN
 
 In GAN, the latent space input is usually random noise, e.g., Gaussian noise. The objective of [GAN](gan.md) is a very generic one. It doesn't say anything about how exactly the latent space will be used. This is not desirable in many problems. We would like to have more interpretability in the latent space. InfoGAN introduced constraints to the objective to enforce interpretability of the latent space[^Chen2016].

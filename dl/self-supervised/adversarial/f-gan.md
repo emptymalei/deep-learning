@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # f-GAN
 
 The essence of [GAN](gan.md#divergence) is comparing the generated distribution $p_G$ and the data distribution $p_\text{data}$. The vanilla GAN considers the Jensen-Shannon divergence $\operatorname{D}_\text{JS}(p_\text{data}\Vert p_{G})$. The discriminator ${\color{green}D}$ serves the purpose of forcing this divergence to be small.

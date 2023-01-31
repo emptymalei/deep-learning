@@ -1,3 +1,8 @@
+---
+tags:
+  - WIP
+---
+
 # Generative Models
 
 ![Generative Models](assets/generative-models-1.jpg)
