@@ -31,7 +31,7 @@ A forecasting model $f$ will use $x^{(i)} _ {t-K:t}$ and $u^{(i)} _ {t-K:t+H}$ t
 
 ## Methods of Forecasting Methods
 
-T. Januschowsk et al proposed a framework to classify the different forecasting methods.[@Januschowski2020-ys] We illustrate the different methods in the following charts.
+T. Januschowsk et al proposed a framework to classify the different forecasting methods[@Januschowski2020-ys]. We illustrate the different methods in the following charts.
 
 
 ```mermaid

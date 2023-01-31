@@ -118,7 +118,7 @@ $$
 
 There are more than one $\mathbf P$ that can map the forecasts to the bottom level forecasts. Three of the so-called single level approaches[^Hyndman2021] are bottom-up, top-down, and middle-out[@Rangapuram2021-xi].
 
-Apart from these intuitive methods, Wickramasuriya et al. (2017) proposed the MinT method to find the optimal $\mathbf P$ matrix that gives us the minimal variance of the **reconciled forecast error**[@Wickramasuriya2019-cv],
+Apart from these intuitive methods, Wickramasuriya et al. (2017) proposed the MinT method to find the optimal $\mathbf P$ matrix that gives us the minimal trace of the covariance of the **reconciled forecast error**[@Wickramasuriya2019-cv],
 
 $$
 \tilde{\boldsymbol \epsilon} = \mathbf y(t) - \tilde{\mathbf y}(t),

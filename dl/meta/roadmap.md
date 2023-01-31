@@ -28,10 +28,10 @@ The following is an initial design of the blueprint.
 - [ ] Tech Onboarding
     - [x] Python, Environment, VSCode, Git, ...
     - [ ] Pytorch Lightning
-- [ ] Time Series
-    - [ ] Data
-        - [ ] Datasets
-        - [ ] Data Generating Process (DGP)
+- [x] Time Series
+    - [x] Data
+        - [x] Datasets
+        - [x] Data Generating Process (DGP)
         - [ ] Data Processing
         - [x] Data Augmentation
         - [ ] Metrics
@@ -40,16 +40,14 @@ The following is an initial design of the blueprint.
         - [ ] Classification
         - [ ] Generation
     - [ ] Models (Focus on Deep Models)
-        - [ ] AR and Variants
+        - [x] AR and Variants
         - [ ] RNN, e.g., LSTM
-        - [ ] DeepAR
-        - [ ] Conformal Prediction
+        - [ ] DeepAR, DeepVAR
         - [ ] Transformer
         - [ ] Spatial-temporal Models, e.g., GNN
+        - [ ] Conformal Prediction
 - [ ] Energy-based Models
 - [ ] Self-supervised Learning
 - [ ] Graph Neural Networks
-- [ ] Other Topics
-    - [ ] Graph Neural Networks
-    - [ ] Spiking Neural Networks
-    - [ ] Transformers
+- [ ] Spiking Neural Networks
+- [ ] NeuralODE
