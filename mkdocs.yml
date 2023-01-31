@@ -136,6 +136,8 @@ nav:
     - "Python": engineering/python.md
   - "Deep Learning Fundamentals":
     - "Deep Learning Introduction": deep-learning-fundamentals/index.md
+    - "Neural ODE":
+      - "Dynamical System": neural-ode/index.md
     - "Energy-based Models":
       - "Introduction": energy-based-models/intro.md
     - "Generative":
