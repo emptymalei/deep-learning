@@ -1,3 +1,8 @@
+---
+tags:
+  - WIP
+---
+
 # Autoregressive Model
 
 ![Generative AR basics](assets/autoregressive/generative-ar-basics-1.jpg)

@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # Adversarial Models
 
 - [GAN](gan.md)

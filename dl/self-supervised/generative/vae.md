@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # Variational AutoEncoder
 
 Variational AutoEncoder (VAE) is very different from [AE](ae.md). In VAE, we introduce a variational distribution $q$ to help us work out the weighted integral after introducing the latent space variable $z$,

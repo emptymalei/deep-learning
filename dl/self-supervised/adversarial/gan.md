@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # GAN
 
 GAN is a **generative neural sampler**[^Nowozin2016]. To train the sampler, the task of GAN is designed to generate features $X$ from a latent space $\xi$ and class labels $Y$,
