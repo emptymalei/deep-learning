@@ -192,6 +192,7 @@ nav:
       - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
+    - "Neural ODE for Time Series Forecasting": "time-series-deep-learning/neural-ode/index.md"
   - "About":
     - "Roadmap": meta/roadmap.md
     - "Changelog": meta/changelog.md
