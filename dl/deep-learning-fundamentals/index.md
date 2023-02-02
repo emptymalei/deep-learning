@@ -15,3 +15,22 @@ In the following chapters, we provide a some popular deep learning architectures
     - Sets, domains, abstract variables, $X$, $Y$;
     - Probability distribution $P$, $Q$;
     - Probability density $p$, $q$.
+
+!!! info "Current Progress"
+
+    - Neural ODE
+      - [ ] Neural ODE Basics
+    - Generative
+      - [ ] AR
+      - [ ] AE
+      - [x] VAE
+      - [ ] Flow
+      - [ ] MADE
+      - [ ] MAF
+    - Constrastive
+      - [x] Deep Infomax
+      - [x] Contrastive Predictive Coding
+    - Adversarial
+      - [x] GAN
+      - [x] f-GAN
+      - [x] Info-GAN
