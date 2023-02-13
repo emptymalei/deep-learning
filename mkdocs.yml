@@ -193,6 +193,7 @@ nav:
       - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
+    - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
   - "About":
     - "Roadmap": meta/roadmap.md
     - "Changelog": meta/changelog.md
