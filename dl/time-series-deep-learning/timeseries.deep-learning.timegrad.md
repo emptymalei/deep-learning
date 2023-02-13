@@ -1,10 +1,19 @@
 # TimeGrad Using Diffusion Model
 
+Rasul et al., (2021) proposed a probabilistic forecasting model using denoising diffusion models.
+
 ## Autoregressive
 
-In an multivariate forecasting problem, given an input sequence $\mathbf x_{t-K: t}$, we forecast $\mathbf x_{t+1:t+H}$.
+!!! info "Multivariate Forecasting Problem"
 
-To apply the [denoising diffusion model](../deep-learning-fundamentals/energy-based-models/ebm.diffusion.md) in our multivariate forecasting problem, we define our forecasting task as an autoregressive problem
+    Given an input sequence $\mathbf x_{t-K: t}$, we forecast $\mathbf x_{t+1:t+H}$.
+
+
+!!! info "Notation"
+
+    We use $x^0$ to denote the actual time series. The super script ${}^{0}$ will be used to represents the non-diffused values.
+
+To apply the [denoising diffusion model](../../energy-based-models/ebm.diffusion) in a multivariate forecasting problem, we define our forecasting task as the following autoregressive problem,
 
 $$
 q(\mathbf x^0_{t - K:t} \vert \mathbf x^0_{1:t_0 - 1}) = \Pi_{t=t_0}^T q(\mathbf x^0_t \vert \mathbf x^0_{1:t-1}).
@@ -12,10 +21,11 @@ $$
 
 ![AR](assets/timeseries.deep-learning.timegrad/ar-denoising-diffusion-model-problem.jpg)
 
+At each time step $t$, we build a denoising diffusion model.
 
 ## Time Dynamics
 
-Time dynamics can be easily captured by some RNN, meanwhile, we need a model for the diffusion process at each time step. Note that in denoising diffusion model, we minimize
+Note that in denoising diffusion model, we minimize
 
 $$
 \operatorname{min}_\theta \mathbb E_{q(\mathbf x^0)} \left[ -\log p_\theta (\mathbf x^0) \right]
@@ -27,7 +37,7 @@ $$
 \operatorname{min}_\theta \mathbb E_{q(\mathbf x^0_t )} \left[ -\log p_\theta (\mathbf x^0_t) \right].
 $$
 
-To include the time dynamics, we use the RNN state of the previous time step $\mathbf h_{t-1}$[^Rasul2021]
+Time dynamics can be easily captured by some RNN. To include the time dynamics, we use the RNN state built using the time series data of the previous time step $\mathbf h_{t-1}$[^Rasul2021]
 
 $$
 \operatorname{min}_\theta \mathbb E_{q(\mathbf x^0_t )} \left[ -\log p_\theta (\mathbf x^0_t \vert \mathbf h_{t-1}) \right].
