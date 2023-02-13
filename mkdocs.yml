@@ -179,6 +179,8 @@ nav:
       - "DGP": time-series/timeseries-datasets.dgp.md
       - "DGP: Langevin Equation": time-series/timeseries-datasets.dgp.langevin.md
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
+    - "Forecasting":
+      - "Naive Forecasts": time-series/timeseries-forecast.naive.md
     - "Hierarchical Time Series":
       - "Hierarchical Time Series Data": time-series/timeseries-hierarchical.data.md
       - "Hierarchical Time Series Reconciliation": time-series/timeseries-hierarchical.reconciliation.md
