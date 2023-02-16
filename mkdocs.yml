@@ -134,6 +134,33 @@ nav:
   - "Coding Tips":
     - engineering/index.md
     - "Python": engineering/python.md
+  - "Time Series Forecasting Fundamentals":
+    - time-series/index.md
+    - "Data":
+      - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
+      - "Augmentation": time-series/timeseries-data.data-augmentation.md
+      - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
+      - "Time Delayed Embedding": time-series/timeseries-data.time-delayed-embedding.md
+    - "Kindergarten Models":
+      - "Statistical Models": time-series/timeseries-basics.statistical-models.md
+      - "AR": "time-series/timeseries-basics.ar.md"
+      - "VAR": time-series/timeseries-basics.var.md
+    - Synthetic Datasets:
+      - "Synthetic Time Series": time-series/timeseries-synthetic.md
+      - "DGP": time-series/timeseries-datasets.dgp.md
+      - "DGP: Langevin Equation": time-series/timeseries-datasets.dgp.langevin.md
+      - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
+    - "Forecasting":
+      - "Naive Forecasts": time-series/timeseries-forecast.naive.md
+    - "Hierarchical Time Series":
+      - "Hierarchical Time Series Data": time-series/timeseries-hierarchical.data.md
+      - "Hierarchical Time Series Reconciliation": time-series/timeseries-hierarchical.reconciliation.md
+    - Useful Datasets:
+      - time-series/timeseries-datasets.md
+      - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md
+      - "NREL Solar Power Data": time-series/timeseries-datasets.nrel-solar-energy.md
+      - "Electricity": time-series/timeseries-datasets.uci-electricity.md
+      - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
   - "Deep Learning Fundamentals":
     - "Deep Learning Introduction": deep-learning-fundamentals/index.md
     - "Energy-based Models":
@@ -164,33 +191,6 @@ nav:
       - "f-divergence": supplementary/f-divergence.md
       - "ELBO": supplementary/elbo.md
       - "Alignment and Uniformity": supplementary/alignment-and-uniformity.md
-  - "Time Series Forecasting Fundamentals":
-    - time-series/index.md
-    - "Data":
-      - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
-      - "Augmentation": time-series/timeseries-data.data-augmentation.md
-      - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
-      - "Time Delayed Embedding": time-series/timeseries-data.time-delayed-embedding.md
-    - "Kindergarten Models":
-      - "Statistical Models": time-series/timeseries-basics.statistical-models.md
-      - "AR": "time-series/timeseries-basics.ar.md"
-      - "VAR": time-series/timeseries-basics.var.md
-    - Synthetic Datasets:
-      - "Synthetic Time Series": time-series/timeseries-synthetic.md
-      - "DGP": time-series/timeseries-datasets.dgp.md
-      - "DGP: Langevin Equation": time-series/timeseries-datasets.dgp.langevin.md
-      - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
-    - "Forecasting":
-      - "Naive Forecasts": time-series/timeseries-forecast.naive.md
-    - "Hierarchical Time Series":
-      - "Hierarchical Time Series Data": time-series/timeseries-hierarchical.data.md
-      - "Hierarchical Time Series Reconciliation": time-series/timeseries-hierarchical.reconciliation.md
-    - Useful Datasets:
-      - time-series/timeseries-datasets.md
-      - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md
-      - "NREL Solar Power Data": time-series/timeseries-datasets.nrel-solar-energy.md
-      - "Electricity": time-series/timeseries-datasets.uci-electricity.md
-      - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
     - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
