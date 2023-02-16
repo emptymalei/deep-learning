@@ -24,7 +24,7 @@ We present some data generating processes to help us build up intuition when mod
     Circular motion shows some cyclic patterns.
 
     $$
-    y = sin(w \cdot t)
+    y = \sin(w \cdot t)
     $$
 
     ![circular motion series](assets/timeseries-generating-process/circular-motion-time-series.png)
