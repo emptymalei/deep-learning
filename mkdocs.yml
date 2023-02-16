@@ -80,6 +80,7 @@ extra_javascript:
 
 plugins:
   - autorefs
+  - git-authors
   - search
   - tags:
       tags_file: tags.md
