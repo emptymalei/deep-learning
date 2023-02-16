@@ -136,10 +136,59 @@ $$
 
     when $y(t_0)$ is positive.
 
+    As an intuiation, we plot out the sum of the coefficients for different
+    orders and $\alpha$s.
+
+    === ":material-chart-line: SES Coefficients"
+
+        ![](assets/timeseries-forecast.naive/ses_coefficients_sum.png)
+
+    === ":material-code-json: Code"
+
+        ```python
+        from itertools import product
+        import pandas as pd
+        import seaborn as sns; sns.set()
+        from matplotlib.colors import LogNorm
+
+        def ses_coefficients(alpha, order):
+            return (
+                np.power(
+                        np.ones(int(order)) * (1-alpha), np.arange((order))
+                    ) * alpha
+            )
+
+        alphas = np.linspace(0.05, 0.95, 19)
+        orders = list(range(1, 16))
+
+        # Create dataframes for visualizations
+        df_ses_coefficients = pd.DataFrame(
+            [[alpha, order] for alpha, order in product(alphas, orders)],
+            columns=["alpha", "order"]
+        )
+        df_ses_coefficients["ses_coefficients_sum"] = df_ses_coefficients.apply(
+            lambda x: ses_coefficients(x["alpha"], x["order"]).sum(), axis=1
+        )
+
+        # Visualization
+        g = sns.heatmap(
+            data=df_ses_coefficients.pivot(
+                "alpha", "order", "ses_coefficients_sum"
+            ),
+            square=True, norm=LogNorm(),
+            fmt="0.2g",
+            yticklabels=[f"{i:0.2f}" for i in alphas],
+        )
+
+        g.set_title("SES Sum of Coefficients");
+        ```
 
 
 !!! info "Holt-Winters' Exponential Smoothing"
-    In applications, the Holt-Winters' exponential smoothing is more practical.
+    In applications, the Holt-Winters' exponential smoothing is more practical[^Hyndman2021][^nist][^HWES-numpyro].
+
+    We created some demo time series and apply the Holt-Winters' exponential smoothing.
+    To build see where exponential smoothing works, we forecast at different dates.
 
     === ":material-chart-line: Linear Example"
         ![](assets/timeseries-forecast.naive/exponential_smoothing_linear.png)
@@ -152,6 +201,9 @@ $$
 
     === ":material-chart-line: Sine Example 3"
         ![](assets/timeseries-forecast.naive/exponential_smoothing_3.png)
+
+    === ":material-chart-line: Sine Example 3, Longer History"
+        ![](assets/timeseries-forecast.naive/exponential_smoothing_3_longer_history.png)
 
     === ":material-code-json: Code"
 
@@ -186,3 +238,5 @@ Other naive forecasts, such as naive drift, are introduced in (Hyndman, et al., 
 
 
 [^Hyndman2021]: Hyndman, R.J., & Athanasopoulos, G. (2021) Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 2023-02-13.
+[^nist]: 6.4.3.5. Triple Exponential Smoothing. In: NIST Engineering Statistics Handbook [Internet]. [cited 16 Feb 2023]. Available: https://www.itl.nist.gov/div898/handbook/pmc/section4/pmc435.htm
+[^HWES-numpyro]: Example: Holt-Winters Exponential Smoothing — NumPyro  documentation. In: NumPyro [Internet]. [cited 16 Feb 2023]. Available: https://num.pyro.ai/en/stable/examples/holt_winters.html
