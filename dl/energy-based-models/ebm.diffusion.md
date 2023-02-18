@@ -1,5 +1,12 @@
 # Diffusion Models
 
+Many philosophically beautiful deep learning ideas faces the tractability problem.
+Many deep learning models utilizes the concept of latent space, e.g., $\mathbf z$,
+which is usually a compression of the real data space, e.g., $\mathbf x$, to enable easier computations for our task.
+
+However, such models usually require the computation of an intractable marginalization of the joint distribution $p(\mathbf x, \mathbf z)$ over the latent space[@Luo2022-hz]. To make such computations tractable, we have to apply approximations or theoretical assumptions.
+Diffusion models in deep learning establishes the connection between the real data space $\mathbf x$ and the latent space $\mathbf z$ assuming invertible [diffusion processes](https://en.wikipedia.org/wiki/Diffusion_process).
+
 ## Objective
 
 In a denoising diffusion model, given
