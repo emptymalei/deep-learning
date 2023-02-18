@@ -1,6 +1,6 @@
 # Generating Processes for Time Series
 
-The data generating processes (DGP) for time series is diverse. For example, in physics, we have all sort of dynamical systems that generates time series data and many dynamics models are formulated based on the time series data. In industries, time series data are often coming from stochastic processes.
+The data generating processes (DGP) for time series are diverse. For example, in physics, we have all sort of dynamical systems that generates time series data and many dynamics models are formulated based on the time series data. In industries, time series data are often coming from stochastic processes.
 
 We present some data generating processes to help us build up intuition when modeling real-world data.
 
@@ -10,7 +10,7 @@ We present some data generating processes to help us build up intuition when mod
 
 !!! example "Exponential Growth"
 
-    Exponential growth is a frequently observed natural and economical phenomena.
+    Exponential growth is a frequently observed natural and economical phenomenon.
 
     $$
     y = e^{c \cdot t}
@@ -21,7 +21,7 @@ We present some data generating processes to help us build up intuition when mod
 
 !!! example "Circular Motion"
 
-    Circular motion shows some cyclic patterns.
+    The circular motion shows some cyclic patterns.
 
     $$
     y = \sin(w \cdot t)
@@ -85,7 +85,7 @@ $$
 x_t - \mu = \sum_{i=0}^\tau \alpha_i \epsilon_{t-i}.
 $$
 
-The general linear process is the Taylor expansion of a arbitrary DGP $x_t = \operatorname{DGP}(\epsilon_t, ...)$[^Das2019].
+The general linear process is the Taylor expansion of an arbitrary DGP $x_t = \operatorname{DGP}(\epsilon_t, ...)$[^Das2019].
 
 
 ## Interactions between Series

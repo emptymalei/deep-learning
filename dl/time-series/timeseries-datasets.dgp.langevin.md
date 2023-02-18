@@ -1,6 +1,6 @@
 # Time Series Data Generating Process: Langevin Equation
 
-Among the many data generating processes (DGP), Langevin equation is one of the most interesting DGP.
+Among the many data generating processes (DGP), the Langevin equation is one of the most interesting DGP.
 
 ## Brownian Motion
 

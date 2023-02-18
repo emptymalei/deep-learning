@@ -9,7 +9,7 @@ I do not have a finished blueprint yet. But I have a framework in my mind: I wan
 
 ## :material-open-source-initiative: Open Source
 
-This is an open source project on GitHub: [:fontawesome-brands-github-alt: emptymalei/deep-learning](https://github.com/emptymalei/deep-learning).
+This is an open-source project on GitHub: [:fontawesome-brands-github-alt: emptymalei/deep-learning](https://github.com/emptymalei/deep-learning).
 
 
 ## :material-language-markdown: How Do I Write It
@@ -27,7 +27,7 @@ The following is an initial design of the blueprint.
 
 - [ ] Tech Onboarding
     - [x] Python, Environment, VSCode, Git, ...
-    - [ ] Pytorch Lightning
+    - [ ] PyTorch Lightning
 - [x] Time Series
     - [x] Data
         - [x] Datasets
@@ -36,7 +36,7 @@ The following is an initial design of the blueprint.
         - [x] Data Augmentation
         - [ ] Metrics
     - [ ] Tasks
-        - [ ] Forecasting
+        - [x] Forecasting
         - [ ] Classification
         - [ ] Generation
     - [ ] Models (Focus on Deep Models)
@@ -47,6 +47,7 @@ The following is an initial design of the blueprint.
         - [ ] Spatial-temporal Models, e.g., GNN
         - [ ] Conformal Prediction
 - [ ] Energy-based Models
+    - [ ] Diffusion models
 - [ ] Self-supervised Learning
 - [ ] Graph Neural Networks
 - [ ] Spiking Neural Networks

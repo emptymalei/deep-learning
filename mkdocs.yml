@@ -71,7 +71,7 @@ markdown_extensions:
 
 
 extra_javascript:
-  # - assets/js/mathjax.js
+  - assets/js/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
@@ -166,6 +166,7 @@ nav:
     - "Deep Learning Introduction": deep-learning-fundamentals/index.md
     - "Energy-based Models":
       - "Introduction": energy-based-models/intro.md
+      - "Diffusion Models": energy-based-models/ebm.diffusion.md
     - "Generative":
       - "Introduction": self-supervised/generative/intro.md
       - "Autoregressive": self-supervised/generative/autoregressive.md
@@ -193,6 +194,7 @@ nav:
       - "Alignment and Uniformity": supplementary/alignment-and-uniformity.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
+    - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
   - "About":
     - "Roadmap": meta/roadmap.md
     - "Changelog": meta/changelog.md

@@ -44,7 +44,7 @@ $$
 \hat s(t+1) = \alpha s(t) + (1-\alpha) \hat s(t),
 $$
 
-where $\hat s$ is the forecast and $s$ is the observation. Expanding this form, we observe the exponential decaying effect of the history in the long past[^Hyndman2021].
+where $\hat s$ is the forecast and $s$ is the observation. Expanding this form, we observe the exponential decaying effect of history in the long past[^Hyndman2021].
 
 
 ## State Space Models

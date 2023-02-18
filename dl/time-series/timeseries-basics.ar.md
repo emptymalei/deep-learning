@@ -1,6 +1,6 @@
 # AR
 
-Autoregressive (AR) models are simple model to model time series. A general AR(p) model is described by the following process:
+Autoregressive (AR) models are simple models to model time series. A general AR(p) model is described by the following process:
 
 $$
 s(t) = \phi_0 + \sum_{i=1}^p \phi_i s(t-i) + \epsilon.
@@ -26,7 +26,7 @@ By staring at this equation, we can build up our intuitions.
 | $0$ |  $\phi_1>1$ or $0\le\phi_1 \lt 1$  |  - |  exponential + noise |
 
 
-!!! note "Exponential Behavior doesn't Always Approach Positive Inifinity"
+!!! note "Exponential Behavior doesn't Always Approach Positive Infinity"
 
     For example, the combination $\phi_0=0$ and $\phi_1>1$ without noise leads to exponential growth if the initial series value is positive. However, it approaches negative infinity if the initial series is negative.
 
