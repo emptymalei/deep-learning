@@ -38,7 +38,7 @@ $$
     \end{pmatrix}.
     $$
 
-    The simplest mapping to the bottom level forecasts is
+    The simplest mapping to the bottom-level forecasts is
 
     $$
     \hat{\mathbf b}(t) = \begin{pmatrix}
@@ -85,7 +85,7 @@ $$
     \end{pmatrix}.
     $$
 
-    In summary, our coherent forecasts for each levels are
+    In summary, our coherent forecasts for each level are
 
     $$
     \begin{align}
@@ -98,7 +98,7 @@ $$
 
     The $\mathbf P$ we used in this example represents the **bottom-up method**.
 
-    Results like $\tilde s_\mathrm{CA}(t) = \hat s_\mathrm{CA}(t)$ looks comfortable but they are not necessary. In other reconciliation methods, these relations might be broken, i.e., $\tilde s_\mathrm{CA}(t) = \hat s_\mathrm{CA}(t)$ may not be true.
+    Results like $\tilde s_\mathrm{CA}(t) = \hat s_\mathrm{CA}(t)$ look comfortable but they are not necessary. In other reconciliation methods, these relations might be broken, i.e., $\tilde s_\mathrm{CA}(t) = \hat s_\mathrm{CA}(t)$ may not be true.
 
 
 !!! note "Component Form"
@@ -116,7 +116,7 @@ $$
     $$
 
 
-There are more than one $\mathbf P$ that can map the forecasts to the bottom level forecasts. Three of the so-called single level approaches[^Hyndman2021] are bottom-up, top-down, and middle-out[@Rangapuram2021-xi].
+There is more than one $\mathbf P$ that can map the forecasts to the bottom-level forecasts. Three of the so-called single-level approaches[^Hyndman2021] are bottom-up, top-down, and middle-out[@Rangapuram2021-xi].
 
 Apart from these intuitive methods, Wickramasuriya et al. (2017) proposed the MinT method to find the optimal $\mathbf P$ matrix that gives us the minimal trace of the covariance of the **reconciled forecast error**[@Wickramasuriya2019-cv],
 
@@ -132,6 +132,6 @@ $$
 
 where $W_{h} = \mathbb E\left[ \tilde{\boldsymbol \epsilon} \tilde{\boldsymbol \epsilon}^T \right] = \mathbb E \left[ (\mathbf y(t) - \tilde{\mathbf y}(t))(\mathbf y(t) - \tilde{\mathbf y}(t))^T \right]$ is the covariance matrix of the reconciled forecast error.
 
-MinT is easy to calculate but it assumes that the forecasts are unbiased. To relieve this constraint, Van Erven & Cugliari (2013) proposed a game theoretic method called GTOP[@Van_Erven2015-ht]. In deep learning, Rangapuram et al. (2021) developed an end-to-end model for coherent probabilistic hierarchical forecasts[@Rangapuram2021-xi]. For these advanced topics, we redirect the readers to the original papers.
+MinT is easy to calculate but it assumes that the forecasts are unbiased. To relieve this constraint, Van Erven & Cugliari (2013) proposed a game-theoretic method called GTOP[@Van_Erven2015-ht]. In deep learning, Rangapuram et al. (2021) developed an end-to-end model for coherent probabilistic hierarchical forecasts[@Rangapuram2021-xi]. For these advanced topics, we redirect the readers to the original papers.
 
 [^Hyndman2021]: Hyndman, R.J., & Athanasopoulos, G. (2021) Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 2022-11-27.

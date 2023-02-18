@@ -9,7 +9,7 @@ Python will be our primary programming language. Thus we assume the readers have
 
 ## Environment Management
 
-Python is notorious in environment management. The simple and out of the box solution is `conda` for environment management.
+Python is notorious in environment management. The simple and out-of-the-box solution is `conda` for environment management.
 
 !!! note "`conda` cheatsheet"
 
@@ -48,14 +48,14 @@ We have a few choices to specify the dependencies. The most used method at the m
 
     Both `conda` and `pyenv` have trouble solving the actual full dependency graphs of all the packages used, sometimes. This problem is solved by `poetry`. However, this also means `poetry` can be very slow as it has to load many different versions of the packages to try out.[^slowpoetry]
 
-    While tutorials on how to use `poetry` is not within the scope of this book, we highly recommend using `poetry` in a formal project.
+    While tutorials on how to use `poetry` are not within the scope of this book, we highly recommend using `poetry` in a formal project.
 
 
 ## Python Styles and `pre-commit`
 
-In a Python project, it is important to have some certain conventions or styles. To be consistent, one could follow some style guides for python. There are official proposals, such as [PEP8](https://peps.python.org/pep-0008/), and "third party" style guides, such as [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).[^pep8][^gpsg]
+In a Python project, it is important to have certain conventions or styles. To be consistent, one could follow some style guides for python. There are official proposals, such as [PEP8](https://peps.python.org/pep-0008/), and "third party" style guides, such as [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).[^pep8][^gpsg]
 
-We also recommend using [`pre-commit`](https://pre-commit.com/). `pre-commit` helps us manage git hooks to be executed before each commit. Once installed, every time we run `git commit -m "my commit message here"`, a series of commands will be executed first based on the configurations.
+We also recommend [`pre-commit`](https://pre-commit.com/). `pre-commit` helps us manage git hooks to be executed before each commit. Once installed, every time we run `git commit -m "my commit message here"`, a series of commands will be executed first based on the configurations.
 
 === ":simple-abstract: Some pre-commit Configs"
 

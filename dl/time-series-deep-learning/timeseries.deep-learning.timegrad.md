@@ -11,7 +11,7 @@ Rasul et al., (2021) proposed a probabilistic forecasting model using denoising 
 
 !!! info "Notation"
 
-    We use $x^0$ to denote the actual time series. The super script ${}^{0}$ will be used to represents the non-diffused values.
+    We use $x^0$ to denote the actual time series. The super script ${}^{0}$ will be used to represent the non-diffused values.
 
 To apply the [denoising diffusion model](../../energy-based-models/ebm.diffusion) in a multivariate forecasting problem, we define our forecasting task as the following autoregressive problem,
 
@@ -25,7 +25,7 @@ At each time step $t$, we build a denoising diffusion model.
 
 ## Time Dynamics
 
-Note that in denoising diffusion model, we minimize
+Note that in the denoising diffusion model, we minimize
 
 $$
 \operatorname{min}_\theta \mathbb E_{q(\mathbf x^0)} \left[ -\log p_\theta (\mathbf x^0) \right]

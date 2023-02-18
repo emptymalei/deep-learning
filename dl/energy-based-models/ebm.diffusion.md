@@ -61,7 +61,7 @@ $$
 
 This simulates an information diffusion process. The information in the original data is gradually smeared.
 
-If the chosen diffusion process is revertible, the reverse process of it can be modeled by a similar Markov process
+If the chosen diffusion process is reversible, the reverse process of it can be modeled by a similar Markov process
 
 $$
 p_\theta (\mathbf x^0, \mathbf x^1, \mathbf x^2, \mathbf x^3, \mathbf x^4, \mathbf x^5) = p_\theta (\mathbf x^0 \vert \mathbf x^1) p_\theta (\mathbf x^1 \vert \mathbf x^2)

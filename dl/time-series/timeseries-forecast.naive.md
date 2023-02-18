@@ -22,7 +22,7 @@ Assuming our time series is not changing dramatically, we can take our last obse
     \frac{\mathrm d y(t)}{\mathrm dt} = t
     $$
 
-    is an linear growing time series.
+    is a linear growing time series.
 
     We would imagine, it won't be too crazy if we just take the last observed value as our forecast.
 
@@ -96,7 +96,7 @@ In some bounded time series, the mean of the past values is also a good naive ca
 
 ## Simple Exponential Smoothing
 
-Simple Exponential Smoothing (SES) is a naive smoothing method to account for the historical values of a time series, when forecasting. The expanded form of SES is[^Hyndman2021]
+Simple Exponential Smoothing (SES) is a naive smoothing method to account for the historical values of a time series when forecasting. The expanded form of SES is[^Hyndman2021]
 
 $$
 y(t) = \alpha ( y(t-1) + (1-\alpha) y(t-2) + (1-\alpha)^2 y(t-3) + \cdots )
@@ -104,7 +104,7 @@ $$
 
 !!! warning "Truncated SES is Biased"
 
-    Naively speaking, if the history is constant, we have to forecast the same constant. For example, if we have $y(t) = y(t_0)$, the smoothing
+    Naively speaking, if history is constant, we have to forecast the same constant. For example, if we have $y(t) = y(t_0)$, the smoothing
 
     $$
     y(t) = \alpha (1 + (1-\alpha) + \cdots) y(t_0)
@@ -136,7 +136,7 @@ $$
 
     when $y(t_0)$ is positive.
 
-    As an intuiation, we plot out the sum of the coefficients for different
+    As an intuition, we plot out the sum of the coefficients for different
     orders and $\alpha$s.
 
     === ":material-chart-line: SES Coefficients"
@@ -234,7 +234,7 @@ $$
 
 ## Other
 
-Other naive forecasts, such as naive drift, are introduced in (Hyndman, et al., 2021)[^Hyndman2021].
+Other naive forecasts, such as naive drift, are introduced in Hyndman, et al., (2021)[^Hyndman2021].
 
 
 [^Hyndman2021]: Hyndman, R.J., & Athanasopoulos, G. (2021) Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 2023-02-13.

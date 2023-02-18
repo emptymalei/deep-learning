@@ -6,7 +6,7 @@ Time series analysis is not our focus here. However, it is beneficial to grasp s
 
 Time series data is stationary if the distribution of the observables do not change[^wiki-stationary-process][^nist-stationarity][^Das2019].
 
-A strict stationary series guarantees the same distribution for a segment $\{x_{i+1}, \cdots, x_{x+k}\}$ and a time shifted segment $\{x_{i+1+\Delta}, \cdots, x_{x+k+\Delta}\}$ for integer $\Delta$[^wiki-stationary-process].
+A strict stationary series guarantees the same distribution for a segment $\{x_{i+1}, \cdots, x_{x+k}\}$ and a time-shifted segment $x_{i+1+\Delta}, \cdots, x_{x+k+\Delta}\}$ for integer $\Delta$[^wiki-stationary-process].
 
 A less strict form (WSS) concerns only the mean and autocorrelation[^wiki-stationary-process][^Shalizi2012], i.e.,
 
@@ -17,13 +17,13 @@ $$
 \end{align}
 $$
 
-In deep learning, a lot of models requires the training data to be I.I.D.[^Schoelkopf2021][^Dawid2022]. The I.I.D. requirements in time series is stationarity.
+In deep learning, a lot of models require the training data to be I.I.D.[^Schoelkopf2021][^Dawid2022]. The I.I.D. requirement in time series is stationarity.
 
-Stationary time series is clean and pure. However, real world data is not necessarily stationary, e.g., macroeconomic series data are nonstationary[^Das2019].
+A stationary time series is clean and pure. However, real-world data is not necessarily stationary, e.g., macroeconomic series data are non-stationary[^Das2019].
 
 ## Serial Dependence
 
-Autocorrelation measures the serial dependency of a time series[^wiki-autocorrelation]. By definition the autocorrelation is the autocovariance normalized by the variance,
+Autocorrelation measures the serial dependency of a time series[^wiki-autocorrelation]. By definition, the autocorrelation is the autocovariance normalized by the variance,
 
 $$
 \rho = \frac{\mathbb{Cov}[x_t, x_{t+\delta}]}{\mathbb{Var}[x_t]}.

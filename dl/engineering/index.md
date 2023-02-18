@@ -4,16 +4,16 @@ In this book, we focus on python-based deep learning projects. In the main chapt
 
 !!! info
 
-    This chapter is not aiming to be a comprehensive note on these technologies but a few key components that may be missing in many research oriented tech stacks. We assume the readers have worked with the essential technologies in a python-based deep learning project.
+    This chapter is not aiming to be a comprehensive note on these technologies but a few key components that may be missing in many research-oriented tech stacks. We assume the readers have worked with the essential technologies in a python-based deep learning project.
 
 
 ## Good References for Coding in Research
 
-There are skills that only take less than an hour to learn but people benefit from them for many years. Managing code exactly falls into this type of knowledge.
+Some skills only take less than an hour to learn but people benefit from them for many years. Managing code exactly falls into this type of knowledge.
 
 [The Good Research Code Handbook](https://goodresearch.dev) is a very good and concise guide to build good coding habits. This should be a good first read.
 
-The Alan Turing Institute also has a [Research Software Engineering with Python course](https://alan-turing-institute.github.io/rse-course/html/index.html). This is comprehensive generic course for boosting python coding skills in research.
+The Alan Turing Institute also has a [Research Software Engineering with Python course](https://alan-turing-institute.github.io/rse-course/html/index.html). This is a comprehensive generic course for boosting python coding skills in research.
 
 
 !!! note "A Checklist of Tech Stack"
@@ -21,9 +21,9 @@ The Alan Turing Institute also has a [Research Software Engineering with Python 
     We provide a concise list of tools for coding. Most of them are probably already integrated into most people's workflows. Hence we provide no descriptions but only the list itself.
 
     !!! warning ""
-        In the following diagrams, we highlight the recommend tools using orange color. Clicking on them takes us to the corresponding website.
+        In the following diagrams, we highlight the recommended tools using orange color. Clicking on them takes us to the corresponding website.
 
-    The first set of checklist is to help us setting up a good coding environment.
+    The first set of checklists is to help us set up a good coding environment.
 
     ```mermaid
     flowchart TD
@@ -73,7 +73,7 @@ The Alan Turing Institute also has a [Research Software Engineering with Python 
     ```
 
 
-    The second set of checklist is to boost our code quality.
+    The second set of checklists is to boost our code quality.
 
     ```mermaid
     flowchart TD

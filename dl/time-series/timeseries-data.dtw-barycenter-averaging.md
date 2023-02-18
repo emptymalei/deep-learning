@@ -42,7 +42,7 @@ where $S^{(1)}_i$ is the $i$the element of the series $S^{(1)}$, $d(x,y)$ is a p
     - $S_{1:i}$ is equivalent to `S[0:i]`, and
     - $S_i$ is equivalent to `S[i-1]`.
 
-    Note that the indices in Python looks strange. This is also the reason we choose to use subscripts not square brackets in our definition.
+    Note that the indices in Python look strange. This is also the reason we choose to use subscripts not square brackets in our definition.
 
 
 
@@ -55,7 +55,7 @@ where $S^{(1)}_i$ is the $i$the element of the series $S^{(1)}$, $d(x,y)$ is a p
 
 ## Barycenter Averaging Based on DTW Distance
 
-Petitjean et al proposed an time series averaging algorithm based on DTW distance which is dubbed as DTW Barycenter Averaging (**DBA**).
+Petitjean et al proposed a time series averaging algorithm based on DTW distance which is dubbed DTW Barycenter Averaging (**DBA**).
 
 
 !!! note "DBA Implementation"

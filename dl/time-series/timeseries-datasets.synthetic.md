@@ -4,7 +4,7 @@ With a proper understanding of the [DGP](timeseries-datasets.dgp.md), we can bui
 
 ## GluonTS
 
-[GluonTS](https://github.com/awslabs/gluonts) is a python package for probabilistic time series modeling. It comes with a simple yet easy to use synthetic data generator. For example, to generate a time series of random Gaussian, we only need the following code[^gluonts-synth].
+[GluonTS](https://github.com/awslabs/gluonts) is a python package for probabilistic time series modeling. It comes with a simple yet easy-to-use synthetic data generator. For example, to generate a time series of random Gaussian, we only need the following code[^gluonts-synth].
 
 ```python
 from gluonts.dataset.artificial import recipe as rcp
