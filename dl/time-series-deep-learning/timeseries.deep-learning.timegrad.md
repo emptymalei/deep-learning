@@ -82,6 +82,9 @@ $$
 
 The quantiles is calculated by repeating many times for each forecasted time step[^Rasul2021].
 
+## Code
+
+An implementation of the model can be found in the package [pytorch-ts](https://github.com/zalandoresearch/pytorch-ts) [@Rasul_PyTorchTS].
 
 
 [^Rasul2021]: Rasul K, Seward C, Schuster I, Vollgraf R. Autoregressive Denoising Diffusion Models for Multivariate Probabilistic Time Series Forecasting. arXiv [cs.LG]. 2021. Available: http://arxiv.org/abs/2101.12072
