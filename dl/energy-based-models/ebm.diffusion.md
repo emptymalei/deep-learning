@@ -125,6 +125,10 @@ $$
 
 with $\alpha_n = 1 - \beta _ n$, $\bar \alpha _ n = \Pi _ {i=1}^n \alpha_i$, and $\Sigma_\theta$ in Eq $\eqref{eqn-guassian-reverse-process}$.
 
+## Code
+
+Rogge & Rasul (2022) wrote [a post](https://huggingface.co/blog/annotated-diffusion) with detailed annotations of the denoising diffusion probabilistic model[^Rogge2022].
+
 
 [^Rasul2021]: Rasul K, Seward C, Schuster I, Vollgraf R. Autoregressive Denoising Diffusion Models for Multivariate Probabilistic Time Series Forecasting. arXiv [cs.LG]. 2021. Available: http://arxiv.org/abs/2101.12072
 [^Rogge2022]: Rogge N, Rasul K. The Annotated Diffusion Model. In: Hugging Face Blog [Internet]. 7 Jun 2022 [cited 18 Feb 2023]. Available: https://huggingface.co/blog/annotated-diffusion
