@@ -1,8 +1,3 @@
----
-tags:
-  - WIP
----
-
 # Energy-based Models
 
 Energy-based models (EBM) establish relations between different possible values of variables using "energy functions"[@Le_Cun2006-ta].

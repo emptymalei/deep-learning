@@ -1,3 +1,8 @@
+---
+tags:
+  - WIP
+---
+
 # Diffusion Models
 
 Many philosophically beautiful deep learning ideas faces the tractability problem.
