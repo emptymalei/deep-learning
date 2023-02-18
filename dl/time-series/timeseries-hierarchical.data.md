@@ -1,6 +1,6 @@
 # Hierarchical Time Series Data
 
-Many real world time series data asserts some internal structure among the series. For example, the dataset used in the [M5 competition](https://mofc.unic.ac.cy/m5-competition/) is the sales data of different items but with the store and category information provided[^Makridakis2022]. For simplicity, we simplified the dataset to only include the hierarchy of stores.
+Many real-world time series data assert some internal structure among the series. For example, the dataset used in the [M5 competition](https://mofc.unic.ac.cy/m5-competition/) is the sales data of different items but with the store and category information provided[^Makridakis2022]. For simplicity, we simplified the dataset to only include the hierarchy of stores.
 
 
 === ":material-information-outline: Hierarchy Structure"
@@ -57,7 +57,7 @@ Many real world time series data asserts some internal structure among the serie
     end
     ```
 
-    The above tree is useful when thinking about the hierarchies. For example, it explicitly tells us that the sales in store #1, #2, #3 in TX should sum up to the sales in TX.
+    The above tree is useful when thinking about the hierarchies. For example, it explicitly tells us that the sales in stores #1, #2, #3 in TX should sum up to the sales in TX.
 
 
 === ":material-chart-line: Visualization"
@@ -71,7 +71,7 @@ Many real world time series data asserts some internal structure among the serie
 
 ## Summing Matrix
 
-The relations between the series is represented using an **summing matrix** $\mathbf S$, which connects the bottom level series $\mathbf b$ and all the possible levels $\mathbf s$[^Hyndman2021]
+The relations between the series is represented using a **summing matrix** $\mathbf S$, which connects the bottom level series $\mathbf b$ and all the possible levels $\mathbf s$[^Hyndman2021]
 
 $$
 \mathbf y(t) = \mathbf S \mathbf b(t).

@@ -62,3 +62,110 @@ arxivid       = "2006.08218"
   primaryClass  = "cs.LG",
   arxivid       = "1806.07366"
 }
+
+@online{Le_Cun2006-ta,
+  title  = "A Tutorial on {Energy-Based} Learning",
+  author = "Le Cun, Yann and Chopra, Sumit and Hadsell, Raia and Ranzato,
+            Marc'aurelio and Huang, Fu Jie",
+  year   =  2006,
+  file   = "All Papers/LE CUN/Le Cun et al. 2006 - A Tutorial on Energy-Based Learning.pdf"
+}
+
+
+@online{Luo2022-hz,
+  title         = "Understanding Diffusion Models: A Unified Perspective",
+  author        = "Luo, Calvin",
+  abstract      = "Diffusion models have shown incredible capabilities as
+                   generative models; indeed, they power the current
+                   state-of-the-art models on text-conditioned image generation
+                   such as Imagen and DALL-E 2. In this work we review,
+                   demystify, and unify the understanding of diffusion models
+                   across both variational and score-based perspectives. We
+                   first derive Variational Diffusion Models (VDM) as a special
+                   case of a Markovian Hierarchical Variational Autoencoder,
+                   where three key assumptions enable tractable computation and
+                   scalable optimization of the ELBO. We then prove that
+                   optimizing a VDM boils down to learning a neural network to
+                   predict one of three potential objectives: the original
+                   source input from any arbitrary noisification of it, the
+                   original source noise from any arbitrarily noisified input,
+                   or the score function of a noisified input at any arbitrary
+                   noise level. We then dive deeper into what it means to learn
+                   the score function, and connect the variational perspective
+                   of a diffusion model explicitly with the Score-based
+                   Generative Modeling perspective through Tweedie's Formula.
+                   Lastly, we cover how to learn a conditional distribution
+                   using diffusion models via guidance.",
+  month         =  "25~" # aug,
+  year          =  2022,
+  url           = "http://arxiv.org/abs/2208.11970",
+  file          = "All Papers/LUO/Luo 2022 - Understanding Diffusion Models - A Unified Perspective.pdf",
+  copyright     = "http://creativecommons.org/licenses/by/4.0/",
+  archivePrefix = "arXiv",
+  eprint        = "2208.11970",
+  primaryClass  = "cs.LG",
+  arxivid       = "2208.11970"
+}
+
+
+
+@online{Sohl-Dickstein2015-th,
+  title         = "Deep Unsupervised Learning using Nonequilibrium
+                   Thermodynamics",
+  author        = "Sohl-Dickstein, Jascha and Weiss, Eric A and
+                   Maheswaranathan, Niru and Ganguli, Surya",
+  abstract      = "A central problem in machine learning involves modeling
+                   complex data-sets using highly flexible families of
+                   probability distributions in which learning, sampling,
+                   inference, and evaluation are still analytically or
+                   computationally tractable. Here, we develop an approach that
+                   simultaneously achieves both flexibility and tractability.
+                   The essential idea, inspired by non-equilibrium statistical
+                   physics, is to systematically and slowly destroy structure
+                   in a data distribution through an iterative forward
+                   diffusion process. We then learn a reverse diffusion process
+                   that restores structure in data, yielding a highly flexible
+                   and tractable generative model of the data. This approach
+                   allows us to rapidly learn, sample from, and evaluate
+                   probabilities in deep generative models with thousands of
+                   layers or time steps, as well as to compute conditional and
+                   posterior probabilities under the learned model. We
+                   additionally release an open source reference implementation
+                   of the algorithm.",
+  month         =  "12~" # mar,
+  year          =  2015,
+  url           = "http://arxiv.org/abs/1503.03585",
+  file          = "All Papers/SOHL-DICKSTEIN/Sohl-Dickstein et al. 2015 - Deep Unsupervised Learning using Nonequilibrium Thermodynamics.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1503.03585",
+  primaryClass  = "cs.LG",
+  arxivid       = "1503.03585"
+}
+
+
+@online{Ho2020-er,
+  title         = "Denoising Diffusion Probabilistic Models",
+  author        = "Ho, Jonathan and Jain, Ajay and Abbeel, Pieter",
+  abstract      = "We present high quality image synthesis results using
+                   diffusion probabilistic models, a class of latent variable
+                   models inspired by considerations from nonequilibrium
+                   thermodynamics. Our best results are obtained by training on
+                   a weighted variational bound designed according to a novel
+                   connection between diffusion probabilistic models and
+                   denoising score matching with Langevin dynamics, and our
+                   models naturally admit a progressive lossy decompression
+                   scheme that can be interpreted as a generalization of
+                   autoregressive decoding. On the unconditional CIFAR10
+                   dataset, we obtain an Inception score of 9.46 and a
+                   state-of-the-art FID score of 3.17. On 256x256 LSUN, we
+                   obtain sample quality similar to ProgressiveGAN. Our
+                   implementation is available at
+                   https://github.com/hojonathanho/diffusion",
+  month         =  "19~" # jun,
+  year          =  2020,
+  url           = "http://arxiv.org/abs/2006.11239",
+  archivePrefix = "arXiv",
+  eprint        = "2006.11239",
+  primaryClass  = "cs.LG",
+  arxivid       = "2006.11239"
+}

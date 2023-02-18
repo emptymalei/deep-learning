@@ -17,7 +17,7 @@ $$
 
 
 ??? note "Notations and Conventions"
-    In AR models, we have to mention the preceding nodes ($\{x_{<t}\}$) of a specific node ($x_{t}$). For $t=5$, the relations between $\{x_{<5}\}$ and $x_5$ is shown in the following illustration.
+    In AR models, we have to mention the preceding nodes ($\{x_{<t}\}$) of a specific node ($x_{t}$). For $t=5$, the relations between $\{x_{<5}\}$ and $x_5$ are shown in the following illustration.
 
     ![](assets/autoregressive/ar-notations.jpg){ align=right }
 
