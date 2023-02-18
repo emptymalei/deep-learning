@@ -1,6 +1,6 @@
 # DTW Barycenter Averaging
 
-DTW Barycenter Averaging (**DBA**) constructs a series $\bar{\mathcal S}$ out of a set of series $\{\mathcal S^{(\alpha)}\}$ so that $\bar{\mathcal S}$ is the barycenter of $\{\mathcal S^{(\alpha)}\}$ measured by Dynamic Time Warping (**DTW**) distance.[@Petitjean2011-sj]
+DTW Barycenter Averaging (**DBA**) constructs a series $\bar{\mathcal S}$ out of a set of series $\{\mathcal S^{(\alpha)}\}$ so that $\bar{\mathcal S}$ is the barycenter of $\{\mathcal S^{(\alpha)}\}$ measured by Dynamic Time Warping (**DTW**) distance [@Petitjean2011-sj].
 
 
 ## Dynamic Time Warping (**DTW**)
@@ -50,7 +50,7 @@ where $S^{(1)}_i$ is the $i$the element of the series $S^{(1)}$, $d(x,y)$ is a p
 
     Given two words, e.g., $w^{a} = \mathrm{cats}$ and $w^{b} = \mathrm{katz}$. Suppose we can only use three operations: insertions, deletions and substitutions. The Levenshtein distance calculates the number of such operations needed to change from the first word $w^a$ to the second one $w^b$ by applying single-character edits. In this example, we need two replacements, i.e., `"c" -> "k"` and `"s" -> "z"`.
 
-    The Levenshtein distance can be solved using recursive algorithms.[^trekhleb]
+    The Levenshtein distance can be solved using recursive algorithms [^trekhleb].
 
 
 ## Barycenter Averaging Based on DTW Distance
