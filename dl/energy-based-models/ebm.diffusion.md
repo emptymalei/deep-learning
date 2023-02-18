@@ -3,14 +3,15 @@ tags:
   - WIP
 ---
 
-# Diffusion Models
+# Denoising Diffusion Probabilistic Models
 
-Many philosophically beautiful deep learning ideas faces the tractability problem.
-Many deep learning models utilizes the concept of latent space, e.g., $\mathbf z$,
+Many philosophically beautiful deep learning ideas face the tractability problem.
+Many deep learning models utilize the concept of latent space, e.g., $\mathbf z$,
 which is usually a compression of the real data space, e.g., $\mathbf x$, to enable easier computations for our task.
 
 However, such models usually require the computation of an intractable marginalization of the joint distribution $p(\mathbf x, \mathbf z)$ over the latent space[@Luo2022-hz]. To make such computations tractable, we have to apply approximations or theoretical assumptions.
-Diffusion models in deep learning establishes the connection between the real data space $\mathbf x$ and the latent space $\mathbf z$ assuming invertible [diffusion processes](https://en.wikipedia.org/wiki/Diffusion_process).
+Diffusion models in deep learning establish the connection between the real data space $\mathbf x$ and the latent space $\mathbf z$ assuming invertible [diffusion processes](https://en.wikipedia.org/wiki/Diffusion_process).
+
 
 ## Objective
 
@@ -123,3 +124,4 @@ with $\alpha_n = 1 - \beta _ n$, $\bar \alpha _ n = \Pi _ {i=1}^n \alpha_i$, and
 
 
 [^Rasul2021]: Rasul K, Seward C, Schuster I, Vollgraf R. Autoregressive Denoising Diffusion Models for Multivariate Probabilistic Time Series Forecasting. arXiv [cs.LG]. 2021. Available: http://arxiv.org/abs/2101.12072
+[^Rogge2022]: Rogge N, Rasul K. The Annotated Diffusion Model. In: Hugging Face Blog [Internet]. 7 Jun 2022 [cited 18 Feb 2023]. Available: https://huggingface.co/blog/annotated-diffusion
