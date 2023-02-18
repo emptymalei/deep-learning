@@ -10,8 +10,7 @@ Many deep learning models utilize the concept of latent space, e.g., $\mathbf z$
 which is usually a compression of the real data space, e.g., $\mathbf x$, to enable easier computations for our task.
 
 However, such models usually require the computation of an intractable marginalization of the joint distribution $p(\mathbf x, \mathbf z)$ over the latent space[@Luo2022-hz]. To make such computations tractable, we have to apply approximations or theoretical assumptions.
-Diffusion models in deep learning establish the connection between the real data space $\mathbf x$ and the latent space $\mathbf z$ assuming invertible [diffusion processes](https://en.wikipedia.org/wiki/Diffusion_process).
-
+Diffusion models in deep learning establish the connection between the real data space $\mathbf x$ and the latent space $\mathbf z$ assuming invertible [diffusion processes](https://en.wikipedia.org/wiki/Diffusion_process) [@Sohl-Dickstein2015-th][@Ho2020-er].
 
 ## Objective
 
@@ -25,7 +24,20 @@ we find
 - the transformations from $\mathbf x^0$ to $\mathbf x^n$, as well as
 - the transformations from $\mathbf x^n$ to $\mathbf x^0$.
 
-### An Example
+
+!!! info "Image Data Example"
+
+    The following figure is taken from Sohl-Dickstein et al. (2015)[@Ho2020-er].
+
+    ![](assets/ebm.diffusion/diffusion-model-spiral.png)
+
+    The forward process, shown in the first row, diffuses the original spiral data at $t=0$ into a Gaussian noise at $t=T$. The reverse process, shown in the second row, recovers the original data from $t=T$ into the image at $t=0$.
+
+    In the following texts, we use $n$ instead of $t$.
+
+
+
+### An Example with $N=5$
 
 For example, with $N=5$, the forward process is
 
