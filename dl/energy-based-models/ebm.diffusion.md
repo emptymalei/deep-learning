@@ -1,8 +1,3 @@
----
-tags:
-  - WIP
----
-
 # Denoising Diffusion Probabilistic Models
 
 Many philosophically beautiful deep learning ideas face the tractability problem.
