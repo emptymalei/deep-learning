@@ -52,14 +52,20 @@ Apart from the usual time dimension $t$, the autoregressive denoising diffusion 
 The loss for each time step $t$ is[^Rasul2021]
 
 $$
+\begin{equation}
 \mathcal L_t = \mathbb E_{\mathbf x^0_t, \epsilon, n} \left[ \lVert \epsilon - \epsilon_\theta ( \sqrt{\bar \alpha_n} \mathbf x^0_t + \sqrt{1-\bar \alpha_n}\epsilon, \mathbf h_{t-1}, n ) \rVert^2  \right].
+\label{eq:ddpm-loss}
+\end{equation}
 $$
 
 That being said, we just need to minimize $\mathcal L_t$ for each time step $t$.
 
 ## Training Algorithm
 
-See Rasul et al., (2021)[^Rasul2021].
+The input data is sliced into fixed length time series $\mathbf x_t^0$. Since Eq \eqref{eq:ddpm-loss} shows that a loss can be calculated for arbitrary $n$ without depending on any previous diffusion steps $n-1$, the training can be done by both random sampling in $\mathbf x_t^0$ and $n$. See Rasul et al. (2021)[^Rasul2021].
+
+![Training](assets/timeseries.deep-learning.timegrad/ar-ddpm-train.png)
+
 
 ## How to Forecast
 
