@@ -9,11 +9,7 @@ Diffusion models in deep learning establish the connection between the real data
 
 ## Objective
 
-In a denoising diffusion model, given
-
-- an input $\mathbf x^0$ drawn from a complicated and unknown distribution $q(\mathbf x^0)$,
-
-we find
+In a denoising diffusion model, given an input $\mathbf x^0$ drawn from a complicated and unknown distribution $q(\mathbf x^0)$, we find
 
 - a latent space with a simple and manageable distribution, e.g., normal distribution, and
 - the transformations from $\mathbf x^0$ to $\mathbf x^n$, as well as
