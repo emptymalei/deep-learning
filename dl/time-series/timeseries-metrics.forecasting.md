@@ -29,23 +29,23 @@ where $\{C(t)\}$ are the covariates and $\{y(t)\}$ represents the past target va
 
 ## List of Metrics
 
-|  Metric | Definition |  Range | Notes |
-|---|---|-----|----|
-| MAE  |   |  $[0,\infty)$ | |
-| MSE  |   |  $[0,\infty)$ | |
-|  RMSE |   | $[0,\infty)$ | |
-| MASE |  | $[0,\infty)$ | But scaled in practice |
-| RMSLE | | $[0,\infty)$ | |
-| MAPE | | $[0,\infty]$ | |
-| sMAPE | | $[0, 2]$ | |
-| wMAPE | | - | Depends on what weights are used |
+|  Metric |  Range | Notes |
+|---|-----|----|
+| MAE  |   $[0,\infty)$ | |
+| MSE  |    $[0,\infty)$ | |
+|  RMSE |    $[0,\infty)$ | |
+| MASE |   $[0,\infty)$ | But scaled in practice, requires insample data |
+| RMSLE |  $[0,\infty)$ | |
+| MAPE |  $[0,\infty]$ | |
+| sMAPE |  $[0, 2]$ | For values of the same sign |
+| wMAPE |  - | Depends on what weights are used |
 
 Probabilistic forecast metrics
 
-|  Metric | Definition |  Range | Notes |
-|---|---|-----|----|
-| Quantile Loss  |   |  $[0,\infty)$ | |
-| CRPS  |   |   | |
+|  Metric |  Range | Notes |
+|---|------|----|
+| Quantile Loss     |  $[0,\infty)$ | |
+| CRPS  |      |  |
 
 
 ### 1-Norm: MAE
@@ -195,6 +195,25 @@ where ${}_{+}$ indicates that we only take positive values.
 !!! note "Quantile Loss has many names"
 
     The quantile loss is also called quantile score, pinball loss, quantile risk or $\rho$-risk.
+
+
+## Metrics Applied on a Toy Problem
+
+To feel the difference between each metric, we assume a simple forecasting problem with some artificial time series data.
+
+We construct the artificial data by summing a sine series and a linear series.
+
+![artificial data](assets/timeseries-metrics.forecasting/artificial_ts_for_metrics_demo.png)
+
+We have prepared three naive forecasts,
+
+1. forecasting constant values using the last observation,
+2. forecasting the sin component of the actual data,
+3. forecasting the linear component of the actual data.
+
+We calculated the metrics for the three different scenarios.
+
+![Metrics Demo](assets/timeseries-metrics.forecasting/metrics-demo.png)
 
 
 [^Hyndman2021]: Hyndman, R.J., & Athanasopoulos, G. (2021) Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 2022-11-27.
