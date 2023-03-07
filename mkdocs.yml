@@ -140,6 +140,7 @@ nav:
     - "Data":
       - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
       - "Augmentation": time-series/timeseries-data.data-augmentation.md
+      - "DTW": time-series/timeseries-data.dtw.md
       - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
       - "Time Delayed Embedding": time-series/timeseries-data.time-delayed-embedding.md
     - "Kindergarten Models":
