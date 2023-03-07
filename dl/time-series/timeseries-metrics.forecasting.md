@@ -29,7 +29,7 @@ where $\{C(t)\}$ are the covariates and $\{y(t)\}$ represents the past target va
 
 ## List of Metrics
 
-|  Metric | Definition |  Range | |
+|  Metric | Definition |  Range | Notes |
 |---|---|-----|----|
 | MAE  |   |  $[0,\infty)$ | |
 | MSE  |   |  $[0,\infty)$ | |
@@ -38,7 +38,14 @@ where $\{C(t)\}$ are the covariates and $\{y(t)\}$ represents the past target va
 | RMSLE | | $[0,\infty)$ | |
 | MAPE | | $[0,\infty]$ | |
 | sMAPE | | $[0, 2]$ | |
-| wMAPE | | - | |
+| wMAPE | | - | Depends on what weights are used |
+
+Probabilistic forecast metrics
+
+|  Metric | Definition |  Range | Notes |
+|---|---|-----|----|
+| Quantile Loss  |   |  $[0,\infty)$ | |
+| CRPS  |   |   | |
 
 
 ### 1-Norm: MAE
@@ -49,6 +56,15 @@ $$
 \operatorname{MAE}(y, \hat y) = \frac{1}{H}\sum_{t=1}^{t=H}\lvert y(t) - \hat y(t)\rvert.
 $$
 
+=== ":material-test-tube: Forecasts and Actuals"
+
+    ![](assets/timeseries-metrics.forecasting/metric_mae_heatmap.png)
+
+=== ":material-test-tube: Forecasts and Fixed Actuals"
+
+    ![](assets/timeseries-metrics.forecasting/metric_mae_fixed_y_1.png)
+
+
 
 ### 2-Norm: MSE
 
@@ -57,6 +73,15 @@ The Mean Square Error (MSE) is
 $$
 \operatorname{MSE}(y, \hat y) = \frac{1}{H}\sum_{t=1}^{t=H}(y(t) - \hat y(t))^2.
 $$
+
+=== ":material-test-tube: Forecasts and Actuals"
+
+    ![](assets/timeseries-metrics.forecasting/metric_mse_heatmap.png)
+
+=== ":material-test-tube: Forecasts and Fixed Actuals"
+
+    ![](assets/timeseries-metrics.forecasting/metric_mse_fixed_y_1.png)
+
 
 
 ??? note "Other Norms"
@@ -101,6 +126,14 @@ $$
 \end{align}
 $$
 
+=== ":material-test-tube: Forecasts and Actuals"
+
+    ![](assets/timeseries-metrics.forecasting/metric_rmsle_heatmap.png)
+
+=== ":material-test-tube: Forecasts and Fixed Actuals"
+
+    ![](assets/timeseries-metrics.forecasting/metric_rmsle_fixed_y_1.png)
+
 
 ### MAPE
 
@@ -109,6 +142,14 @@ The Mean Absolute Percent Error (MAPE) is a bounded metric defined as
 $$
 \operatorname{MAPE(y(t), \hat y(t))} = \frac{1}{H} \sum_{i=1}^H \left\lvert \frac{y(t_i) - \hat y(t_i)}{y(t_i)} \right\rvert.
 $$
+
+=== ":material-test-tube: Forecasts and Actuals"
+
+    ![](assets/timeseries-metrics.forecasting/metric_mape_heatmap.png)
+
+=== ":material-test-tube: Forecasts and Fixed Actuals"
+
+    ![](assets/timeseries-metrics.forecasting/metric_mape_fixed_y_1.png)
 
 
 
@@ -120,6 +161,15 @@ $$
 \operatorname{sMAPE}(y(t), \hat y(t)) = \frac{1}{H} \sum_{i=1}^H \frac{\lvert y(t_i) - \hat y(t_i) \rvert}{ \lvert y(t_i) + \hat y(t_i) \rvert/2 }.
 $$
 
+=== ":material-test-tube: Forecasts and Actuals"
+
+    ![](assets/timeseries-metrics.forecasting/metric_smape_heatmap.png)
+
+=== ":material-test-tube: Forecasts and Fixed Actuals"
+
+    ![](assets/timeseries-metrics.forecasting/metric_smape_fixed_y_1.png)
+
+
 ### wMAPE
 
 The [weighted Mean Absolute Percent Error (wMAPE)](https://en.wikipedia.org/wiki/Mean_absolute_percentage_error) is
@@ -127,12 +177,6 @@ The [weighted Mean Absolute Percent Error (wMAPE)](https://en.wikipedia.org/wiki
 $$
 \operatorname{wMAPE}(y(t), \hat y(t)) = \frac{\sum_{i=1}^H w_i \lvert y(t_i) - \hat y(t_i) \rvert }{\sum_{i=1}^H w_i}.
 $$
-
-
-## Metrics for Point Forecasting
-
-
-## Probabilistic Forecasting
 
 
 ### Quantile Loss
