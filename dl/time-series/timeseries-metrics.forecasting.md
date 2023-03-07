@@ -6,7 +6,7 @@ In this section, we explore some frequently used metrics. The metrics are groupe
 
 !!! info "Recommended Reading"
 
-    Hyndman & Athanasopoulos (2021) is a good reference for forecast errors [^Hyndman2021].
+    [Hyndman & Athanasopoulos (2021)](https://otexts.com/fpp3/accuracy.html) is a good reference for forecast errors [^Hyndman2021].
 
     To find implementations of metrics, [Darts](https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html#) and [GluonTS](https://ts.gluon.ai/stable/api/gluonts/gluonts.evaluation.metrics.html) both have a handful of metrics implemented.
 
@@ -45,7 +45,6 @@ Probabilistic forecast metrics
 |  Metric |  Range | Notes |
 |---|------|----|
 | Quantile Loss     |  $[0,\infty)$ | |
-| CRPS  |      |  |
 
 
 ### 1-Norm: MAE
@@ -196,6 +195,9 @@ where ${}_{+}$ indicates that we only take positive values.
 
     The quantile loss is also called quantile score, pinball loss, quantile risk or $\rho$-risk.
 
+### Other Metrics
+
+We do not have a full collection of all metrics available. But we also explain some more complicated metrics, e.g., [CRPS](timeseries-metrics.forecasting.crps.md), as individual sections.
 
 ## Metrics Applied on a Toy Problem
 
