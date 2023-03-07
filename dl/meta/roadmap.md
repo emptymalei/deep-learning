@@ -5,7 +5,7 @@ When I switched to data science, I built [my digital garden, datumorphism](https
 
 Making bricks is easy but assembling them into a house is not easy. So I have decided to use this repository to practice my house-building techniques.
 
-I do not have a finished blueprint yet. But I have a framework in my mind: I want to consolidate some of my thoughts and learnings in a good way. However, I do not want to compile a reference book, as [datumorphism](https://datumorphism.leima.is/) already serves this purpose. I should create stories.
+I do not have a finished blueprint yet. But I have a framework in my mind: I want to consolidate some of my thoughts and learnings in an organized way. However, I do not want to compile a reference book, as [datumorphism](https://datumorphism.leima.is/) already serves this purpose. I am thinking of an
 
 ## :material-open-source-initiative: Open Source
 
@@ -25,15 +25,15 @@ I am trying out a more "agile" method. Instead of finishing the whole project at
 
 The following is an initial design of the blueprint.
 
-- [ ] Tech Onboarding
-    - [x] Python, Environment, VSCode, Git, ...
-    - [ ] PyTorch Lightning
-- [x] Time Series
+- [ ] Coding Tips
+    - [x] Environment, VSCode, Git, ...
+    - [x] Python Project Tips
+- [x] Time Series Fundamentals
     - [x] Data
-        - [x] Datasets
+        - [x] Time Series Analysis
+        - [x] Data Augmentation
         - [x] Data Generating Process (DGP)
         - [ ] Data Processing
-        - [x] Data Augmentation
         - [ ] Metrics
     - [ ] Tasks
         - [x] Forecasting
@@ -46,6 +46,7 @@ The following is an initial design of the blueprint.
         - [ ] Transformer
         - [ ] Spatial-temporal Models, e.g., GNN
         - [ ] Conformal Prediction
+    - [x] Useful Datasets
 - [ ] Energy-based Models
     - [ ] Diffusion models
 - [ ] Self-supervised Learning
