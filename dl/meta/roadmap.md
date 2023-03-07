@@ -12,44 +12,13 @@ I do not have a finished blueprint yet. But I have a framework in my mind: I wan
 This is an open-source project on GitHub: [:fontawesome-brands-github-alt: emptymalei/deep-learning](https://github.com/emptymalei/deep-learning).
 
 
-## :material-language-markdown: How Do I Write It
+## :material-language-markdown: How do I Write It
 
 I am trying out a more "agile" method. Instead of finishing the whole project at once, I will release the book by chapter. A few thoughts on this plan:
 
 - Each new section should be a PR.
-- Every PR is reviewed.
 - Release on every new section.
 
+## How do I track the Progress
 
-## :material-floor-plan: Blueprint
-
-The following is an initial design of the blueprint.
-
-- [ ] Coding Tips
-    - [x] Environment, VSCode, Git, ...
-    - [x] Python Project Tips
-- [x] Time Series Fundamentals
-    - [x] Data
-        - [x] Time Series Analysis
-        - [x] Data Augmentation
-        - [x] Data Generating Process (DGP)
-        - [ ] Data Processing
-        - [ ] Metrics
-    - [ ] Tasks
-        - [x] Forecasting
-        - [ ] Classification
-        - [ ] Generation
-    - [ ] Models (Focus on Deep Models)
-        - [x] AR and Variants
-        - [ ] RNN, e.g., LSTM
-        - [ ] DeepAR, DeepVAR
-        - [ ] Transformer
-        - [ ] Spatial-temporal Models, e.g., GNN
-        - [ ] Conformal Prediction
-    - [x] Useful Datasets
-- [ ] Energy-based Models
-    - [ ] Diffusion models
-- [ ] Self-supervised Learning
-- [ ] Graph Neural Networks
-- [ ] Spiking Neural Networks
-- [ ] NeuralODE
+I use GitHub Projects. [Here is my board](https://github.com/users/emptymalei/projects/7/views/1).

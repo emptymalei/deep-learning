@@ -19,5 +19,61 @@ However, deep learning models are picking up speed. In the [M5 competition](http
 In [Coding Tips](engineering/index.md), we provide coding tips to help some readers set up the development environment. In [Deep Learning Fundamentals](deep-learning-fundamentals/index.md), we introduce the fundamentals of deep neural networks and their practices. For completeness, we also provide code and derivations for the models. With these two parts, we introduce time series data and statistical forecasting models in [Time Series Forecasting Fundamentals](time-series/index.md), where we discuss methods to analyze time series data, several universal data generating processes of time series data, and some statistical forecasting methods. Finally, we fulfill our promise in the title in [Time Series Forecasting with Deep Learning](time-series-deep-learning/index.md).
 
 
+## :material-floor-plan: Blueprint
+
+The following is my first version of the blueprint.
+
+- [x] Coding Tips
+    - [x] Environment, VSCode, Git, ...
+    - [x] Python Project Tips
+- [x] Time Series Fundamentals
+    - [x] Data
+        - [x] Time Series Analysis
+        - [x] Data Augmentation
+        - [x] DTW and DBA
+        - [x] Time Delayed Embedding for Deep Learning
+    - [ ] Some Statistical Models
+        - [x] AR and VAR
+        - [ ] State Space Models
+        - [x] Naive Forecasters
+    - [x] Data Generating Process (DGP)
+        - [x] General discussions
+        - [x] Dynamical systems, e.g., the diffusion process
+        - [x] Creating synthetic data (GluonTS, [eerily](https://github.com/emptymalei/eerily))
+    - [x] Metrics
+        - [x] List of forecasting metrics, their properties and demos.
+    - [ ] Hierarchical Forecasting
+        - [x] Hierarchical time series data
+        - [x] Reconciliation
+        - [ ] End2End hierarchical forecasting methods
+    - [x] Useful Datasets
+- [ ] Deep Learning Fundamentals
+    - [ ] Energy-based Models
+        - [x] Diffusion models
+    - [ ]  Neural ODE
+        - [ ] Neural ODE Basics
+    - Generative
+        - [ ] AR
+        - [ ] AE
+        - [x] VAE
+        - [ ] Flow
+        - [ ] MADE
+        - [ ] MAF
+    - Constrastive
+        - [x] Deep Infomax
+        - [x] Contrastive Predictive Coding
+    - Adversarial
+        - [x] GAN
+        - [x] f-GAN
+        - [x] Info-GAN
+- [ ] Deep Learning Models for Forecasting
+    - [ ] RNN, e.g., LSTM
+    - [ ] DeepAR, DeepVAR
+    - [x] Diffusion Models, e.g., TimeGrad
+    - [ ] Transformer, e.g., TFT
+    - [ ] Spatial-temporal Models, e.g., GNN
+    - [ ] Conformal Prediction
+    - [ ] Graph Neural Networks
+    - [ ] Spiking Neural Networks
 
 [^nixtla-m3-ensemble]: Nixtla. statsforecast/experiments/m3 at main · Nixtla/statsforecast. In: GitHub [Internet]. [cited 12 Dec 2022]. Available: https://github.com/Nixtla/statsforecast/tree/main/experiments/m3
