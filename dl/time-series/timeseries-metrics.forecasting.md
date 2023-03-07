@@ -47,6 +47,314 @@ Probabilistic forecast metrics
 | Quantile Loss     |  $[0,\infty)$ | |
 
 
+??? note "Code to Reproduce the Results"
+
+    ```python
+    # %%
+    from loguru import logger
+    import datetime
+    import numpy as np
+    from itertools import product
+
+    from matplotlib.ticker import FormatStrFormatter
+    import pandas as pd
+
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    sns.set()
+
+    from darts.utils.timeseries_generation import (
+        sine_timeseries,
+        linear_timeseries,
+        constant_timeseries,
+    )
+
+    from darts.metrics.metrics import (
+        mae,
+        mape,
+        marre,
+        mse,
+        ope,
+        rho_risk,
+        rmse,
+        rmsle,
+        smape,
+        mase
+    )
+
+    # %%
+    length = 600
+    start = 0
+    ts_sin = sine_timeseries(length=length, value_frequency=0.01, start=0)
+    ts_lin = linear_timeseries(
+        length=length, start_value=0, end_value=1.5, start=0
+    )
+
+    ts = (ts_sin + ts_lin).with_columns_renamed("sine", "sin+linear")
+
+    split_at = 500
+    ts_train, ts_test = ts.split_before(split_at)
+    ts_train = ts_train.with_columns_renamed("sin+linear", "train")
+    ts_test = ts_test.with_columns_renamed("sin+linear", "actual")
+
+
+    _, ts_pred_lin = ts_lin.split_before(split_at)
+    ts_pred_lin = ts_pred_lin.with_columns_renamed("linear", "linear_prediction")
+
+
+    _, ts_pred_sin = ts_sin.split_before(split_at)
+    ts_pred_sin = ts_pred_sin.with_columns_renamed("sine", "sin_prediction")
+
+    ts_pred_const = constant_timeseries(
+        value=ts_train.last_value(),
+        start=ts_test.start_time(),
+        end=ts_test.end_time()
+    )
+    ts_pred_const = ts_pred_const.with_columns_renamed("constant", "constant_prediction")
+
+
+    # %%
+    ts.plot(marker=".")
+    # ts_lin.plot(linestyle="dashed")
+    # ts_sin.plot(linestyle="dashed")
+
+    ts_train.plot()
+    ts_test.plot(color="r")
+
+    ts_pred_lin.plot(color="orange")
+    ts_pred_sin.plot(color="green")
+    ts_pred_const.plot(color="black")
+
+    # %%
+    class MetricBench:
+        def __init__(self, metric_fn, metric_name=None):
+            self.metric_fn = metric_fn
+            if metric_name is None:
+                metric_name = self.metric_fn.__name__
+            self.metric_name = metric_name
+
+        def _heatmap_data(self, actual_range=None, pred_range=None):
+            if actual_range is None:
+                actual_range = np.linspace(-1,1, 21)
+            if pred_range is None:
+                pred_range = np.linspace(-1,1, 21)
+            hm_data = []
+            for y, y_hat in product(actual_range, pred_range):
+                ts_y = constant_timeseries(value=y, length=1)
+                ts_y_hat = constant_timeseries(value=y_hat, length=1)
+                try:
+                    hm_data.append(
+                        {
+                            "y": y,
+                            "y_hat": y_hat,
+                            "metric": f"{self.metric_name}",
+                            "value": self.metric_fn(ts_y, ts_y_hat)
+                        }
+                    )
+                except Exception as e:
+                    logger.warning(f"Skipping due to {e}")
+
+            df_hm_data = pd.DataFrame(hm_data)
+
+            return df_hm_data
+
+        def heatmap(self, ax=None, cmap="viridis_r", actual_range=None, pred_range=None):
+            if ax is None:
+                fig, ax = plt.subplots(figsize=(12, 10))
+
+            df_hm_data = self._heatmap_data(actual_range=actual_range, pred_range=pred_range)
+
+            sns.heatmap(
+                df_hm_data.pivot("y_hat", "y", "value"),
+                fmt=".2g",
+                cmap=cmap,
+                ax=ax,
+            )
+
+            ax.set_xticklabels(
+                [self._heatmap_fmt(label.get_text())
+                for label in ax.get_xticklabels()]
+            )
+            ax.set_yticklabels(
+                [self._heatmap_fmt(label.get_text())
+                for label in ax.get_yticklabels()]
+            )
+            ax.set_title(f"Metric: {self.metric_name}")
+
+            return ax
+
+        @staticmethod
+        def _heatmap_fmt(s):
+            try:
+                n = "{:.2f}".format(float(s))
+            except:
+                n = ""
+            return n
+
+        def _ratio_data(self, pred_range=None):
+            if pred_range is None:
+                pred_range = np.linspace(-1, 3, 41)
+            ratio_data = []
+            y = 1
+            for y_hat in pred_range:
+                ts_y = constant_timeseries(value=y, length=1)
+                ts_y_hat = constant_timeseries(value=y_hat, length=1)
+                try:
+                    ratio_data.append(
+                        {
+                            "y": y,
+                            "y_hat": y_hat,
+                            "metric": f"{self.metric_name}",
+                            "value": self.metric_fn(ts_y, ts_y_hat)
+                        }
+                    )
+                except Exception as e:
+                    logger.warning(f"Skipping due to {e}")
+
+            df_ratio_data = pd.DataFrame(ratio_data)
+
+            return df_ratio_data
+
+        def ratio_plot(self, ax=None, color="k", pred_range=None):
+
+            if ax is None:
+                fig, ax = plt.subplots(figsize=(12, 10))
+
+            df_ratio_data = self._ratio_data(pred_range=pred_range)
+
+            sns.lineplot(df_ratio_data, x="y_hat", y="value", ax=ax)
+
+            ax.set_title(f"Metric {self.metric_name} (y=1)")
+
+            return ax
+
+
+    # %% [markdown]
+    # ## Norms (MAE, MSE)
+
+    # %%
+    mse_bench = MetricBench(metric_fn=mse)
+    mse_bench.heatmap()
+
+    # %%
+    mse_bench.ratio_plot()
+
+    # %%
+    mae_bench = MetricBench(metric_fn=mae)
+    mae_bench.heatmap()
+
+
+    # %%
+    mae_bench.ratio_plot()
+
+    # %%
+    rmsle_bench = MetricBench(metric_fn=rmsle)
+    rmsle_bench.heatmap()
+
+    # %%
+    rmsle_bench.ratio_plot()
+
+    # %%
+    rmse_bench = MetricBench(metric_fn=rmse)
+    rmse_bench.heatmap()
+
+    # %%
+    rmse_bench.ratio_plot()
+
+    # %%
+    y_pos = np.linspace(0.1, 1, 20)
+
+    mape_bench = MetricBench(metric_fn=mape)
+    mape_bench.heatmap(actual_range=y_pos)
+
+    # %%
+    mape_bench.ratio_plot()
+
+    # %%
+    smape_bench = MetricBench(metric_fn=smape)
+    smape_bench.heatmap(actual_range=y_pos, pred_range=y_pos)
+
+    # %%
+    smape_bench.ratio_plot(pred_range=y_pos)
+
+    # %% [markdown]
+    # ## Naive MultiHorizon Forecasts
+
+    # %%
+    two_args_metrics = [
+        mse, mae, rmse, rmsle, mape, smape
+    ]
+
+    insample_metrics = [mase]
+
+
+    metrics_tests = []
+
+    for m in two_args_metrics:
+        metrics_tests.append(
+            {
+                "metric": m.__name__,
+                "value_lin_pred": m(ts_test, ts_pred_lin),
+                "value_sin_pred": m(ts_test, ts_pred_sin),
+                "value_const_pred": m(ts_test, ts_pred_const)
+            }
+        )
+
+    for m in insample_metrics:
+        metrics_tests.append(
+            {
+                "metric": m.__name__,
+                "value_lin_pred": m(ts_test, ts_pred_lin, insample=ts_train),
+                "value_sin_pred": m(ts_test, ts_pred_sin, insample=ts_train),
+                "value_const_pred": m(ts_test, ts_pred_const, insample=ts_train)
+            }
+        )
+
+    df_metrics_tests = (
+        pd.DataFrame(metrics_tests)
+        .round(3)
+        .set_index("metric")
+        .sort_values(by="value_const_pred")
+        .sort_values(by="mape", axis=1)
+    )
+
+    df_metrics_tests.rename(
+        columns={
+            "value_lin_pred": "Linear Prediction",
+            "value_sin_pred": "Sine Prediction",
+            "value_const_pred": "Last Observed"
+        },
+        inplace=True
+    )
+
+    df_metrics_tests
+
+    # %%
+    from matplotlib.colors import LogNorm
+
+    # %%
+    metrics_tests_min_value = df_metrics_tests.min().values.min()
+    metrics_tests_max_value = np.ma.masked_invalid(df_metrics_tests.max()).max()
+    metrics_tests_min_value, metrics_tests_max_value
+
+    # %%
+    fig, ax = plt.subplots(figsize=(10, 6.18))
+
+    sns.heatmap(
+        df_metrics_tests,
+        norm=LogNorm(
+            vmin=0.1,
+            vmax=100
+        ),
+        cbar_kws={"ticks":[0,1,10,1e2]},
+        vmin = 0.1, vmax=100,
+        annot=True,
+        fmt="0.3f",
+        ax=ax,
+    )
+    ```
+
 ### 1-Norm: MAE
 
 The Mean Absolute Error (MAE) is
