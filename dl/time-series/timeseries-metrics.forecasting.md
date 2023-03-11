@@ -2,15 +2,6 @@
 
 Measuring the goodness of a forecaster is nontrivial. Tons of metrics are devised to measure forecasting results, applying the wrong metric may lead to "consequences" in decisions.
 
-In this section, we explore some frequently used metrics. The metrics are grouped into categories using two dimensions: point forecast vs probabilistic forecast, and bounded vs unbounded.
-
-!!! info "Recommended Reading"
-
-    [Hyndman & Athanasopoulos (2021)](https://otexts.com/fpp3/accuracy.html) is a good reference for forecast errors [^Hyndman2021].
-
-    To find implementations of metrics, [Darts](https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html#) and [GluonTS](https://ts.gluon.ai/stable/api/gluonts/gluonts.evaluation.metrics.html) both have a handful of metrics implemented.
-
-
 In the following discussion, we assume the forecast at time $t$ to be $\hat y(t)$ and the actual value is $y(t)$. The forecast horizon is defined as $H$. In general, we look for a function
 
 $$
@@ -20,31 +11,49 @@ $$
 where $\{C(t)\}$ are the covariates and $\{y(t)\}$ represents the past target variables.
 
 
-!!! note "Distance between Truth and Forecasts"
+!!! info "Distance between Truths and Forecasts"
 
     Naive choices of such metrics are distances between the truth vector $\{y(t_1), \cdots, y(t_H)\}$ and the forecast vector $\{\hat y(t_1), \cdots, \hat y(t_H)\}$.
 
     For example, we can use norms of the deviation vector $\{y(t_1) - \hat y(t_1), \cdots, y(t_H) - \hat y(t_H)\}$.
 
+    In Hyndman & Koehler (2006), $y(t_i) - \hat y(t_i)$ is defined as the **forecast error** $e_i\equiv y(t_i) - \hat y(t_i)$[@Hyndman2006-ld]. While it is a bit confusing, the term **forecast error** is used in many kinds of literature.
+
+    The authors also defined the **relative error** $r_i = e_i/e^*_i$ with $e^*_i$ being the reference forecast error from the baseline.
+
+
+In this section, we explore some frequently used metrics. Hyndman & Koehler (2006) discussed four different types of metrics[@Hyndman2006-ld]
+
+1. scaled-dependent measures, e.g., errors based on $\{y(t_1) - \hat y(t_1), \cdots, y(t_H) - \hat y(t_H)\}$,
+2. percentage errors, e.g., errors based on $\{\frac{y(t_1) - \hat y(t_1)}{y(t_1)}, \cdots, \frac{y(t_H) - \hat y(t_H)}{y(t_H)}\}$,
+3. relative errors, e.g., errors based on $\{\frac{y(t_1) - \hat y(t_1)}{y(t_1) - \hat y^*(t_1)}, \cdots, \frac{y(t_H) - \hat y(t_H)}{y(t_H) - \hat y^*(t_H)}\}$, where $\hat y^*(t_i)$ is a baseline forecast at time $t_i$,
+4. relative metrics, e.g., the ratio of the MAE for the experiment and the baseline, $\operatorname{MAE}/\operatorname{MAE}_{\text{baseline}}$,
+5. in-sample scaled errors, e.g., MASE.
+
+Apart from the above categories, there are some other properties of metrics. Some metrics are bounded while others are not. Also, some metrics specifically require probabilistic forecasts. In the following table, we list some of the useful metrics.
+
+| Metric         | Probabilistic      | Theoretical Range | Notes                                      |
+| -------------- | ------------------ | ----------------- | ------------------------------------------ |
+| MAE            |                    | $[0,\infty)$      |                                            |
+| MSE            |                    | $[0,\infty)$      |                                            |
+| RMSE           |                    | $[0,\infty)$      |                                            |
+| MASE           |                    | $[0,\infty)$      | Scaled in practice; requires insample data |
+| RMSLE          |                    | $[0,\infty)$      |                                            |
+| MAPE           |                    | $[0,\infty]$      |                                            |
+| sMAPE          |                    | $[0, 2]$          | For values of the same sign                |
+| wMAPE          |                    | -                 | Depends on what weights are used           |
+| Quantile Score | :white_check_mark: | $[0,\infty)$      |                                            |
+| [CRPS](timeseries-metrics.forecasting.crps.md)           | :white_check_mark: | $[0,\infty)$      |                                            |
+
+
+!!! info "Recommended Reading"
+
+    [Hyndman & Athanasopoulos (2021)](https://otexts.com/fpp3/accuracy.html) is a good reference for forecast errors [^Hyndman2021].
+
+    To find implementations of metrics, [Darts](https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html#) and [GluonTS](https://ts.gluon.ai/stable/api/gluonts/gluonts.evaluation.metrics.html) both have a handful of metrics implemented.
+
 
 ## List of Metrics
-
-|  Metric |  Range | Notes |
-|---|-----|----|
-| MAE  |   $[0,\infty)$ | |
-| MSE  |    $[0,\infty)$ | |
-|  RMSE |    $[0,\infty)$ | |
-| MASE |   $[0,\infty)$ | But scaled in practice, requires insample data |
-| RMSLE |  $[0,\infty)$ | |
-| MAPE |  $[0,\infty]$ | |
-| sMAPE |  $[0, 2]$ | For values of the same sign |
-| wMAPE |  - | Depends on what weights are used |
-
-Probabilistic forecast metrics
-
-|  Metric |  Range | Notes |
-|---|------|----|
-| Quantile Loss     |  $[0,\infty)$ | |
 
 
 ??? note "Code to Reproduce the Results"
@@ -393,15 +402,13 @@ $$
 
 ??? note "Other Norms"
 
-    There are other norms that are not usually seen in liturature but might provide insights of forecasts.
+    Other norms are not usually seen in literature but might provide insights into forecasts.
 
     === "Maximum norm"
 
         The Max Norm error of a forecast can be defined as[^max-norm-wiki]
 
-        $$
-        \operatorname{MAE}(y, \hat y) = \operatorname{max}\left( {y(t) - \hat y(t)\right).
-        $$
+        $$\operatorname{MAE}(y, \hat y) = \operatorname{max}\left( \{y(t) - \hat y(t)\}\right).$$
 
 
 ### RMSE

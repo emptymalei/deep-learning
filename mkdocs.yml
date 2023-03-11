@@ -143,14 +143,15 @@ nav:
       - "DTW": time-series/timeseries-data.dtw.md
       - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
       - "Time Delayed Embedding": time-series/timeseries-data.time-delayed-embedding.md
+    - "Data Generating Process":
+      - "DGP": time-series/timeseries-datasets.dgp.md
+      - "DGP: Langevin Equation": time-series/timeseries-datasets.dgp.langevin.md
     - "Kindergarten Models":
       - "Statistical Models": time-series/timeseries-basics.statistical-models.md
       - "AR": "time-series/timeseries-basics.ar.md"
       - "VAR": time-series/timeseries-basics.var.md
     - Synthetic Datasets:
       - "Synthetic Time Series": time-series/timeseries-synthetic.md
-      - "DGP": time-series/timeseries-datasets.dgp.md
-      - "DGP: Langevin Equation": time-series/timeseries-datasets.dgp.langevin.md
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
     - "Forecasting":
       - "Naive Forecasts": time-series/timeseries-forecast.naive.md
