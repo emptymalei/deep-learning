@@ -43,7 +43,7 @@ Apart from the above categories, there are some other properties of metrics. Som
 | sMAPE          |                    | $[0, 2]$          | For values of the same sign                |
 | wMAPE          |                    | -                 | Depends on what weights are used           |
 | Quantile Score | :white_check_mark: | $[0,\infty)$      |                                            |
-| CRPS           | :white_check_mark: | $[0,\infty)$      |                                            |
+| [CRPS](timeseries-metrics.forecasting.crps.md)           | :white_check_mark: | $[0,\infty)$      |                                            |
 
 
 !!! info "Recommended Reading"
