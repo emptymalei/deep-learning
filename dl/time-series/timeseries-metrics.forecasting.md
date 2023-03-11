@@ -32,17 +32,18 @@ In this section, we explore some frequently used metrics. Hyndman & Koehler (200
 
 Apart from the above categories, there are some other properties of metrics. Some metrics are bounded while others are not. Also, some metrics specifically require probabilistic forecasts. In the following table, we list some of the useful metrics.
 
-| Metric        | Probabilistic      | Theoretical Range        | Notes                                          |
-| ------------- | ------------------ | ------------ | ---------------------------------------------- |
-| MAE           |                    | $[0,\infty)$ |                                                |
-| MSE           |                    | $[0,\infty)$ |                                                |
-| RMSE          |                    | $[0,\infty)$ |                                                |
-| MASE          |                    | $[0,\infty)$ | But scaled in practice, requires insample data |
-| RMSLE         |                    | $[0,\infty)$ |                                                |
-| MAPE          |                    | $[0,\infty]$ |                                                |
-| sMAPE         |                    | $[0, 2]$     | For values of the same sign                    |
-| wMAPE         |                    | -            | Depends on what weights are used               |
-| Quantile Loss | :white_check_mark: | $[0,\infty)$ |                                                |
+| Metric         | Probabilistic      | Theoretical Range | Notes                                      |
+| -------------- | ------------------ | ----------------- | ------------------------------------------ |
+| MAE            |                    | $[0,\infty)$      |                                            |
+| MSE            |                    | $[0,\infty)$      |                                            |
+| RMSE           |                    | $[0,\infty)$      |                                            |
+| MASE           |                    | $[0,\infty)$      | Scaled in practice; requires insample data |
+| RMSLE          |                    | $[0,\infty)$      |                                            |
+| MAPE           |                    | $[0,\infty]$      |                                            |
+| sMAPE          |                    | $[0, 2]$          | For values of the same sign                |
+| wMAPE          |                    | -                 | Depends on what weights are used           |
+| Quantile Score | :white_check_mark: | $[0,\infty)$      |                                            |
+| CRPS           | :white_check_mark: | $[0,\infty)$      |                                            |
 
 
 !!! info "Recommended Reading"
