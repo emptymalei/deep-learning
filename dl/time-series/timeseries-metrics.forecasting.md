@@ -2,15 +2,6 @@
 
 Measuring the goodness of a forecaster is nontrivial. Tons of metrics are devised to measure forecasting results, applying the wrong metric may lead to "consequences" in decisions.
 
-In this section, we explore some frequently used metrics. The metrics are grouped into categories using two dimensions: point forecast vs probabilistic forecast, and bounded vs unbounded.
-
-!!! info "Recommended Reading"
-
-    [Hyndman & Athanasopoulos (2021)](https://otexts.com/fpp3/accuracy.html) is a good reference for forecast errors [^Hyndman2021].
-
-    To find implementations of metrics, [Darts](https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html#) and [GluonTS](https://ts.gluon.ai/stable/api/gluonts/gluonts.evaluation.metrics.html) both have a handful of metrics implemented.
-
-
 In the following discussion, we assume the forecast at time $t$ to be $\hat y(t)$ and the actual value is $y(t)$. The forecast horizon is defined as $H$. In general, we look for a function
 
 $$
@@ -25,6 +16,20 @@ where $\{C(t)\}$ are the covariates and $\{y(t)\}$ represents the past target va
     Naive choices of such metrics are distances between the truth vector $\{y(t_1), \cdots, y(t_H)\}$ and the forecast vector $\{\hat y(t_1), \cdots, \hat y(t_H)\}$.
 
     For example, we can use norms of the deviation vector $\{y(t_1) - \hat y(t_1), \cdots, y(t_H) - \hat y(t_H)\}$.
+
+
+In this section, we explore some frequently used metrics. Hyndman & Koehler (2006) discussed[@Hyndman2006-ld]
+
+1. scaled-dependent measures,
+2. percentage errors, and relative errors.
+
+The metrics are grouped into categories using two dimensions: point forecast vs probabilistic forecast, and bounded vs unbounded.
+
+!!! info "Recommended Reading"
+
+    [Hyndman & Athanasopoulos (2021)](https://otexts.com/fpp3/accuracy.html) is a good reference for forecast errors [^Hyndman2021].
+
+    To find implementations of metrics, [Darts](https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html#) and [GluonTS](https://ts.gluon.ai/stable/api/gluonts/gluonts.evaluation.metrics.html) both have a handful of metrics implemented.
 
 
 ## List of Metrics
