@@ -378,9 +378,9 @@ We can check some special and extreme cases:
 
     !!! note "The Interpretation of MAE is Scale Dependent"
 
-        This also tells us that MAE depends on the scale of the true values: MAE value of $100$ for larger true values such as $y=1000$ and $\hat y=900$ doesn't seem to be bad, but MAE value for smaller true values such as $y=100$ and $\hat y=0$ seems to be quite off.
+        This also tells us that MAE depends on the scale of the true values: MAE value of $100$ for larger true values such as true value $y=1000$ with forecast $\hat y=900$ doesn't seem to be bad, but MAE value for smaller true values such as true value $y=100$ with forecast $\hat y=0$ seems to be quite off. Of course, the actual perception depends on the problem we are solving.
 
-        This brings in a lot of trouble when we are dealing with forecasts on different scales, such as sales forecasts for all kinds of items on an e-commerce platform.
+        This brings in a lot of trouble when we are dealing with forecasts on different scales, such as sales forecasts for all kinds of items on an e-commerce platform. Different types of items, e.g., expensive watches vs cheat T-shirts, have very different sales. In fact, in a paper from Amazon, the sales on Amazon are even scale-free[@Salinas2017-hg].
 
 - All forecasts are infinite: $\hat y=\infty$, the MAE value will also be $\infty$. This means MAE is not bounded.
 
