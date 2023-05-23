@@ -433,7 +433,7 @@ $$
 \operatorname{RMSE}(y, \hat y) = \sqrt{\operatorname{MSE}(y, \hat y)} = \sqrt{\frac{1}{H}\sum_{t=1}^{t=H}(y(t) - \hat y(t))^2}.
 $$
 
-RMSE essentially brings back the scale of the metric from the MSE scale to something similar to MAE. However, we have to be mindful that large deviations dominate the metric more than MAE.
+RMSE essentially brings the scale of the metric from the MSE scale back to something similar to MAE. However, we have to be mindful that large deviations dominate the metric more than that in MAE.
 
 !!! example "Domination by Large Deviations"
 
@@ -523,7 +523,7 @@ $$
 \operatorname{MASE}(y(t), \hat y(t)) = \frac{\operatorname{MAE}(y(t), \hat y(t))}{ \frac{1}{H-1} \sum_{i=1}^H \lvert y(t_i) - y(t_{i-1})\rvert }.
 $$
 
-Due to the scaling by the previous steps, MASE is easier to interpret. If MASE is large, the deviation in our forecasts is comparable to the rough scale of the time series. Naively, we expect a good MASE to be smaller than 1.
+Due to the scaling by the one-step ahead naive forecast, MASE is easier to interpret. If MASE is large, the deviation in our forecasts is comparable to the rough scale of the time series. Naively, we expect a good MASE to be smaller than 1.
 
 
 ### RMSLE
@@ -583,7 +583,7 @@ $$
 
 !!! info "sMAPE is Bounded but Hard to Get a Feeling"
 
-    Even though sMAPE is bounded and it solves the blow-up problem in MAPE, it is dangerous to use sMAPE alone. For example, given true values $[1]$, forecasting $[10]$ gives us sMAPE value $1.636$; Forecasting $[100]$ gives us sMAPE value $1.960$; Forecasting $[1000]$ gives us sMAPE value $1.996$.
+    Even though sMAPE is bounded and it solves the blow-up problem in MAPE, it is dangerous to use sMAPE alone. For example, given true values $[1]$, forecasting $[10]$ gives us sMAPE value $1.636$; Forecasting $[100]$ gives us sMAPE value $1.960$; Forecasting $[1000]$ gives us sMAPE value $1.996$. The later are not too different judging by the sMAPE values.
 
     That being said, as the sMAPE value gets a bit larger, it is hard to get stable intuitions on how bad the forecast is.
 
