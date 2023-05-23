@@ -402,7 +402,7 @@ $$
 \operatorname{MSE}(y, \hat y) = \frac{1}{H}\sum_{t=1}^{t=H}(y(t) - \hat y(t))^2.
 $$
 
-Similar to MAE, the interpretation of MSE is also scale dependent and the value is unbounded. However, due to the ${}^2$, MSE can be really large or small. The interpretation is even worse than MAE in most situations unless MSE matches a meaningful quantity in the dynamical system we are forecasting.
+Similar to MAE, the interpretation of MSE is also scale dependent and the value is unbounded. However, due to the ${}^2$, MSE can be really large or small. Obtaining insights from MSE is even harder than MAE in most situations unless MSE matches a meaningful quantity in the dynamical system we are forecasting. Nevertheless, we can know that large deviations ($\lvert y(t) - \hat y(t)\rvert \gg 1$) dominates the metric even more than MAE.
 
 === ":material-test-tube: Forecasts and Actuals"
 
