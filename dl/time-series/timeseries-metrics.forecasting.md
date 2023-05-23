@@ -2,15 +2,6 @@
 
 Measuring the goodness of a forecaster is nontrivial. Tons of metrics are devised to measure forecasting results, applying the wrong metric may lead to "consequences" in decisions.
 
-In this section, we explore some frequently used metrics. The metrics are grouped into categories using two dimensions: point forecast vs probabilistic forecast, and bounded vs unbounded.
-
-!!! info "Recommended Reading"
-
-    [Hyndman & Athanasopoulos (2021)](https://otexts.com/fpp3/accuracy.html) is a good reference for forecast errors [^Hyndman2021].
-
-    To find implementations of metrics, [Darts](https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html#) and [GluonTS](https://ts.gluon.ai/stable/api/gluonts/gluonts.evaluation.metrics.html) both have a handful of metrics implemented.
-
-
 In the following discussion, we assume the forecast at time $t$ to be $\hat y(t)$ and the actual value is $y(t)$. The forecast horizon is defined as $H$. In general, we look for a function
 
 $$
@@ -20,31 +11,49 @@ $$
 where $\{C(t)\}$ are the covariates and $\{y(t)\}$ represents the past target variables.
 
 
-!!! note "Distance between Truth and Forecasts"
+!!! info "Distance between Truths and Forecasts"
 
     Naive choices of such metrics are distances between the truth vector $\{y(t_1), \cdots, y(t_H)\}$ and the forecast vector $\{\hat y(t_1), \cdots, \hat y(t_H)\}$.
 
     For example, we can use norms of the deviation vector $\{y(t_1) - \hat y(t_1), \cdots, y(t_H) - \hat y(t_H)\}$.
 
+    In Hyndman & Koehler (2006), $y(t_i) - \hat y(t_i)$ is defined as the **forecast error** $e_i\equiv y(t_i) - \hat y(t_i)$[@Hyndman2006-ld]. While it is a bit confusing, the term **forecast error** is used in many kinds of literature.
+
+    The authors also defined the **relative error** $r_i = e_i/e^*_i$ with $e^*_i$ being the reference forecast error from the baseline.
+
+
+In this section, we explore some frequently used metrics. Hyndman & Koehler (2006) discussed four different types of metrics[@Hyndman2006-ld]
+
+1. scaled-dependent measures, e.g., errors based on $\{y(t_1) - \hat y(t_1), \cdots, y(t_H) - \hat y(t_H)\}$,
+2. percentage errors, e.g., errors based on $\{\frac{y(t_1) - \hat y(t_1)}{y(t_1)}, \cdots, \frac{y(t_H) - \hat y(t_H)}{y(t_H)}\}$,
+3. relative errors, e.g., errors based on $\{\frac{y(t_1) - \hat y(t_1)}{y(t_1) - \hat y^*(t_1)}, \cdots, \frac{y(t_H) - \hat y(t_H)}{y(t_H) - \hat y^*(t_H)}\}$, where $\hat y^*(t_i)$ is a baseline forecast at time $t_i$,
+4. relative metrics, e.g., the ratio of the MAE for the experiment and the baseline, $\operatorname{MAE}/\operatorname{MAE}_{\text{baseline}}$,
+5. in-sample scaled errors, e.g., MASE.
+
+Apart from the above categories, there are some other properties of metrics. Some metrics are bounded while others are not. Also, some metrics specifically require probabilistic forecasts. In the following table, we list some of the useful metrics.
+
+| Metric         | Probabilistic      | Theoretical Range | Notes                                      |
+| -------------- | ------------------ | ----------------- | ------------------------------------------ |
+| MAE            |                    | $[0,\infty)$      |                                            |
+| MSE            |                    | $[0,\infty)$      |                                            |
+| RMSE           |                    | $[0,\infty)$      |                                            |
+| MASE           |                    | $[0,\infty)$      | Scaled in practice; requires insample data |
+| RMSLE          |                    | $[0,\infty)$      |                                            |
+| MAPE           |                    | $[0,\infty]$      |                                            |
+| sMAPE          |                    | $[0, 2]$          | For values of the same sign                |
+| wMAPE          |                    | -                 | Depends on what weights are used           |
+| Quantile Score | :white_check_mark: | $[0,\infty)$      |                                            |
+| [CRPS](timeseries-metrics.forecasting.crps.md)           | :white_check_mark: | $[0,\infty)$      |                                            |
+
+
+!!! info "Recommended Reading"
+
+    [Hyndman & Athanasopoulos (2021)](https://otexts.com/fpp3/accuracy.html) is a good reference for forecast errors [^Hyndman2021].
+
+    To find implementations of metrics, [Darts](https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html#) and [GluonTS](https://ts.gluon.ai/stable/api/gluonts/gluonts.evaluation.metrics.html) both have a handful of metrics implemented.
+
 
 ## List of Metrics
-
-|  Metric |  Range | Notes |
-|---|-----|----|
-| MAE  |   $[0,\infty)$ | |
-| MSE  |    $[0,\infty)$ | |
-|  RMSE |    $[0,\infty)$ | |
-| MASE |   $[0,\infty)$ | But scaled in practice, requires insample data |
-| RMSLE |  $[0,\infty)$ | |
-| MAPE |  $[0,\infty]$ | |
-| sMAPE |  $[0, 2]$ | For values of the same sign |
-| wMAPE |  - | Depends on what weights are used |
-
-Probabilistic forecast metrics
-
-|  Metric |  Range | Notes |
-|---|------|----|
-| Quantile Loss     |  $[0,\infty)$ | |
 
 
 ??? note "Code to Reproduce the Results"
@@ -363,6 +372,18 @@ $$
 \operatorname{MAE}(y, \hat y) = \frac{1}{H}\sum_{t=1}^{t=H}\lvert y(t) - \hat y(t)\rvert.
 $$
 
+We can check some special and extreme cases:
+
+- All forecasts are zeros: $\hat y(t)=0$, the value of $\operatorname{MAE}(y, \hat y)$ is determined by the true value $y$.
+
+    !!! note "The Interpretation of MAE is Scale Dependent"
+
+        This also tells us that MAE depends on the scale of the true values: MAE value of $100$ for larger true values such as true value $y=1000$ with forecast $\hat y=900$ doesn't seem to be bad, but MAE value for smaller true values such as true value $y=100$ with forecast $\hat y=0$ seems to be quite off. Of course, the actual perception depends on the problem we are solving.
+
+        This brings in a lot of trouble when we are dealing with forecasts on different scales, such as sales forecasts for all kinds of items on an e-commerce platform. Different types of items, e.g., expensive watches vs cheat T-shirts, have very different sales. In fact, in a paper from Amazon, the sales on Amazon are even scale-free[@Salinas2017-hg].
+
+- All forecasts are infinite: $\hat y=\infty$, the MAE value will also be $\infty$. This means MAE is not bounded.
+
 === ":material-test-tube: Forecasts and Actuals"
 
     ![](assets/timeseries-metrics.forecasting/metric_mae_heatmap.png)
@@ -381,6 +402,8 @@ $$
 \operatorname{MSE}(y, \hat y) = \frac{1}{H}\sum_{t=1}^{t=H}(y(t) - \hat y(t))^2.
 $$
 
+Similar to MAE, the interpretation of MSE is also scale dependent and the value is unbounded. However, due to the ${}^2$, MSE can be really large or small. Obtaining insights from MSE is even harder than MAE in most situations unless MSE matches a meaningful quantity in the dynamical system we are forecasting. Nevertheless, we can know that large deviations ($\lvert y(t) - \hat y(t)\rvert \gg 1$) dominates the metric even more than MAE.
+
 === ":material-test-tube: Forecasts and Actuals"
 
     ![](assets/timeseries-metrics.forecasting/metric_mse_heatmap.png)
@@ -393,15 +416,13 @@ $$
 
 ??? note "Other Norms"
 
-    There are other norms that are not usually seen in liturature but might provide insights of forecasts.
+    Other norms are not usually seen in literature but might provide insights into forecasts.
 
     === "Maximum norm"
 
         The Max Norm error of a forecast can be defined as[^max-norm-wiki]
 
-        $$
-        \operatorname{MAE}(y, \hat y) = \operatorname{max}\left( {y(t) - \hat y(t)\right).
-        $$
+        $$\operatorname{MAE}(y, \hat y) = \operatorname{max}\left( \{y(t) - \hat y(t)\}\right).$$
 
 
 ### RMSE
@@ -412,6 +433,88 @@ $$
 \operatorname{RMSE}(y, \hat y) = \sqrt{\operatorname{MSE}(y, \hat y)} = \sqrt{\frac{1}{H}\sum_{t=1}^{t=H}(y(t) - \hat y(t))^2}.
 $$
 
+RMSE essentially brings the scale of the metric from the MSE scale back to something similar to MAE. However, we have to be mindful that large deviations dominate the metric more than that in MAE.
+
+!!! example "Domination by Large Deviations"
+
+    For example, in a horizon 2 forecasting problem, suppose we have the true values $[100, 1]$ and we forecast $[0, 0]$
+
+    $$
+    \operatorname{RMSE} = \sqrt{ \frac{1}{2}\left((100-0)^2 + (1-0)^2 \right)} \sim 70.71
+    $$
+
+    If we assume the second step is forecasted perfectly, i.e., forecasts $[0, 1]$, we have almost the same RMSE
+
+    $$
+    \sqrt{ \frac{1}{2}(100-0)^2 + (1-1)^2} \sim 70.71
+    $$
+
+    For MAE, assuming forecasts $[0,0]$, we get
+
+    $$
+    \operatorname{MAE} = \frac{1}{2} \left( \lvert 1 - 0 \rvert + \lvert 100 - 0 \rvert \right) = 50.5.
+    $$
+
+    If we assume the forecast $[0,1]$, we get something slightly different
+
+    $$
+    \frac{1}{2} \lvert 100 - 0 \rvert  = 50.
+    $$
+
+    To see the difference between RMSE and MAE visually,
+    we compute the following quantities
+
+    $$
+    MAE(y=[x, 1], \hat y=[0, 1]) / MAE(y=[x, 1], \hat y=[0, 0])
+    $$
+
+    as well as
+
+    $$
+    RMSE(y=[x, 1], \hat y=[0, 1]) / RMSE(y=[x, 1], \hat y=[0, 0]).
+    $$
+
+    Using these ratios, we investigate the contributions from the large deviations for MAE and RMSE.
+
+    === ":material-chart-line: MAE vs RMSE"
+
+        ![Contribute Investigation MAE vs RMSE](assets/timeseries-metrics.forecasting/rmse_mae_contribution_investigation.png)
+
+    === ":material-code-json: Code for Chart"
+
+        ```python
+        import numpy as np
+        from darts.metrics.metrics import mae, rmse
+        from darts import TimeSeries
+
+        metric_contrib_x = np.linspace(0, 50, 101)
+
+        mae_contrib_ratio = []
+        for i in metric_contrib_x:
+            mae_contrib_ratio.append(
+                mae(
+                    TimeSeries.from_values(np.array([i,1,])),
+                    TimeSeries.from_values(np.array([0,1,])),
+                )/mae(
+                    TimeSeries.from_values(np.array([i,1,])),
+                    TimeSeries.from_values(np.array([0,0,])),
+                )
+            )
+
+        rmse_contrib_ratio = []
+        for i in metric_contrib_x:
+            rmse_contrib_ratio.append(
+                rmse(
+                    TimeSeries.from_values(np.array([ i, 1,])),
+                    TimeSeries.from_values(np.array([0, 1,])),
+                )/rmse(
+                    TimeSeries.from_values(np.array([i, 1,])),
+                    TimeSeries.from_values(np.array([0,0])),
+                )
+            )
+        ```
+
+    The above chart shows that RMSE is more dominated by large deviations.
 
 ### MASE
 
@@ -420,6 +523,9 @@ The Mean Absolute Scaled Error (MASE) is the MAE scaled by the one-step ahead na
 $$
 \operatorname{MASE}(y(t), \hat y(t)) = \frac{\operatorname{MAE}(y(t), \hat y(t))}{ \frac{1}{H-1} \sum_{i=1}^H \lvert y(t_i) - y(t_{i-1})\rvert }.
 $$
+
+Due to the scaling by the one-step ahead naive forecast, MASE is easier to interpret. If MASE is large, the deviation in our forecasts is comparable to the rough scale of the time series. Naively, we expect a good MASE to be smaller than 1.
+
 
 ### RMSLE
 
@@ -476,6 +582,11 @@ $$
 
     ![](assets/timeseries-metrics.forecasting/metric_smape_fixed_y_1.png)
 
+!!! info "sMAPE is Bounded but Hard to Get a Feeling"
+
+    Even though sMAPE is bounded and it solves the blow-up problem in MAPE, it is dangerous to use sMAPE alone. For example, given true values $[1]$, forecasting $[10]$ gives us sMAPE value $1.636$; Forecasting $[100]$ gives us sMAPE value $1.960$; Forecasting $[1000]$ gives us sMAPE value $1.996$. The later are not too different judging by the sMAPE values.
+
+    That being said, as the sMAPE value gets a bit larger, it is hard to get stable intuitions on how bad the forecast is.
 
 ### wMAPE
 
