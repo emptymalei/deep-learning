@@ -372,6 +372,18 @@ $$
 \operatorname{MAE}(y, \hat y) = \frac{1}{H}\sum_{t=1}^{t=H}\lvert y(t) - \hat y(t)\rvert.
 $$
 
+We can check some special and extreme cases:
+
+- All forecasts are zeros: $\hat y(t)=0$, the value of $\operatorname{MAE}(y, \hat y)$ is determined by the true value $y$.
+
+    !!! note "The Interpretation of MAE is Scale Dependent"
+
+        This also tells us that MAE depends on the scale of the true values: MAE value of $100$ for larger true values such as true value $y=1000$ with forecast $\hat y=900$ doesn't seem to be bad, but MAE value for smaller true values such as true value $y=100$ with forecast $\hat y=0$ seems to be quite off. Of course, the actual perception depends on the problem we are solving.
+
+        This brings in a lot of trouble when we are dealing with forecasts on different scales, such as sales forecasts for all kinds of items on an e-commerce platform. Different types of items, e.g., expensive watches vs cheat T-shirts, have very different sales. In fact, in a paper from Amazon, the sales on Amazon are even scale-free[@Salinas2017-hg].
+
+- All forecasts are infinite: $\hat y=\infty$, the MAE value will also be $\infty$. This means MAE is not bounded.
+
 === ":material-test-tube: Forecasts and Actuals"
 
     ![](assets/timeseries-metrics.forecasting/metric_mae_heatmap.png)
@@ -389,6 +401,8 @@ The Mean Square Error (MSE) is
 $$
 \operatorname{MSE}(y, \hat y) = \frac{1}{H}\sum_{t=1}^{t=H}(y(t) - \hat y(t))^2.
 $$
+
+Similar to MAE, the interpretation of MSE is also scale dependent and the value is unbounded. However, due to the ${}^2$, MSE can be really large or small. Obtaining insights from MSE is even harder than MAE in most situations unless MSE matches a meaningful quantity in the dynamical system we are forecasting. Nevertheless, we can know that large deviations ($\lvert y(t) - \hat y(t)\rvert \gg 1$) dominates the metric even more than MAE.
 
 === ":material-test-tube: Forecasts and Actuals"
 
@@ -419,6 +433,88 @@ $$
 \operatorname{RMSE}(y, \hat y) = \sqrt{\operatorname{MSE}(y, \hat y)} = \sqrt{\frac{1}{H}\sum_{t=1}^{t=H}(y(t) - \hat y(t))^2}.
 $$
 
+RMSE essentially brings the scale of the metric from the MSE scale back to something similar to MAE. However, we have to be mindful that large deviations dominate the metric more than that in MAE.
+
+!!! example "Domination by Large Deviations"
+
+    For example, in a horizon 2 forecasting problem, suppose we have the true values $[100, 1]$ and we forecast $[0, 0]$
+
+    $$
+    \operatorname{RMSE} = \sqrt{ \frac{1}{2}\left((100-0)^2 + (1-0)^2 \right)} \sim 70.71
+    $$
+
+    If we assume the second step is forecasted perfectly, i.e., forecasts $[0, 1]$, we have almost the same RMSE
+
+    $$
+    \sqrt{ \frac{1}{2}(100-0)^2 + (1-1)^2} \sim 70.71
+    $$
+
+    For MAE, assuming forecasts $[0,0]$, we get
+
+    $$
+    \operatorname{MAE} = \frac{1}{2} \left( \lvert 1 - 0 \rvert + \lvert 100 - 0 \rvert \right) = 50.5.
+    $$
+
+    If we assume the forecast $[0,1]$, we get something slightly different
+
+    $$
+    \frac{1}{2} \lvert 100 - 0 \rvert  = 50.
+    $$
+
+    To see the difference between RMSE and MAE visually,
+    we compute the following quantities
+
+    $$
+    MAE(y=[x, 1], \hat y=[0, 1]) / MAE(y=[x, 1], \hat y=[0, 0])
+    $$
+
+    as well as
+
+    $$
+    RMSE(y=[x, 1], \hat y=[0, 1]) / RMSE(y=[x, 1], \hat y=[0, 0]).
+    $$
+
+    Using these ratios, we investigate the contributions from the large deviations for MAE and RMSE.
+
+    === ":material-chart-line: MAE vs RMSE"
+
+        ![Contribute Investigation MAE vs RMSE](assets/timeseries-metrics.forecasting/rmse_mae_contribution_investigation.png)
+
+    === ":material-code-json: Code for Chart"
+
+        ```python
+        import numpy as np
+        from darts.metrics.metrics import mae, rmse
+        from darts import TimeSeries
+
+        metric_contrib_x = np.linspace(0, 50, 101)
+
+        mae_contrib_ratio = []
+        for i in metric_contrib_x:
+            mae_contrib_ratio.append(
+                mae(
+                    TimeSeries.from_values(np.array([i,1,])),
+                    TimeSeries.from_values(np.array([0,1,])),
+                )/mae(
+                    TimeSeries.from_values(np.array([i,1,])),
+                    TimeSeries.from_values(np.array([0,0,])),
+                )
+            )
+
+        rmse_contrib_ratio = []
+        for i in metric_contrib_x:
+            rmse_contrib_ratio.append(
+                rmse(
+                    TimeSeries.from_values(np.array([ i, 1,])),
+                    TimeSeries.from_values(np.array([0, 1,])),
+                )/rmse(
+                    TimeSeries.from_values(np.array([i, 1,])),
+                    TimeSeries.from_values(np.array([0,0])),
+                )
+            )
+        ```
+
+    The above chart shows that RMSE is more dominated by large deviations.
 
 ### MASE
 
@@ -427,6 +523,9 @@ The Mean Absolute Scaled Error (MASE) is the MAE scaled by the one-step ahead na
 $$
 \operatorname{MASE}(y(t), \hat y(t)) = \frac{\operatorname{MAE}(y(t), \hat y(t))}{ \frac{1}{H-1} \sum_{i=1}^H \lvert y(t_i) - y(t_{i-1})\rvert }.
 $$
+
+Due to the scaling by the one-step ahead naive forecast, MASE is easier to interpret. If MASE is large, the deviation in our forecasts is comparable to the rough scale of the time series. Naively, we expect a good MASE to be smaller than 1.
+
 
 ### RMSLE
 
@@ -483,6 +582,11 @@ $$
 
     ![](assets/timeseries-metrics.forecasting/metric_smape_fixed_y_1.png)
 
+!!! info "sMAPE is Bounded but Hard to Get a Feeling"
+
+    Even though sMAPE is bounded and it solves the blow-up problem in MAPE, it is dangerous to use sMAPE alone. For example, given true values $[1]$, forecasting $[10]$ gives us sMAPE value $1.636$; Forecasting $[100]$ gives us sMAPE value $1.960$; Forecasting $[1000]$ gives us sMAPE value $1.996$. The later are not too different judging by the sMAPE values.
+
+    That being said, as the sMAPE value gets a bit larger, it is hard to get stable intuitions on how bad the forecast is.
 
 ### wMAPE
 
