@@ -476,11 +476,11 @@ RMSE essentially brings the scale of the metric from the MSE scale back to somet
 
     Using these ratios, we investigate the contributions from the large deviations for MAE and RMSE.
 
-    ![Contribute Investigation MAE vs RMSE](assets/timeseries-metrics.forecasting/rmse_mae_contribution_investigation.png)
+    === ":material-chart-line: MAE vs RMSE"
 
-    The above chart shows that RMSE is more dominated by large deviations.
+        ![Contribute Investigation MAE vs RMSE](assets/timeseries-metrics.forecasting/rmse_mae_contribution_investigation.png)
 
-    ??? note "Code for Chart"
+    === ":material-code-json: Code for Chart"
 
         ```python
         import numpy as np
@@ -514,6 +514,7 @@ RMSE essentially brings the scale of the metric from the MSE scale back to somet
             )
         ```
 
+    The above chart shows that RMSE is more dominated by large deviations.
 
 ### MASE
 
