@@ -9,7 +9,7 @@ The essence of [GAN](gan.md#divergence) is comparing the generated distribution 
 !!! question "Why do we need the discriminator?"
     If the JS divergence is an objective, why do we need the discriminator? Even in f-GAN we need a functional to approximate the f-divergence. This functional we choose works like the discriminator of GAN.
 
-There exists a more generic form of JS divergence, which is called [f-divergence](../../supplementary/f-divergence.md)[^f-divergence_wiki]. f-GAN obtains the model by estimating the f-divergence between the data distribution and the generated distribution[^Nowozin2016].
+There exists a more generic form of JS divergence, which is called [f-divergence](../../concepts/f-divergence.md)[^f-divergence_wiki]. f-GAN obtains the model by estimating the f-divergence between the data distribution and the generated distribution[^Nowozin2016].
 
 
 ## Variational Divergence Minimization
