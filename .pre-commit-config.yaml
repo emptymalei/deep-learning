@@ -4,7 +4,7 @@ repos:
     rev: v1.14.5
     hooks:
     - id: jupytext
-      files: ^dl/notebooks/*\.ipynb
+      files: ipynb
       args: [--sync, --pipe, black]
       additional_dependencies:
         - black==23.3.0
