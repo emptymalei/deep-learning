@@ -30,3 +30,7 @@ repos:
     hooks:
       - id: markdownlint-cli2
     # exclude: ^README.md
+hooks:
+  - id: poetry-export
+    args: ["-f", "requirements.txt"]
+    verbose: true
