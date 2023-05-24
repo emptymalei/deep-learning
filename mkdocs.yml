@@ -200,6 +200,8 @@ nav:
       - "f-divergence": concepts/f-divergence.md
       - "ELBO": concepts/elbo.md
       - "Alignment and Uniformity": concepts/alignment-and-uniformity.md
+  - "Tree":
+    - "Tree-based Models": trees/tree.basics.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
     - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
