@@ -1,17 +1,16 @@
-name: Publish Docs without PDF
+name: Publish Docs Test
 
 on:
   push:
     branches:
-      - master
-      - main
+      - "!master"
+      - "!main"
   workflow_dispatch:
     inputs:
       directory:
-        description: 'Release it'
+        description: 'Test it'
         default: 'gogogo'
         required: false
-
 
 jobs:
   pre-commit:
@@ -28,4 +27,4 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install -r requirements.txt
-      - run: mkdocs gh-deploy --force
+      - run: mkdocs build
