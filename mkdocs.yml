@@ -192,14 +192,6 @@ nav:
       - "GAN": self-supervised/adversarial/gan.md
       - "f-GAN": self-supervised/adversarial/f-gan.md
       - "InfoGAN": self-supervised/adversarial/infogan.md
-    - "Small Yet Powerful Concepts":
-      - concepts/index.md
-      - "Entropy": concepts/entropy.md
-      - "Mutual Information": concepts/mutual-information.md
-      - "KL Divergence": concepts/kl-divergence.md
-      - "f-divergence": concepts/f-divergence.md
-      - "ELBO": concepts/elbo.md
-      - "Alignment and Uniformity": concepts/alignment-and-uniformity.md
   - "Tree":
     - "Tree-based Models": trees/tree.basics.md
   - "Time Series Forecasting with Deep Learning":
@@ -209,6 +201,15 @@ nav:
     - "About Supplementary Materials": supplementary.md
     - "Notebooks":
       - "Tree Basics": notebooks/tree_basics.py
+    - "Small Yet Powerful Concepts":
+      - concepts/index.md
+      - "Entropy": concepts/entropy.md
+      - "Mutual Information": concepts/mutual-information.md
+      - "KL Divergence": concepts/kl-divergence.md
+      - "f-divergence": concepts/f-divergence.md
+      - "ELBO": concepts/elbo.md
+      - "Alignment and Uniformity": concepts/alignment-and-uniformity.md
+      - "Gini Impurity": concepts/gini-impurity.md
   - "About":
     - "Roadmap": meta/roadmap.md
     - "Changelog": meta/changelog.md

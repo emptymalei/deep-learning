@@ -182,7 +182,7 @@ clf_impure = tree.DecisionTreeClassifier(
 clf_impure.fit(wfh_impure.feature_dataframe, wfh_impure.target_dataframe)
 
 # %%
-fig, ax = plt.subplots(figsize=(15, 15))
+fig, ax = plt.subplots(figsize=(15, 10))
 tree.plot_tree(clf_impure, feature_names=wfh_impure.feature_names, ax=ax)
 ax.set_title("Tree Trained on Imperfect Data")
 
