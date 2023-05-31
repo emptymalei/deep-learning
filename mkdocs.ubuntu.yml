@@ -192,6 +192,15 @@ nav:
       - "GAN": self-supervised/adversarial/gan.md
       - "f-GAN": self-supervised/adversarial/f-gan.md
       - "InfoGAN": self-supervised/adversarial/infogan.md
+  - "Tree":
+    - "Tree-based Models": trees/tree.basics.md
+  - "Time Series Forecasting with Deep Learning":
+    - "Introduction": "time-series-deep-learning/index.md"
+    - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
+  - "Supplementary":
+    - "About Supplementary Materials": supplementary.md
+    - "Notebooks":
+      - "Tree Basics": notebooks/tree_basics.py
     - "Small Yet Powerful Concepts":
       - concepts/index.md
       - "Entropy": concepts/entropy.md
@@ -200,13 +209,7 @@ nav:
       - "f-divergence": concepts/f-divergence.md
       - "ELBO": concepts/elbo.md
       - "Alignment and Uniformity": concepts/alignment-and-uniformity.md
-  - "Time Series Forecasting with Deep Learning":
-    - "Introduction": "time-series-deep-learning/index.md"
-    - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
-  - "Supplementary":
-    - "About Supplementary Materials": supplementary.md
-    - "Notebooks":
-      - "Tree Basics": notebooks/tree_basics.py
+      - "Gini Impurity": concepts/gini-impurity.md
   - "About":
     - "Roadmap": meta/roadmap.md
     - "Changelog": meta/changelog.md
