@@ -1,11 +1,11 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py:light
+#     formats: ipynb,py:percent
 #     text_representation:
 #       extension: .py
-#       format_name: light
-#       format_version: '1.5'
+#       format_name: percent
+#       format_version: '1.3'
 #       jupytext_version: 1.14.5
 #   kernelspec:
 #     display_name: deep-learning
@@ -13,9 +13,10 @@
 #     name: deep-learning
 # ---
 
+# %% [markdown]
 # # Tree Basics
 
-# +
+# %%
 import json
 
 from typing import List, Literal, Union
@@ -29,9 +30,7 @@ import seaborn as sns
 
 sns.set()
 
-
-# -
-
+# %% [markdown]
 # ## Generate Data
 #
 # We generate some artificial dataset about whether to go to the office or work from home.
@@ -45,6 +44,7 @@ sns.set()
 # We use `1` to indicate that we go to the office.
 
 
+# %%
 class WFHData:
     """
     Generate a dataset about wheter to go to the office.
@@ -145,42 +145,56 @@ class WFHData:
         return y
 
 
+# %%
 wfh_demo = WFHData(length=10)
 
+# %%
 wfh_demo.feature_dataframe
 
+# %%
 wfh_demo.target_dataframe
 
+# %% [markdown]
 # ## Decision Tree on Perfect Data
 
+# %%
 wfh_pure = WFHData(length=100, randomize_prob=0)
 
+# %%
 clf_pure = tree.DecisionTreeClassifier()
 clf_pure.fit(wfh_pure.feature_dataframe, wfh_pure.target_dataframe)
 
+# %%
 fig, ax = plt.subplots(figsize=(15, 15))
 tree.plot_tree(clf_pure, feature_names=wfh_pure.feature_names, ax=ax)
 ax.set_title("Tree Trained on Perfect Data")
 
+# %% [markdown]
 # ## Impure Data
 
+# %%
 wfh_impure = WFHData(length=100, randomize_prob=0.1)
 
+# %%
 clf_impure = tree.DecisionTreeClassifier(
     max_depth=20, min_samples_leaf=1, min_samples_split=0.0001
 )
 clf_impure.fit(wfh_impure.feature_dataframe, wfh_impure.target_dataframe)
 
-fig, ax = plt.subplots(figsize=(15, 15))
+# %%
+fig, ax = plt.subplots(figsize=(15, 10))
 tree.plot_tree(clf_impure, feature_names=wfh_impure.feature_names, ax=ax)
 ax.set_title("Tree Trained on Imperfect Data")
 
 
+# %% [markdown]
 # ## Understand Gini Impurity
 
+# %% [markdown]
 # ### Gini Impurity for 2 possible classes
 
 
+# %%
 def gini_2(p1: float, p2: float) -> Union[None, float]:
     """Compute the Gini impurity for the two input values."""
     if p1 + p2 <= 1:
@@ -189,19 +203,23 @@ def gini_2(p1: float, p2: float) -> Union[None, float]:
         return None
 
 
+# %%
 gini_2_test_p1 = np.linspace(0, 1, 1001)
 gini_2_test_p2 = np.linspace(0, 1, 1001)
 
+# %%
 gini_2_test_impurity = [
     [gini_2(p1, p2) for p1 in gini_2_test_p1] for p2 in gini_2_test_p2
 ]
 
+# %%
 df_gini_2_test = pd.DataFrame(
     gini_2_test_impurity,
     index=[f"{i:0.2f}" for i in gini_2_test_p2],
     columns=[f"{i:0.2f}" for i in gini_2_test_p1],
 )
 
+# %%
 fig, ax = plt.subplots(figsize=(12, 10))
 sns.heatmap(df_gini_2_test.loc[::-1,], ax=ax)
 ax.set_xlabel("$p_1$")
@@ -209,9 +227,11 @@ ax.set_ylabel("$p_2$")
 ax.set_title("Gini Impurity for Data with 2 Possible Values")
 
 
+# %% [markdown]
 # ### Gini Impurity for 3 possible classes
 
 
+# %%
 def gini_3(p1: float, p2: float) -> Union[None, float]:
     """Computes the gini impurity for three potential classes"""
     if p1 + p2 <= 1:
@@ -220,7 +240,7 @@ def gini_3(p1: float, p2: float) -> Union[None, float]:
         return None
 
 
-# +
+# %%
 gini_3_test_p1 = np.linspace(0, 1, 1001)
 gini_3_test_p2 = np.linspace(0, 1, 1001)
 gini_3_test_impurity = [
@@ -232,10 +252,14 @@ df_gini_3_test = pd.DataFrame(
     index=[f"{i:0.2f}" for i in gini_3_test_p2],
     columns=[f"{i:0.2f}" for i in gini_3_test_p1],
 )
-# -
 
+# %%
 fig, ax = plt.subplots(figsize=(12, 10))
 sns.heatmap(df_gini_3_test.loc[::-1,], ax=ax)
 ax.set_xlabel("$p_1$")
 ax.set_ylabel("$p_2$")
 ax.set_title("Gini Impurity for Data with 3 Possible Values")
+
+# %%
+
+# %%
