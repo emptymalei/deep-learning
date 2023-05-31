@@ -98,6 +98,18 @@ plugins:
   #     enabled_if_env: ENABLE_PDF_EXPORT
   #     render_js: true
   #     headless_chrome_path: "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+  #######
+  # For Linux
+  # - with-pdf:
+  #     author: "Lei Ma"
+  #     output_path: pdf/dl-lm.pdf
+  #     cover_logo: assets/logo_badge.svg
+  #     cover_subtitle: "Time Series with Deep Learning Quick Bite"
+  #     two_columns_level: 3
+  #     enabled_if_env: ENABLE_PDF_EXPORT
+  #     render_js: true
+  #     headless_chrome_path: "google-chrome"
+
 
 
 extra:
@@ -210,6 +222,7 @@ nav:
       - "ELBO": concepts/elbo.md
       - "Alignment and Uniformity": concepts/alignment-and-uniformity.md
       - "Gini Impurity": concepts/gini-impurity.md
+      - "Information Gain": concepts/information-gain.md
   - "About":
     - "Roadmap": meta/roadmap.md
     - "Changelog": meta/changelog.md

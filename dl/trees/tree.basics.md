@@ -103,7 +103,7 @@ A decision tree trained with a fake "impure dataset" with noise that doesn't alw
 
 ### How was the Model Built?
 
-Many different algorithms can build a decision tree from a given dataset. The Iterative Dichotomizer 3 algorithm, aka ID3 algorithm, is one of the famous implementations of the decision tree. The following is the "flowchart" of the algorithm.
+Many different algorithms can build a decision tree from a given dataset. The Iterative Dichotomizer 3 algorithm, aka ID3 algorithm, is one of the famous implementations of the decision tree[@shalev-shwartz_ben-david_2014]. The following is the "flowchart" of the algorithm[@shalev-shwartz_ben-david_2014].
 
 
 ```mermaid
@@ -140,7 +140,7 @@ graph TD
   end
 ```
 
-To "calculate the gain of the split", here we use [Gini impurity](../../concepts/gini-impurity). There are other "gains" such as information gain. For regression tasks, we can also have gains such as a MSE loss.
+To "calculate the gain of the split", here we use [Gini impurity](../../concepts/gini-impurity). There are other "gains" such as [information gain](../../concepts/information-gain). For regression tasks, we can also have gains such as a MSE loss.
 
 
 
