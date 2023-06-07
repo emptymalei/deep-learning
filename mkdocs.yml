@@ -214,6 +214,7 @@ nav:
     - "About Supplementary Materials": supplementary.md
     - "Notebooks":
       - "Tree Basics": notebooks/tree_basics.py
+      - "Random Forest Basics": notebooks/tree_random_forest.py
     - "Small Yet Powerful Concepts":
       - concepts/index.md
       - "Entropy": concepts/entropy.md
@@ -224,6 +225,7 @@ nav:
       - "Alignment and Uniformity": concepts/alignment-and-uniformity.md
       - "Gini Impurity": concepts/gini-impurity.md
       - "Information Gain": concepts/information-gain.md
+      - "Generalization": concepts/generalization.md
   - "About":
     - "Roadmap": meta/roadmap.md
     - "Changelog": meta/changelog.md

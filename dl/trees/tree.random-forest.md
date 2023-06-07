@@ -19,7 +19,7 @@ The margin of the model, the strength of the trees, and the correlation between 
 
 ### Margin
 
-The **margin** of the tree is defined as[@Breiman2001-oj]
+The **margin** of the tree is defined as[@Breiman2001-oj][@Bernard2010-tz]
 
 $$
 M(\mathbf X, \mathbf y) = {\color{green}P (\{f_i(\mathbf X)=\mathbf y \})} - \operatorname{max}_{\mathbf j\neq \mathbf y} {\color{red}P (\{ f_i(\mathbf X) = \mathbf j \})}.
@@ -36,6 +36,16 @@ $$
 
     The term ${\color{red}P (\{f_i(\mathbf X) = \mathbf j \})}$ is the probability of predicting values $\mathbf j$. The second term $\operatorname{max}_{\mathbf j\neq \mathbf y} {\color{red}P ( \{f_i(\mathbf X) = \mathbf j\})}$ finds the highest misclassification probabilities, i.e., the max probabilities of predicting values $\mathbf j$ other than $\mathbf y$.
 
+!!! note "Raw Margin"
+
+    We can also think of the indicator function itself is also a measure of how well the predictions are. Instead of looking into the whole forest and probabilities, the **raw margin** of a single tree is defined as[@Breiman2001-oj]
+
+    $$
+    M_{R,i}(\mathbf X, \mathbf y) = I (f_i(\mathbf X)=\mathbf y ) - \operatorname{max}_{\mathbf j\neq \mathbf y} I ( f_i(\mathbf X) = \mathbf j ).
+    $$
+
+    The margin is the expected value of this raw margin over each classifier.
+
 To make it easier to interpret this quantity, we only consider two possible predictions:
 
 - $M(\mathbf X, \mathbf y) \to 1$: We will always predict the true value, for all the trees.
@@ -48,31 +58,25 @@ In general, we prefer a model with higher $M(\mathbf X, \mathbf y)$.
 
 However, the margin of the same model is different in different problems. The same model for one problem may give us margin 1 but it might not work that well for a different problem. This can be seen in [our decision tree examples](tree.basics.md).
 
-To bring the idea of margin to a specific problem, Breiman defined the **strength** as the expected value of the margin over the dataset$s$[@Breiman2001-oj],
+To bring the idea of margin to a specific problem, Breiman defined the **strength**  $s$ as the expected value of the margin over the dataset fed into the trees[@Breiman2001-oj][@Bernard2010-tz],
 
 $$
 s = E_{\mathscr D}[M(\mathbf X, \mathbf y)].
 $$
 
 
-### Raw Margin
-
-Instead of using the probability of the predictions in the margin, the indicator function itself is also a measure of how well the predictions are. The **raw margin** is then defined as[@Breiman2001-oj]
-
-$$
-M_{R,i}(\mathbf X, \mathbf y) = I (f_i(\mathbf X)=\mathbf y ) - \operatorname{max}_{\mathbf j\neq \mathbf y} I ( f_i(\mathbf X) = \mathbf j ).
-$$
-
+!!! note "Dataset Fed into the Trees"
+    This may be different in different models since there are different randomization and data selection methods. For example, in bagging, the dataset fed into the trees would be random selections of the training data.
 
 ### Correlation
 
-The **correlation** between the trees is[@Breiman2001-oj]
+Naively speaking, we expect each tree takes care of different factors and spit out a different result, for ensembling to provide benefits. To quantify this idea, we define the **correlation** of raw margin between the trees[@Breiman2001-oj]
 
 $$
 \rho_{ij} = \operatorname{corr}(M_{R,i}, M_{R,j}) = \frac{\operatorname{cov}(M_{R,i}, M_{R,j})}{\sigma_{M_{R,i}} \sigma_{M_{R,j}}}  = \frac{E[(M_{R,i} - \bar M_{R,i})(M_{R,j} - \bar M_{R,j})]}{\sigma_{M_{R,i}} \sigma_{M_{R,j}}}.
 $$
 
-The correlation tells us how strong the two trees are correlated. If all trees are similar, the correlation is high. Ensembling won't help improving the model in this situation.
+Since the raw margin tells us how likely we can predict the correct value, the correlation defined above indicates how likely two trees are functioning. If all trees are similar, the correlation is high, and ensembling won't provide much in this situation.
 
 !!! note ""
     To get a scalar value of the whole model, the average correlation $\bar \rho$ over all the possible pairs is calculated.
@@ -80,54 +84,52 @@ The correlation tells us how strong the two trees are correlated. If all trees a
 
 ## Predicting Power
 
-The power of the ensemble can be measured by the generalization error,
+The higher the [generalization power](../concepts/generalization.md), the better the model is at new predictions. To measure the goodness of a random forest, the population error can be used,
 
 $$
-P_{err} = P_{\mathscr D}(M(\mathbf X, \mathbf y)< 0),
+P_{err} = P_{\mathscr D}(M(\mathbf X, \mathbf y)< 0).
 $$
 
-i.e., the probability of getting the correct answer over the whole dataset.
-
-It has been proved that **the ensemble will converge in the random forest as the number of trees gets large.** And the generalization error is proven to be related to the strength and the mean correlation,
+It has been proved that **the error almost converges in the random forest as the number of trees gets large**[@Breiman2001-oj]. The upper bound of the population error is related to the strength and the mean correlation[@Breiman2001-oj],
 
 $$
 P_{err} \leq \frac{\bar \rho (1-s^2) }{s^2}.
 $$
 
-We conclude that
+To get a grasp of this upper bound, we plot out the heatmap as a function of $\bar \rho$ and $s$.
 
-1. **The stronger the strength is, the lower the generalization error is.**
-2. **The smaller the correlation is, the lower the generalization error is.**
+![Upper Limit of population error](../assets/tree.random-forest/rf_generalization_error.png)
 
+We observe that
 
-![Upper Limit of generalization error](../assets/tree.random-forest/rf_generalization_error.png)
-> Upper Limit of generalization error as functions of $\bar \rho$ and $s$.
+1. The stronger the strength, the lower the population error upper bound.
+2. The smaller the correlation, the lower the population error upper bound.
+3. If the strength is too low, it is very hard for the model to avoid errors.
+4. If the correlation is very high, it is still possible to get decent model if the strength is high.
 
 
 ## Random Forest Regressor
 
-Similar to decision trees, a random forest can also be used as regressors. A similar conclusion about the regressors can be proved.
+Similar to decision trees, random forest can also be used as regressors. The random forest regressor population error is capped by the average population error of trees multiplied by the correlation of trees[@Breiman2001-oj].
 
-To see how the regressor works, we construct an artificial problem. The code can be accessed [on GitHub](https://github.com/datumorphism/mini-code/blob/master/random_forest/random_forest_benchmark.ipynb).
+To see how the regressor works, we construct an artificial problem. The code can be accessed [here :material-language-python:](../../notebooks/tree_random_forest).
 
-The data we will use is generated by sin function.
+=== "Sinusoid Data"
 
-```python
-X_sin = [[6*random()] for i in range(10000)]
-y_sin = np.sin(X_sin)
+    A random forest with 1600 estimators can estimate the following sin data. Note that this is in-sample fitting and prediction to demonstrate the capability of representing sin data.
 
-X_sin_test = [[6*random()] for i in range(10000)]
-y_sin_test = np.sin(X_sin_test)
-```
+    ![Sinusoid Data](../assets/tree.random-forest/tree.random_forest_sin_reg.png)
 
-A random forest model is constructed and a random search cross validation is applied
+    One observation is that not all the trees spit out the same values.
 
-```python
-model = RandomizedSearchCV(
-    pipeline,
-    cv=10,
-    param_distributions = rf_random_grid,
-    verbose=3,
-    n_jobs=-1
-)
-```
+    ![Sinusoid Data box](../assets/tree.random-forest/tree.random_forest_sin_reg_tree_boxplot.png)
+
+=== "Sinusoid Data with Noise"
+
+    A random forest with 1300 estimators can estimate the following sin data with noise added. Note that this is in-sample fitting and prediction to demonstrate the representation capability.
+
+    ![Sinusoid Data with noise](../assets/tree.random-forest/tree.random_forest_sin_noise_reg.png)
+
+    One observation is that not all the trees spit out the same values.
+
+    ![Sinusoid Data box](../assets/tree.random-forest/tree.random_forest_sin_noise_reg_boxplot.png)

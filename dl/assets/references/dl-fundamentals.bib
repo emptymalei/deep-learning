@@ -142,3 +142,50 @@ arxivid       = "2006.08218"
 }
 
 @book{shalev-shwartz_ben-david_2014, place={Cambridge}, title={Understanding Machine Learning: From Theory to Algorithms}, DOI={10.1017/CBO9781107298019}, publisher={Cambridge University Press}, author={Shalev-Shwartz, Shai and Ben-David, Shai}, year={2014}}
+
+
+@PHDTHESIS{Roelofs2019-dm,
+  title    = "Measuring Generalization and Overfitting in Machine Learning",
+  author   = "Roelofs, Rebecca",
+  abstract = "Author(s): Roelofs, Rebecca | Advisor(s): Recht, Benjamin;
+              Demmel, James | Abstract: Due to the prevalence of machine
+              learning algorithms and the potential for their decisions to
+              profoundly impact billions of human lives, it is crucial that
+              they are robust, reliable, and understandable. This thesis
+              examines key theoretical pillars of machine learning surrounding
+              generalization and overfitting, and tests the extent to which
+              empirical behavior matches existing theory. We develop novel
+              methods for measuring overfitting and generalization, and we
+              characterize how reproducible observed behavior is across
+              differences in optimization algorithm, dataset, task, evaluation
+              metric, and domain.First, we examine how optimization algorithms
+              bias machine learning models towards solutions with varying
+              generalization properties. We show that adaptive gradient methods
+              empirically find solutions with inferior generalization behavior
+              compared to those found by stochastic gradient descent. We then
+              construct an example using a simple overparameterized model that
+              corroborates the algorithms' empirical behavior on neural
+              networks. Next, we study the extent to which machine learning
+              models have overfit to commonly reused datasets in both academic
+              benchmarks and machine learning competitions. We build new test
+              sets for the CIFAR-10 and ImageNet datasets and evaluate a broad
+              range of classification models on the new datasets. All models
+              experience a drop in accuracy, which indicates that current
+              accuracy numbers are susceptible to even minute natural
+              variations in the data distribution. Surprisingly, despite
+              several years of adaptively selecting the models to perform well
+              on these competitive benchmarks, we find no evidence of
+              overfitting. We then analyze data from the machine learning
+              platform Kaggle and find little evidence of substantial
+              overfitting in ML competitions. These findings speak to the
+              robustness of the holdout method across different data domains,
+              loss functions, model classes, and human analysts.Overall, our
+              work suggests that the true concern for robust machine learning
+              is distribution shift rather than overfitting, and designing
+              models that still work reliably in dynamic environments is a
+              challenging but necessary undertaking.",
+  year     =  2019,
+  url      = "https://escholarship.org/uc/item/6j01x9mz",
+  file     = "All Papers/ROELOFS/Roelofs 2019 - Measuring Generalization and Overfitting in Machine Learning.pdf",
+  school   = "UC Berkeley"
+}
