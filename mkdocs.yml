@@ -207,6 +207,7 @@ nav:
   - "Tree":
     - "Tree-based Models": trees/tree.basics.md
     - "Random Forest": trees/tree.random-forest.md
+    - "Gradient Boosted Trees": trees/tree.gbdt.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
     - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
