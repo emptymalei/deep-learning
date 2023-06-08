@@ -112,7 +112,7 @@ We observe that
 
 Similar to decision trees, random forest can also be used as regressors. The random forest regressor population error is capped by the average population error of trees multiplied by the correlation of trees[@Breiman2001-oj].
 
-To see how the regressor works, we construct an artificial problem. The code can be accessed [here :material-language-python:](../../notebooks/tree_random_forest).
+To see how the regressor works with data, we construct an artificial problem. The code can be accessed [here :material-language-python:](../../notebooks/tree_random_forest).
 
 === "Sinusoid Data"
 
@@ -120,9 +120,9 @@ To see how the regressor works, we construct an artificial problem. The code can
 
     ![Sinusoid Data](../assets/tree.random-forest/tree.random_forest_sin_reg.png)
 
-    One observation is that not all the trees spit out the same values.
+    One observation is that not all the trees spit out the same values. We observe some quite dispersed predictions from the trees but the ensemble result is very close to the true values.
 
-    ![Sinusoid Data box](../assets/tree.random-forest/tree.random_forest_sin_reg_tree_boxplot.png)
+    ![Sinusoid Data Violin](../assets/tree.random-forest/tree.random_forest_sin_reg_violin.png)
 
 === "Sinusoid Data with Noise"
 
@@ -130,6 +130,18 @@ To see how the regressor works, we construct an artificial problem. The code can
 
     ![Sinusoid Data with noise](../assets/tree.random-forest/tree.random_forest_sin_noise_reg.png)
 
-    One observation is that not all the trees spit out the same values.
+    One observation is that not all the trees spit out the same values. The predictions from the trees are sometimes dispersed and not even bell-like, the ensemble result reflects the values of the true sin data. The ensemble results are even located at the center of the noisy data where the true sin values should be. However, we will see that the distribution of the predictions is more dispersed than the model trained without noise (see the tab "Comparing Tow Scenarios").
 
-    ![Sinusoid Data box](../assets/tree.random-forest/tree.random_forest_sin_noise_reg_boxplot.png)
+    ![Sinusoid Noise Data Violin](../assets/tree.random-forest/tree.random_forest_sin_noise_reg_violin.png)
+
+=== "Comparing Tow Scenarios"
+
+    The following two charts show the boxes for the two trainings.
+
+    ![Sinusoid Data box](../assets/tree.random-forest/tree.random_forest_sin_reg_tree_boxplot.png)
+
+    ![Sinusoid Noise Data box](../assets/tree.random-forest/tree.random_forest_sin_noise_reg_boxplot.png)
+
+    To see the differences between the box sizes for in a more quantitive way, we plot out the box plot of the box sizes for each training.
+
+    ![Comparing box sizes for each training](../assets/tree.random-forest/tree.random_forest_compare_boxsize_noise_or_not.png)
