@@ -7,7 +7,16 @@ Random forest is an ensemble method based on decision trees which are dubbed as 
 
 Translating to math language, given a proper dataset $\mathscr D(\mathbf X, \mathbf y)$, random forest or the ensemble of trees, denoted as $\{f_i\}$, will predict an ensemble of results $\{f_i(\mathbf X_i)\}$, with $\mathbf X_i \subseteq \mathbf X$.
 
-In this section, we ask ourselves the following questions.
+
+!!! note "A Good Reference for Random Forest"
+    Hastie T, Tibshirani R, Friedman J. The Elements of Statistical Learning: Data Mining, Inference, and Prediction. Springer Science & Business Media; 2013. pp. 567–567.
+
+However, random forest is not "just" ensembling. There are many different ensembling methods, e.g., bootstrapping, but suffer from correlations in the trees. Random forest has two levels of randomization:
+
+- Bootstrapping the dataset by randomly selecting a subset of the training data;
+- Random selection of the features to train a tree.
+
+We can already use the bootstrapping step to create many models to ensemble with, however, the randomization of features is also key to a random forest model as it helps reduce the correlations between the trees[@Hastie2013-tt]. In this section, we ask ourselves the following questions.
 
 1. How to democratize the ensemble of results from each tree?
 2. What determines the quality of the predictions?
@@ -105,7 +114,7 @@ We observe that
 1. The stronger the strength, the lower the population error upper bound.
 2. The smaller the correlation, the lower the population error upper bound.
 3. If the strength is too low, it is very hard for the model to avoid errors.
-4. If the correlation is very high, it is still possible to get decent model if the strength is high.
+4. If the correlation is very high, it is still possible to get a decent model if the strength is high.
 
 
 ## Random Forest Regressor
@@ -126,7 +135,9 @@ To see how the regressor works with data, we construct an artificial problem. Th
 
 === "Sinusoid Data with Noise"
 
-    A random forest with 1300 estimators can estimate the following sin data with noise added. Note that this is in-sample fitting and prediction to demonstrate the representation capability.
+    We generate a new dataset by adding some noise to the sin dataset. By adding uniform random noise, we introduce some variance but not much bias in the data. We are cheating a bit here because this kind of data is what random forest is good at.
+
+    We train a random forest model with 1300 estimators using this noise data. Note that this is in-sample fitting and prediction to demonstrate the representation capability.
 
     ![Sinusoid Data with noise](../assets/tree.random-forest/tree.random_forest_sin_noise_reg.png)
 
