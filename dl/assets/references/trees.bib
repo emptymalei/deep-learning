@@ -114,3 +114,77 @@
   file      = "All Papers/BERNARD/Bernard et al. 2010 - A Study of Strength and Correlation in Random Forests.pdf",
   doi       = "10.1007/978-3-642-14831-6\_25"
 }
+
+
+@online{Chen2016-mi,
+  title         = "{XGBoost}: A Scalable Tree Boosting System",
+  author        = "Chen, Tianqi and Guestrin, Carlos",
+  abstract      = "Tree boosting is a highly effective and widely used machine
+                   learning method. In this paper, we describe a scalable
+                   end-to-end tree boosting system called XGBoost, which is
+                   used widely by data scientists to achieve state-of-the-art
+                   results on many machine learning challenges. We propose a
+                   novel sparsity-aware algorithm for sparse data and weighted
+                   quantile sketch for approximate tree learning. More
+                   importantly, we provide insights on cache access patterns,
+                   data compression and sharding to build a scalable tree
+                   boosting system. By combining these insights, XGBoost scales
+                   beyond billions of examples using far fewer resources than
+                   existing systems.",
+  month         =  "9~" # mar,
+  year          =  2016,
+  url           = "http://arxiv.org/abs/1603.02754",
+  file          = "All Papers/CHEN/Chen and Guestrin 2016 - XGBoost - A Scalable Tree Boosting System.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1603.02754",
+  primaryClass  = "cs.LG",
+  arxivid       = "1603.02754"
+}
+
+
+@INPROCEEDINGS{Ke2017-jv,
+  title     = "{LightGBM}: A Highly Efficient Gradient Boosting Decision Tree",
+  booktitle = "Advances in Neural Information Processing Systems",
+  author    = "Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and
+               Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan",
+  editor    = "Guyon, I and Luxburg, U V and Bengio, S and Wallach, H and
+               Fergus, R and Vishwanathan, S and Garnett, R",
+  publisher = "Curran Associates, Inc.",
+  volume    =  30,
+  year      =  2017,
+  url       = "https://proceedings.neurips.cc/paper/2017/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf",
+  file      = "All Papers/KE/Ke et al. 2017 - LightGBM - A Highly Efficient Gradient Boosting Decision Tree.pdf"
+}
+
+@online{Shi2018-bk,
+  title         = "Gradient Boosting With {Piece-Wise} Linear Regression Trees",
+  author        = "Shi, Yu and Li, Jian and Li, Zhize",
+  abstract      = "Gradient Boosted Decision Trees (GBDT) is a very successful
+                   ensemble learning algorithm widely used across a variety of
+                   applications. Recently, several variants of GBDT training
+                   algorithms and implementations have been designed and
+                   heavily optimized in some very popular open sourced toolkits
+                   including XGBoost, LightGBM and CatBoost. In this paper, we
+                   show that both the accuracy and efficiency of GBDT can be
+                   further enhanced by using more complex base learners.
+                   Specifically, we extend gradient boosting to use piecewise
+                   linear regression trees (PL Trees), instead of piecewise
+                   constant regression trees, as base learners. We show that PL
+                   Trees can accelerate convergence of GBDT and improve the
+                   accuracy. We also propose some optimization tricks to
+                   substantially reduce the training time of PL Trees, with
+                   little sacrifice of accuracy. Moreover, we propose several
+                   implementation techniques to speedup our algorithm on modern
+                   computer architectures with powerful Single Instruction
+                   Multiple Data (SIMD) parallelism. The experimental results
+                   show that GBDT with PL Trees can provide very competitive
+                   testing accuracy with comparable or less training time.",
+  month         =  "15~" # feb,
+  year          =  2018,
+  url           = "http://arxiv.org/abs/1802.05640",
+  file          = "All Papers/SHI/Shi et al. 2018 - Gradient Boosting With Piece-Wise Linear Regression Trees.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1802.05640",
+  primaryClass  = "cs.LG",
+  arxivid       = "1802.05640"
+}
