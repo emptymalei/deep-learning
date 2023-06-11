@@ -234,3 +234,4 @@ po/*~
 .vscode
 
 dl/notebooks/**/*.ipynb
+!dl/notebooks/**/tree_darts.ipynb

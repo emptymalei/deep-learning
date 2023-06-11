@@ -431,6 +431,9 @@ mkdocs-autorefs==0.4.1 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:a2248a9501b29dc0cc8ba4c09f4f47ff121945f6ce33d760f145d6f89d313f5b
 mkdocs-bibtex==2.8.1 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:f5180fe215b56ed8fed9d1a49ce08773430f293ba3b752b3e548fb4dffdbfc43
+mkdocs-exclude-search==0.6.5 ; python_version >= "3.9" and python_version < "4.0" \
+    --hash=sha256:475e372dd17195700acd00213bcc804280d63f39cb7a0c76a801aceefd2807a6 \
+    --hash=sha256:6a126367653caf946c56e446ff30ffdec931438a3e2a8740feff3f8682d52a54
 mkdocs-git-authors-plugin==0.6.4 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:0d5831cbc30a9b158bd8d4029c1d40dc89e2f548b3d5f6bd0d0271686904a37a \
     --hash=sha256:b0914e8fa54c8957bfcc34727baf9c83d6943b06bc92c83b03ce360a35dff9a6
