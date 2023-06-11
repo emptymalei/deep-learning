@@ -2376,6 +2376,21 @@ requests = ">=2.8.1"
 validators = ">=0.19.0"
 
 [[package]]
+name = "mkdocs-exclude-search"
+version = "0.6.5"
+description = "A mkdocs plugin that lets you exclude selected files or sections from the search index."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "mkdocs-exclude-search-0.6.5.tar.gz", hash = "sha256:6a126367653caf946c56e446ff30ffdec931438a3e2a8740feff3f8682d52a54"},
+    {file = "mkdocs_exclude_search-0.6.5-py3-none-any.whl", hash = "sha256:475e372dd17195700acd00213bcc804280d63f39cb7a0c76a801aceefd2807a6"},
+]
+
+[package.dependencies]
+mkdocs = ">=1.0.4"
+
+[[package]]
 name = "mkdocs-git-authors-plugin"
 version = "0.6.4"
 description = "Mkdocs plugin to display git authors of a page"
@@ -4925,4 +4940,4 @@ test = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "e7ec11352f1ce00f85e414180daf709e5cadb1e3302bfc5509b876c1fcf839a6"
+content-hash = "030c470f5199db83c4edbfb0104a4dd261eedc30f096d06773d330f024f017d2"

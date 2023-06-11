@@ -82,6 +82,9 @@ plugins:
   - autorefs
   - git-authors
   - search
+  - exclude-search:
+      exclude:
+        - notebooks/tree_darts
   - tags:
       tags_file: tags.md
   - bibtex:
@@ -147,13 +150,14 @@ extra:
 
 nav:
   - "Home": index.md
-  - "Coding Tips":
+  - "Engineering Tips":
     - engineering/index.md
     - "Python": engineering/python.md
   - "Time Series Forecasting Fundamentals":
     - time-series/index.md
     - "Data":
       - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
+      - "Box-Cox Transformation": time-series/timeseries-data.box-cox.md
       - "Augmentation": time-series/timeseries-data.data-augmentation.md
       - "DTW": time-series/timeseries-data.dtw.md
       - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
@@ -165,7 +169,7 @@ nav:
       - "Statistical Models": time-series/timeseries-basics.statistical-models.md
       - "AR": "time-series/timeseries-basics.ar.md"
       - "VAR": time-series/timeseries-basics.var.md
-    - Synthetic Datasets:
+    - "Synthetic Datasets":
       - "Synthetic Time Series": time-series/timeseries-synthetic.md
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
     - "Forecasting":
@@ -176,7 +180,7 @@ nav:
     - "Hierarchical Time Series":
       - "Hierarchical Time Series Data": time-series/timeseries-hierarchical.data.md
       - "Hierarchical Time Series Reconciliation": time-series/timeseries-hierarchical.reconciliation.md
-    - Useful Datasets:
+    - "Useful Datasets":
       - time-series/timeseries-datasets.md
       - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md
       - "NREL Solar Power Data": time-series/timeseries-datasets.nrel-solar-energy.md
@@ -208,14 +212,17 @@ nav:
     - "Tree-based Models": trees/tree.basics.md
     - "Random Forest": trees/tree.random-forest.md
     - "Gradient Boosted Trees": trees/tree.gbdt.md
+    - "Forecasting with Trees Using Darts": trees/tree.darts.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
     - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
   - "Supplementary":
     - "About Supplementary Materials": supplementary.md
     - "Notebooks":
+      - "Box-Cox Transformation": notebooks/timeseries_data_box-cox.py
       - "Tree Basics": notebooks/tree_basics.py
       - "Random Forest Basics": notebooks/tree_random_forest.py
+      - "Forecasting with Trees using Darts": notebooks/tree_darts_random_forest.py
     - "Small Yet Powerful Concepts":
       - concepts/index.md
       - "Entropy": concepts/entropy.md

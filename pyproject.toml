@@ -15,6 +15,7 @@ mkdocs-with-pdf = "0.9.3"
 mkdocs-git-authors-plugin = "0.6.4"
 mkdocs-bibtex = "2.8.1"
 mkdocs-jupyter = "^0.24.1"
+mkdocs-exclude-search = "^0.6.5"
 
 
 [tool.poetry.group.darts.dependencies]
