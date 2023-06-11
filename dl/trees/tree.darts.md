@@ -3,7 +3,7 @@
 Darts provides wrappers for tree-based models.
 
 !!! note "Just Run It"
-    The notebook that produced the results in this section can be found [here :material-language-python:](notebooks/tree_darts_random_forest).
+    The notebook that produced the results in this section can be found [here :material-language-python:](../notebooks/tree_darts_random_forest).
 
 
 ## The Simple Random Forest
