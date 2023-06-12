@@ -305,6 +305,7 @@ benchmark_metrics = [
     metrics.mse,
     metrics.rmse,
     metrics.smape,
+    metrics.r2_score,
 ]
 
 

@@ -67,7 +67,7 @@ darts_air_passenger_train.plot(label="Training Data")
 darts_air_passenger_test.plot(label="Test Data")
 
 # + [markdown] id="4lKC6b3SwYGq"
-# ### First GBDT Model
+# ### First Random Forest Model
 
 # + id="rXKC8hkQwYGq"
 ap_horizon = len(darts_air_passenger_test)
@@ -173,10 +173,10 @@ gbdt_ap_seasonal.fit(darts_air_passenger_seasonal_train)
 # + colab={"base_uri": "https://localhost:8080/", "height": 462} id="x-Wluyz6wYGs" outputId="d275a304-5128-434c-d706-409de13cb046"
 darts_air_passenger_train.plot(label="Train")
 darts_air_passenger_test.plot(label="Test")
-pred_gbdt_ap_seasonal = gbdt_ap_seasonal.predict(
+pred_rf_ap_seasonal = gbdt_ap_seasonal.predict(
     n=ap_horizon
 ) * darts_air_passenger_trend.drop_before(119)
-pred_gbdt_ap_seasonal.plot(label="Trend * Predicted Seasonal Component", linestyle="--")
+pred_rf_ap_seasonal.plot(label="Trend * Predicted Seasonal Component", linestyle="--")
 
 # + [markdown] id="m2pPeXiSwYGs"
 # This indiates that the performance of trees on out of sample predictions if we only predict on the cycle part of the series. In a real world case, however, we have to predict the trend accurately for this to work. To better reconstruct the trend, there are also tricks like [Box-Cox transformations](../time-series/timeseries-data.box-cox.md).
@@ -280,16 +280,43 @@ pred_gbdt_bc_lt = air_passenger_boxcox.inverse_transform(
 )
 pred_gbdt_bc_lt.plot(label="Box-Cox + Linear Detrend Predictions", linestyle="--")
 
+# + [markdown] id="5mPqMkH1R7jm"
+# ## Linear Tree Horizon
+
+# + [markdown] id="UoUtnIELWUWr"
+# Detrending is not the only possibility. LightGBM implements a linear tree version of the base learners.
+
+# + id="3UQWRwhQSK91"
+ap_gbdt_linear_tree_params = dict(
+    lags=52, output_chunk_length=ap_horizon, linear_tree=True
+)
+
+# + id="LFds5KtVwYGy"
+gbdt_linear_tree_ap = LightGBMModel(**ap_gbdt_linear_tree_params)
+
+# + colab={"base_uri": "https://localhost:8080/"} id="ns2SQ8sbSTpm" outputId="445e0efb-2e12-4ee9-9a60-5a012aa5a083"
+gbdt_linear_tree_ap.fit(darts_air_passenger_train)
+
+# + colab={"base_uri": "https://localhost:8080/", "height": 462} id="Z4hJVSv_SWrW" outputId="fac4c8db-6e59-4609-b8be-feb8485bdf06"
+darts_air_passenger_train.plot(label="Train")
+darts_air_passenger_test.plot(label="Test")
+pred_gbdt_linear_tree_ap = gbdt_linear_tree_ap.predict(n=ap_horizon)
+pred_gbdt_linear_tree_ap.plot(label="Linear Tree Prediction", linestyle="--")
+
+# + id="HHAeUz4zSs-5"
+
+
 # + [markdown] id="76W-UUf4wYGt"
 # ### Metrics
 
-# + colab={"base_uri": "https://localhost:8080/", "height": 473} id="zUUbjb9NwYGt" outputId="9365d640-c66c-45de-ce81-f3e1f4132fea"
+# + colab={"base_uri": "https://localhost:8080/", "height": 473} id="zUUbjb9NwYGt" outputId="64dcb15f-411a-4da2-bb03-0b5e6f30fcbb"
 darts_air_passenger_test.plot(label="Test")
 pred_gbdt_ap.plot(label="Simple GBDT", linestyle="--")
-pred_gbdt_ap_seasonal.plot(
+pred_rf_ap_seasonal.plot(
     label="GBDT on Global Detrended Data (Cheating)", linestyle="--"
 )
 pred_gbdt_bc_lt.plot(label="GBDT on Box-Cox + Linear Detrend Data", linestyle="--")
+pred_gbdt_linear_tree_ap.plot(label="Linear Tree|", linestyle="--", color="r")
 
 # + id="cjgcUttEwYGt"
 benchmark_metrics = [
@@ -298,6 +325,7 @@ benchmark_metrics = [
     metrics.mse,
     metrics.rmse,
     metrics.smape,
+    metrics.r2_score,
 ]
 
 
@@ -321,12 +349,12 @@ def benchmark_predictions(
     return results
 
 
-# + colab={"base_uri": "https://localhost:8080/", "height": 520} id="_Y6jm6Y9wYGy" outputId="f684e709-7e48-423b-d8de-013e272bdb1e"
+# + colab={"base_uri": "https://localhost:8080/", "height": 802} id="_Y6jm6Y9wYGy" outputId="265a9e2a-8ea6-4ed4-eb3e-12abc3773cf8"
 benchmark_results = []
 
 for i, pred in zip(
-    ["simple_gbdt", "detrended_cheating", "boxcox_linear_trend"],
-    [pred_gbdt_ap, pred_gbdt_ap_seasonal, pred_gbdt_bc_lt],
+    ["simple_gbdt", "detrended_cheating", "boxcox_linear_trend", "linear_tree"],
+    [pred_gbdt_ap, pred_rf_ap_seasonal, pred_gbdt_bc_lt, pred_gbdt_linear_tree_ap],
 ):
     benchmark_results += benchmark_predictions(
         series_true=darts_air_passenger_test,
@@ -338,7 +366,7 @@ for i, pred in zip(
 df_benchmark_metrics = pd.DataFrame(benchmark_results)
 df_benchmark_metrics
 
-# + colab={"base_uri": "https://localhost:8080/", "height": 1000} id="n4XHYPvRwYGy" outputId="cfc06499-8b89-4bf8-af9d-4fabb3ef3a74"
+# + colab={"base_uri": "https://localhost:8080/", "height": 977} id="n4XHYPvRwYGy" outputId="73e11be0-b6ce-4279-fc1f-9430434d3c2d"
 metric_chart_grid = sns.FacetGrid(
     df_benchmark_metrics,
     col="metric",
@@ -356,4 +384,4 @@ metric_chart_grid.map(
 #     _ = axes.set_xticklabels(axes.get_xticklabels(), rotation=90)
 # metric_chart_grid.fig.tight_layout(w_pad=1)
 
-# + id="LFds5KtVwYGy"
+# + id="tsk_WtuCW2JD"
