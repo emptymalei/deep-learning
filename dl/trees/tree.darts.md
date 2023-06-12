@@ -1,9 +1,9 @@
 # Forecasting with Trees Using Darts
 
-Darts provides wrappers for tree-based models.
+Darts provides wrappers for tree-based models. In this section, we benchmark random forest and gradient-boosting decison tree (GBDT) on the famous [air passenger dataset]((https://www.kaggle.com/datasets/rakannimer/air-passengers)). Through the benchmarks, we will see the key advantage and disadvantage of tree-based models in forecasting.
 
 !!! note "Just Run It"
-    The notebook that produced the results in this section can be found [here :material-language-python:](../../notebooks/tree_darts_random_forest).
+    The notebooks created to produce the results in this section can be found [here for random forest :material-language-python:](../../notebooks/tree_darts_random_forest) and [here for gbdt :material-language-python:](../../notebooks/tree_darts_boosted_tree).
 
 
 ## The Simple Random Forest
@@ -21,8 +21,6 @@ We choose the famous [air passenger data](https://www.kaggle.com/datasets/rakann
 A naive idea is to simply wrap a tree-based model on the data. Here is choose RandomForest from scikit-learn.
 
 ![Simple RF](../assets/tree.darts/tree-darts-ap-rf-simple-outofsample.png)
-
-tree-darts-ap-rf-simple.png)
 
 The predictions are quite off. However, if we look into the in-sample predictions, i.e., time range that the model has already seen during training, we would not have observed such bad predictions.
 
@@ -63,7 +61,7 @@ Finally, we fit a random forest model on the detrended data, i.e., Box-Cox trans
 ![box cox + linear trend](../assets/tree.darts/tree-darts-ap-rf-boxcox-linear-trend-outofsample.png)
 
 
-### Comparisons of the Three Models
+### Comparisons of the Three Random Forest Models
 
 Observations by eyes showed that cheating leads to the best result, followed by a simple linear detrend model.
 
@@ -72,3 +70,19 @@ Observations by eyes showed that cheating leads to the best result, followed by 
 To formally benchmark the results, we computed several metrics.
 
 ![Metric comparison](../assets/tree.darts/tree-darts-ap-rf-metric-comparisons.png)
+
+
+## Gradient Boosted Trees
+
+Similar behavior is also observed for gradient-boosted decision trees (GBDT).
+
+![Comparison](../assets/tree.darts/tree-darts-ap-gbdt-comparisons.png)
+
+![Metric comparison](../assets/tree.darts/tree-darts-ap-gbdt-metric-comparisons.png)
+
+## Trees are Powerful
+
+Up to this point, we may get the feeling that trees are not the best choices for forecasting. As a matter of fact, trees are widely used in many competitions and have achieved a lot in forecasting[@Januschowski2022-qr]. Apart from being simple and robust, trees can also be made probabilistic. Trees are also attractive as our first model to try because they usually already work quite well out of the box[^lightgbm_params].
+
+
+[^lightgbm_params]: "Out of the box" sounds like something easy to do. However, if one ever reads the list of parameters of LightGBM, the thought of "easy" will immediately diminish.
