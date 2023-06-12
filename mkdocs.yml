@@ -222,7 +222,8 @@ nav:
       - "Box-Cox Transformation": notebooks/timeseries_data_box-cox.py
       - "Tree Basics": notebooks/tree_basics.py
       - "Random Forest Basics": notebooks/tree_random_forest.py
-      - "Forecasting with Trees using Darts": notebooks/tree_darts_random_forest.py
+      - "Forecasting with Random Forest using Darts": notebooks/tree_darts_random_forest.py
+      - "Forecasting with GBDT using Darts": notebooks/tree_darts_boosted_tree.py
     - "Small Yet Powerful Concepts":
       - concepts/index.md
       - "Entropy": concepts/entropy.md
