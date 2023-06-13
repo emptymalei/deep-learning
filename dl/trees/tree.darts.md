@@ -35,14 +35,15 @@ To confirm that this is due to the mismatch of the in-sample distribution and th
 
 This hints that we should at least detrend the data.
 
-![Distributions](../assets/tree.darts/tree-darts-ap-detrend-dist-train-test.png)
+![detrended](../assets/tree.darts/tree-darts-ap-detrended.png)
 
 However, we will cheat a bit to detrend the whole series to get a grasp of the idea.
 
 ![Detrended RF](../assets/tree.darts/tree-darts-ap-rf-detrend-cheating-outofsample.png)
 
 ??? note "Distribution of Detrended Data"
-    ![distribution detrended](../assets/tree.darts/tree-darts-ap-detrended.png)
+    ![Distributions](../assets/tree.darts/tree-darts-ap-detrend-dist-train-test.png)
+
 
 ### Without Information Leak
 
