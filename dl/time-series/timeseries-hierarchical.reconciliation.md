@@ -83,6 +83,8 @@ $$
     \end{pmatrix}.
     $$
 
+    However, this is not the only $\mathbf P$ we can choose.
+
 
 
 To generate the coherent forecasts $\tilde{\mathbf y}(t)$, we use [the summing matrix](timeseries-hierarchical.data.md#summing-matrix) to map the bottom level forecasts to base forecasts of all levels[^Hyndman2021][@Rangapuram2021-xi]
