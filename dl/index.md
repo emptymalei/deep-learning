@@ -66,11 +66,16 @@ The following is my first version of the blueprint.
         - [x] GAN
         - [x] f-GAN
         - [x] Info-GAN
+    - Transformers
+        - [ ] Vanilla transformers
 - [ ] Deep Learning Models for Forecasting
     - [ ] RNN, e.g., LSTM
     - [ ] DeepAR, DeepVAR
     - [x] Diffusion Models, e.g., TimeGrad
-    - [ ] Transformer, e.g., TFT
+    - [ ] Transformer
+        - [ ] TFT
+        - [ ] DLinear
+        - [ ] NLinear
     - [ ] Spatial-temporal Models, e.g., GNN
     - [ ] Conformal Prediction
     - [ ] Graph Neural Networks
