@@ -1,16 +1,95 @@
 # Hierarchical Time Series Reconciliation
 
-Reconciliation is a post-processing method to adjust the forecasts to be coherent. Given **base forecasts** $\hat{\mathbf y}(t)$ for all levels which were forecasted independently, we use $\mathbf P$ to map them to the bottom level forecasts
+Reconciliation is a post-processing method to adjust the forecasts to be coherent. Given **base forecasts** $\hat{\mathbf y}(t)$ (forecasts for all levels but each level forecasted independently), we use $\mathbf P$ to map them to the bottom-level forecasts
 
+$$
 \begin{equation}
-\hat{\mathbf b}(t) = \mathbf P \hat{\mathbf y}(t).
+\tilde{\mathbf b}(t) = \mathbf P \hat{\mathbf y}(t).
 \end{equation}
+$$
+
+!!! note "$P$ and $S$"
+
+    In the [previous section](../timeseries-hierarchical.data.md), we discussed the summing matrix $\color{blue}S$. The summing matrix maps the bottom-level forecasts $\color{red}{\mathbf b}(t)$ to all forecasts on all levels $\color{green}\mathbf y(t)$. The example we provided was
+
+    $${\color{green}\begin{pmatrix}
+    s(t) \\
+    s_\mathrm{CA}(t) \\
+    s_\mathrm{TX}(t) \\
+    s_\mathrm{WI}(t)
+    \end{pmatrix}} = {\color{blue}\begin{pmatrix}
+    1 & 1 & 1 \\
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & 1
+    \end{pmatrix}} {\color{red}\begin{pmatrix}
+    s_\mathrm{CA}(t) \\
+    s_\mathrm{TX}(t) \\
+    s_\mathrm{WI}(t)
+    \end{pmatrix}}.
+    $$
+
+    If we forecast different levels independently, the forecasts we get
+
+    $$
+    \hat{\mathbf y}(t) = \begin{pmatrix}
+    \hat s(t) \\
+    \hat s_\mathrm{CA}(t) \\
+    \hat s_\mathrm{TX}(t) \\
+    \hat s_\mathrm{WI}(t)
+    \end{pmatrix},
+    $$
+
+    are not necessarily coherent. However, if we can choose a proper $\mathbf P$, we can convert the base forecasts into some bottom-level forecasts
+
+    $$
+    \begin{pmatrix}
+    \tilde s_\mathrm{CA}(t) \\
+    \tilde s_\mathrm{TX}(t) \\
+    \tilde s_\mathrm{WI}(t)
+    \end{pmatrix} = \mathbf P \begin{pmatrix}
+    \hat s(t) \\
+    \hat s_\mathrm{CA}(t) \\
+    \hat s_\mathrm{TX}(t) \\
+    \hat s_\mathrm{WI}(t)
+    \end{pmatrix}.
+    $$
+
+    From the usage, $\mathbf S$ and $\mathbf P$ are like conjugates. We have the following relation
+
+    $$
+    \begin{pmatrix}
+    \tilde s_\mathrm{CA}(t) \\
+    \tilde s_\mathrm{TX}(t) \\
+    \tilde s_\mathrm{WI}(t)
+    \end{pmatrix} = \mathbf P \mathbf S {\color{red}\begin{pmatrix}
+    s_\mathrm{CA}(t) \\
+    s_\mathrm{TX}(t) \\
+    s_\mathrm{WI}(t)
+    \end{pmatrix}}.
+    $$
+
+    It is clear that $\mathbf P \mathbf S$ is identity if we set
+
+    $$
+    \begin{pmatrix}
+    \tilde s_\mathrm{CA}(t) \\
+    \tilde s_\mathrm{TX}(t) \\
+    \tilde s_\mathrm{WI}(t)
+    \end{pmatrix} = \begin{pmatrix}
+    s_\mathrm{CA}(t) \\
+    s_\mathrm{TX}(t) \\
+    s_\mathrm{WI}(t)
+    \end{pmatrix}.
+    $$
+
+
 
 To generate the coherent forecasts $\tilde{\mathbf y}(t)$, we use [the summing matrix](timeseries-hierarchical.data.md#summing-matrix) to map the bottom level forecasts to base forecasts of all levels[^Hyndman2021][@Rangapuram2021-xi]
 
 $$
 \begin{equation}
-\tilde{\mathbf y}(t) = \mathbf S\hat{\mathbf b}(t) = \mathbf S \mathbf P \hat{\mathbf y}(t).
+\tilde{\mathbf y}(t) = \mathbf S\tilde{\mathbf b}(t) = \mathbf S \mathbf P \hat{\mathbf y}(t).
 \label{eq:reconciliation-compact-form}
 \end{equation}
 $$
@@ -28,20 +107,10 @@ $$
     \end{pmatrix}.
     $$
 
-    The bottom level forecasts are
-
-    $$
-    \hat{\mathbf b}(t) = \begin{pmatrix}
-    \hat s_\mathrm{CA}(t) \\
-    \hat s_\mathrm{TX}(t) \\
-    \hat s_\mathrm{WI}(t)
-    \end{pmatrix}.
-    $$
-
     The simplest mapping to the bottom-level forecasts is
 
     $$
-    \hat{\mathbf b}(t) = \begin{pmatrix}
+    \tilde{\mathbf b}(t) = \begin{pmatrix}
     0 & 1 & 0 & 0 \\
     0 & 0 & 1 & 0 \\
     0 & 0 & 0 & 1
@@ -53,13 +122,35 @@ $$
     \end{pmatrix}.
     $$
 
-    In this simple method, our mapping matrix $\mathbf P$ is
+    where
+
+    $$
+    \tilde{\mathbf b}(t) = \begin{pmatrix}
+    \tilde s_\mathrm{CA}(t) \\
+    \tilde s_\mathrm{TX}(t) \\
+    \tilde s_\mathrm{WI}(t)
+    \end{pmatrix}
+    $$
+
+    are the bottom-level forecasts to be transformed into coherent forecasts.
+
+    In this simple method, our mapping matrix $\mathbf P$ can be
 
     $$
     \mathbf P = \begin{pmatrix}
     0 & 1 & 0 & 0 \\
     0 & 0 & 1 & 0 \\
     0 & 0 & 0 & 1
+    \end{pmatrix}.
+    $$
+
+    Using this $\mathbf P$, we get
+
+    $$
+    \tilde{\mathbf b}(t) = \hat{\mathbf b}(t) = \begin{pmatrix}
+    \hat s_\mathrm{CA}(t) \\
+    \hat s_\mathrm{TX}(t) \\
+    \hat s_\mathrm{WI}(t)
     \end{pmatrix}.
     $$
 
@@ -77,7 +168,7 @@ $$
     so that
 
     $$
-    \tilde{\mathbf y}(t) = \mathbf S \hat{\mathbf b}(t) = \begin{pmatrix}
+    \tilde{\mathbf y}(t) = \mathbf S \tilde{\mathbf b}(t) = \begin{pmatrix}
      \hat s_\mathrm{CA}(t) + \hat s_\mathrm{TX}(t) + \hat s_\mathrm{WI}(t) \\
     \hat s_\mathrm{CA}(t) \\
     \hat s_\mathrm{TX}(t) \\
