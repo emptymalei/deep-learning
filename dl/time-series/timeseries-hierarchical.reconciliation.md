@@ -76,11 +76,11 @@ $$
     \tilde s_\mathrm{CA}(t) \\
     \tilde s_\mathrm{TX}(t) \\
     \tilde s_\mathrm{WI}(t)
-    \end{pmatrix} = \begin{pmatrix}
+    \end{pmatrix} = {\color{red}\begin{pmatrix}
     s_\mathrm{CA}(t) \\
     s_\mathrm{TX}(t) \\
     s_\mathrm{WI}(t)
-    \end{pmatrix}.
+    \end{pmatrix}}.
     $$
 
     However, this is not the only $\mathbf P$ we can choose.
