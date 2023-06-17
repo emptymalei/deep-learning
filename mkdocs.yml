@@ -223,6 +223,7 @@ nav:
     - "About Supplementary Materials": supplementary.md
     - "Notebooks":
       - "Box-Cox Transformation": notebooks/timeseries_data_box-cox.py
+      - "Hierarchical Forecasting Using MinT": notebooks/hierarchical_forecasting_mint.py
       - "Tree Basics": notebooks/tree_basics.py
       - "Random Forest Basics": notebooks/tree_random_forest.py
       - "Forecasting with Random Forest using Darts": notebooks/tree_darts_random_forest.py
