@@ -1,19 +1,20 @@
 # Vanilla Transformers
 
-The seminal paper *Attention is All You Need*, the legendary transformer architecture was born[@Vaswani2017-yg].
+In the seminal paper *Attention is All You Need*, the legendary transformer architecture was born[@Vaswani2017-yg].
 
 !!! quote "Quote from *Attention Is All You Need*"
     "... the Transformer, a model architecture eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output."
 
-Jay Alammar wrote an excellent post, named [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/)[^illustrated_transformer]. We recommend the user read the post as we will only summarize some of the key ideas of transformers for completeness.
+Transformer has evolved a lot in the past few years and there are a galaxy of variants[@Amatriain2023-of].
+
+![Amatriain2023-of](../assets/transformers.vanilla/transformer-family-tree.png)
+
+In this section, we will focus on the vanilla transformer. Jay Alammar wrote an excellent post, named [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/)[^illustrated_transformer]. We recommend the reader read the post. We won't cover everything in this section. However, for completeness, we will summarize some of the key ideas of transformers.
 
 !!! info "Formal Algorithms"
 
     For a formal description of the transformer-relevant algorithms, please refer to Phuong & Hutter (2022)[@Phuong2022-im].
 
-Transformer has evolved a lot in the past few years and there are a galaxy of variants[@Amatriain2023-of].
-
-![Amatriain2023-of](../assets/transformers.vanilla/transformer-family-tree.png)
 
 ## The Vanilla Transformer
 
