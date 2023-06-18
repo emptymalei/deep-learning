@@ -13,7 +13,7 @@ Transformer has evolved a lot in the past few years and there are a galaxy of va
 
 ## The Vanilla Transfomer
 
-In the **vanilla transformer**, we can find three key components:
+In the **vanilla transformer**, we can find three key components: Encoder-Decoder, the attention mechanism, and the positional encoding.
 
 ### Encoder-Decoder
 
