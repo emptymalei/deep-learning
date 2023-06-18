@@ -254,25 +254,10 @@ In the following examples, we observe that the lower variance of the reconciled 
 
     |  $\mathbf S$  |  $\mathbf P$  |  $\mathbf S \mathbf P$ |
     |----|-----|-----|
-    | $\left[\begin{matrix}1 & 1\\1 & 0\\0 & 1\end{matrix}\right]$ | $\left[\begin{matrix}\frac{\frac{1}{W_{2}} + \frac{2}{W_{1}}}{W_{1}} & \frac{\frac{1}{W_{2}} + \frac{1}{W_{1}}}{W_{2}} & \frac{1}{W_{1} W_{3}}\\\frac{\frac{1}{W_{3}} + \frac{2}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{\frac{1}{W_{3}} + \frac{1}{W_{1}}}{W_{3}}\end{matrix}\right]$ | $\left[\begin{matrix}\frac{\frac{1}{W_{3}} + \frac{1}{W_{2}} + \frac{4}{W_{1}}}{W_{1}} & \frac{\frac{1}{W_{2}} + \frac{2}{W_{1}}}{W_{2}} & \frac{\frac{1}{W_{3}} + \frac{2}{W_{1}}}{W_{3}}\\\frac{\frac{1}{W_{2}} + \frac{2}{W_{1}}}{W_{1}} & \frac{\frac{1}{W_{2}} + \frac{1}{W_{1}}}{W_{2}} & \frac{1}{W_{1} W_{3}}\\\frac{\frac{1}{W_{3}} + \frac{2}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{\frac{1}{W_{3}} + \frac{1}{W_{1}}}{W_{3}}\end{matrix}\right]$ |
+    | $\left[\begin{matrix}1 & 1\\1 & 0\\0 & 1\end{matrix}\right]$ | $\left[\begin{matrix}\frac{- \frac{W_{2} W_{3}}{W_{1} + W_{2} + W_{3}} + \frac{W_{1} W_{2} + W_{2} W_{3}}{W_{1} + W_{2} + W_{3}}}{W_{1}} & \frac{W_{1} W_{2} + W_{2} W_{3}}{W_{2} \left(W_{1} + W_{2} + W_{3}\right)} & - \frac{W_{2}}{W_{1} + W_{2} + W_{3}}\\\frac{- \frac{W_{2} W_{3}}{W_{1} + W_{2} + W_{3}} + \frac{W_{1} W_{3} + W_{2} W_{3}}{W_{1} + W_{2} + W_{3}}}{W_{1}} & - \frac{W_{3}}{W_{1} + W_{2} + W_{3}} & \frac{W_{1} W_{3} + W_{2} W_{3}}{W_{3} \left(W_{1} + W_{2} + W_{3}\right)}\end{matrix}\right]$ | $\left[\begin{matrix}\frac{- \frac{2 W_{2} W_{3}}{W_{1} + W_{2} + W_{3}} + \frac{W_{1} W_{2} + W_{2} W_{3}}{W_{1} + W_{2} + W_{3}} + \frac{W_{1} W_{3} + W_{2} W_{3}}{W_{1} + W_{2} + W_{3}}}{W_{1}} & \frac{- \frac{W_{2} W_{3}}{W_{1} + W_{2} + W_{3}} + \frac{W_{1} W_{2} + W_{2} W_{3}}{W_{1} + W_{2} + W_{3}}}{W_{2}} & \frac{- \frac{W_{2} W_{3}}{W_{1} + W_{2} + W_{3}} + \frac{W_{1} W_{3} + W_{2} W_{3}}{W_{1} + W_{2} + W_{3}}}{W_{3}}\\\frac{- \frac{W_{2} W_{3}}{W_{1} + W_{2} + W_{3}} + \frac{W_{1} W_{2} + W_{2} W_{3}}{W_{1} + W_{2} + W_{3}}}{W_{1}} & \frac{W_{1} W_{2} + W_{2} W_{3}}{W_{2} \left(W_{1} + W_{2} + W_{3}\right)} & - \frac{W_{2}}{W_{1} + W_{2} + W_{3}}\\\frac{- \frac{W_{2} W_{3}}{W_{1} + W_{2} + W_{3}} + \frac{W_{1} W_{3} + W_{2} W_{3}}{W_{1} + W_{2} + W_{3}}}{W_{1}} & - \frac{W_{3}}{W_{1} + W_{2} + W_{3}} & \frac{W_{1} W_{3} + W_{2} W_{3}}{W_{3} \left(W_{1} + W_{2} + W_{3}\right)}\end{matrix}\right]$ |
 
+    We visualize the matrix $\mathbf S\mathbf P$. It is straightforward to verify that it always leads to coherent results.
     ![S * P](assets/timeseries-hierarchical.reconciliation/mint_example_2_level_2_bottom.png)
-
-=== "Two Levels: 3 Bottom Level Series"
-
-    |  $\mathbf S$  |  $\mathbf P$  |  $\mathbf S \mathbf P$ |
-    |----|-----|-----|
-    | $\left[\begin{matrix}1 & 1 & 1\\1 & 0 & 0\\0 & 1 & 0\\0 & 0 & 1\end{matrix}\right]$ | $\left[\begin{matrix}\frac{\frac{1}{W_{2}} + \frac{3}{W_{1}}}{W_{1}} & \frac{\frac{1}{W_{2}} + \frac{1}{W_{1}}}{W_{2}} & \frac{1}{W_{1} W_{3}} & \frac{1}{W_{1} W_{4}}\\\frac{\frac{1}{W_{3}} + \frac{3}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{\frac{1}{W_{3}} + \frac{1}{W_{1}}}{W_{3}} & \frac{1}{W_{1} W_{4}}\\\frac{\frac{1}{W_{4}} + \frac{3}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{1}{W_{1} W_{3}} & \frac{\frac{1}{W_{4}} + \frac{1}{W_{1}}}{W_{4}}\end{matrix}\right]$ | $\left[\begin{matrix}\frac{\frac{1}{W_{4}} + \frac{1}{W_{3}} + \frac{1}{W_{2}} + \frac{9}{W_{1}}}{W_{1}} & \frac{\frac{1}{W_{2}} + \frac{3}{W_{1}}}{W_{2}} & \frac{\frac{1}{W_{3}} + \frac{3}{W_{1}}}{W_{3}} & \frac{\frac{1}{W_{4}} + \frac{3}{W_{1}}}{W_{4}}\\\frac{\frac{1}{W_{2}} + \frac{3}{W_{1}}}{W_{1}} & \frac{\frac{1}{W_{2}} + \frac{1}{W_{1}}}{W_{2}} & \frac{1}{W_{1} W_{3}} & \frac{1}{W_{1} W_{4}}\\\frac{\frac{1}{W_{3}} + \frac{3}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{\frac{1}{W_{3}} + \frac{1}{W_{1}}}{W_{3}} & \frac{1}{W_{1} W_{4}}\\\frac{\frac{1}{W_{4}} + \frac{3}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{1}{W_{1} W_{3}} & \frac{\frac{1}{W_{4}} + \frac{1}{W_{1}}}{W_{4}}\end{matrix}\right]$ |
-
-    ![S * P](assets/timeseries-hierarchical.reconciliation/mint_example_2_level_3_bottom.png)
-
-=== "Two Levels: 4 Bottom Level Series"
-
-    |  $\mathbf S$  |  $\mathbf P$  |  $\mathbf S \mathbf P$ |
-    |----|-----|-----|
-    | $\left[\begin{matrix}1 & 1 & 1 & 1\\1 & 0 & 0 & 0\\0 & 1 & 0 & 0\\0 & 0 & 1 & 0\\0 & 0 & 0 & 1\end{matrix}\right]$ | $\left[\begin{matrix}\frac{\frac{1}{W_{2}} + \frac{4}{W_{1}}}{W_{1}} & \frac{\frac{1}{W_{2}} + \frac{1}{W_{1}}}{W_{2}} & \frac{1}{W_{1} W_{3}} & \frac{1}{W_{1} W_{4}} & \frac{1}{W_{1} W_{5}}\\\frac{\frac{1}{W_{3}} + \frac{4}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{\frac{1}{W_{3}} + \frac{1}{W_{1}}}{W_{3}} & \frac{1}{W_{1} W_{4}} & \frac{1}{W_{1} W_{5}}\\\frac{\frac{1}{W_{4}} + \frac{4}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{1}{W_{1} W_{3}} & \frac{\frac{1}{W_{4}} + \frac{1}{W_{1}}}{W_{4}} & \frac{1}{W_{1} W_{5}}\\\frac{\frac{1}{W_{5}} + \frac{4}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{1}{W_{1} W_{3}} & \frac{1}{W_{1} W_{4}} & \frac{\frac{1}{W_{5}} + \frac{1}{W_{1}}}{W_{5}}\end{matrix}\right]$ | $\left[\begin{matrix}\frac{\frac{1}{W_{5}} + \frac{1}{W_{4}} + \frac{1}{W_{3}} + \frac{1}{W_{2}} + \frac{16}{W_{1}}}{W_{1}} & \frac{\frac{1}{W_{2}} + \frac{4}{W_{1}}}{W_{2}} & \frac{\frac{1}{W_{3}} + \frac{4}{W_{1}}}{W_{3}} & \frac{\frac{1}{W_{4}} + \frac{4}{W_{1}}}{W_{4}} & \frac{\frac{1}{W_{5}} + \frac{4}{W_{1}}}{W_{5}}\\\frac{\frac{1}{W_{2}} + \frac{4}{W_{1}}}{W_{1}} & \frac{\frac{1}{W_{2}} + \frac{1}{W_{1}}}{W_{2}} & \frac{1}{W_{1} W_{3}} & \frac{1}{W_{1} W_{4}} & \frac{1}{W_{1} W_{5}}\\\frac{\frac{1}{W_{3}} + \frac{4}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{\frac{1}{W_{3}} + \frac{1}{W_{1}}}{W_{3}} & \frac{1}{W_{1} W_{4}} & \frac{1}{W_{1} W_{5}}\\\frac{\frac{1}{W_{4}} + \frac{4}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{1}{W_{1} W_{3}} & \frac{\frac{1}{W_{4}} + \frac{1}{W_{1}}}{W_{4}} & \frac{1}{W_{1} W_{5}}\\\frac{\frac{1}{W_{5}} + \frac{4}{W_{1}}}{W_{1}} & \frac{1}{W_{1} W_{2}} & \frac{1}{W_{1} W_{3}} & \frac{1}{W_{1} W_{4}} & \frac{\frac{1}{W_{5}} + \frac{1}{W_{1}}}{W_{5}}\end{matrix}\right]$ |
-
-    ![S * P](assets/timeseries-hierarchical.reconciliation/mint_example_2_level_4_bottom.png)
 
 
 === "Code"
@@ -308,7 +293,7 @@ In the following examples, we observe that the lower variance of the reconciled 
 
         @property
         def p_left(self):
-            return (
+            return sp.Inverse(
                 sp.MatMul(sp.Transpose(self.s), sp.Inverse(self.w), self.s)
             )
 
