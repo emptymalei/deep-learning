@@ -78,7 +78,7 @@ class MinTMatrices:
 
     @property
     def p_left(self):
-        return sp.MatMul(sp.Transpose(self.s), sp.Inverse(self.w), self.s)
+        return sp.Inverse(sp.MatMul(sp.Transpose(self.s), sp.Inverse(self.w), self.s))
 
     @property
     def p_right(self):
