@@ -15,7 +15,7 @@ Transformer has evolved a lot in the past few years and there are a galaxy of va
 
 ![Amatriain2023-of](../assets/transformers.vanilla/transformer-family-tree.png)
 
-## The Vanilla Transfomer
+## The Vanilla Transformer
 
 In the **vanilla transformer**, we can find three key components: Encoder-Decoder, the attention mechanism, and the positional encoding.
 
@@ -29,7 +29,7 @@ We assume that the input $\mathbf X$ is already embedded and converted to tensor
 
 ### Attention
 
-It utilizes the attention mechanism to look into the relations of the embeddings[@Vaswani2017-yg].
+It utilizes the attention mechanism to look into the relations of the embeddings[@Vaswani2017-yg][@zhang2021dive].
 
 $$
 \operatorname{Attention}(\mathbf Q, \mathbf K, \mathbf V) = \operatorname{softmax} \left( \frac{\mathbf Q \mathbf K^T}{\sqrt{d_k}} \right)\mathbf V,
