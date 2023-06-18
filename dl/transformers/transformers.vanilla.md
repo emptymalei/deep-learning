@@ -7,6 +7,10 @@ The seminal paper *Attention is All You Need*, the legendary transformer archite
 
 Jay Alammar wrote an excellent post, named [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/)[^illustrated_transformer]. We recommend the user read the post as we will only summarize some of the key ideas of transformers for completeness.
 
+!!! info "Formal Algorithms"
+
+    For a formal description of the transformer-relevant algorithms, please refer to Phuong & Hutter (2022)[@Phuong2022-im].
+
 Transformer has evolved a lot in the past few years and there are a galaxy of variants[@Amatriain2023-of].
 
 ![Amatriain2023-of](../assets/transformers.vanilla/transformer-family-tree.png)
@@ -53,22 +57,14 @@ $$
 \end{align}
 $$
 
-which determines how the elements in the value tensor are mixed.
+which determines how the elements in the value tensor are mixed, $A_{ij}V_{jk}$. For identity $\mathbf A$, we do not mix the rows of $\mathbf V$.
 
-$$
-
-$$
-
-
+!!! note "Classifier"
+    The dot-product attention is like a classifier that outputs the usefulness of the elements in $\mathbf V$. After training, $\mathbf A$ should be able to make connections between the different input elements.
 
 ### Knowledge of Positions
 
 Positional information, or time order information for time series input, is encoded by a positional encoder that shifts the embeddings.
-
-!!! info "Formal Algorithms"
-
-    For a formal description of the transformer-relevant algorithms, please refer to Phuong & Hutter (2022)[@Phuong2022-im].
-
 
 
 [^illustrated_transformer]: Alammar J. The Illustrated Transformer. In: Jay Alammar [Internet]. 27 Jun 2018 [cited 14 Jun 2023]. Available: http://jalammar.github.io/illustrated-transformer/
