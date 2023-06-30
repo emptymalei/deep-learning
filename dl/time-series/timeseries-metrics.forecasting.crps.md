@@ -36,29 +36,34 @@ The formula looks abstract on first sight, but it becomes crystal clear once we 
 
 Note that the distribution that corresponds to a Heaviside CDF is the delta function $\delta(x-x_a)$. What this score is calculating is the difference between our distribution and a delta function. If we have a model that minimizes CRPS, then we are looking for a distribution that is close to the delta function $\delta(x-x_a)$. In other words, we want our distribution to be large around $x_a$.
 
-To illustrate what the integrand $\lVert P(x) - H(x - x_a) \rVert_2$ means, we consider several scenarios.
+To illustrate what the integrand $\lVert P(x) - H(x - x_a) \rVert_2$ means, we apply some shades to the integrand of the integral in CRPS. We visualize four difference scenarios.
+
+Scenario 1: The predicted CDF $P(x)$ is reaching 1 very fast.
 
 ![When the proposed CDF $P(x)$ is reaching 1 faster](assets/timeseries-metrics.forecasting.crps/crps-p-reach-1-faster.jpg)
 
+Scenario 2: The predicted CDF $P(x)$ is reaching 1 quite late.
+
 ![When the proposed CDF $P(x)$ is reaching 1 slower](assets/timeseries-metrics.forecasting.crps/crps-p-reach-1-slower.jpg)
+
+Scenario 3: The predicted CDF $P(x)$ is reaching 1 around the Heaviside function jump.
 
 ![When the proposed CDF $P(x)$ is close to the Heaviside function](assets/timeseries-metrics.forecasting.crps/crps-p-approach-heaviside.jpg)
 
+Scenario 4: The predicted CDF $P(x)$ is steadily increasing but very dispersed.
+
 ![When the proposed CDF $P(x)$ is dispersed around $x_a$](assets/timeseries-metrics.forecasting.crps/crps-dispersed.jpg)
 
-The shade areas determine the integrand of the integral in CRPS. The only way to get a small score is to choose a distribution that is focused around $x_a$.
+With the four different scenarios visualized, intuitively, the only way to get a small CRPS score is to choose a distribution that is focused around $x_a$. Echoing a previous note on the delta function being the density function of the Heaviside function, we expect a small CRPS reflects a scenario of the following: the predicted distribution $\rho(x)$ is very focused around the observation $x_a$.
 
 ![densities of $P(x)$ and $H(x-x_a)$](assets/timeseries-metrics.forecasting.crps/crps-p-approach-heaviside-corresponding-density.jpg)
 
 
-## Compared to Likelihood
+## Discussions
 
-Gebetsberger et al found that CRPS is more robust but produces similar results if we have found a good assumption about the data distribution[^Gebetsberger2018].
+Gebetsberger et al found that CRPS is more robust compared to Likelihood while producing similar results if we use a good assumption for the data distribution[^Gebetsberger2018].
 
-
-## Applications
-
-One quite interesting application of the CRPS is to write down the loss for the quantile function[^Gouttes2021].
+CRPS is also very useful in time series forecasting. For example, the integrand of CRPS can be used as the loss function in model training [^Gouttes2021].
 
 
 
