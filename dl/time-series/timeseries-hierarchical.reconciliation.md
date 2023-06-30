@@ -390,5 +390,9 @@ Each step was adjusted differently since the forecasted values are different. To
 ![adjustments from MinT](../assets/timeseries-hierarchical.reconciliation/m5_sample_reconciled_forecasts_shift_total.png)
 
 
+## Tools and Packages
+
+[Darts](https://github.com/unit8co/darts/) and [hierarchicalforecast from Nixtla](https://nixtla.github.io/hierarchicalforecast/) provide good support for reconciliations.
+
 
 [^Hyndman2021]: Hyndman, R.J., & Athanasopoulos, G. (2021) Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 2022-11-27.
