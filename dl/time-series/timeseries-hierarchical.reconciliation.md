@@ -262,7 +262,6 @@ In the following examples, we observe that the lower variance of the reconciled 
 
 === "Code"
 
-
     ```python
     import sympy as sp
     import numpy as np
