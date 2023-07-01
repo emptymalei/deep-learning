@@ -38,21 +38,21 @@ Note that the distribution that corresponds to a Heaviside CDF is the delta func
 
 To illustrate what the integrand $\lVert P(x) - H(x - x_a) \rVert_2$ means, we apply some shades to the integrand of the integral in CRPS. We visualize four difference scenarios.
 
-Scenario 1: The predicted CDF $P(x)$ is reaching 1 very fast.
+!!! example "Scenario 1: The predicted CDF $P(x)$ is reaching 1 very fast."
 
-![When the proposed CDF $P(x)$ is reaching 1 faster](assets/timeseries-metrics.forecasting.crps/crps-p-reach-1-faster.jpg)
+    ![When the proposed CDF $P(x)$ is reaching 1 faster](assets/timeseries-metrics.forecasting.crps/crps-p-reach-1-faster.jpg)
 
-Scenario 2: The predicted CDF $P(x)$ is reaching 1 quite late.
+!!! example "Scenario 2: The predicted CDF $P(x)$ is reaching 1 quite late."
 
-![When the proposed CDF $P(x)$ is reaching 1 slower](assets/timeseries-metrics.forecasting.crps/crps-p-reach-1-slower.jpg)
+    ![When the proposed CDF $P(x)$ is reaching 1 slower](assets/timeseries-metrics.forecasting.crps/crps-p-reach-1-slower.jpg)
 
-Scenario 3: The predicted CDF $P(x)$ is reaching 1 around the Heaviside function jump.
+!!! example "Scenario 3: The predicted CDF $P(x)$ is reaching 1 around the Heaviside function jump."
 
-![When the proposed CDF $P(x)$ is close to the Heaviside function](assets/timeseries-metrics.forecasting.crps/crps-p-approach-heaviside.jpg)
+    ![When the proposed CDF $P(x)$ is close to the Heaviside function](assets/timeseries-metrics.forecasting.crps/crps-p-approach-heaviside.jpg)
 
-Scenario 4: The predicted CDF $P(x)$ is steadily increasing but very dispersed.
+!!! example "Scenario 4: The predicted CDF $P(x)$ is steadily increasing but very dispersed."
 
-![When the proposed CDF $P(x)$ is dispersed around $x_a$](assets/timeseries-metrics.forecasting.crps/crps-dispersed.jpg)
+    ![When the proposed CDF $P(x)$ is dispersed around $x_a$](assets/timeseries-metrics.forecasting.crps/crps-dispersed.jpg)
 
 With the four different scenarios visualized, intuitively, the only way to get a small CRPS score is to choose a distribution that is focused around $x_a$. Echoing a previous note on the delta function being the density function of the Heaviside function, we expect a small CRPS reflects a scenario of the following: the predicted distribution $\rho(x)$ is very focused around the observation $x_a$.
 
