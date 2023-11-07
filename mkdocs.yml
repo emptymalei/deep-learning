@@ -189,6 +189,7 @@ nav:
       - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
   - "Deep Learning Fundamentals":
     - "Deep Learning Introduction": deep-learning-fundamentals/index.md
+    - "Learning from Data": deep-learning-fundamentals/learning.md
     - "Transformers":
       - "Vanilla Transformers": transformers/transformers.vanilla.md
     - "Energy-based Models":
@@ -218,6 +219,7 @@ nav:
     - "Forecasting with Trees Using Darts": trees/tree.darts.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
+    - "Transformers for Time Series Forecasting": "time-series-deep-learning/timeseries.transformer.md"
     - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
   - "Supplementary":
     - "About Supplementary Materials": supplementary.md

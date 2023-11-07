@@ -14,7 +14,7 @@ mkdocstrings = "^0.23.0"
 mkdocs-with-pdf = "^0.9.3"
 mkdocs-git-authors-plugin = "^0.7.2"
 mkdocs-bibtex = "^2.11.0"
-mkdocs-jupyter = "^0.24.6"
+mkdocs-jupyter = "<=0.24.2"
 mkdocs-exclude-search = "^0.6.5"
 
 

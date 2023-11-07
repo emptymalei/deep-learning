@@ -28,15 +28,18 @@ It has an encoder-decoder architecture.
 
 We assume that the input $\mathbf X$ is already embedded and converted to tensors.
 
+The encoder-decoder is simulating the induction-deduction framework of learning. Input $\mathbf X$ is first encoded into a representation $\hat{\mathbf X}$ that should be able to capture the minimal sufficient statistics of the input. Then, the decoder takes this representation of minimal sufficient statistics $\hat{\mathbf X}$ and perform deduction to create the output $\hat{\mathbf Y}$.
+
+
 ### Attention
 
-It utilizes the attention mechanism to look into the relations of the embeddings[@Vaswani2017-yg][@zhang2021dive].
+The key to a transformer is its attention mechanism. It utilizes the attention mechanism to look into the relations of the embeddings[@Vaswani2017-yg][@zhang2021dive]. To understand the attention mechanism, we need to understand the **query**, **key**, and **value**. In essence, the attention mechanism is a classifier that outputs the usefulness of the elements in the **value**, and the usefulness is represented using a matrix formed by the **query** and the **key**.
 
 $$
 \operatorname{Attention}(\mathbf Q, \mathbf K, \mathbf V) = \operatorname{softmax} \left( \frac{\mathbf Q \mathbf K^T}{\sqrt{d_k}} \right)\mathbf V,
 $$
 
-where $d_k$ is the dimension of the key $\mathbf K$. For example, we can construct the query, key, and value by applying a linear layer to the input $\mathbf X$.
+where $d_k$ is the dimension of the key $\mathbf K$. For example, we can construct the **query**, **key**, and **value** by applying a linear layer to the input $\mathbf X$.
 
 !!! info "Conventions"
     We follow the convention that the first index of $\mathbf X$ is the index for the input element. For example, if we have two words as our input, the $X_{0j}$ is the representation of the first word and $X_{1j}$ is that for the second.
@@ -63,9 +66,12 @@ which determines how the elements in the value tensor are mixed, $A_{ij}V_{jk}$.
 !!! note "Classifier"
     The dot-product attention is like a classifier that outputs the usefulness of the elements in $\mathbf V$. After training, $\mathbf A$ should be able to make connections between the different input elements.
 
+We will provide a detailed example when discussing [the applications to time series](../time-series-deep-learning/timeseries.transformer.md).
+
 ### Knowledge of Positions
 
-Positional information, or time order information for time series input, is encoded by a positional encoder that shifts the embeddings.
+Positional information, or time order information for time series input, is encoded by a positional encoder that shifts the embeddings. The simplest positional encoder uses the cyclic nature of trig functions[@Vaswani2017-yg]. By adding such positional information directly to the values before the data flows into the attention mechanism, we can encode the positional information into the attention mechanism[^Kazemnejad2019].
 
 
 [^illustrated_transformer]: Alammar J. The Illustrated Transformer. In: Jay Alammar [Internet]. 27 Jun 2018 [cited 14 Jun 2023]. Available: http://jalammar.github.io/illustrated-transformer/
+[^Kazemnejad2019]: Kazemnejad A. Transformer Architecture: The Positional Encoding. In: Amirhossein Kazemnejad’s Blog [Internet]. 20 Sep 2019 [cited 7 Nov 2023]. Available: https://kazemnejad.com/blog/transformer_architecture_positional_encoding/

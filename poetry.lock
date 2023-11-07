@@ -2073,13 +2073,13 @@ mkdocs = ">=1.0"
 
 [[package]]
 name = "mkdocs-jupyter"
-version = "0.24.6"
+version = "0.24.2"
 description = "Use Jupyter in mkdocs websites"
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.7"
 files = [
-    {file = "mkdocs_jupyter-0.24.6-py3-none-any.whl", hash = "sha256:56fb7ad796f2414a4143d54a966b805caf315c32413e97f85591623fa87dceca"},
-    {file = "mkdocs_jupyter-0.24.6.tar.gz", hash = "sha256:89fcbe8a9523864d5416de1a60711640b6bc2972279d2adf46ed2776c2d9ff7c"},
+    {file = "mkdocs_jupyter-0.24.2-py3-none-any.whl", hash = "sha256:5295a34b1d0bd0a7688a857323eaf0319d83c8a14179b2651709b8ced6eae7db"},
+    {file = "mkdocs_jupyter-0.24.2.tar.gz", hash = "sha256:5e0c109d535d48797230719b6941f4d08de95a7a3c95bf158662c412fc15cb2e"},
 ]
 
 [package.dependencies]
@@ -2089,6 +2089,9 @@ mkdocs = ">=1.4.0,<2"
 mkdocs-material = ">9.0.0"
 nbconvert = ">=7.2.9,<8"
 pygments = ">2.12.0"
+
+[package.extras]
+test = ["coverage[toml]", "pymdown-extensions", "pytest", "pytest-cov"]
 
 [[package]]
 name = "mkdocs-material"
@@ -4467,4 +4470,4 @@ test = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6fa874f5a8174af005d79186f1028092c129a4c65387004c9508e9bbae17a075"
+content-hash = "c5170fa49194c8ddb7217a7d8acbb1fa9900b682650a510d823661cbcddc62e9"
