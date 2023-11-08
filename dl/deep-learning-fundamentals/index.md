@@ -14,4 +14,5 @@ In the following chapters, we provide some popular deep learning architectures a
 
     - Sets, domains, abstract variables, $X$, $Y$;
     - Probability distribution $P$, $Q$;
-    - Probability density $p$, $q$.
+    - Probability density $p$, $q$;
+    - Slicing arrays from index $i$ to index $j$ using ${}_{i:j}$.

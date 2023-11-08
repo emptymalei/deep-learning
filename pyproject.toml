@@ -16,6 +16,7 @@ mkdocs-git-authors-plugin = "^0.7.2"
 mkdocs-bibtex = "^2.11.0"
 mkdocs-jupyter = "<=0.24.2"
 mkdocs-exclude-search = "^0.6.5"
+mkdocs-print-site-plugin = "^2.3.6"
 
 
 [tool.poetry.group.darts.dependencies]

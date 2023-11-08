@@ -2134,6 +2134,20 @@ files = [
 ]
 
 [[package]]
+name = "mkdocs-print-site-plugin"
+version = "2.3.6"
+description = "MkDocs plugin that combines all pages into one, allowing for easy export to PDF and standalone HTML."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "mkdocs-print-site-plugin-2.3.6.tar.gz", hash = "sha256:82e5cabcfb7fe3074daecea018f28ccb4bff086f965e3103fe91019a76752f22"},
+    {file = "mkdocs_print_site_plugin-2.3.6-py3-none-any.whl", hash = "sha256:01ccb1ceccc87f29e1612bebb77c3bf9980809fbce750fc2113f9d6acea589d4"},
+]
+
+[package.dependencies]
+mkdocs-material = ">=7.3.0"
+
+[[package]]
 name = "mkdocs-with-pdf"
 version = "0.9.3"
 description = "Generate a single PDF file from MkDocs repository"
@@ -4470,4 +4484,4 @@ test = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "c5170fa49194c8ddb7217a7d8acbb1fa9900b682650a510d823661cbcddc62e9"
+content-hash = "1df5fba514f9b70c8bfedd05f9752f77d9fb45f9d5368e10f205bc4517ed17a5"

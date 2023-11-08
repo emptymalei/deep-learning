@@ -91,8 +91,24 @@ plugins:
       bib_dir: "dl/assets/references"
   - mkdocs-jupyter:
       include: ["*.py"]
+      ignore: ["notebooks/.ipynb_checkpoints/*"]
       include_source: true
       execute: false
+  - print-site:
+      add_to_navigation: false
+      print_page_title: 'Time Series with Deep Learning'
+      add_print_site_banner: false
+      # Table of contents
+      add_table_of_contents: true
+      toc_title: 'Table of Contents'
+      toc_depth: 6
+      # Content-related
+      add_full_urls: false
+      enumerate_headings: true
+      enumerate_figures: true
+      include_css: true
+      enabled: true
+      exclude:
   # - with-pdf:
   #     author: "Lei Ma"
   #     output_path: pdf/dl-lm.pdf
@@ -174,6 +190,7 @@ nav:
       - "Synthetic Time Series": time-series/timeseries-synthetic.md
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
     - "Forecasting":
+      - "Time Series Forecasting Tasks": time-series/timeseries-forecast.tasks.md
       - "Naive Forecasts": time-series/timeseries-forecast.naive.md
     - "Metrics":
       - "Time Series Forecasting Metrics": time-series/timeseries-metrics.forecasting.md
