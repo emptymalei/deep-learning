@@ -158,6 +158,7 @@ nav:
     - time-series/index.md
     - "Data":
       - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
+      - "Two-way Fixed Effects": time-series/timeseries-data.analysis.twfe.md
       - "Box-Cox Transformation": time-series/timeseries-data.box-cox.md
       - "Augmentation": time-series/timeseries-data.data-augmentation.md
       - "DTW": time-series/timeseries-data.dtw.md
