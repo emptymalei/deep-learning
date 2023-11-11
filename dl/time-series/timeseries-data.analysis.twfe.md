@@ -152,3 +152,7 @@ To help readers outside of econometrics or causal inference get started with thi
     # %%
     fit_feols.summary()
     ```
+
+!!! note "Tools and Further Reading"
+
+    In the R world, [`fixest`](https://cran.r-project.org/web/packages/fixest/vignettes/fixest_walkthrough.html#422_Simple_difference-in-differences_(TWFE)) is a popular package for estimating two-way fixed effects models. In the Python world, we have something similar called [pyfixest](https://github.com/s3alfisc/pyfixest).
