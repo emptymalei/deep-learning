@@ -49,6 +49,8 @@ To help readers outside of econometrics or causal inference get started with thi
 
 === ":material-code-json: Code"
 
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ZA5JtgJyeUevhkr_ykZVLMPk2-dmJG-K?usp=sharing)
+
     ```python
     import numpy as np
     import pandas as pd
