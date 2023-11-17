@@ -5,7 +5,7 @@
 
 Time series data comes from a variety of data generating processes. There are also different formulations and views of time series data.
 
-Time series data can be formulated time series data as a sequence of vectors as a function of time [@Dorffner1996-rd]. There are many different types of tasks on time series data, for example,
+Time series data can be formulated as a sequence of vector functions of time [@Dorffner1996-rd]. There are many different types of tasks on time series data, for example,
 
 - classification,
 - anomaly detection, and
