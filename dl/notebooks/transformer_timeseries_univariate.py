@@ -8,91 +8,75 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.14.5
 #   kernelspec:
-#     display_name: deep-learning-code
+#     display_name: deep-learning
 #     language: python
-#     name: deep-learning-code
+#     name: deep-learning
 # ---
 
 # # Transformer for Univariate Time Series Forecasting
+#
+# In this notebook, we build a transformer using pytorch to forecast $\sin$ function as a time series.
 
 # +
 import math
 from functools import cached_property
-from typing import Dict, List, Optional
+from typing import Dict, List, Tuple
 
 import pandas as pd
+import numpy as np
+
+import dataclasses
+from loguru import logger
 
 from torch.utils.data import Dataset
+from torch import nn
+import torch
 
 
-# +
-class DataFrameDataset(Dataset):
-    """A dataset from a pandas dataframe
-    :param dataframe: input dataframe with a DatetimeIndex.
-    :param contex_length: length of input in time dimension
-    :param horizon: future length to be forecasted
-    """
+import lightning as L
+from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+from torch.utils.data import DataLoader
 
-    def __init__(self, dataframe: pd.DataFrame, context_length: int, horizon: int):
-        super().__init__()
-        self.dataframe = dataframe
-        self.context_length = context_length
-        self.horzion = horizon
-        self.dataframe_rows = len(self.dataframe)
-        self.length = self.dataframe_rows - self.context_length - self.horzion
 
-    def moving_slicing(self, idx):
-        x, y = (
-            self.dataframe[idx : self.context_length + idx].values,
-            self.dataframe[
-                self.context_length + idx : self.context_length + self.horzion + idx
-            ].values,
-        )
-        return x, y
+# -
 
-    def _validate_dataframe(self):
-        """Validate the input dataframe.
-        - We require the dataframe index to be DatetimeIndex.
-        - This dataset is null aversion.
-        - Dataframe index should be sorted.
-        """
-
-        if not isinstance(
-            self.dataframe.index, pd.core.indexes.datetimes.DatetimeIndex
-        ):
-            raise TypeError(
-                f"Type of the dataframe index is not DatetimeIndex: {type(self.dataframe.index)}"
-            )
-
-        has_na = self.dataframe.isnull().values.any()
-
-        if has_na:
-            logger.warning(f"Dataframe has null")
-
-        has_index_sorted = self.dataframe.index.equals(
-            self.dataframe.index.sort_values()
-        )
-
-        if not has_index_sorted:
-            logger.warning(f"Dataframe index is not sorted")
-
-    def __getitem__(self, idx):
-        if isinstance(idx, slice):
-            if (idx.start < 0) or (idx.stop >= self.length):
-                raise IndexError(f"Slice out of range: {idx}")
-            step = idx.step if idx.step is not None else 1
-            return [self.moving_slicing(i) for i in range(idx.start, idx.stop, step)]
-        else:
-            if idx >= self.length:
-                raise IndexError("End of dataset")
-            return self.moving_slicing(idx)
-
-    def __len__(self):
-        return self.length
+# ## Data
+#
+# We create a dataset that models a damped pendulum. The pendulum is modelled as a damped harmonic oscillator, i.e.,
+#
+# $$
+# \theta(t) = \theta(0) \cos(2 \pi t / p)\exp(-\beta t),
+# $$
+#
+# where $\theta(t)$ is the angle of the pendulum at time $t$.
+# The period $p$ is calculated using
+#
+# $$
+# p = 2 \pi \sqrt(L / g),
+# $$
+#
+# with $L$ being the length of the pendulum
+# and $g$ being the surface gravity.
 
 
 class Pendulum:
     """Class for generating time series data for a pendulum.
+
+    The pendulum is modelled as a damped harmonic oscillator, i.e.,
+
+    $$
+    \theta(t) = \theta(0) \cos(2 \pi t / p)\exp(-\beta t),
+    $$
+
+    where $\theta(t)$ is the angle of the pendulum at time $t$.
+    The period $p$ is calculated using
+
+    $$
+    p = 2 \pi \sqrt(L / g),
+    $$
+
+    with $L$ being the length of the pendulum
+    and $g$ being the surface gravity.
 
     :param length: Length of the pendulum.
     :param gravity: Acceleration due to gravity.
@@ -139,56 +123,117 @@ class Pendulum:
         return {"t": steps, "theta": time_series}
 
 
-# -
+pen = Pendulum(length=100)
 
-pen = Pendulum(length=1)
+df = pd.DataFrame(pen(10, 400, initial_angle=1, beta=0.001))
 
-df = pd.DataFrame(pen(100, 100, beta=0.001))
-
-df.head()
+# Since the damping constant is very small, the data generated is mostly a sin wave.
 
 df.plot(x="t", y="theta")
 
 
+class DataFrameDataset(Dataset):
+    """A dataset from a pandas dataframe.
+
+    For a given pandas dataframe, this generates a pytorch
+    compatible dataset by sliding in time dimension.
+
+    ```python
+    ds = DataFrameDataset(
+        dataframe=df, history_length=10, horizon=2
+    )
+    ```
+
+    :param dataframe: input dataframe with a DatetimeIndex.
+    :param history_length: length of input X in time dimension
+        in the final Dataset class.
+    :param horizon: number of steps to be forecasted.
+    """
+
+    def __init__(self, dataframe: pd.DataFrame, history_length: int, horizon: int):
+        super().__init__()
+        self.dataframe = dataframe
+        self.history_length = history_length
+        self.horzion = horizon
+        self.dataframe_rows = len(self.dataframe)
+        self.length = self.dataframe_rows - self.history_length - self.horzion
+
+    def moving_slicing(self, idx: int) -> Tuple[np.ndarray, np.ndarray]:
+        x, y = (
+            self.dataframe[idx : self.history_length + idx].values,
+            self.dataframe[
+                self.history_length + idx : self.history_length + self.horzion + idx
+            ].values,
+        )
+        return x, y
+
+    def _validate_dataframe(self) -> None:
+        """Validate the input dataframe.
+
+        - We require the dataframe index to be DatetimeIndex.
+        - This dataset is null aversion.
+        - Dataframe index should be sorted.
+        """
+
+        if not isinstance(
+            self.dataframe.index, pd.core.indexes.datetimes.DatetimeIndex
+        ):
+            raise TypeError(
+                "Type of the dataframe index is not DatetimeIndex"
+                f": {type(self.dataframe.index)}"
+            )
+
+        has_na = self.dataframe.isnull().values.any()
+
+        if has_na:
+            logger.warning("Dataframe has null")
+
+        has_index_sorted = self.dataframe.index.equals(
+            self.dataframe.index.sort_values()
+        )
+
+        if not has_index_sorted:
+            logger.warning("Dataframe index is not sorted")
+
+    def __getitem__(self, idx: int) -> Tuple[np.ndarray, np.ndarray]:
+        if isinstance(idx, slice):
+            if (idx.start < 0) or (idx.stop >= self.length):
+                raise IndexError(f"Slice out of range: {idx}")
+            step = idx.step if idx.step is not None else 1
+            return [self.moving_slicing(i) for i in range(idx.start, idx.stop, step)]
+        else:
+            if idx >= self.length:
+                raise IndexError("End of dataset")
+            return self.moving_slicing(idx)
+
+    def __len__(self) -> int:
+        return self.length
+
+
 # ## Model
+#
+# In this section, we create the transformer model.
 
-# +
-from torch import nn
-import torch
-
-import dataclasses
+# We define some dataclass to be served as our parameters for the model.
 
 
-# +
 @dataclasses.dataclass
 class TSTransformerParams:
     d_model: int = 512
     nhead: int = 8
     num_encoder_layers: int = 6
-    dim_feedforward: int = 2048
     dropout: int = 0.1
-    batch_first: bool = True
-    norm_first: bool = True
 
 
-@dataclasses.dataclass
-class TSCovariateTransformerParams:
-    d_model: int = 512
-    nhead: int = 8
-    num_encoder_layers: int = 6
-    num_decoder_layers: int = 6
-    dim_feedforward: int = 2048
-    dropout: int = 0.1
-    batch_first: bool = True
-    norm_first: bool = True
-
-
-# -
+# We build a simple transformer that only contains attention in encoder.
+#
+# Since we do not deal with future covariates,
 
 
 class PositionalEncoding(nn.Module):
-    """
-    From https://pytorch.org/tutorials/beginner/transformer_tutorial.html
+    """Positional encoding for our transformer.
+
+    We borrowed it from https://pytorch.org/tutorials/beginner/transformer_tutorial.html
     """
 
     def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000):
@@ -212,7 +257,6 @@ class PositionalEncoding(nn.Module):
         return self.dropout(x)
 
 
-# +
 class TSTransformer(nn.Module):
     def __init__(self, history_length: int, horizon: int, transformer_params):
         super().__init__()
@@ -244,30 +288,13 @@ class TSTransformer(nn.Module):
         return self.regulate_output(encoder_state)
 
 
-# -
-
-
 # ## Training
 
-import lightning as L
-from torch.utils.data import DataLoader
 
 history_length = 100
-horizon = 5
+horizon = 1
 
-ts_transformer_params = TSTransformerParams()
-
-# +
-ts_transformer = TSTransformer(
-    history_length=history_length,
-    horizon=horizon,
-    transformer_params=ts_transformer_params,
-)
-
-ts_transformer
-# -
-
-ds = DataFrameDataset(dataframe=df, context_length=history_length, horizon=horizon)
+ds = DataFrameDataset(dataframe=df, history_length=history_length, horizon=horizon)
 
 len(ds)
 
@@ -279,7 +306,7 @@ class PendulumDataModule(L.LightningDataModule):
         history_length: int,
         horizon: int,
         dataframe: pd.DataFrame,
-        test_fraction: float = 0.9,
+        test_fraction: float = 0.3,
         val_fraction: float = 0.1,
         batch_size: int = 32,
     ):
@@ -319,7 +346,7 @@ class PendulumDataModule(L.LightningDataModule):
     def train_val_dataset(self):
         return DataFrameDataset(
             dataframe=self.train_val_dataframe,
-            context_length=self.history_length,
+            history_length=self.history_length,
             horizon=self.horizon,
         )
 
@@ -327,7 +354,7 @@ class PendulumDataModule(L.LightningDataModule):
     def test_dataset(self):
         return DataFrameDataset(
             dataframe=self.test_dataframe,
-            context_length=self.history_length,
+            history_length=self.history_length,
             horizon=self.horizon,
         )
 
@@ -352,7 +379,9 @@ class PendulumDataModule(L.LightningDataModule):
         )
 
     def predict_dataloader(self):
-        return DataLoader(dataset=self.test_dataset, batch_size=self.batch_size)
+        return DataLoader(
+            dataset=self.test_dataset, batch_size=len(self.test_dataset), shuffle=False
+        )
 
 
 class TransformerForecaster(L.LightningModule):
@@ -361,13 +390,13 @@ class TransformerForecaster(L.LightningModule):
         self.transformer = transformer
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
+        optimizer = torch.optim.SGD(self.parameters(), lr=1e-3)
         return optimizer
 
     def training_step(self, batch, batch_idx):
         x, y = batch
         x = x.squeeze().type(self.dtype)
-        y = y.squeeze().type(self.dtype)
+        y = y.squeeze(-1).type(self.dtype)
 
         y_hat = self.transformer(x)
 
@@ -378,7 +407,7 @@ class TransformerForecaster(L.LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch
         x = x.squeeze().type(self.dtype)
-        y = y.squeeze().type(self.dtype)
+        y = y.squeeze(-1).type(self.dtype)
 
         y_hat = self.transformer(x)
 
@@ -389,7 +418,7 @@ class TransformerForecaster(L.LightningModule):
     def predict_step(self, batch, batch_idx):
         x, y = batch
         x = x.squeeze().type(self.dtype)
-        y = y.squeeze().type(self.dtype)
+        y = y.squeeze(-1).type(self.dtype)
 
         y_hat = self.transformer(x)
         return x, y_hat
@@ -401,115 +430,83 @@ class TransformerForecaster(L.LightningModule):
 
 # -
 
+history_length, horizon
+
 pdm = PendulumDataModule(
     history_length=history_length, horizon=horizon, dataframe=df[["theta"]]
 )
 
+pdm.df_length, pdm.df_test_length
+
+# +
+ts_transformer_params = TSTransformerParams()
+
+ts_transformer = TSTransformer(
+    history_length=history_length,
+    horizon=horizon,
+    transformer_params=ts_transformer_params,
+)
+
+ts_transformer
+# -
+
 transformer_forecaster = TransformerForecaster(transformer=ts_transformer)
 
-from lightning.pytorch.callbacks.early_stopping import EarlyStopping
-
 trainer = L.Trainer(
-    precision="32",
+    precision="64",
     max_epochs=100,
-    min_epochs=10,
+    min_epochs=5,
     callbacks=[
-        EarlyStopping(monitor="val_loss", mode="min", min_delta=0.00, patience=3)
+        EarlyStopping(monitor="val_loss", mode="min", min_delta=1e-4, patience=2)
     ],
 )
 
 trainer.fit(model=transformer_forecaster, datamodule=pdm)
 
-predictiosn = trainer.predict(model=transformer_forecaster, datamodule=pdm)
+predictions = trainer.predict(model=transformer_forecaster, datamodule=pdm)
+
+predictions
 
 prediction_inputs = [i[0] for i in pdm.predict_dataloader()]
 prediction_truths = [i[1].squeeze() for i in pdm.predict_dataloader()]
 
-prediction_inputs[0].shape
+prediction_inputs[0].squeeze().shape, prediction_truths[0].shape
 
-transformer_forecaster(prediction_inputs[0])[-1]
+predictions[0][0].shape, predictions[0][1].shape
+
+predictions[0][0][1, 1:], predictions[0][0][1, 1:] - predictions[0][0][0, :-1]
+
+prediction_inputs[0][0:1].shape
+
+transformer_forecaster(torch.rand_like(prediction_inputs[0][0:3]))[1]
+
+ts_transformer(
+    torch.rand_like(prediction_inputs[0][0:3])
+    .squeeze()
+    .type(ts_transformer.regulate_input.weight.type())
+)
+
+ts_transformer(
+    prediction_inputs[0].squeeze().type(ts_transformer.regulate_input.weight.type())
+)
+
 
 # ## Check Results
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-# +
-step = 0
-batch_idx = 0
+y_test_pred = predictions[0][1].squeeze().detach().numpy()
+# y_test_pred = ts_transformer(prediction_inputs[0].squeeze().type(ts_transformer.regulate_input.weight.type())).squeeze().detach().numpy()
+y_test_truth = prediction_truths[0].numpy()
 
-x_test, y_test_pred = transformer_forecaster(prediction_inputs[step])
-x_test = x_test.detach()[batch_idx].numpy()
-y_test_pred = y_test_pred.detach()[batch_idx].numpy()
-y_test_truth = prediction_truths[0][batch_idx].numpy()
-# -
-
-x_test.shape, y_test_pred.shape, y_test_truth.shape
+y_test_pred.shape, y_test_truth.shape
 
 # +
 fig, ax = plt.subplots(figsize=(10, 6.18))
 
-ax.plot(np.concatenate([x_test, y_test_truth]), label="truth")
+ax.plot(y_test_truth, label="truth")
 
-ax.plot(np.concatenate([x_test, y_test_pred]), label="predictions")
+ax.plot(y_test_pred, label="predictions")
 
 plt.legend()
-# -
-
-
-# ## Debug
-
-
-class TSCovariateTransformer(nn.Module):
-    def __init__(self, history_length: int, horizon: int, transformer_params):
-        super().__init__()
-        self.transformer_params = transformer_params
-        self.history_length = history_length
-        self.horizon = horizon
-
-    @property
-    def transformer_config(self):
-        return dataclasses.asdict(self.transformer_params)
-
-    @property
-    def regulate_input(self):
-        return nn.Linear(self.history_length, self.transformer_params.d_model)
-
-    @property
-    def regulate_covariate(self):
-        return nn.Linear(self.horizon, self.transformer_params.d_model)
-
-    @property
-    def regulate_output(self):
-        return nn.Linear(self.transformer_params.d_model, self.horizon)
-
-    @property
-    def positional_encoder(self):
-        return PositionalEncoding(self.transformer_params.d_model)
-
-    @property
-    def encoder(self):
-        encoder_layer = nn.TransformerEncoderLayer(
-            d_model=512, nhead=8, batch_first=True
-        )
-        return nn.TransformerEncoder(encoder_layer, num_layers=6)
-
-    @property
-    def decoder(self):
-        decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
-        return nn.TransformerDecoder(decoder_layer, num_layers=6)
-
-    def forward(self, x: torch.Tensor, c: torch.Tensor) -> torch.Tensor:
-        x = self.regulate_input(x)
-        #         x = self.positional_encoder(x)
-
-        # switch batch and time for attention
-        # x = x.permute(1, 0, 2)
-
-        encoder_state = self.encoder(x)
-
-        c = self.regulate_covariate(c)
-
-        decoder_state = self.decoder(c, encoder_state)
-
-        return self.regulate_output(decoder_state)

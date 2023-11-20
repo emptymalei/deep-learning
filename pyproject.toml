@@ -17,6 +17,7 @@ mkdocs-bibtex = "^2.11.0"
 mkdocs-jupyter = "<=0.24.2"
 mkdocs-exclude-search = "^0.6.5"
 mkdocs-print-site-plugin = "^2.3.6"
+loguru = "^0.7.2"
 
 
 [tool.poetry.group.darts.dependencies]
@@ -33,6 +34,11 @@ seaborn = "^0.12.2"
 
 [tool.poetry.group.data.dependencies]
 eerily = "^0.2.1"
+
+
+[tool.poetry.group.torch.dependencies]
+lightning = "^2.1.2"
+tensorboard = "^2.15.1"
 
 [build-system]
 requires = ["poetry-core"]

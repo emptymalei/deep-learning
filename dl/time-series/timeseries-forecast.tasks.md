@@ -16,3 +16,8 @@ f({\color{blue}y_{t-K:t}}) \to {\color{red}y_{t+1:t+H}}.
 $$
 
 ![Univaraite TS Task](assets/timeseries-forecast.tasks/univariate-ts-input-pred.jpg)
+
+
+## Forecasting Multivariate Time Series
+
+In a multivariate time series forecasting task, we will deal with multiple time series. The
