@@ -39,6 +39,7 @@ eerily = "^0.2.1"
 [tool.poetry.group.torch.dependencies]
 lightning = "^2.1.2"
 tensorboard = "^2.15.1"
+torchmetrics = "^1.2.0"
 
 [build-system]
 requires = ["poetry-core"]

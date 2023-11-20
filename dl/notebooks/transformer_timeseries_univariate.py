@@ -25,17 +25,27 @@ from typing import Dict, List, Tuple
 import pandas as pd
 import numpy as np
 
+
 import dataclasses
 from loguru import logger
 
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 from torch import nn
 import torch
 
 
 import lightning as L
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
-from torch.utils.data import DataLoader
+from torchmetrics.regression import (
+    MeanAbsoluteError,
+    MeanAbsolutePercentageError,
+    MeanSquaredError,
+    SymmetricMeanAbsolutePercentageError,
+)
+from torchmetrics import MetricCollection
+
+
+import matplotlib.pyplot as plt
 
 
 # -
@@ -129,9 +139,118 @@ df = pd.DataFrame(pen(10, 400, initial_angle=1, beta=0.001))
 
 # Since the damping constant is very small, the data generated is mostly a sin wave.
 
-df.plot(x="t", y="theta")
+# +
+_, ax = plt.subplots(figsize=(10, 6.18))
+
+df.plot(x="t", y="theta", ax=ax)
 
 
+# -
+
+# ## Model
+#
+# In this section, we create the transformer model.
+
+# Since we do not deal with future covariates, we do not need a decoder. In this example, we build a simple transformer that only contains attention in encoder.
+
+
+# +
+@dataclasses.dataclass
+class TSTransformerParams:
+    """A dataclass to be served as our parameters for the model."""
+
+    d_model: int = 512
+    nhead: int = 8
+    num_encoder_layers: int = 6
+    dropout: int = 0.1
+
+
+class PositionalEncoding(nn.Module):
+    """Positional encoding for our transformer.
+
+    We borrowed it from https://pytorch.org/tutorials/beginner/transformer_tutorial.html
+    """
+
+    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000):
+        super().__init__()
+        self.dropout = nn.Dropout(p=dropout)
+
+        position = torch.arange(max_len).unsqueeze(1)
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model)
+        )
+        pe = torch.zeros(max_len, d_model)
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        self.register_buffer("pe", pe)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        :param x: Tensor, shape `[seq_len, batch_size, embedding_dim]`
+        """
+        x = x + self.pe[: x.size(0)]
+        return self.dropout(x)
+
+
+class TSTransformer(nn.Module):
+    """Transformer for univaraite time series modeling.
+
+    :param history_length: the length of the input history.
+    :param horizon: the number of steps to be forecasted.
+    :param transformer_params: the parameters for the transformer.
+    """
+
+    def __init__(
+        self, history_length: int, horizon: int, transformer_params: TSTransformerParams
+    ):
+        super().__init__()
+        self.transformer_params = transformer_params
+        self.history_length = history_length
+        self.horizon = horizon
+
+        self.regulate_input = nn.Linear(
+            self.history_length, self.transformer_params.d_model
+        )
+        self.regulate_output = nn.Linear(self.transformer_params.d_model, self.horizon)
+        self.positional_encoder = PositionalEncoding(self.transformer_params.d_model)
+
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=512, nhead=8, batch_first=True
+        )
+        self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
+
+    @property
+    def transformer_config(self):
+        return dataclasses.asdict(self.transformer_params)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.regulate_input(x)
+        x = self.positional_encoder(x)
+
+        encoder_state = self.encoder(x)
+
+        return self.regulate_output(encoder_state)
+
+
+# -
+
+# ## Training
+
+# We use [lightning](https://lightning.ai/docs/pytorch/stable/) to train our model.
+
+# ### Training Utilities
+
+history_length = 100
+horizon = 1
+
+
+# We will build a few utilities
+#
+# 1. To be able to feed the data into our model, we build a class (`DataFrameDataset`) that converts the pandas dataframe into a Dataset for pytorch.
+# 2. To make the lightning training code simpler, we will build a [LightningDataModule](https://lightning.ai/docs/pytorch/stable/data/datamodule.html) (`PendulumDataModule`) and a [LightningModule](https://lightning.ai/docs/pytorch/stable/common/lightning_module.html) (`TransformerForecaster`).
+
+
+# +
 class DataFrameDataset(Dataset):
     """A dataset from a pandas dataframe.
 
@@ -210,96 +329,6 @@ class DataFrameDataset(Dataset):
         return self.length
 
 
-# ## Model
-#
-# In this section, we create the transformer model.
-
-# We define some dataclass to be served as our parameters for the model.
-
-
-@dataclasses.dataclass
-class TSTransformerParams:
-    d_model: int = 512
-    nhead: int = 8
-    num_encoder_layers: int = 6
-    dropout: int = 0.1
-
-
-# We build a simple transformer that only contains attention in encoder.
-#
-# Since we do not deal with future covariates,
-
-
-class PositionalEncoding(nn.Module):
-    """Positional encoding for our transformer.
-
-    We borrowed it from https://pytorch.org/tutorials/beginner/transformer_tutorial.html
-    """
-
-    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000):
-        super().__init__()
-        self.dropout = nn.Dropout(p=dropout)
-
-        position = torch.arange(max_len).unsqueeze(1)
-        div_term = torch.exp(
-            torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model)
-        )
-        pe = torch.zeros(max_len, d_model)
-        pe[:, 0::2] = torch.sin(position * div_term)
-        pe[:, 1::2] = torch.cos(position * div_term)
-        self.register_buffer("pe", pe)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        :param x: Tensor, shape `[seq_len, batch_size, embedding_dim]`
-        """
-        x = x + self.pe[: x.size(0)]
-        return self.dropout(x)
-
-
-class TSTransformer(nn.Module):
-    def __init__(self, history_length: int, horizon: int, transformer_params):
-        super().__init__()
-        self.transformer_params = transformer_params
-        self.history_length = history_length
-        self.horizon = horizon
-
-        self.regulate_input = nn.Linear(
-            self.history_length, self.transformer_params.d_model
-        )
-        self.regulate_output = nn.Linear(self.transformer_params.d_model, self.horizon)
-        self.positional_encoder = PositionalEncoding(self.transformer_params.d_model)
-
-        encoder_layer = nn.TransformerEncoderLayer(
-            d_model=512, nhead=8, batch_first=True
-        )
-        self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
-
-    @property
-    def transformer_config(self):
-        return dataclasses.asdict(self.transformer_params)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.regulate_input(x)
-        x = self.positional_encoder(x)
-
-        encoder_state = self.encoder(x)
-
-        return self.regulate_output(encoder_state)
-
-
-# ## Training
-
-
-history_length = 100
-horizon = 1
-
-ds = DataFrameDataset(dataframe=df, history_length=history_length, horizon=horizon)
-
-len(ds)
-
-
-# +
 class PendulumDataModule(L.LightningDataModule):
     def __init__(
         self,
@@ -430,13 +459,19 @@ class TransformerForecaster(L.LightningModule):
 
 # -
 
-history_length, horizon
+# ### Data, Model and Training
+
+# #### DataModule
+
+ds = DataFrameDataset(dataframe=df, history_length=history_length, horizon=horizon)
+
+len(ds)
 
 pdm = PendulumDataModule(
     history_length=history_length, horizon=horizon, dataframe=df[["theta"]]
 )
 
-pdm.df_length, pdm.df_test_length
+# #### LightningModule
 
 # +
 ts_transformer_params = TSTransformerParams()
@@ -452,6 +487,8 @@ ts_transformer
 
 transformer_forecaster = TransformerForecaster(transformer=ts_transformer)
 
+# #### Trainer
+
 trainer = L.Trainer(
     precision="64",
     max_epochs=100,
@@ -461,46 +498,21 @@ trainer = L.Trainer(
     ],
 )
 
+# #### Fitting
+
 trainer.fit(model=transformer_forecaster, datamodule=pdm)
 
-predictions = trainer.predict(model=transformer_forecaster, datamodule=pdm)
+# #### Retrieving Predictions
 
-predictions
+predictions = trainer.predict(model=transformer_forecaster, datamodule=pdm)
 
 prediction_inputs = [i[0] for i in pdm.predict_dataloader()]
 prediction_truths = [i[1].squeeze() for i in pdm.predict_dataloader()]
 
-prediction_inputs[0].squeeze().shape, prediction_truths[0].shape
-
-predictions[0][0].shape, predictions[0][1].shape
-
-predictions[0][0][1, 1:], predictions[0][0][1, 1:] - predictions[0][0][0, :-1]
-
-prediction_inputs[0][0:1].shape
-
-transformer_forecaster(torch.rand_like(prediction_inputs[0][0:3]))[1]
-
-ts_transformer(
-    torch.rand_like(prediction_inputs[0][0:3])
-    .squeeze()
-    .type(ts_transformer.regulate_input.weight.type())
-)
-
-ts_transformer(
-    prediction_inputs[0].squeeze().type(ts_transformer.regulate_input.weight.type())
-)
-
-
-# ## Check Results
-
-import matplotlib.pyplot as plt
-import numpy as np
+# ## Results
 
 y_test_pred = predictions[0][1].squeeze().detach().numpy()
-# y_test_pred = ts_transformer(prediction_inputs[0].squeeze().type(ts_transformer.regulate_input.weight.type())).squeeze().detach().numpy()
 y_test_truth = prediction_truths[0].numpy()
-
-y_test_pred.shape, y_test_truth.shape
 
 # +
 fig, ax = plt.subplots(figsize=(10, 6.18))
@@ -510,3 +522,15 @@ ax.plot(y_test_truth, label="truth")
 ax.plot(y_test_pred, label="predictions")
 
 plt.legend()
+# -
+
+# To quantify the results, we compute a few metrics.
+
+all_metrics = MetricCollection(
+    MeanAbsoluteError(),
+    MeanAbsolutePercentageError(),
+    MeanSquaredError(),
+    SymmetricMeanAbsolutePercentageError(),
+)
+
+all_metrics(predictions[0][1].squeeze().detach(), prediction_truths[0])

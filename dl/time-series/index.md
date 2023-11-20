@@ -28,6 +28,8 @@ where ${}^{(i)}$ indicates the $i$th variable, ${}_ t$ denotes time. In a foreca
 
 A forecasting model $f$ will use $x^{(i)} _ {t-K:t}$ and $u^{(i)} _ {t-K:t+H}$ to forecast $y^{(i)} _ {t+1:t+H}$.
 
+In the section [Time Series Forecasting Tasks](timeseries-forecast.tasks.md), we will discuss more details of the forecasting problem.
+
 
 ## Methods of Forecasting Methods
 
