@@ -1,4 +1,4 @@
-# Multivariate Time Series Forecasting
+# Statistical Models of Time Series
 
 Though statistical models are not our focus, it is always beneficial to understand how those famous statistical models work. To best understand how the models work, we will build some data generating process using these models and explore their behavior.
 
@@ -7,7 +7,7 @@ In the following paragraphs, we list some of the most applied statistical models
 
 ## ARIMA
 
-ARIMA is one of the most famous forecasting models[^Cerqueira2019]. We sketch the relations between the different components of the ARIMA model.
+ARIMA is one of the most famous forecasting models[^Cerqueira2019]. We will not discuss the details of the model. However, for reference, we sketch the relations between the different components of the ARIMA model in the following chart.
 
 ```mermaid
 flowchart TD

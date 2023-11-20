@@ -20,4 +20,4 @@ $$
 
 ## Forecasting Multivariate Time Series
 
-In a multivariate time series forecasting task, we will deal with multiple time series. The
+In a multivariate time series forecasting task, we will deal with multiple time series.
