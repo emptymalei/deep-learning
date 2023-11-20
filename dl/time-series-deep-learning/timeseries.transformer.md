@@ -1,14 +1,14 @@
 # Transformers for Time Series Forecasting
 
 !!! info ":material-code-json: Jupyter Notebook Available"
-    We have a [notebook](../../notebooks/transformer_timeseries_univariate) for this section which includes all the code used in this section.
+    We have a [:notebook: notebook](../../notebooks/transformer_timeseries_univariate) for this section which includes all the code used in this section.
 
 
 !!! info ":simple-abstract: Introduction to Transformers"
     We explain the theories of transformers in [this section](../transformers/transformers.vanilla.md). Please read it first if you are not familiar with transformers.
 
 
-[Transformer](../transformers/transformers.vanilla.md) is a good candidate for time series forecasting due to its sequence modeling capability. In this section, we will introduce some basic ideas of transformer-based models for time series forecasting.
+[Transformer](../transformers/transformers.vanilla.md) is a good candidate for time series forecasting due to its sequence modeling capability[@Ahmed2022-wl][@Wen2022-fc]. In this section, we will introduce some basic ideas of transformer-based models for time series forecasting.
 
 ## Transformer for Univariate Time Series Forecasting
 
@@ -143,6 +143,12 @@ encoder --> output_linear_layer
 
 ### Result
 
+??? info "Training"
+
+    The details for model training can be found in this [:notebook: notebook](../../notebooks/transformer_timeseries_univariate). We will skip the details but show the loss curve here.
+
+    ![Training](assets/timeseries.transformer/vanilla_transformer_univariate_pendulum_training.png)
+
 We trained the model using a history length of 100 and plotted the forecasts for a test dataset that was held out from training. The forecasts are plotted in red and the ground truth is plotted in blue.
 
 ![Vanilla Transformer Result (Univariate, Horizon 1)](assets/timeseries.transformer/transformer_univariate_forecasting_result.png)
@@ -154,3 +160,10 @@ The forecasts roughly captured the patterns of the pendulum. To quantify the res
 | Mean Absolute Error | 0.2311 |
 | Mean Squared Error | 0.0836 |
 | Symmetric Mean Absolute Percentage Error | 0.7106 |
+
+
+## Generalization
+
+The vanilla transformer has its limitations. For example, it doesn't capture the correlations between the series that well. There are many variants of transformers that are designed just for time series forecasting[@Lim2019-hd][@Wu2021-zp][@Zhou2020-ov][@Nie2022-ww][@Zhou2022-ry][@Liu2023-wf].
+
+A few forecasting packages implemented transformers for time series forecasting. For example, the [neuralforecast](https://github.com/Nixtla/neuralforecast) package by Nixtla has [implemented](https://nixtla.mintlify.app/neuralforecast/models.html#c-transformer-based) TFT, Informer, AutoFormer, FEDFormer, and PatchTST, as of November 2023. An alternative is [darts](https://github.com/unit8co/darts). These packages provide documentation and we encourage the reader to check them out for more complicated use cases of transformer-based models.
