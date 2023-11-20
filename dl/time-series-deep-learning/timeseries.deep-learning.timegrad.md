@@ -8,6 +8,8 @@ Rasul et al., (2021) proposed a probabilistic forecasting model using denoising 
 
     Given an input sequence $\mathbf x_{t-K: t}$, we forecast $\mathbf x_{t+1:t+H}$.
 
+    See this section for more [Time Series Forecasting Tasks](../../time-series/timeseries-forecast.tasks/#forecasting-multivariate-time-series).
+
 
 !!! info "Notation"
 
