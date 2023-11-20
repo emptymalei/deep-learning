@@ -205,6 +205,11 @@ nav:
       - "NREL Solar Power Data": time-series/timeseries-datasets.nrel-solar-energy.md
       - "Electricity": time-series/timeseries-datasets.uci-electricity.md
       - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
+  - "Trees":
+    - "Tree-based Models": trees/tree.basics.md
+    - "Random Forest": trees/tree.random-forest.md
+    - "Gradient Boosted Trees": trees/tree.gbdt.md
+    - "Forecasting with Trees Using Darts": trees/tree.darts.md
   - "Deep Learning Fundamentals":
     - "Deep Learning Introduction": deep-learning-fundamentals/index.md
     - "Learning from Data": deep-learning-fundamentals/learning.md
@@ -230,11 +235,6 @@ nav:
       - "GAN": self-supervised/adversarial/gan.md
       - "f-GAN": self-supervised/adversarial/f-gan.md
       - "InfoGAN": self-supervised/adversarial/infogan.md
-  - "Tree":
-    - "Tree-based Models": trees/tree.basics.md
-    - "Random Forest": trees/tree.random-forest.md
-    - "Gradient Boosted Trees": trees/tree.gbdt.md
-    - "Forecasting with Trees Using Darts": trees/tree.darts.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
     - "Transformers for Time Series Forecasting": "time-series-deep-learning/timeseries.transformer.md"
