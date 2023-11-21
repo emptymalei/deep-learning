@@ -213,6 +213,7 @@ nav:
   - "Deep Learning Fundamentals":
     - "Deep Learning Introduction": deep-learning-fundamentals/index.md
     - "Learning from Data": deep-learning-fundamentals/learning.md
+    - "Neural Networks": deep-learning-fundamentals/neural-net.md
     - "Transformers":
       - "Vanilla Transformers": transformers/transformers.vanilla.md
     - "Energy-based Models":
@@ -237,6 +238,8 @@ nav:
       - "InfoGAN": self-supervised/adversarial/infogan.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
+    - "Pendulum Dataset": "time-series-deep-learning/timeseries.dataset.pendulum.md"
+    - "Forecasting with Feedforward Neural Networks": "time-series-deep-learning/timeseries.feedforward.md"
     - "Transformers for Time Series Forecasting": "time-series-deep-learning/timeseries.transformer.md"
     - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
   - "Supplementary":
@@ -248,6 +251,7 @@ nav:
       - "Random Forest Basics": notebooks/tree_random_forest.py
       - "Forecasting with Random Forest using Darts": notebooks/tree_darts_random_forest.py
       - "Forecasting with GBDT using Darts": notebooks/tree_darts_boosted_tree.py
+      - "Forecasting with Feedforward Neural Networks": notebooks/feedforward_neural_netwroks_timeseries.py
       - "Forecasting with Transformer": notebooks/transformer_timeseries_univariate.py
     - "Small Yet Powerful Concepts":
       - concepts/index.md
