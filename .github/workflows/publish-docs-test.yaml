@@ -1,0 +1,31 @@
+name: Publish Docs Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "!master"
+      - "!main"
+  workflow_dispatch:
+    inputs:
+      directory:
+        description: 'Test it'
+        default: 'gogogo'
+        required: false
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+    - uses: pre-commit/action@v3.0.0
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - run: pip install -r requirements.txt
+      - run: mkdocs build

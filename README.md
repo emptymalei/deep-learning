@@ -17,38 +17,22 @@ pre-commit install
 
 ### Preview Requires Python
 
-Create python environment (>=3.7):
+Install the requirements using
 
-```python
-conda create -n deep-learning python=3.8 pip
 ```
-
-Activate environment:
-
-```python
-conda activate deep-learning
-```
-
-Validate the environment:
-
-```python
-which python
-```
-
-
-Install requirements:
-
-```python
-pip install -r requirements.txt
+poetry install
 ```
 
 Preview the docs:
 
 ```python
-mkdocs serve -s
+poetry run mkdocs serve -s
 ```
 
+### Developing Notebooks
 
+We use jupytext to sync the `.py` files to `.ipynb` files. `.ipynb` files are ignore in git.
+Please pair the `.py` file with the `.ipynb` using jupytext in jupyterlab first.
 
 ### Optional Requirements
 

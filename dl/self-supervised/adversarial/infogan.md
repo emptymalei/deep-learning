@@ -9,7 +9,7 @@ In GAN, the latent space input is usually random noise, e.g., Gaussian noise. Th
 
 ## Constraint
 
-The constraint InfoGAN proposed is [mutual information](../../supplementary/mutual-information.md),
+The constraint InfoGAN proposed is [mutual information](../../concepts/mutual-information.md),
 
 $$
 \underset{{\color{red}G}}{\operatorname{min}} \underset{{\color{green}D}}{\operatorname{max}} V_I ({\color{green}D}, {\color{red}G}) = V({\color{green}D}, {\color{red}G}) - \lambda I(c; {\color{red}G}(z,c)),

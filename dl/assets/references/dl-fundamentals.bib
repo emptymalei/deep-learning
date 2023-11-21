@@ -31,3 +31,283 @@ eprint        = "2006.08218",
 primaryClass  = "cs.LG",
 arxivid       = "2006.08218"
 }
+
+
+
+@online{Le_Cun2006-ta,
+  title  = "A Tutorial on {Energy-Based} Learning",
+  author = "Le Cun, Yann and Chopra, Sumit and Hadsell, Raia and Ranzato,
+            Marc'aurelio and Huang, Fu Jie",
+  year   =  2006,
+  file   = "All Papers/LE CUN/Le Cun et al. 2006 - A Tutorial on Energy-Based Learning.pdf"
+}
+
+
+@online{Luo2022-hz,
+  title         = "Understanding Diffusion Models: A Unified Perspective",
+  author        = "Luo, Calvin",
+  abstract      = "Diffusion models have shown incredible capabilities as
+                   generative models; indeed, they power the current
+                   state-of-the-art models on text-conditioned image generation
+                   such as Imagen and DALL-E 2. In this work we review,
+                   demystify, and unify the understanding of diffusion models
+                   across both variational and score-based perspectives. We
+                   first derive Variational Diffusion Models (VDM) as a special
+                   case of a Markovian Hierarchical Variational Autoencoder,
+                   where three key assumptions enable tractable computation and
+                   scalable optimization of the ELBO. We then prove that
+                   optimizing a VDM boils down to learning a neural network to
+                   predict one of three potential objectives: the original
+                   source input from any arbitrary noisification of it, the
+                   original source noise from any arbitrarily noisified input,
+                   or the score function of a noisified input at any arbitrary
+                   noise level. We then dive deeper into what it means to learn
+                   the score function, and connect the variational perspective
+                   of a diffusion model explicitly with the Score-based
+                   Generative Modeling perspective through Tweedie's Formula.
+                   Lastly, we cover how to learn a conditional distribution
+                   using diffusion models via guidance.",
+  month         =  "25~" # aug,
+  year          =  2022,
+  url           = "http://arxiv.org/abs/2208.11970",
+  file          = "All Papers/LUO/Luo 2022 - Understanding Diffusion Models - A Unified Perspective.pdf",
+  copyright     = "http://creativecommons.org/licenses/by/4.0/",
+  archivePrefix = "arXiv",
+  eprint        = "2208.11970",
+  primaryClass  = "cs.LG",
+  arxivid       = "2208.11970"
+}
+
+
+
+@online{Sohl-Dickstein2015-th,
+  title         = "Deep Unsupervised Learning using Nonequilibrium
+                   Thermodynamics",
+  author        = "Sohl-Dickstein, Jascha and Weiss, Eric A and
+                   Maheswaranathan, Niru and Ganguli, Surya",
+  abstract      = "A central problem in machine learning involves modeling
+                   complex data-sets using highly flexible families of
+                   probability distributions in which learning, sampling,
+                   inference, and evaluation are still analytically or
+                   computationally tractable. Here, we develop an approach that
+                   simultaneously achieves both flexibility and tractability.
+                   The essential idea, inspired by non-equilibrium statistical
+                   physics, is to systematically and slowly destroy structure
+                   in a data distribution through an iterative forward
+                   diffusion process. We then learn a reverse diffusion process
+                   that restores structure in data, yielding a highly flexible
+                   and tractable generative model of the data. This approach
+                   allows us to rapidly learn, sample from, and evaluate
+                   probabilities in deep generative models with thousands of
+                   layers or time steps, as well as to compute conditional and
+                   posterior probabilities under the learned model. We
+                   additionally release an open source reference implementation
+                   of the algorithm.",
+  month         =  "12~" # mar,
+  year          =  2015,
+  url           = "http://arxiv.org/abs/1503.03585",
+  file          = "All Papers/SOHL-DICKSTEIN/Sohl-Dickstein et al. 2015 - Deep Unsupervised Learning using Nonequilibrium Thermodynamics.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1503.03585",
+  primaryClass  = "cs.LG",
+  arxivid       = "1503.03585"
+}
+
+
+@online{Ho2020-er,
+  title         = "Denoising Diffusion Probabilistic Models",
+  author        = "Ho, Jonathan and Jain, Ajay and Abbeel, Pieter",
+  abstract      = "We present high quality image synthesis results using
+                   diffusion probabilistic models, a class of latent variable
+                   models inspired by considerations from nonequilibrium
+                   thermodynamics. Our best results are obtained by training on
+                   a weighted variational bound designed according to a novel
+                   connection between diffusion probabilistic models and
+                   denoising score matching with Langevin dynamics, and our
+                   models naturally admit a progressive lossy decompression
+                   scheme that can be interpreted as a generalization of
+                   autoregressive decoding. On the unconditional CIFAR10
+                   dataset, we obtain an Inception score of 9.46 and a
+                   state-of-the-art FID score of 3.17. On 256x256 LSUN, we
+                   obtain sample quality similar to ProgressiveGAN. Our
+                   implementation is available at
+                   https://github.com/hojonathanho/diffusion",
+  month         =  "19~" # jun,
+  year          =  2020,
+  url           = "http://arxiv.org/abs/2006.11239",
+  archivePrefix = "arXiv",
+  eprint        = "2006.11239",
+  primaryClass  = "cs.LG",
+  arxivid       = "2006.11239"
+}
+
+@book{shalev-shwartz_ben-david_2014, place={Cambridge}, title={Understanding Machine Learning: From Theory to Algorithms}, DOI={10.1017/CBO9781107298019}, publisher={Cambridge University Press}, author={Shalev-Shwartz, Shai and Ben-David, Shai}, year={2014}}
+
+
+@PHDTHESIS{Roelofs2019-dm,
+  title    = "Measuring Generalization and Overfitting in Machine Learning",
+  author   = "Roelofs, Rebecca",
+  abstract = "Author(s): Roelofs, Rebecca | Advisor(s): Recht, Benjamin;
+              Demmel, James | Abstract: Due to the prevalence of machine
+              learning algorithms and the potential for their decisions to
+              profoundly impact billions of human lives, it is crucial that
+              they are robust, reliable, and understandable. This thesis
+              examines key theoretical pillars of machine learning surrounding
+              generalization and overfitting, and tests the extent to which
+              empirical behavior matches existing theory. We develop novel
+              methods for measuring overfitting and generalization, and we
+              characterize how reproducible observed behavior is across
+              differences in optimization algorithm, dataset, task, evaluation
+              metric, and domain.First, we examine how optimization algorithms
+              bias machine learning models towards solutions with varying
+              generalization properties. We show that adaptive gradient methods
+              empirically find solutions with inferior generalization behavior
+              compared to those found by stochastic gradient descent. We then
+              construct an example using a simple overparameterized model that
+              corroborates the algorithms' empirical behavior on neural
+              networks. Next, we study the extent to which machine learning
+              models have overfit to commonly reused datasets in both academic
+              benchmarks and machine learning competitions. We build new test
+              sets for the CIFAR-10 and ImageNet datasets and evaluate a broad
+              range of classification models on the new datasets. All models
+              experience a drop in accuracy, which indicates that current
+              accuracy numbers are susceptible to even minute natural
+              variations in the data distribution. Surprisingly, despite
+              several years of adaptively selecting the models to perform well
+              on these competitive benchmarks, we find no evidence of
+              overfitting. We then analyze data from the machine learning
+              platform Kaggle and find little evidence of substantial
+              overfitting in ML competitions. These findings speak to the
+              robustness of the holdout method across different data domains,
+              loss functions, model classes, and human analysts.Overall, our
+              work suggests that the true concern for robust machine learning
+              is distribution shift rather than overfitting, and designing
+              models that still work reliably in dynamic environments is a
+              challenging but necessary undertaking.",
+  year     =  2019,
+  url      = "https://escholarship.org/uc/item/6j01x9mz",
+  file     = "All Papers/ROELOFS/Roelofs 2019 - Measuring Generalization and Overfitting in Machine Learning.pdf",
+  school   = "UC Berkeley"
+}
+
+
+@BOOK{Hastie2013-tt,
+  title     = "The Elements of Statistical Learning: Data Mining, Inference,
+               and Prediction",
+  author    = "Hastie, Trevor and Tibshirani, Robert and Friedman, Jerome",
+  abstract  = "During the past decade there has been an explosion in
+               computation and information technology. With it have come vast
+               amounts of data in a variety of fields such as medicine,
+               biology, finance, and marketing. The challenge of understanding
+               these data has led to the development of new tools in the field
+               of statistics, and spawned new areas such as data mining,
+               machine learning, and bioinformatics. Many of these tools have
+               common underpinnings but are often expressed with different
+               terminology. This book describes the important ideas in these
+               areas in a common conceptual framework. While the approach is
+               statistical, the emphasis is on concepts rather than
+               mathematics. Many examples are given, with a liberal use of
+               color graphics. It is a valuable resource for statisticians and
+               anyone interested in data mining in science or industry. The
+               book's coverage is broad, from supervised learning (prediction)
+               to unsupervised learning. The many topics include neural
+               networks, support vector machines, classification trees and
+               boosting---the first comprehensive treatment of this topic in
+               any book. This major new edition features many topics not
+               covered in the original, including graphical models, random
+               forests, ensemble methods, least angle regression \& path
+               algorithms for the lasso, non-negative matrix factorization, and
+               spectral clustering. There is also a chapter on methods for
+               ``wide'' data (p bigger than n), including multiple testing and
+               false discovery rates. Trevor Hastie, Robert Tibshirani, and
+               Jerome Friedman are professors of statistics at Stanford
+               University. They are prominent researchers in this area: Hastie
+               and Tibshirani developed generalized additive models and wrote a
+               popular book of that title. Hastie co-developed much of the
+               statistical modeling software and environment in R/S-PLUS and
+               invented principal curves and surfaces. Tibshirani proposed the
+               lasso and is co-author of the very successful An Introduction to
+               the Bootstrap. Friedman is the co-inventor of many data-mining
+               tools including CART, MARS, projection pursuit and gradient
+               boosting.",
+  publisher = "Springer Science \& Business Media",
+  volume    =  99,
+  pages     = "567--567",
+  month     =  "11~" # nov,
+  year      =  2013,
+  url       = "https://play.google.com/store/books/details?id=yPfZBwAAQBAJ",
+  file      = "All Papers/HASTIE/Hastie et al. 2013 - The Elements of Statistical Learning - Data Mining, Inference, and Prediction.pdf",
+  language  = "en",
+  isbn      = "9780387216065"
+}
+
+@article{zhang2021dive,
+    title={Dive into Deep Learning},
+    author={Zhang, Aston and Lipton, Zachary C. and Li, Mu and Smola, Alexander J.},
+    journal={arXiv preprint arXiv:2106.11342},
+    year={2021}
+}
+
+
+@BOOK{Vapnik2006-pn,
+  title     = "Estimation of dependences based on empirical data",
+  author    = "Vapnik, Vladimir",
+  publisher = "Springer",
+  address   = "New York, NY",
+  edition   =  1,
+  series    = "Information science and statistics",
+  month     =  "1~" # mar,
+  year      =  2006,
+  url       = "https://sci-hub.se/https://link.springer.com/book/10.1007/0-387-34239-7",
+  file      = "All Papers/VAPNIK/Vapnik 2006 - Estimation of dependences based on empirical data.pdf;All Papers/VAPNIK/Vapnik 2006 - Estimation of dependences based on empirical data.pdf",
+  doi       = "10.1007/0-387-34239-7",
+  isbn      = "9780387308654,9780387342399",
+  issn      = "1613-9011,2197-4128",
+  language  = "en"
+}
+
+@BOOK{Vapnik2010-xf,
+  title     = "The nature of statistical learning theory",
+  author    = "Vapnik, Vladimir",
+  publisher = "Springer",
+  address   = "New York, NY",
+  series    = "Information Science and Statistics",
+  month     =  "21~" # oct,
+  year      =  2010,
+  url       = "https://www.springer.com/gp/book/9780387987804",
+  file      = "All Papers/VAPNIK/Vapnik 2010 - The nature of statistical learning theory.pdf",
+  doi       = "10.1007/978-1-4757-3264-1",
+  isbn      = "9781441931603,9781475732641",
+  language  = "en"
+}
+
+@BOOK{Abu-Mostafa2012-rk,
+  title     = "Learning from data: A short course",
+  author    = "Abu-Mostafa, Yaser S and Magdon-Ismail, Malik and Lin, Hsuan-Tien",
+  publisher = "AMLBook",
+  month     =  "1~" # jan,
+  year      =  2012,
+  url       = "https://www.semanticscholar.org/paper/Learning-From-Data-Abu-Mostafa-Magdon-Ismail/1c0ed9ed3201ef381cc392fc3ca91cae6ecfc698",
+  file      = "All Papers/ABU-MOSTAFA/Abu-Mostafa et al. 2012 - Learning from data - A short course.pdf",
+  isbn      =  9781600490064,
+  language  = "en"
+}
+
+@ARTICLE{Domingos2012-wn,
+  title     = "A few useful things to know about machine learning",
+  author    = "Domingos, Pedro",
+  journal   = "Communications of the ACM",
+  publisher = "Association for Computing Machinery (ACM)",
+  volume    =  55,
+  number    =  10,
+  pages     = "78--87",
+  abstract  = "Tapping into the ``folk knowledge'' needed to advance machine
+               learning applications.",
+  month     =  oct,
+  year      =  2012,
+  url       = "https://dl.acm.org/doi/10.1145/2347736.2347755",
+  file      = "All Papers/DOMINGOS/Domingos 2012 - A few useful things to know about machine learning.pdf",
+  doi       = "10.1145/2347736.2347755",
+  issn      = "0001-0782,1557-7317",
+  language  = "en"
+}

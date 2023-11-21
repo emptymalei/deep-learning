@@ -3,7 +3,7 @@
 
 ## VAR(1)
 
-VAR(1) is similar to [AR(1)](timeseries-basics.ar.md) but models time series with interactions between the series. For example, a two dimensional VAR(1) model is
+VAR(1) is similar to [AR(1)](timeseries-basics.ar.md) but models time series with interactions between the series. For example, a two-dimensional VAR(1) model is
 
 $$
 \begin{pmatrix}s^{(1)}(t+1) \\ s^{(2)}(t+1) \end{pmatrix} = \begin{pmatrix} \phi^{(1)}_0 \\ \phi^{(2)}_0 \end{pmatrix} +  \begin{pmatrix}\phi_{1, 11} & \phi_{1, 12}\\ \phi_{1, 21} & \phi_{1, 22} \end{pmatrix} \begin{pmatrix}s^{(1)}(t) \\ s^{(2)}(t) \end{pmatrix} + \begin{pmatrix}\epsilon^{(1)} \\ \epsilon^{(2)} \end{pmatrix}.
@@ -17,7 +17,7 @@ $$
 
 !!! note "Stability of VAR"
 
-    For VAR(1), our series blows up when the max eigenvalue of the matrix $\boldsymbol \phi_1$ is large than 1[^Zvot2006]. Otherwise ,we get stable series.
+    For VAR(1), our series blows up when the max eigenvalue of the matrix $\boldsymbol \phi_1$ is large than 1[^Zvot2006]. Otherwise, we get stable series.
 
     In the following examples, we denote the largest eigenvalue of $\boldsymbol \phi_1$ as $\lambda_0$.
 

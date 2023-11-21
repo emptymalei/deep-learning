@@ -1,0 +1,464 @@
+@online{Phuong2022-im,
+  title         = "Formal Algorithms for Transformers",
+  author        = "Phuong, Mary and Hutter, Marcus",
+  abstract      = "This document aims to be a self-contained, mathematically
+                   precise overview of transformer architectures and algorithms
+                   (*not* results). It covers what transformers are, how they
+                   are trained, what they are used for, their key architectural
+                   components, and a preview of the most prominent models. The
+                   reader is assumed to be familiar with basic ML terminology
+                   and simpler neural network architectures such as MLPs.",
+  month         =  "19~" # jul,
+  year          =  2022,
+  url           = "http://arxiv.org/abs/2207.09238",
+  file          = "All Papers/PHUONG/Phuong and Hutter 2022 - Formal Algorithms for Transformers.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "2207.09238",
+  primaryClass  = "cs.LG",
+  arxivid       = "2207.09238",
+  doi           = "10.48550/ARXIV.2207.09238"
+}
+
+
+@ARTICLE{Zeng2022-ku,
+  title         = "Are Transformers Effective for Time Series Forecasting?",
+  author        = "Zeng, Ailing and Chen, Muxi and Zhang, Lei and Xu, Qiang",
+  abstract      = "Recently, there has been a surge of Transformer-based
+                   solutions for the long-term time series forecasting (LTSF)
+                   task. Despite the growing performance over the past few
+                   years, we question the validity of this line of research in
+                   this work. Specifically, Transformers is arguably the most
+                   successful solution to extract the semantic correlations
+                   among the elements in a long sequence. However, in time
+                   series modeling, we are to extract the temporal relations in
+                   an ordered set of continuous points. While employing
+                   positional encoding and using tokens to embed sub-series in
+                   Transformers facilitate preserving some ordering
+                   information, the nature of the
+                   \textbackslashemph\{permutation-invariant\} self-attention
+                   mechanism inevitably results in temporal information loss.
+                   To validate our claim, we introduce a set of embarrassingly
+                   simple one-layer linear models named LTSF-Linear for
+                   comparison. Experimental results on nine real-life datasets
+                   show that LTSF-Linear surprisingly outperforms existing
+                   sophisticated Transformer-based LTSF models in all cases,
+                   and often by a large margin. Moreover, we conduct
+                   comprehensive empirical studies to explore the impacts of
+                   various design elements of LTSF models on their temporal
+                   relation extraction capability. We hope this surprising
+                   finding opens up new research directions for the LTSF task.
+                   We also advocate revisiting the validity of
+                   Transformer-based solutions for other time series analysis
+                   tasks (e.g., anomaly detection) in the future. Code is
+                   available at:
+                   \textbackslashurl\{https://github.com/cure-lab/LTSF-Linear\}.",
+  month         =  "26~" # may,
+  year          =  2022,
+  url           = "http://arxiv.org/abs/2205.13504",
+  file          = "All Papers/ZENG/Zeng et al. 2022 - Are Transformers Effective for Time Series Forecasting.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "2205.13504",
+  primaryClass  = "cs.AI",
+  arxivid       = "2205.13504"
+}
+
+
+@ARTICLE{Micheli2022-mf,
+  title         = "Transformers are {Sample-Efficient} World Models",
+  author        = "Micheli, Vincent and Alonso, Eloi and Fleuret, Fran{\c c}ois",
+  abstract      = "Deep reinforcement learning agents are notoriously sample
+                   inefficient, which considerably limits their application to
+                   real-world problems. Recently, many model-based methods have
+                   been designed to address this issue, with learning in the
+                   imagination of a world model being one of the most prominent
+                   approaches. However, while virtually unlimited interaction
+                   with a simulated environment sounds appealing, the world
+                   model has to be accurate over extended periods of time.
+                   Motivated by the success of Transformers in sequence
+                   modeling tasks, we introduce IRIS, a data-efficient agent
+                   that learns in a world model composed of a discrete
+                   autoencoder and an autoregressive Transformer. With the
+                   equivalent of only two hours of gameplay in the Atari 100k
+                   benchmark, IRIS achieves a mean human normalized score of
+                   1.046, and outperforms humans on 10 out of 26 games, setting
+                   a new state of the art for methods without lookahead search.
+                   To foster future research on Transformers and world models
+                   for sample-efficient reinforcement learning, we release our
+                   code and models at https://github.com/eloialonso/iris.",
+  month         =  "1~" # sep,
+  year          =  2022,
+  url           = "http://arxiv.org/abs/2209.00588",
+  file          = "All Papers/MICHELI/Micheli et al. 2022 - Transformers are Sample-Efficient World Models.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "2209.00588",
+  primaryClass  = "cs.LG",
+  arxivid       = "2209.00588"
+}
+
+
+@online{Vaswani2017-yg,
+  title         = "Attention Is All You Need",
+  author        = "Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and
+                   Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and
+                   Kaiser, Lukasz and Polosukhin, Illia",
+  abstract      = "The dominant sequence transduction models are based on
+                   complex recurrent or convolutional neural networks in an
+                   encoder-decoder configuration. The best performing models
+                   also connect the encoder and decoder through an attention
+                   mechanism. We propose a new simple network architecture, the
+                   Transformer, based solely on attention mechanisms,
+                   dispensing with recurrence and convolutions entirely.
+                   Experiments on two machine translation tasks show these
+                   models to be superior in quality while being more
+                   parallelizable and requiring significantly less time to
+                   train. Our model achieves 28.4 BLEU on the WMT 2014
+                   English-to-German translation task, improving over the
+                   existing best results, including ensembles by over 2 BLEU.
+                   On the WMT 2014 English-to-French translation task, our
+                   model establishes a new single-model state-of-the-art BLEU
+                   score of 41.8 after training for 3.5 days on eight GPUs, a
+                   small fraction of the training costs of the best models from
+                   the literature. We show that the Transformer generalizes
+                   well to other tasks by applying it successfully to English
+                   constituency parsing both with large and limited training
+                   data.",
+  month         =  "12~" # jun,
+  year          =  2017,
+  url           = "http://arxiv.org/abs/1706.03762",
+  file          = "All Papers/VASWANI/Vaswani et al. 2017 - Attention Is All You Need.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1706.03762",
+  primaryClass  = "cs.CL",
+  arxivid       = "1706.03762"
+}
+
+
+@ARTICLE{Amatriain2023-of,
+  title         = "Transformer models: an introduction and catalog",
+  author        = "Amatriain, Xavier",
+  abstract      = "In the past few years we have seen the meteoric appearance
+                   of dozens of models of the Transformer family, all of which
+                   have funny, but not self-explanatory, names. The goal of
+                   this paper is to offer a somewhat comprehensive but simple
+                   catalog and classification of the most popular Transformer
+                   models. The paper also includes an introduction to the most
+                   important aspects and innovation in Transformer models.",
+  journal       = "arXiv [cs.CL]",
+  publisher     = "arXiv",
+  month         =  "12~" # feb,
+  year          =  2023,
+  url           = "http://arxiv.org/abs/2302.07730",
+  file          = "All Papers/AMATRIAIN/Amatriain 2023 - Transformer models - an introduction and catalog.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "2302.07730",
+  primaryClass  = "cs.CL",
+  arxivid       = "2302.07730",
+  doi           = "10.48550/ARXIV.2302.07730"
+}
+
+
+@online{Ahmed2022-wl,
+  title         = "Transformers in time-series analysis: A tutorial",
+  author        = "Ahmed, Sabeen and Nielsen, Ian E and Tripathi, Aakash and
+                   Siddiqui, Shamoon and Rasool, Ghulam and Ramachandran, Ravi P",
+  abstract      = "Transformer architecture has widespread applications,
+                   particularly in Natural Language Processing and computer
+                   vision. Recently Transformers have been employed in various
+                   aspects of time-series analysis. This tutorial provides an
+                   overview of the Transformer architecture, its applications,
+                   and a collection of examples from recent research papers in
+                   time-series analysis. We delve into an explanation of the
+                   core components of the Transformer, including the
+                   self-attention mechanism, positional encoding, multi-head,
+                   and encoder/decoder. Several enhancements to the initial,
+                   Transformer architecture are highlighted to tackle
+                   time-series tasks. The tutorial also provides best practices
+                   and techniques to overcome the challenge of effectively
+                   training Transformers for time-series analysis.",
+  month         =  "28~" # apr,
+  year          =  2022,
+  url           = "http://dx.doi.org/10.1007/s00034-023-02454-8",
+  file          = "All Papers/AHMED/Ahmed et al. 2022 - Transformers in time-series analysis - A tutorial.pdf",
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.LG",
+  eprint        = "2205.01138",
+  doi           = "10.1007/s00034-023-02454-8"
+}
+
+
+@online{Wen2022-fc,
+  title         = "Transformers in time series: A survey",
+  author        = "Wen, Qingsong and Zhou, Tian and Zhang, Chaoli and Chen,
+                   Weiqi and Ma, Ziqing and Yan, Junchi and Sun, Liang",
+  abstract      = "Transformers have achieved superior performances in many
+                   tasks in natural language processing and computer vision,
+                   which also triggered great interest in the time series
+                   community. Among multiple advantages of Transformers, the
+                   ability to capture long-range dependencies and interactions
+                   is especially attractive for time series modeling, leading to
+                   exciting progress in various time series applications. In
+                   this paper, we systematically review Transformer schemes for
+                   time series modeling by highlighting their strengths as well
+                   as limitations. In particular, we examine the development of
+                   time series Transformers in two perspectives. From the
+                   perspective of network structure, we summarize the
+                   adaptations and modifications that have been made to
+                   Transformers in order to accommodate the challenges in time
+                   series analysis. From the perspective of applications, we
+                   categorize time series Transformers based on common tasks
+                   including forecasting, anomaly detection, and classification.
+                   Empirically, we perform robust analysis, model size analysis,
+                   and seasonal-trend decomposition analysis to study how
+                   Transformers perform in time series. Finally, we discuss and
+                   suggest future directions to provide useful research
+                   guidance. To the best of our knowledge, this paper is the
+                   first work to comprehensively and systematically summarize
+                   the recent advances of Transformers for modeling time series
+                   data. We hope this survey will ignite further research
+                   interests in time series Transformers.",
+  month         =  "14~" # feb,
+  year          =  2022,
+  url           = "http://arxiv.org/abs/2202.07125",
+  file          = "All Papers/WEN/Wen et al. 2022 - Transformers in time series - A survey.pdf",
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.LG",
+  eprint        = "2202.07125"
+}
+
+
+@online{Wu2021-zp,
+  title         = "Autoformer: Decomposition Transformers with Auto-Correlation
+                   for long-term series forecasting",
+  author        = "Wu, Haixu and Xu, Jiehui and Wang, Jianmin and Long,
+                   Mingsheng",
+  abstract      = "Extending the forecasting time is a critical demand for real
+                   applications, such as extreme weather early warning and
+                   long-term energy consumption planning. This paper studies the
+                   long-term forecasting problem of time series. Prior
+                   Transformer-based models adopt various self-attention
+                   mechanisms to discover the long-range dependencies. However,
+                   intricate temporal patterns of the long-term future prohibit
+                   the model from finding reliable dependencies. Also,
+                   Transformers have to adopt the sparse versions of point-wise
+                   self-attentions for long series efficiency, resulting in the
+                   information utilization bottleneck. Going beyond
+                   Transformers, we design Autoformer as a novel decomposition
+                   architecture with an Auto-Correlation mechanism. We break
+                   with the pre-processing convention of series decomposition
+                   and renovate it as a basic inner block of deep models. This
+                   design empowers Autoformer with progressive decomposition
+                   capacities for complex time series. Further, inspired by the
+                   stochastic process theory, we design the Auto-Correlation
+                   mechanism based on the series periodicity, which conducts the
+                   dependencies discovery and representation aggregation at the
+                   sub-series level. Auto-Correlation outperforms self-attention
+                   in both efficiency and accuracy. In long-term forecasting,
+                   Autoformer yields state-of-the-art accuracy, with a 38\%
+                   relative improvement on six benchmarks, covering five
+                   practical applications: energy, traffic, economics, weather
+                   and disease. Code is available at this repository:
+                   \url{https://github.com/thuml/Autoformer}.",
+  month         =  "24~" # jun,
+  year          =  2021,
+  url           = "https://github.com/thuml/Autoformer",
+  file          = "All Papers/WU/Wu et al. 2021 - Autoformer - Decomposition Transformers with Auto-Correlation for long-term series forecasting.pdf",
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.LG",
+  eprint        = "2106.13008",
+  language      = "en"
+}
+
+@online{Zhou2020-ov,
+  title         = "Informer: Beyond efficient transformer for long sequence
+                   time-series forecasting",
+  author        = "Zhou, Haoyi and Zhang, Shanghang and Peng, Jieqi and Zhang,
+                   Shuai and Li, Jianxin and Xiong, Hui and Zhang, Wancai",
+  abstract      = "Many real-world applications require the prediction of long
+                   sequence time-series, such as electricity consumption
+                   planning. Long sequence time-series forecasting (LSTF)
+                   demands a high prediction capacity of the model, which is the
+                   ability to capture precise long-range dependency coupling
+                   between output and input efficiently. Recent studies have
+                   shown the potential of Transformer to increase the prediction
+                   capacity. However, there are several severe issues with
+                   Transformer that prevent it from being directly applicable to
+                   LSTF, including quadratic time complexity, high memory usage,
+                   and inherent limitation of the encoder-decoder architecture.
+                   To address these issues, we design an efficient
+                   transformer-based model for LSTF, named Informer, with three
+                   distinctive characteristics: (i) a $ProbSparse$
+                   self-attention mechanism, which achieves $O(L \log L)$ in
+                   time complexity and memory usage, and has comparable
+                   performance on sequences' dependency alignment. (ii) the
+                   self-attention distilling highlights dominating attention by
+                   halving cascading layer input, and efficiently handles
+                   extreme long input sequences. (iii) the generative style
+                   decoder, while conceptually simple, predicts the long
+                   time-series sequences at one forward operation rather than a
+                   step-by-step way, which drastically improves the inference
+                   speed of long-sequence predictions. Extensive experiments on
+                   four large-scale datasets demonstrate that Informer
+                   significantly outperforms existing methods and provides a new
+                   solution to the LSTF problem.",
+  month         =  "14~" # dec,
+  year          =  2020,
+  url           = "http://arxiv.org/abs/2012.07436",
+  file          = "All Papers/ZHOU/Zhou et al. 2020 - Informer - Beyond efficient transformer for long sequence time-series forecasting.pdf",
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.LG",
+  eprint        = "2012.07436"
+}
+
+
+@online{Lim2019-hd,
+  title         = "Temporal fusion transformers for interpretable multi-horizon
+                   time series forecasting",
+  author        = "Lim, Bryan and Arik, Sercan O and Loeff, Nicolas and Pfister,
+                   Tomas",
+  abstract      = "Multi-horizon forecasting problems often contain a complex
+                   mix of inputs -- including static (i.e. time-invariant)
+                   covariates, known future inputs, and other exogenous time
+                   series that are only observed historically -- without any
+                   prior information on how they interact with the target. While
+                   several deep learning models have been proposed for
+                   multi-step prediction, they typically comprise black-box
+                   models which do not account for the full range of inputs
+                   present in common scenarios. In this paper, we introduce the
+                   Temporal Fusion Transformer (TFT) -- a novel attention-based
+                   architecture which combines high-performance multi-horizon
+                   forecasting with interpretable insights into temporal
+                   dynamics. To learn temporal relationships at different
+                   scales, the TFT utilizes recurrent layers for local
+                   processing and interpretable self-attention layers for
+                   learning long-term dependencies. The TFT also uses
+                   specialized components for the judicious selection of
+                   relevant features and a series of gating layers to suppress
+                   unnecessary components, enabling high performance in a wide
+                   range of regimes. On a variety of real-world datasets, we
+                   demonstrate significant performance improvements over
+                   existing benchmarks, and showcase three practical
+                   interpretability use-cases of TFT.",
+  month         =  "19~" # dec,
+  year          =  2019,
+  url           = "http://arxiv.org/abs/1912.09363",
+  file          = "All Papers/LIM/Lim et al. 2019 - Temporal fusion transformers for interpretable multi-horizon time series forecasting.pdf",
+  archivePrefix = "arXiv",
+  primaryClass  = "stat.ML",
+  eprint        = "1912.09363"
+}
+
+
+@online{Nie2022-ww,
+  title         = "A time series is worth 64 words: Long-term forecasting with
+                   transformers",
+  author        = "Nie, Yuqi and Nguyen, Nam H and Sinthong, Phanwadee and
+                   Kalagnanam, Jayant",
+  abstract      = "We propose an efficient design of Transformer-based models
+                   for multivariate time series forecasting and self-supervised
+                   representation learning. It is based on two key components:
+                   (i) segmentation of time series into subseries-level patches
+                   which are served as input tokens to Transformer; (ii)
+                   channel-independence where each channel contains a single
+                   univariate time series that shares the same embedding and
+                   Transformer weights across all the series. Patching design
+                   naturally has three-fold benefit: local semantic information
+                   is retained in the embedding; computation and memory usage of
+                   the attention maps are quadratically reduced given the same
+                   look-back window; and the model can attend longer history.
+                   Our channel-independent patch time series Transformer
+                   (PatchTST) can improve the long-term forecasting accuracy
+                   significantly when compared with that of SOTA
+                   Transformer-based models. We also apply our model to
+                   self-supervised pre-training tasks and attain excellent
+                   fine-tuning performance, which outperforms supervised
+                   training on large datasets. Transferring of masked
+                   pre-trained representation on one dataset to others also
+                   produces SOTA forecasting accuracy. Code is available at:
+                   https://github.com/yuqinie98/PatchTST.",
+  month         =  "27~" # nov,
+  year          =  2022,
+  url           = "http://arxiv.org/abs/2211.14730",
+  file          = "All Papers/NIE/Nie et al. 2022 - A time series is worth 64 words - Long-term forecasting with transformers.pdf",
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.LG",
+  eprint        = "2211.14730"
+}
+
+
+@online{Zhou2022-ry,
+  title         = "{FEDformer}: Frequency Enhanced Decomposed Transformer for
+                   long-term series forecasting",
+  author        = "Zhou, Tian and Ma, Ziqing and Wen, Qingsong and Wang, Xue and
+                   Sun, Liang and Jin, Rong",
+  abstract      = "Although Transformer-based methods have significantly
+                   improved state-of-the-art results for long-term series
+                   forecasting, they are not only computationally expensive but
+                   more importantly, are unable to capture the global view of
+                   time series (e.g. overall trend). To address these problems,
+                   we propose to combine Transformer with the seasonal-trend
+                   decomposition method, in which the decomposition method
+                   captures the global profile of time series while Transformers
+                   capture more detailed structures. To further enhance the
+                   performance of Transformer for long-term prediction, we
+                   exploit the fact that most time series tend to have a sparse
+                   representation in well-known basis such as Fourier transform,
+                   and develop a frequency enhanced Transformer. Besides being
+                   more effective, the proposed method, termed as Frequency
+                   Enhanced Decomposed Transformer ({\bf FEDformer}), is more
+                   efficient than standard Transformer with a linear complexity
+                   to the sequence length. Our empirical studies with six
+                   benchmark datasets show that compared with state-of-the-art
+                   methods, FEDformer can reduce prediction error by $14.8\%$
+                   and $22.6\%$ for multivariate and univariate time series,
+                   respectively. Code is publicly available at
+                   https://github.com/MAZiqing/FEDformer.",
+  month         =  "30~" # jan,
+  year          =  2022,
+  url           = "http://arxiv.org/abs/2201.12740",
+  file          = "All Papers/ZHOU/Zhou et al. 2022 - FEDformer - Frequency Enhanced Decomposed Transformer for long-term series forecasting.pdf",
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.LG",
+  eprint        = "2201.12740"
+}
+
+@online{Liu2023-wf,
+  title         = "{ITransformer}: Inverted Transformers are effective for time
+                   series forecasting",
+  author        = "Liu, Yong and Hu, Tengge and Zhang, Haoran and Wu, Haixu and
+                   Wang, Shiyu and Ma, Lintao and Long, Mingsheng",
+  abstract      = "The recent boom of linear forecasting models questions the
+                   ongoing passion for architectural modifications of
+                   Transformer-based forecasters. These forecasters leverage
+                   Transformers to model the global dependencies over temporal
+                   tokens of time series, with each token formed by multiple
+                   variates of the same timestamp. However, Transformer is
+                   challenged in forecasting series with larger lookback windows
+                   due to performance degradation and computation explosion.
+                   Besides, the unified embedding for each temporal token fuses
+                   multiple variates with potentially unaligned timestamps and
+                   distinct physical measurements, which may fail in learning
+                   variate-centric representations and result in meaningless
+                   attention maps. In this work, we reflect on the competent
+                   duties of Transformer components and repurpose the
+                   Transformer architecture without any adaptation on the basic
+                   components. We propose iTransformer that simply inverts the
+                   duties of the attention mechanism and the feed-forward
+                   network. Specifically, the time points of individual series
+                   are embedded into variate tokens which are utilized by the
+                   attention mechanism to capture multivariate correlations;
+                   meanwhile, the feed-forward network is applied for each
+                   variate token to learn nonlinear representations. The
+                   iTransformer model achieves consistent state-of-the-art on
+                   several real-world datasets, which further empowers the
+                   Transformer family with promoted performance, generalization
+                   ability across different variates, and better utilization of
+                   arbitrary lookback windows, making it a nice alternative as
+                   the fundamental backbone of time series forecasting.",
+  month         =  "10~" # oct,
+  year          =  2023,
+  url           = "http://arxiv.org/abs/2310.06625",
+  file          = "All Papers/LIU/Liu et al. 2023 - ITransformer - Inverted Transformers are effective for time series forecasting.pdf",
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.LG",
+  eprint        = "2310.06625"
+}

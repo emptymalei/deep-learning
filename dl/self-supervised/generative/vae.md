@@ -47,14 +47,14 @@ $$
 
 In the derivation, we used $\int dz q(z\mid x) = 1$.
 
-The term $F(x)$ is the free energy, while the negative of it, $-F(x)=\mathcal L$, is the so-called [Evidence Lower Bound (ELBO)](../../supplementary/elbo.md),
+The term $F(x)$ is the free energy, while the negative of it, $-F(x)=\mathcal L$, is the so-called [Evidence Lower Bound (ELBO)](../../concepts/elbo.md),
 
 $$
 \mathcal L = - D_{\mathrm{KL}} ( q_{\phi}(z\mid x) \mathrel{\Vert} p(z)  )  +  \mathbb E_q ( \ln p_\theta (x\mid z) ).
 $$
 
 
-We also dropped the term $D_{\mathrm{KL}}( q(z\mid x)\parallel p(z\mid x) )$ which is always nonnegative. The reason is that we can not maximize this KL divergence as we do not know $p(z\mid x)$. But the KL divergence is always non-negative. So if we find a $q$ that can maximize $\mathcal L$, then we are also miminizing the KL divergence (with a function $q(z\mid x)$ that is close to $p(z\mid x)$) and maximizing the loglikelihood loss. Now we only need to find a way to maximize $\mathcal L$.
+We also dropped the term $D_{\mathrm{KL}}( q(z\mid x)\parallel p(z\mid x) )$ which is always non-negative. The reason is that we can not maximize this KL divergence as we do not know $p(z\mid x)$. But the KL divergence is always non-negative. So if we find a $q$ that can maximize $\mathcal L$, then we are also minimizing the KL divergence (with a function $q(z\mid x)$ that is close to $p(z\mid x)$) and maximizing the loglikelihood loss. Now we only need to find a way to maximize $\mathcal L$.
 
 
 ??? tip "More about this ELBO"
@@ -84,7 +84,7 @@ We also dropped the term $D_{\mathrm{KL}}( q(z\mid x)\parallel p(z\mid x) )$ whi
 We model the parameters of the Gaussian distribution $p_\theta(x\mid z)$, e.g., $f(z, \theta)$, using a neural network.
 
 
-In reality, we choose a gaussian form of the variational functional with the mean and variance depends on the data $x$ and the latent variable $z$
+In reality, we choose a gaussian form of the variational functional with the mean and variance depending on the data $x$ and the latent variable $z$
 
 $$
 q(z\mid x) = \mathcal N ( \mu(x,z), \Sigma (x,z) ).

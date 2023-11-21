@@ -6,11 +6,11 @@ Real world time series data often comes with complex dynamics in the [data gener
 
 Another application of synthetic data is to improve model performance. Synthetic data can be used to [augment the training data](timeseries-data.data-augmentation.md)[^Bandara2020] as well as in transfer learning[^Rotem2022].
 
-A third application of synthetic data is data sharing without compromising  privacy and business secret[^Lin2019].
+A third application of synthetic data is data sharing without compromising privacy and business secrets[^Lin2019].
 
-Though being useful, synthesizing proper artificial time series data can be very complicated as there are enormous amount of diverse theories associated with time series data. On the other hand, many time series generators are quite universal. For example, GAN can be used to generate realistic time series[^Leznik2021].
+Though useful, synthesizing proper artificial time series data can be very complicated as there are an enormous amount of diverse theories associated with time series data. On the other hand, many time series generators are quite universal. For example, GAN can be used to generate realistic time series[^Leznik2021].
 
-In this chapter, we will explain the basic ideas and demonstrate our generic programming framework for synthetic time series. With the basics explored, we will focus on a special cases of synthetic time series: time series with interactions.
+In this chapter, we will explain the basic ideas and demonstrate our generic programming framework for synthetic time series. With the basics explored, we will focus on a special case of synthetic time series: time series with interactions.
 
 
 [^Rotem2022]: Rotem Y, Shimoni N, Rokach L, Shapira B. Transfer learning for time series classification using synthetic data generation. arXiv [cs.LG]. 2022. Available: http://arxiv.org/abs/2207.07897

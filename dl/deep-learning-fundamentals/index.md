@@ -6,7 +6,7 @@ In this part, we explain and demonstrate some popular deep learning models. Note
 
 The simplest deep learning model, is a fully connected [Feedforward Neural Network (FFNN)](https://en.wikipedia.org/wiki/Feedforward_neural_network). A FFNN might work for in-distribution predictions, it is likely to overfit and perform poorly for out-of-distribution predictions. In reality, most of the deep learning models are much more complicated than a FFNN, and a large population of deep learning models are utilizing the self-supervised learning concept, providing better generalizations[@Liu2020-yh].
 
-In the following chapters, we provide a some popular deep learning architectures and cool ideas. We follow [(Liu et al. 2020)](https://arxiv.org/abs/2006.08218) to categorize some of the models.
+In the following chapters, we provide some popular deep learning architectures and cool ideas. We follow [(Liu et al. 2020)](https://arxiv.org/abs/2006.08218) to categorize some of the models.
 
 !!! info "Notations"
 
@@ -14,23 +14,5 @@ In the following chapters, we provide a some popular deep learning architectures
 
     - Sets, domains, abstract variables, $X$, $Y$;
     - Probability distribution $P$, $Q$;
-    - Probability density $p$, $q$.
-
-!!! info "Current Progress"
-
-    - Neural ODE
-      - [ ] Neural ODE Basics
-    - Generative
-      - [ ] AR
-      - [ ] AE
-      - [x] VAE
-      - [ ] Flow
-      - [ ] MADE
-      - [ ] MAF
-    - Constrastive
-      - [x] Deep Infomax
-      - [x] Contrastive Predictive Coding
-    - Adversarial
-      - [x] GAN
-      - [x] f-GAN
-      - [x] Info-GAN
+    - Probability density $p$, $q$;
+    - Slicing arrays from index $i$ to index $j$ using ${}_{i:j}$.
