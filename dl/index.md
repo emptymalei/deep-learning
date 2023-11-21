@@ -67,7 +67,7 @@ The following is my first version of the blueprint.
         - [x] f-GAN
         - [x] Info-GAN
     - Transformers
-        - [ ] Vanilla transformers
+        - [x] Vanilla transformers
 - [ ] Deep Learning Models for Forecasting
     - [ ] RNN, e.g., LSTM
     - [ ] DeepAR, DeepVAR
