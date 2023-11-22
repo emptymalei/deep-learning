@@ -495,3 +495,78 @@ arxivid       = "2006.08218"
   primaryClass  = "cs.LG",
   eprint        = "1603.09382"
 }
+
+
+@ARTICLE{Grossberg:2013,
+AUTHOR = {Grossberg, S. },
+TITLE   = {{R}ecurrent neural networks},
+YEAR    = {2013},
+JOURNAL = {Scholarpedia},
+VOLUME  = {8},
+NUMBER  = {2},
+PAGES   = {1888},
+DOI     = {10.4249/scholarpedia.1888},
+NOTE    = {revision \#138057}
+}
+
+@ARTICLE{Hochreiter1997-gm,
+  title     = "Long short-term memory",
+  author    = "Hochreiter, S and Schmidhuber, J",
+  journal   = "Neural computation",
+  publisher = "MIT Press - Journals",
+  volume    =  9,
+  number    =  8,
+  pages     = "1735--1780",
+  abstract  = "Learning to store information over extended time intervals by
+               recurrent backpropagation takes a very long time, mostly because
+               of insufficient, decaying error backflow. We briefly review
+               Hochreiter's (1991) analysis of this problem, then address it by
+               introducing a novel, efficient, gradient-based method called long
+               short-term memory (LSTM). Truncating the gradient where this does
+               not do harm, LSTM can learn to bridge minimal time lags in excess
+               of 1000 discrete-time steps by enforcing constant error flow
+               through constant error carousels within special units.
+               Multiplicative gate units learn to open and close access to the
+               constant error flow. LSTM is local in space and time; its
+               computational complexity per time step and weight is O(1). Our
+               experiments with artificial data involve local, distributed,
+               real-valued, and noisy pattern representations. In comparisons
+               with real-time recurrent learning, back propagation through time,
+               recurrent cascade correlation, Elman nets, and neural sequence
+               chunking, LSTM leads to many more successful runs, and learns
+               much faster. LSTM also solves complex, artificial long-time-lag
+               tasks that have never been solved by previous recurrent network
+               algorithms.",
+  month     =  "15~" # nov,
+  year      =  1997,
+  url       = "http://www.mitpressjournals.org/doi/10.1162/neco.1997.9.8.1735",
+  file      = "All Papers/HOCHREITER/Hochreiter and Schmidhuber 1997 - Long short-term memory.pdf",
+  doi       = "10.1162/neco.1997.9.8.1735",
+  pmid      =  9377276,
+  issn      = "0899-7667,1530-888X",
+  language  = "en"
+}
+
+@online{Pascanu2012-qv,
+  title         = "On the difficulty of training Recurrent Neural Networks",
+  author        = "Pascanu, Razvan and Mikolov, Tomas and Bengio, Yoshua",
+  abstract      = "There are two widely known issues with properly training
+                   Recurrent Neural Networks, the vanishing and the exploding
+                   gradient problems detailed in Bengio et al. (1994). In this
+                   paper we attempt to improve the understanding of the
+                   underlying issues by exploring these problems from an
+                   analytical, a geometric and a dynamical systems perspective.
+                   Our analysis is used to justify a simple yet effective
+                   solution. We propose a gradient norm clipping strategy to
+                   deal with exploding gradients and a soft constraint for the
+                   vanishing gradients problem. We validate empirically our
+                   hypothesis and proposed solutions in the experimental
+                   section.",
+  month         =  "21~" # nov,
+  year          =  2012,
+  url           = "http://arxiv.org/abs/1211.5063",
+  file          = "All Papers/PASCANU/Pascanu et al. 2012 - On the difficulty of training Recurrent Neural Networks.pdf",
+  archivePrefix = "arXiv",
+  primaryClass  = "cs.LG",
+  eprint        = "1211.5063"
+}

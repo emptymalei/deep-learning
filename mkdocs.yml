@@ -214,6 +214,7 @@ nav:
     - "Deep Learning Introduction": deep-learning-fundamentals/index.md
     - "Learning from Data": deep-learning-fundamentals/learning.md
     - "Neural Networks": deep-learning-fundamentals/neural-net.md
+    - "Recurrent Neural Networks": deep-learning-fundamentals/recurrent-neural-networks.md
     - "Transformers":
       - "Vanilla Transformers": transformers/transformers.vanilla.md
     - "Energy-based Models":
