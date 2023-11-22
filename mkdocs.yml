@@ -241,6 +241,7 @@ nav:
     - "Introduction": "time-series-deep-learning/index.md"
     - "Pendulum Dataset": "time-series-deep-learning/timeseries.dataset.pendulum.md"
     - "Forecasting with Feedforward Neural Networks": "time-series-deep-learning/timeseries.feedforward.md"
+    - "Forecasting with RNN": time-series-deep-learning/timeseries.rnn.md
     - "Transformers for Time Series Forecasting": "time-series-deep-learning/timeseries.transformer.md"
     - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
   - "Supplementary":
