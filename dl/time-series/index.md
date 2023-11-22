@@ -5,7 +5,7 @@
 
 Time series data comes from a variety of data generating processes. There are also different formulations and views of time series data.
 
-Time series data can be formulated time series data as a sequence of vectors as a function of time [@Dorffner1996-rd]. There are many different types of tasks on time series data, for example,
+Time series data can be formulated as a sequence of vector functions of time [@Dorffner1996-rd]. There are many different types of tasks on time series data, for example,
 
 - classification,
 - anomaly detection, and
@@ -27,6 +27,8 @@ where ${}^{(i)}$ indicates the $i$th variable, ${}_ t$ denotes time. In a foreca
 ![time series forecasting problem](assets/time-series-forecasting-problem.jpg)
 
 A forecasting model $f$ will use $x^{(i)} _ {t-K:t}$ and $u^{(i)} _ {t-K:t+H}$ to forecast $y^{(i)} _ {t+1:t+H}$.
+
+In the section [Time Series Forecasting Tasks](timeseries-forecast.tasks.md), we will discuss more details of the forecasting problem.
 
 
 ## Methods of Forecasting Methods

@@ -82,10 +82,33 @@ plugins:
   - autorefs
   - git-authors
   - search
+  - exclude-search:
+      exclude:
+        - notebooks/tree_darts
   - tags:
       tags_file: tags.md
   - bibtex:
       bib_dir: "dl/assets/references"
+  - mkdocs-jupyter:
+      include: ["*.py"]
+      ignore: ["notebooks/.ipynb_checkpoints/*"]
+      include_source: true
+      execute: false
+  - print-site:
+      add_to_navigation: false
+      print_page_title: 'Time Series with Deep Learning'
+      add_print_site_banner: false
+      # Table of contents
+      add_table_of_contents: true
+      toc_title: 'Table of Contents'
+      toc_depth: 6
+      # Content-related
+      add_full_urls: false
+      enumerate_headings: true
+      enumerate_figures: true
+      include_css: true
+      enabled: true
+      exclude:
   # - with-pdf:
   #     author: "Lei Ma"
   #     output_path: pdf/dl-lm.pdf
@@ -95,6 +118,18 @@ plugins:
   #     enabled_if_env: ENABLE_PDF_EXPORT
   #     render_js: true
   #     headless_chrome_path: "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+  #######
+  # For Linux
+  # - with-pdf:
+  #     author: "Lei Ma"
+  #     output_path: pdf/dl-lm.pdf
+  #     cover_logo: assets/logo_badge.svg
+  #     cover_subtitle: "Time Series with Deep Learning Quick Bite"
+  #     two_columns_level: 3
+  #     enabled_if_env: ENABLE_PDF_EXPORT
+  #     render_js: true
+  #     headless_chrome_path: "google-chrome"
+
 
 
 extra:
@@ -132,13 +167,15 @@ extra:
 
 nav:
   - "Home": index.md
-  - "Coding Tips":
+  - "Engineering Tips":
     - engineering/index.md
     - "Python": engineering/python.md
   - "Time Series Forecasting Fundamentals":
     - time-series/index.md
     - "Data":
       - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
+      - "Two-way Fixed Effects": time-series/timeseries-data.analysis.twfe.md
+      - "Box-Cox Transformation": time-series/timeseries-data.box-cox.md
       - "Augmentation": time-series/timeseries-data.data-augmentation.md
       - "DTW": time-series/timeseries-data.dtw.md
       - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
@@ -150,10 +187,11 @@ nav:
       - "Statistical Models": time-series/timeseries-basics.statistical-models.md
       - "AR": "time-series/timeseries-basics.ar.md"
       - "VAR": time-series/timeseries-basics.var.md
-    - Synthetic Datasets:
+    - "Synthetic Datasets":
       - "Synthetic Time Series": time-series/timeseries-synthetic.md
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
     - "Forecasting":
+      - "Time Series Forecasting Tasks": time-series/timeseries-forecast.tasks.md
       - "Naive Forecasts": time-series/timeseries-forecast.naive.md
     - "Metrics":
       - "Time Series Forecasting Metrics": time-series/timeseries-metrics.forecasting.md
@@ -161,14 +199,23 @@ nav:
     - "Hierarchical Time Series":
       - "Hierarchical Time Series Data": time-series/timeseries-hierarchical.data.md
       - "Hierarchical Time Series Reconciliation": time-series/timeseries-hierarchical.reconciliation.md
-    - Useful Datasets:
+    - "Useful Datasets":
       - time-series/timeseries-datasets.md
       - "Exchange Rate": time-series/timeseries-datasets.ecb-exchange-rate.md
       - "NREL Solar Power Data": time-series/timeseries-datasets.nrel-solar-energy.md
       - "Electricity": time-series/timeseries-datasets.uci-electricity.md
       - "PeMS Traffic Data": time-series/timeseries-datasets.pems.md
+  - "Trees":
+    - "Tree-based Models": trees/tree.basics.md
+    - "Random Forest": trees/tree.random-forest.md
+    - "Gradient Boosted Trees": trees/tree.gbdt.md
+    - "Forecasting with Trees Using Darts": trees/tree.darts.md
   - "Deep Learning Fundamentals":
     - "Deep Learning Introduction": deep-learning-fundamentals/index.md
+    - "Learning from Data": deep-learning-fundamentals/learning.md
+    - "Neural Networks": deep-learning-fundamentals/neural-net.md
+    - "Transformers":
+      - "Vanilla Transformers": transformers/transformers.vanilla.md
     - "Neural ODE":
       - "Dynamical System": neural-ode/index.md
     - "Energy-based Models":
@@ -191,18 +238,35 @@ nav:
       - "GAN": self-supervised/adversarial/gan.md
       - "f-GAN": self-supervised/adversarial/f-gan.md
       - "InfoGAN": self-supervised/adversarial/infogan.md
-    - "Supplementary":
-      - supplementary/index.md
-      - "Entropy": supplementary/entropy.md
-      - "Mutual Information": supplementary/mutual-information.md
-      - "KL Divergence": supplementary/kl-divergence.md
-      - "f-divergence": supplementary/f-divergence.md
-      - "ELBO": supplementary/elbo.md
-      - "Alignment and Uniformity": supplementary/alignment-and-uniformity.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
+    - "Pendulum Dataset": "time-series-deep-learning/timeseries.dataset.pendulum.md"
+    - "Forecasting with Feedforward Neural Networks": "time-series-deep-learning/timeseries.feedforward.md"
+    - "Transformers for Time Series Forecasting": "time-series-deep-learning/timeseries.transformer.md"
     - "Neural ODE for Time Series Forecasting": "time-series-deep-learning/neural-ode/index.md"
     - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
+  - "Supplementary":
+    - "About Supplementary Materials": supplementary.md
+    - "Notebooks":
+      - "Box-Cox Transformation": notebooks/timeseries_data_box-cox.py
+      - "Hierarchical Forecasting Using MinT": notebooks/hierarchical_forecasting_mint.py
+      - "Tree Basics": notebooks/tree_basics.py
+      - "Random Forest Basics": notebooks/tree_random_forest.py
+      - "Forecasting with Random Forest using Darts": notebooks/tree_darts_random_forest.py
+      - "Forecasting with GBDT using Darts": notebooks/tree_darts_boosted_tree.py
+      - "Forecasting with Feedforward Neural Networks": notebooks/feedforward_neural_netwroks_timeseries.py
+      - "Forecasting with Transformer": notebooks/transformer_timeseries_univariate.py
+    - "Small Yet Powerful Concepts":
+      - concepts/index.md
+      - "Entropy": concepts/entropy.md
+      - "Mutual Information": concepts/mutual-information.md
+      - "KL Divergence": concepts/kl-divergence.md
+      - "f-divergence": concepts/f-divergence.md
+      - "ELBO": concepts/elbo.md
+      - "Alignment and Uniformity": concepts/alignment-and-uniformity.md
+      - "Gini Impurity": concepts/gini-impurity.md
+      - "Information Gain": concepts/information-gain.md
+      - "Generalization": concepts/generalization.md
   - "About":
     - "Roadmap": meta/roadmap.md
     - "Changelog": meta/changelog.md
