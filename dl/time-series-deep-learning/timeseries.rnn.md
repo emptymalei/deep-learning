@@ -5,10 +5,10 @@
 
 
 !!! info ":simple-abstract: Introduction to Neural Networks"
-    We explain the theories of neural networks in [this section](../recurrent-neural-networks.md). Please read it first if you are not familiar with neural networks.
+    We explain the theories of neural networks in [this section](../deep-learning-fundamentals/recurrent-neural-networks.md). Please read it first if you are not familiar with neural networks.
 
 
-In section [Recurrent Neural Network](../recurrent-neural-networks.md) we discussed the basics of RNN. In this section, we will build an RNN model to forecast our [pendulum time series data](timeseries.dataset.pendulum.md).
+In section [Recurrent Neural Network](../deep-learning-fundamentals/recurrent-neural-networks.md) we discussed the basics of RNN. In this section, we will build an RNN model to forecast our [pendulum time series data](timeseries.dataset.pendulum.md).
 
 ## RNN Model
 
