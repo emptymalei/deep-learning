@@ -86,7 +86,7 @@ In section [Recurrent Neural Network](../recurrent-neural-networks.md) we discus
 
 ## Training
 
-?? info "Training"
+??? info "Training"
 
     The details for model training can be found in this [:notebook: notebook](../../notebooks/rnn_timeseries_univariate). We will skip the details but show the loss curve here.
 
