@@ -254,6 +254,7 @@ nav:
       - "Forecasting with Random Forest using Darts": notebooks/tree_darts_random_forest.py
       - "Forecasting with GBDT using Darts": notebooks/tree_darts_boosted_tree.py
       - "Forecasting with Feedforward Neural Networks": notebooks/feedforward_neural_netwroks_timeseries.py
+      - "Forecasting with RNN": notebooks/rnn_timeseries.py
       - "Forecasting with Transformer": notebooks/transformer_timeseries_univariate.py
     - "Small Yet Powerful Concepts":
       - concepts/index.md
