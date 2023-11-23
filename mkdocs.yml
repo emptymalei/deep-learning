@@ -217,8 +217,9 @@ nav:
     - "Recurrent Neural Networks": deep-learning-fundamentals/recurrent-neural-networks.md
     - "Transformers":
       - "Vanilla Transformers": transformers/transformers.vanilla.md
-    - "Neural ODE":
-      - "Dynamical System": neural-ode/index.md
+    - "Dynamical Systems":
+      - "Why Dynamical Systems": "dynamical-systems/index.md"
+      - "Neural ODE": "dynamical-systems/neural-ode.md"
     - "Energy-based Models":
       - "Introduction": energy-based-models/intro.md
       - "Diffusion Models": energy-based-models/ebm.diffusion.md
@@ -244,8 +245,8 @@ nav:
     - "Pendulum Dataset": "time-series-deep-learning/timeseries.dataset.pendulum.md"
     - "Forecasting with Feedforward Neural Networks": "time-series-deep-learning/timeseries.feedforward.md"
     - "Forecasting with RNN": time-series-deep-learning/timeseries.rnn.md
-    - "Transformers for Time Series Forecasting": "time-series-deep-learning/timeseries.transformer.md"
-    - "Neural ODE for Time Series Forecasting": "time-series-deep-learning/neural-ode/index.md"
+    - "Time Series Forecasting with Transformers": "time-series-deep-learning/timeseries.transformer.md"
+    - "Time Series Forecasting with Neural ODE": time-series-deep-learning/timeseries.neural-ode.md
     - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
   - "Supplementary":
     - "About Supplementary Materials": supplementary.md
