@@ -51,7 +51,7 @@ encoder --> output_linear_layer
 
     ![Training](assets/timeseries.transformer/vanilla_transformer_univariate_pendulum_training.png)
 
-We trained the model using a history length of 100 and plotted the forecasts for a test dataset that was held out from training. The forecasts are plotted in red and the ground truth is plotted in blue.
+We trained the model using a history length of 50 and plotted the forecasts for a test dataset that was held out from training. The forecasts are plotted in red and the ground truth is plotted in blue.
 
 ![Vanilla Transformer Result (Univariate, Horizon 1)](assets/timeseries.transformer/transformer_univariate_forecasting_result.png)
 
@@ -59,9 +59,9 @@ The forecasts roughly captured the patterns of the pendulum. To quantify the res
 
 | Metric | Value |
 | --- | --- |
-| Mean Absolute Error | 0.2311 |
-| Mean Squared Error | 0.0836 |
-| Symmetric Mean Absolute Percentage Error | 0.7106 |
+| Mean Absolute Error | 0.0476 |
+| Mean Squared Error | 0.0030 |
+| Symmetric Mean Absolute Percentage Error | 0.1460 |
 
 
 ## Generalization
