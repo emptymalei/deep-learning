@@ -13,9 +13,9 @@
 #     name: deep-learning
 # ---
 
-# # Transformer for Univariate Time Series Forecasting
+# # RNN for Univariate Time Series Forecasting
 #
-# In this notebook, we build a transformer using pytorch to forecast $\sin$ function as a time series.
+# In this notebook, we build a RNN using pytorch to forecast $\sin$ function as a time series.
 
 # +
 import math
@@ -149,89 +149,58 @@ df.plot(x="t", y="theta", ax=ax)
 
 # ## Model
 #
-# In this section, we create the transformer model.
-
-# Since we do not deal with future covariates, we do not need a decoder. In this example, we build a simple transformer that only contains attention in encoder.
+# In this section, we create the RNN model.
 
 
 # +
 @dataclasses.dataclass
-class TSTransformerParams:
-    """A dataclass to be served as our parameters for the model."""
+class TSRNNParams:
+    """A dataclass to be served as our parameters for the model.
 
-    d_model: int = 512
-    nhead: int = 8
-    num_encoder_layers: int = 6
-    dropout: int = 0.1
-
-
-class PositionalEncoding(nn.Module):
-    """Positional encoding for our transformer.
-
-    We borrowed it from https://pytorch.org/tutorials/beginner/transformer_tutorial.html
+    :param hidden_size: number of dimensions in the hidden state
+    :param input_size: input dim
+    :param num_layers: number of units stacked
     """
 
-    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000):
-        super().__init__()
-        self.dropout = nn.Dropout(p=dropout)
-
-        position = torch.arange(max_len).unsqueeze(1)
-        div_term = torch.exp(
-            torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model)
-        )
-        pe = torch.zeros(max_len, d_model)
-        pe[:, 0::2] = torch.sin(position * div_term)
-        pe[:, 1::2] = torch.cos(position * div_term)
-        self.register_buffer("pe", pe)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        :param x: Tensor, shape `[seq_len, batch_size, embedding_dim]`
-        """
-        x = x + self.pe[: x.size(0)]
-        return self.dropout(x)
+    input_size: int
+    hidden_size: int
+    num_layers: int = 1
 
 
-class TSTransformer(nn.Module):
-    """Transformer for univaraite time series modeling.
+class TSRNN(nn.Module):
+    """RNN for univaraite time series modeling.
 
     :param history_length: the length of the input history.
     :param horizon: the number of steps to be forecasted.
-    :param transformer_params: the parameters for the transformer.
+    :param rnn_params: the parameters for the RNN network.
     """
 
-    def __init__(
-        self, history_length: int, horizon: int, transformer_params: TSTransformerParams
-    ):
+    def __init__(self, history_length: int, horizon: int, rnn_params: TSRNNParams):
         super().__init__()
-        self.transformer_params = transformer_params
+        self.rnn_params = rnn_params
         self.history_length = history_length
         self.horizon = horizon
 
-        self.regulate_input = nn.Linear(
-            self.history_length, self.transformer_params.d_model
-        )
-        self.regulate_output = nn.Linear(self.transformer_params.d_model, self.horizon)
+        self.regulate_input = nn.Linear(self.history_length, self.rnn_params.input_size)
 
-        encoder_layer = nn.TransformerEncoderLayer(
-            d_model=self.transformer_params.d_model,
-            nhead=self.transformer_params.nhead,
+        self.rnn = nn.RNN(
+            input_size=self.rnn_params.input_size,
+            hidden_size=self.rnn_params.hidden_size,
+            num_layers=self.rnn_params.num_layers,
             batch_first=True,
         )
-        self.encoder = nn.TransformerEncoder(
-            encoder_layer, num_layers=self.transformer_params.num_encoder_layers
-        )
+
+        self.regulate_output = nn.Linear(self.rnn_params.hidden_size, self.horizon)
 
     @property
-    def transformer_config(self):
-        return dataclasses.asdict(self.transformer_params)
+    def rnn_config(self):
+        return dataclasses.asdict(self.rnn_params)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.regulate_input(x)
+        x, _ = self.rnn(x)
 
-        encoder_state = self.encoder(x)
-
-        return self.regulate_output(encoder_state)
+        return self.regulate_output(x)
 
 
 # -
@@ -242,14 +211,14 @@ class TSTransformer(nn.Module):
 
 # ### Training Utilities
 
-history_length = 50
+history_length = 100
 horizon = 1
 
 
 # We will build a few utilities
 #
 # 1. To be able to feed the data into our model, we build a class (`DataFrameDataset`) that converts the pandas dataframe into a Dataset for pytorch.
-# 2. To make the lightning training code simpler, we will build a [LightningDataModule](https://lightning.ai/docs/pytorch/stable/data/datamodule.html) (`PendulumDataModule`) and a [LightningModule](https://lightning.ai/docs/pytorch/stable/common/lightning_module.html) (`TransformerForecaster`).
+# 2. To make the lightning training code simpler, we will build a [LightningDataModule](https://lightning.ai/docs/pytorch/stable/data/datamodule.html) (`PendulumDataModule`) and a [LightningModule](https://lightning.ai/docs/pytorch/stable/common/lightning_module.html) (`RNNForecaster`).
 
 
 # +
@@ -415,10 +384,10 @@ class PendulumDataModule(L.LightningDataModule):
         )
 
 
-class TransformerForecaster(L.LightningModule):
-    def __init__(self, transformer: nn.Module):
+class RNNForecaster(L.LightningModule):
+    def __init__(self, rnn: nn.Module):
         super().__init__()
-        self.transformer = transformer
+        self.rnn = rnn
 
     def configure_optimizers(self):
         optimizer = torch.optim.SGD(self.parameters(), lr=1e-3)
@@ -429,7 +398,7 @@ class TransformerForecaster(L.LightningModule):
         x = x.squeeze().type(self.dtype)
         y = y.squeeze(-1).type(self.dtype)
 
-        y_hat = self.transformer(x)
+        y_hat = self.rnn(x)
 
         loss = nn.functional.mse_loss(y_hat, y)
         self.log_dict({"train_loss": loss}, prog_bar=True)
@@ -440,7 +409,7 @@ class TransformerForecaster(L.LightningModule):
         x = x.squeeze().type(self.dtype)
         y = y.squeeze(-1).type(self.dtype)
 
-        y_hat = self.transformer(x)
+        y_hat = self.rnn(x)
 
         loss = nn.functional.mse_loss(y_hat, y)
         self.log_dict({"val_loss": loss}, prog_bar=True)
@@ -451,12 +420,12 @@ class TransformerForecaster(L.LightningModule):
         x = x.squeeze().type(self.dtype)
         y = y.squeeze(-1).type(self.dtype)
 
-        y_hat = self.transformer(x)
+        y_hat = self.rnn(x)
         return x, y_hat
 
     def forward(self, x):
         x = x.squeeze().type(self.dtype)
-        return x, self.transformer(x)
+        return x, self.rnn(x)
 
 
 # -
@@ -476,18 +445,18 @@ pdm = PendulumDataModule(
 # #### LightningModule
 
 # +
-ts_transformer_params = TSTransformerParams(d_model=96, nhead=6, num_encoder_layers=1)
+ts_rnn_params = TSRNNParams(input_size=96, hidden_size=64, num_layers=1)
 
-ts_transformer = TSTransformer(
+ts_rnn = TSRNN(
     history_length=history_length,
     horizon=horizon,
-    transformer_params=ts_transformer_params,
+    rnn_params=ts_rnn_params,
 )
 
-ts_transformer
+ts_rnn
 # -
 
-transformer_forecaster = TransformerForecaster(transformer=ts_transformer)
+rnn_forecaster = RNNForecaster(rnn=ts_rnn)
 
 # #### Trainer
 
@@ -496,17 +465,17 @@ trainer = L.Trainer(
     max_epochs=100,
     min_epochs=5,
     callbacks=[
-        EarlyStopping(monitor="val_loss", mode="min", min_delta=1e-7, patience=3)
+        EarlyStopping(monitor="val_loss", mode="min", min_delta=1e-4, patience=2)
     ],
 )
 
 # #### Fitting
 
-trainer.fit(model=transformer_forecaster, datamodule=pdm)
+trainer.fit(model=rnn_forecaster, datamodule=pdm)
 
 # #### Retrieving Predictions
 
-predictions = trainer.predict(model=transformer_forecaster, datamodule=pdm)
+predictions = trainer.predict(model=rnn_forecaster, datamodule=pdm)
 
 prediction_inputs = [i[0] for i in pdm.predict_dataloader()]
 prediction_truths = [i[1].squeeze() for i in pdm.predict_dataloader()]

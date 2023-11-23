@@ -101,4 +101,12 @@ It is a good approximation of continuous functions[@Cybenko1989-ro].
 
 ## Neural Networks Can be Complicated
 
-In practice, we observe a lot of problems when the number of neurons grows, e.g., the convergence during the training slows down if we have too many layers in the network (the vanishing gradient problem) [@Hochreiter2008]. The reader should understand that a good neural network model is not only about these naive examples but is about many different topics. For example, to solve the vanishing gradient problem, new architectures are proposed, e.g., residual blocks[@He2015-ie], new optimization techniques were proposed[@Huang2016-uz], and theories such as information highway also became the key to the success of deep neural networks[@Srivastava2015-te].
+In practice, we observe a lot of problems when the number of neurons grows, e.g., the convergence during the training slows down if we have too many layers in the network (the vanishing gradient problem) [@Hochreiter2008].
+
+!!! note "Training"
+    We have not yet discussed how to adjust the parameters in a neural network. The process is called training. The most popular method is backpropagation[^Nielsen].
+
+The reader should understand that a good neural network model is not only about these naive examples but is about many different topics. For example, to solve the vanishing gradient problem, new architectures are proposed, e.g., residual blocks[@He2015-ie], new optimization techniques were proposed[@Huang2016-uz], and theories such as information highway also became the key to the success of deep neural networks[@Srivastava2015-te].
+
+
+[^Nielsen]: Nielsen MA. How the backpropagation algorithm works. In: Neural networks and deep learning [Internet]. [cited 22 Nov 2023]. Available: http://neuralnetworksanddeeplearning.com/chap2.html

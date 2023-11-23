@@ -44,15 +44,9 @@ Feedforward neural networks are simple but powerful models for time series forec
 === ":material-code-json: Code"
 
     ```python
-    import math
-    from functools import cached_property
-    from typing import Dict, List, Tuple
-
-    import pandas as pd
-    import numpy as np
+    from typing import Dict, List
 
     import dataclasses
-    from loguru import logger
 
     from torch.utils.data import Dataset, DataLoader
     from torch import nn
@@ -105,7 +99,7 @@ Feedforward neural networks are simple but powerful models for time series forec
             )
 
         @property
-        def ffn_config(self):
+        def ffn_config(self) -> Dict:
             return dataclasses.asdict(self.ffn_params)
 
         def _linear_block(self, dim_in, dim_out):
