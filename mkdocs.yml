@@ -193,7 +193,8 @@ nav:
     - "Forecasting":
       - "Time Series Forecasting Tasks": time-series/timeseries-forecast.tasks.md
       - "Naive Forecasts": time-series/timeseries-forecast.naive.md
-    - "Metrics":
+    - "Evaluation and Metrics":
+      - "Time Series Forecasting Evaluation": time-series/timeseries-evaluation.forecasting.md
       - "Time Series Forecasting Metrics": time-series/timeseries-metrics.forecasting.md
       - "CRPS": time-series/timeseries-metrics.forecasting.crps.md
     - "Hierarchical Time Series":
