@@ -28,4 +28,5 @@ jobs:
         with:
           python-version: "3.10"
       - run: pip install -r requirements.txt
+      - uses: nikeee/setup-pandoc@v1
       - run: mkdocs build

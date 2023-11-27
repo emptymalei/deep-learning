@@ -33,6 +33,35 @@ arxivid       = "2006.08218"
 }
 
 
+@online{Chen2018-mp,
+  title         = "Neural Ordinary Differential Equations",
+  author        = "Chen, Ricky T Q and Rubanova, Yulia and Bettencourt, Jesse
+                   and Duvenaud, David",
+  abstract      = "We introduce a new family of deep neural network models.
+                   Instead of specifying a discrete sequence of hidden layers,
+                   we parameterize the derivative of the hidden state using a
+                   neural network. The output of the network is computed using
+                   a black-box differential equation solver. These
+                   continuous-depth models have constant memory cost, adapt
+                   their evaluation strategy to each input, and can explicitly
+                   trade numerical precision for speed. We demonstrate these
+                   properties in continuous-depth residual networks and
+                   continuous-time latent variable models. We also construct
+                   continuous normalizing flows, a generative model that can
+                   train by maximum likelihood, without partitioning or
+                   ordering the data dimensions. For training, we show how to
+                   scalably backpropagate through any ODE solver, without
+                   access to its internal operations. This allows end-to-end
+                   training of ODEs within larger models.",
+  month         =  "19~" # jun,
+  year          =  2018,
+  url           = "http://arxiv.org/abs/1806.07366",
+  file          = "All Papers/CHEN/Chen et al. 2018 - Neural Ordinary Differential Equations.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1806.07366",
+  primaryClass  = "cs.LG",
+  arxivid       = "1806.07366"
+}
 
 @online{Le_Cun2006-ta,
   title  = "A Tutorial on {Energy-Based} Learning",
@@ -569,4 +598,30 @@ NOTE    = {revision \#138057}
   archivePrefix = "arXiv",
   primaryClass  = "cs.LG",
   eprint        = "1211.5063"
+}
+
+
+@MISC{Jaeger2013-vx,
+  title  = "A tutorial on training recurrent neural networks, covering {BPTT},
+            {RTRL}, {EKF} and the ``echo state network'' approach",
+  author = "Jaeger, Herbert and Kirkpatrick, James",
+  url    = "https://www.ai.rug.nl/minds/uploads/ESNTutorialRev.pdf",
+  file   = "All Papers/JAEGER/Jaeger and Kirkpatrick - A tutorial on training recurrent neural networks, covering BPTT, RTRL, EKF and the 'echo state network' approach.pdf"
+}
+
+
+@software{Poli_TorchDyn_Implicit_Models,
+author = {Poli, Michael and Massaroli, Stefano and Yamashita, Atsushi and Asama, Hajime and Park, Jinkyoo and Ermon, Stefano},
+title = {{TorchDyn: Implicit Models and Neural Numerical Methods in PyTorch}},
+url = {https://github.com/DiffEqML/torchdyn}
+}
+
+@software{Chen_torchdiffeq_2021,
+author = {Chen, Ricky T. Q.},
+license = {MIT},
+month = jun,
+title = {{torchdiffeq}},
+url = {https://github.com/rtqichen/torchdiffeq},
+version = {0.2.2},
+year = {2021}
 }

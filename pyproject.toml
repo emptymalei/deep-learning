@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Time Series Forecasting with Deep Learning"
 authors = ["LM <hi@leima.is>"]
 readme = "README.md"
-packages = [{include = "ts_dl_utils"}]
+packages = [{include = "ts_dl_utils", from = "dl/notebooks/"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -40,6 +40,7 @@ eerily = "^0.2.1"
 lightning = "^2.1.2"
 tensorboard = "^2.15.1"
 torchmetrics = "^1.2.0"
+torchdyn = "^1.0.6"
 
 [build-system]
 requires = ["poetry-core"]

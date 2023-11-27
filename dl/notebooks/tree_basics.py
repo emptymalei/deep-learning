@@ -18,15 +18,13 @@
 
 # %%
 import json
-
 from typing import List, Literal, Union
 
-import pandas as pd
-import numpy as np
-from sklearn import tree
-
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import seaborn as sns
+from sklearn import tree
 
 sns.set()
 
