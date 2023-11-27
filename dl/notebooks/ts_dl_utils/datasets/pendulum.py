@@ -6,6 +6,7 @@ import lightning as L
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader, Dataset
+from ts_dl_utils.datasets.dataset import DataFrameDataset
 
 
 class Pendulum:

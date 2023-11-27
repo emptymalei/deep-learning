@@ -17,13 +17,10 @@
 #
 # In this notebook, we demo a dataset we created to simulate the oscillations of a pendulumn.
 
-# +
 import matplotlib.pyplot as plt
 import pandas as pd
 from ts_dl_utils.datasets.dataset import DataFrameDataset
 from ts_dl_utils.datasets.pendulum import Pendulum, PendulumDataModule
-
-# -
 
 # ## Data
 #
@@ -59,8 +56,6 @@ df.plot(x="t", y="theta", ax=ax)
 # -
 
 # ### PyTorch and Lighting DataModule
-
-# #### DataModule
 
 history_length = 100
 horizon = 5
