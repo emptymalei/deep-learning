@@ -40,7 +40,7 @@ repos:
     hooks:
       - id: mypy
         args: [--no-strict-optional, --ignore-missing-imports]
-        files: (dl/notebooks/)
+        files: (dl/notebooks/ts_dl_utils)
   - repo: https://github.com/ambv/black
     rev: 23.11.0
     hooks:
