@@ -18,18 +18,18 @@
 #
 # This is a notebook for the section [Hierarchical Time Series Reconciliation](https://dl.leima.is/time-series/timeseries-hierarchical.reconciliation/).
 
-# + colab={"base_uri": "https://localhost:8080/"} id="Dv8Ua7IlbgcP" outputId="e1d62a51-78c6-4bfe-e7bf-717771baaf9c"
-import sympy as sp
-import numpy as np
-import pandas as pd
-from darts import TimeSeries
-from darts.utils.model_selection import train_test_split
-from darts.utils.statistics import plot_pacf
-
 import re
 
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import seaborn as sns
+
+# + colab={"base_uri": "https://localhost:8080/"} id="Dv8Ua7IlbgcP" outputId="e1d62a51-78c6-4bfe-e7bf-717771baaf9c"
+import sympy as sp
+from darts import TimeSeries
+from darts.utils.model_selection import train_test_split
+from darts.utils.statistics import plot_pacf
 
 sns.reset_orig()
 

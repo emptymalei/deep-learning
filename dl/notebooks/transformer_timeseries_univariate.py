@@ -17,36 +17,29 @@
 #
 # In this notebook, we build a transformer using pytorch to forecast $\sin$ function as a time series.
 
+import dataclasses
+
 # +
 import math
 from functools import cached_property
 from typing import Dict, List, Tuple
 
-import pandas as pd
-import numpy as np
-
-
-import dataclasses
-from loguru import logger
-
-from torch.utils.data import Dataset, DataLoader
-from torch import nn
-import torch
-
-
 import lightning as L
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import torch
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+from loguru import logger
+from torch import nn
+from torch.utils.data import DataLoader, Dataset
+from torchmetrics import MetricCollection
 from torchmetrics.regression import (
     MeanAbsoluteError,
     MeanAbsolutePercentageError,
     MeanSquaredError,
     SymmetricMeanAbsolutePercentageError,
 )
-from torchmetrics import MetricCollection
-
-
-import matplotlib.pyplot as plt
-
 
 # -
 

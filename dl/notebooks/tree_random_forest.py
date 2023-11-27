@@ -21,37 +21,34 @@
 # 2. Fit the functions using ensemble methods
 # 3. Analyze the trees
 
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import pandas as pd
+import sklearn.tree as _tree
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.model_selection import (
-    train_test_split,
-    cross_val_score,
-    learning_curve,
-    validation_curve,
-    GridSearchCV,
-    RandomizedSearchCV,
-)
 from sklearn.feature_selection import (
-    SelectKBest,
     SelectFromModel,
+    SelectKBest,
     chi2,
     mutual_info_regression,
 )
+from sklearn.model_selection import (
+    GridSearchCV,
+    RandomizedSearchCV,
+    cross_val_score,
+    learning_curve,
+    train_test_split,
+    validation_curve,
+)
 from sklearn.pipeline import Pipeline
-import sklearn.tree as _tree
-import pandas as pd
-
-import matplotlib.pyplot as plt
-import matplotlib as mpl
+from sklearn.tree import DecisionTreeRegressor
 
 mpl.rcParams["axes.unicode_minus"] = False
-import seaborn as sns
-
-import numpy as np
 from random import random
 
+import numpy as np
+import seaborn as sns
 from joblib import dump, load
-
 
 # ## Model
 

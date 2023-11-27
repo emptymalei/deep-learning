@@ -16,15 +16,14 @@
 # # Box-Cox Transformation
 
 # +
-from typing import Dict, Any
-from darts.datasets import AirPassengersDataset
-from darts import TimeSeries
-from darts.utils import statistics as dus
+from typing import Any, Dict
 
-from darts.dataprocessing.transformers import BoxCox
-
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+from darts import TimeSeries
+from darts.dataprocessing.transformers import BoxCox
+from darts.datasets import AirPassengersDataset
+from darts.utils import statistics as dus
 
 # +
 ap_series = AirPassengersDataset().load()

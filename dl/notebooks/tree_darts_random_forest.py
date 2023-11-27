@@ -17,24 +17,20 @@
 #
 # In this notebook, we explore some basic ideas of how to forecast using trees with the help of the package called [Darts](https://github.com/unit8co/darts).
 
-# +
-import pandas as pd
+from typing import Callable, Dict, List
+
+import darts.utils as du
+import matplotlib.pyplot as plt
 import numpy as np
 
-import matplotlib.pyplot as plt
+# +
+import pandas as pd
 import seaborn as sns
-
-from darts import TimeSeries
-from darts.datasets import AirPassengersDataset
-import darts.utils as du
-from darts import metrics
-
-from darts.models import LightGBMModel, RandomForest, NaiveDrift
+from darts import TimeSeries, metrics
 from darts.dataprocessing.transformers import BoxCox
-
+from darts.datasets import AirPassengersDataset
+from darts.models import LightGBMModel, NaiveDrift, RandomForest
 from sklearn.linear_model import LinearRegression
-
-from typing import List, Dict, Callable
 
 # -
 
