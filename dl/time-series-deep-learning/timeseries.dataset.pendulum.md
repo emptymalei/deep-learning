@@ -19,7 +19,7 @@ with $L$ being the length of the pendulum and $g$ being the surface gravity.
 
     ![Pendulum data](assets/timeseries.transformer/transformer_series_data_pendulum.png)
 
-=== ":material-code-json: Code"
+=== ":material-code-json: Physics and Pytorch Dataset"
 
     ```python
     import math
@@ -99,3 +99,10 @@ with $L$ being the length of the pendulum and $g$ being the surface gravity.
     ```
 
 We take this time series and ask our model to forecast the next step (**forecast horizon is 1**).
+
+
+!!! info "PyTorch Dataset and Lightning DataModule"
+
+    In our tutorials, we will use Pytorch lightning excessively.
+    We defined some useful modules in our [:material-language-python: `ts_dl_utils` package](../../utilities/notebooks-and-utilities)
+    and [:notebook: this notebook](../../notebooks/pendulum_dataset).

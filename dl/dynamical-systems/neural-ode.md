@@ -223,7 +223,8 @@ $$
 
 Coming back to neural networks, if $h(t)$ represents the state of a neural network block at depth $t$, Eq. $\eqref{eq:1st-order-ode-finite-difference-deltat-1}$ is nothing fancy but the **residual connection** in ResNet[@He2015-ie]. This connection between the finite difference form of a first-order differential equation and the residual connection leads to the new family of deep neural network models called neural ode[@Chen2018-mp].
 
-In a neural ODE, we treat each layer of a neural network as a function $h$ of depth $t$, i.e., the state of the layer is equivalent to a function $h(t)$.
+In a neural ODE, we treat each layer of a neural network as a function $h$ of depth $t$, i.e., the state of the layer is equivalent to a function $h(t)$. However, we are not obliged to use $h$ as the function to directly take in the raw input and output the raw output. NeuralODE is extremely flexible and we could build latent dynamical systems to represent some intrinsic dynamics.
+
 
 ![Neural ODE and Differential Equations](assets/neural-ode/neural-ode-and-functions.jpg)
 

@@ -251,8 +251,10 @@ nav:
     - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
   - "Supplementary":
     - "About Supplementary Materials": supplementary.md
+    - "How to Run Our Notebooks": utilities/notebooks-and-utilities.md
     - "Notebooks":
       - "Box-Cox Transformation": notebooks/timeseries_data_box-cox.py
+      - "Pendulum Dataset": notebooks/pendulum_dataset.ipynb
       - "Hierarchical Forecasting Using MinT": notebooks/hierarchical_forecasting_mint.py
       - "Tree Basics": notebooks/tree_basics.py
       - "Random Forest Basics": notebooks/tree_random_forest.py
