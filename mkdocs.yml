@@ -89,6 +89,7 @@ plugins:
       tags_file: tags.md
   - bibtex:
       bib_dir: "dl/assets/references"
+      csl_file: "dl/assets/csl/nature-publishing-group-vancouver.csl" # https://github.com/citation-style-language/styles/blob/master/nature-publishing-group-vancouver.csl
   - mkdocs-jupyter:
       include: ["*.py"]
       ignore: ["notebooks/.ipynb_checkpoints/*"]
@@ -254,7 +255,7 @@ nav:
     - "How to Run Our Notebooks": utilities/notebooks-and-utilities.md
     - "Notebooks":
       - "Box-Cox Transformation": notebooks/timeseries_data_box-cox.py
-      - "Pendulum Dataset": notebooks/pendulum_dataset.ipynb
+      - "Pendulum Dataset": notebooks/pendulum_dataset.py
       - "Hierarchical Forecasting Using MinT": notebooks/hierarchical_forecasting_mint.py
       - "Tree Basics": notebooks/tree_basics.py
       - "Random Forest Basics": notebooks/tree_random_forest.py
@@ -263,6 +264,7 @@ nav:
       - "Forecasting with Feedforward Neural Networks": notebooks/feedforward_neural_netwroks_timeseries.py
       - "Forecasting with RNN": notebooks/rnn_timeseries.py
       - "Forecasting with Transformer": notebooks/transformer_timeseries_univariate.py
+      - "Forecasting with NeuralODE": notebooks/neuralode_timeseries.py
     - "Small Yet Powerful Concepts":
       - concepts/index.md
       - "Entropy": concepts/entropy.md

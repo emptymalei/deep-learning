@@ -236,4 +236,3 @@ po/*~
 dl/notebooks/**/*.ipynb
 !dl/notebooks/**/tree_darts.ipynb
 dl/notebooks/lightning_logs/*
-!dl/notebooks/pendulum_dataset.ipynb
