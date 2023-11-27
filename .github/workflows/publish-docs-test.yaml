@@ -28,4 +28,5 @@ jobs:
         with:
           python-version: "3.10"
       - run: pip install -r requirements.txt
+      - uses: docker://pandoc/core:2.9
       - run: mkdocs build
