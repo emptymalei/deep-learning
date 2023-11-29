@@ -127,8 +127,10 @@ We trained the model using a history length of 100 and plotted the forecasts for
 
 The feedforward neural network learned the damped sine wave pattern of the pendulum. To quantify the results, we compute a few metrics.
 
-| Metric                                   | Value  |
-| ---------------------------------------- | ------ |
-| Mean Absolute Error                      | 0.0251 |
-| Mean Squared Error                       | 0.0010 |
-| Symmetric Mean Absolute Percentage Error | 0.1115 |
+| Metric                                   | FFN    | Naive      |
+| ---------------------------------------- | ------ | ---------- |
+| Mean Absolute Error                      | 0.0251 | 0.0084     |
+| Mean Squared Error                       | 0.0010 | 8.7556e-05 |
+| Symmetric Mean Absolute Percentage Error | 0.1115 | 0.0630     |
+
+Since the differences between each time step are small, the naive forecast performs quite well.
