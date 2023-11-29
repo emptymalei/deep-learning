@@ -17,10 +17,23 @@
 #
 # In this notebook, we demo a dataset we created to simulate the oscillations of a pendulumn.
 
+import lightning as L
+
+# +
 import matplotlib.pyplot as plt
 import pandas as pd
+from torchmetrics import MetricCollection
+from torchmetrics.regression import (
+    MeanAbsoluteError,
+    MeanAbsolutePercentageError,
+    MeanSquaredError,
+    SymmetricMeanAbsolutePercentageError,
+)
 from ts_dl_utils.datasets.dataset import DataFrameDataset
 from ts_dl_utils.datasets.pendulum import Pendulum, PendulumDataModule
+from ts_dl_utils.naive_forecasters.last_observation import LastObservationForecaster
+
+# -
 
 # ## Data
 #
@@ -74,3 +87,36 @@ print(
 pdm = PendulumDataModule(
     history_length=history_length, horizon=horizon, dataframe=df[["theta"]]
 )
+
+# ## Naive Forecasts
+
+prediction_truths = [i[1].squeeze() for i in pdm.predict_dataloader()]
+
+# +
+trainer_naive = L.Trainer(precision="64")
+
+lobs_forecaster = LastObservationForecaster(horizon=horizon)
+lobs_predictions = trainer_naive.predict(model=lobs_forecaster, datamodule=pdm)
+# -
+
+y_test_naive_pred = lobs_predictions[0][1].squeeze().detach().numpy()
+y_test_truth = prediction_truths[0].numpy()
+
+# +
+fig, ax = plt.subplots(figsize=(10, 6.18))
+
+ax.plot(y_test_truth, "g-", label="truth")
+
+ax.plot(y_test_naive_pred, "b--", label="naive predictions")
+
+plt.legend()
+# -
+
+all_metrics = MetricCollection(
+    MeanAbsoluteError(),
+    MeanAbsolutePercentageError(),
+    MeanSquaredError(),
+    SymmetricMeanAbsolutePercentageError(),
+)
+
+all_metrics(lobs_predictions[0][1].squeeze().detach(), prediction_truths[0])

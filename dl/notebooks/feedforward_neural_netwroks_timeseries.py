@@ -273,10 +273,8 @@ predictions[0][0].shape, predictions[0][1].shape
 trainer_naive = L.Trainer(precision="64")
 
 lobs_forecaster = LastObservationForecaster(horizon=horizon)
-lobs_predictions = trainer.predict(model=lobs_forecaster, datamodule=pdm)
+lobs_predictions = trainer_naive.predict(model=lobs_forecaster, datamodule=pdm)
 # -
-
-lobs_predictions[0][0].shape, lobs_predictions[0][1].shape
 
 # ## Results
 
