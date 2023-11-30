@@ -79,6 +79,7 @@ class PendulumDataModule(L.LightningDataModule):
         history_length: int,
         horizon: int,
         dataframe: pd.DataFrame,
+        gap: int = 0,
         test_fraction: float = 0.3,
         val_fraction: float = 0.1,
         batch_size: int = 32,
@@ -89,6 +90,7 @@ class PendulumDataModule(L.LightningDataModule):
         self.horizon = horizon
         self.batch_size = batch_size
         self.dataframe = dataframe
+        self.gap = gap
         self.test_fraction = test_fraction
         self.val_fraction = val_fraction
         self.num_workers = num_workers
@@ -123,6 +125,7 @@ class PendulumDataModule(L.LightningDataModule):
             dataframe=self.train_val_dataframe,
             history_length=self.history_length,
             horizon=self.horizon,
+            gap=self.gap,
         )
 
     @cached_property
@@ -131,6 +134,7 @@ class PendulumDataModule(L.LightningDataModule):
             dataframe=self.test_dataframe,
             history_length=self.history_length,
             horizon=self.horizon,
+            gap=self.gap,
         )
 
     def split_train_val(self, dataset: Dataset):

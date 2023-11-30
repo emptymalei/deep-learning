@@ -261,6 +261,7 @@ nav:
       - "Random Forest Basics": notebooks/tree_random_forest.py
       - "Forecasting with Random Forest using Darts": notebooks/tree_darts_random_forest.py
       - "Forecasting with GBDT using Darts": notebooks/tree_darts_boosted_tree.py
+      - "Creating Time Series Dataset (PyTorch)": notebooks/creating_time_series_datasets.py
       - "Forecasting with Feedforward Neural Networks": notebooks/feedforward_neural_netwroks_timeseries.py
       - "Forecasting with RNN": notebooks/rnn_timeseries.py
       - "Forecasting with Transformer": notebooks/transformer_timeseries_univariate.py

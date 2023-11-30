@@ -26,6 +26,7 @@ from functools import cached_property
 from typing import Dict, List, Tuple
 
 import lightning as L
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -34,15 +35,8 @@ from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 from loguru import logger
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
-from torchmetrics import MetricCollection
-from torchmetrics.regression import (
-    MeanAbsoluteError,
-    MeanAbsolutePercentageError,
-    MeanSquaredError,
-    SymmetricMeanAbsolutePercentageError,
-)
-from ts_dl_utils.datasets.dataset import DataFrameDataset
 from ts_dl_utils.datasets.pendulum import Pendulum, PendulumDataModule
+from ts_dl_utils.evaluation.evaluator import Evaluator
 from ts_dl_utils.naive_forecasters.last_observation import LastObservationForecaster
 
 # -
@@ -69,6 +63,8 @@ from ts_dl_utils.naive_forecasters.last_observation import LastObservationForeca
 pen = Pendulum(length=100)
 
 df = pd.DataFrame(pen(10, 400, initial_angle=1, beta=0.001))
+
+df["theta"] = df["theta"] + 2
 
 # Since the damping constant is very small, the data generated is mostly a sin wave.
 
@@ -144,14 +140,18 @@ class TSFeedForward(nn.Module):
 
 # -
 
-# ## Training
+# ## Forecasting (horizon=1)
 
 # We use [lightning](https://lightning.ai/docs/pytorch/stable/) to train our model.
 
 # ### Training Utilities
 
-history_length = 100
-horizon = 1
+# +
+history_length_1_step = 100
+horizon_1_step = 1
+
+gap = 10
+# -
 
 
 # We will build a few utilities
@@ -208,60 +208,84 @@ class FFNForecaster(L.LightningModule):
 
 # #### DataModule
 
-ds = DataFrameDataset(dataframe=df, history_length=history_length, horizon=horizon)
-
-len(ds)
-
-pdm = PendulumDataModule(
-    history_length=history_length,
-    horizon=horizon,
+pdm_1_step = PendulumDataModule(
+    history_length=history_length_1_step,
+    horizon=horizon_1_step,
+    gap=gap,
     dataframe=df[["theta"]],
 )
+
+# +
+fig, ax = plt.subplots(figsize=(10, 6.18))
+
+pdm_1_step_sample = list(pdm_1_step.train_dataloader())[0]
+
+pdm_1_step_sample_history = pdm_1_step_sample[0][0, ...].squeeze(-1).numpy()
+pdm_1_step_sample_target = pdm_1_step_sample[1][0, ...].squeeze(-1).numpy()
+
+pdm_1_step_sample_steps = np.arange(
+    0, len(pdm_1_step_sample_history) + gap + len(pdm_1_step_sample_target)
+)
+
+ax.plot(
+    pdm_1_step_sample_steps[: len(pdm_1_step_sample_history)],
+    pdm_1_step_sample_history,
+    label="Input",
+)
+
+ax.plot(
+    pdm_1_step_sample_steps[len(pdm_1_step_sample_history) + gap :],
+    pdm_1_step_sample_target,
+    "r--",
+    marker="x",
+    label="Target",
+)
+plt.legend()
+# -
 
 # #### LightningModule
 
 # +
-ts_ffn_params = TSFFNParams(hidden_widths=[512, 256, 64, 256, 512])
+ts_ffn_params_1_step = TSFFNParams(hidden_widths=[512, 256, 64, 256, 512])
 
-ts_ffn = TSFeedForward(
-    history_length=history_length,
-    horizon=horizon,
-    ffn_params=ts_ffn_params,
+ts_ffn_1_step = TSFeedForward(
+    history_length=history_length_1_step,
+    horizon=horizon_1_step,
+    ffn_params=ts_ffn_params_1_step,
 )
 
-ts_ffn
+ts_ffn_1_step
 # -
 
-ffn_forecaster = FFNForecaster(ffn=ts_ffn)
+ffn_forecaster_1_step = FFNForecaster(ffn=ts_ffn_1_step)
 
 # #### Trainer
 
 # +
-logger = L.pytorch.loggers.TensorBoardLogger("lightning_logs", name="ffn_ts")
+logger_1_step = L.pytorch.loggers.TensorBoardLogger(
+    save_dir="lightning_logs", name="ffn_ts_1_step"
+)
 
-trainer = L.Trainer(
+trainer_1_step = L.Trainer(
     precision="64",
     max_epochs=100,
     min_epochs=5,
     callbacks=[
         EarlyStopping(monitor="val_loss", mode="min", min_delta=1e-4, patience=2)
     ],
-    logger=logger,
+    logger=logger_1_step,
 )
 # -
 
 # #### Fitting
 
-trainer.fit(model=ffn_forecaster, datamodule=pdm)
+trainer_1_step.fit(model=ffn_forecaster_1_step, datamodule=pdm_1_step)
 
 # #### Retrieving Predictions
 
-predictions = trainer.predict(model=ffn_forecaster, datamodule=pdm)
-
-prediction_inputs = [i[0] for i in pdm.predict_dataloader()]
-prediction_truths = [i[1].squeeze() for i in pdm.predict_dataloader()]
-
-predictions[0][0].shape, predictions[0][1].shape
+predictions_1_step = trainer_1_step.predict(
+    model=ffn_forecaster_1_step, datamodule=pdm_1_step
+)
 
 # ### Naive Forecasts
 #
@@ -270,41 +294,123 @@ predictions[0][0].shape, predictions[0][1].shape
 # `ts_LastObservationForecaster` is a forecaster we have build for this purpose.
 
 # +
-trainer_naive = L.Trainer(precision="64")
+trainer_naive_1_step = L.Trainer(precision="64")
 
-lobs_forecaster = LastObservationForecaster(horizon=horizon)
-lobs_predictions = trainer_naive.predict(model=lobs_forecaster, datamodule=pdm)
+lobs_forecaster_1_step = LastObservationForecaster(horizon=horizon_1_step)
+lobs_1_step_predictions = trainer_naive_1_step.predict(
+    model=lobs_forecaster_1_step, datamodule=pdm_1_step
+)
 # -
 
-# ## Results
+# ### Evaluations
 
-y_test_naive_pred = lobs_predictions[0][1].squeeze().detach().numpy()
-y_test_pred = predictions[0][1].squeeze().detach().numpy()
-y_test_truth = prediction_truths[0].numpy()
+evaluator_1_step = Evaluator(step=0)
 
 # +
 fig, ax = plt.subplots(figsize=(10, 6.18))
 
-ax.plot(y_test_truth, "g-", label="truth")
+ax.plot(
+    evaluator_1_step.y_true(dataloader=pdm_1_step.predict_dataloader()),
+    "g-",
+    label="truth",
+)
 
-ax.plot(y_test_pred, "r--", label="predictions")
+ax.plot(evaluator_1_step.y(predictions_1_step), "r--", label="predictions")
 
-ax.plot(y_test_naive_pred, "b--", label="naive predictions")
+ax.plot(evaluator_1_step.y(lobs_1_step_predictions), "b-.", label="naive predictions")
 
 plt.legend()
 # -
 
-# To quantify the results, we compute a few metrics.
+evaluator_1_step.metrics(predictions_1_step, pdm_1_step.predict_dataloader())
 
-all_metrics = MetricCollection(
-    MeanAbsoluteError(),
-    MeanAbsolutePercentageError(),
-    MeanSquaredError(),
-    SymmetricMeanAbsolutePercentageError(),
+evaluator_1_step.metrics(lobs_1_step_predictions, pdm_1_step.predict_dataloader())
+
+# ## Forecasting (horizon=3)
+
+# ### Train a Model
+
+history_length_m_step = 100
+horizon_m_step = 3
+
+pdm_m_step = PendulumDataModule(
+    history_length=history_length_m_step,
+    horizon=horizon_m_step,
+    dataframe=df[["theta"]],
+    gap=gap,
 )
 
-all_metrics(predictions[0][1].squeeze().detach(), prediction_truths[0])
+# +
+ts_ffn_params_m_step = TSFFNParams(hidden_widths=[512, 256, 64, 256, 512])
 
-# As a comparison, the naive forecast using the last observations is
+ts_ffn_m_step = TSFeedForward(
+    history_length=history_length_m_step,
+    horizon=horizon_m_step,
+    ffn_params=ts_ffn_params_m_step,
+)
 
-all_metrics(lobs_predictions[0][1].squeeze().detach(), prediction_truths[0])
+ts_ffn_m_step
+# -
+
+ffn_forecaster_m_step = FFNForecaster(ffn=ts_ffn_m_step)
+
+# +
+logger_m_step = L.pytorch.loggers.TensorBoardLogger(
+    save_dir="lightning_logs", name="ffn_ts_m_step"
+)
+
+trainer_m_step = L.Trainer(
+    precision="64",
+    max_epochs=100,
+    min_epochs=5,
+    callbacks=[
+        EarlyStopping(monitor="val_loss", mode="min", min_delta=1e-4, patience=2)
+    ],
+    logger=logger_m_step,
+)
+# -
+
+trainer_m_step.fit(model=ffn_forecaster_m_step, datamodule=pdm_m_step)
+
+predictions_m_step = trainer_m_step.predict(
+    model=ffn_forecaster_m_step, datamodule=pdm_m_step
+)
+
+# ### Naive Forecaster
+
+# +
+trainer_naive_m_step = L.Trainer(precision="64")
+
+lobs_forecaster_m_step = LastObservationForecaster(horizon=horizon_m_step)
+lobs_m_step_predictions = trainer_naive_m_step.predict(
+    model=lobs_forecaster_m_step, datamodule=pdm_m_step
+)
+# -
+
+# ### Evaluation
+
+evaluator_m_step = Evaluator(step=2, gap=gap)
+
+# +
+fig, ax = plt.subplots(figsize=(10, 6.18))
+
+ax.plot(
+    evaluator_m_step.y_true(dataloader=pdm_m_step.predict_dataloader()),
+    "g-",
+    label="truth",
+)
+
+ax.plot(evaluator_m_step.y(predictions_m_step), "r--", label="predictions")
+
+ax.plot(evaluator_m_step.y(lobs_m_step_predictions), "b-.", label="naive predictions")
+
+plt.legend()
+
+# +
+fig, ax = plt.subplots(figsize=(10, 6.18))
+
+
+for i in np.arange(0, 1000, 120):
+    evaluator_m_step.plot_one_sample(ax=ax, predictions=predictions_m_step, idx=i)
+
+# -
