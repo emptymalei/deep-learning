@@ -1,6 +1,6 @@
 # The Time Delay Embedding Representation
 
-The time delay embedding representation of a time series forecasting problem is a concise representation of the forecasting problem [@Hewamalage2022-sc]. This is also called rolling in many time series analyses [@Zivot2006-es].
+The time delay embedding representation of time series data is widely used in deep learning forecasting models[@Hewamalage2022-sc]. This is also called rolling in many time series analyses [@Zivot2006-es].
 
 For simplicity, we only write down the representation for a problem with time series $y_{1}, \cdots, y_{t}$, and forecasting $y_{t+1}$. We rewrite the series into a matrix, in an autoregressive way,
 
