@@ -230,6 +230,7 @@ pdm_1_step_sample_steps = np.arange(
 ax.plot(
     pdm_1_step_sample_steps[: len(pdm_1_step_sample_history)],
     pdm_1_step_sample_history,
+    marker=".",
     label="Input",
 )
 
@@ -412,3 +413,8 @@ fig, ax = plt.subplots(figsize=(10, 6.18))
 
 for i in np.arange(0, 1000, 120):
     evaluator_m_step.plot_one_sample(ax=ax, predictions=predictions_m_step, idx=i)
+# -
+
+evaluator_m_step.metrics(predictions_m_step, pdm_m_step.predict_dataloader())
+
+evaluator_m_step.metrics(lobs_m_step_predictions, pdm_m_step.predict_dataloader())

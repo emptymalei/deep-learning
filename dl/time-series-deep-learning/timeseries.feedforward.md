@@ -115,13 +115,23 @@ Feedforward neural networks are simple but powerful models for time series forec
 
 ## Results
 
+We take 100 time steps as the input history and forecast 1 time step into the future, but with a gap of 10 time steps.
+
+![Task](../assets/timeseries.feedforward/forecast_task_gap.png)
+
+!!! info "Why the Gap"
+
+    Since the differences between each steps are tiny, forecasting immediate next step is quite easy. We add a gap to make the forecasting problem a bit harder.
+
+
 ??? info "Training"
 
     The details for model training can be found in this [:notebook: notebook](../../notebooks/feedforward_neural_netwroks_timeseries). We will skip the details but show the loss curve here.
 
     ![Training](assets/timeseries.feedforward/feedforward_neural_net_training_univariate_loss.png)
 
-We trained the model using a history length of 100 and plotted the forecasts for a test dataset that was held out from training. The forecasts are plotted in red and the ground truth is plotted in blue.
+
+We plotted the forecasts for a test dataset that was held out from training. The forecasts are plotted in red and the ground truth is plotted in green. For a sense of goodness, we also added the naive forecast (forecasting the last observed value) in blue.
 
 ![Results](assets/timeseries.feedforward/feedforward_neural_net_results.png)
 
@@ -134,3 +144,21 @@ The feedforward neural network learned the damped sine wave pattern of the pendu
 | Symmetric Mean Absolute Percentage Error | 0.1115 | 0.0630     |
 
 Since the differences between each time step are small, the naive forecast performs quite well.
+
+
+## Multi-horizon Forecasting
+
+We perform a similar experiment but forecast 3 time steps into the future. We plot out some samples. In the plot, the orange shaded regions are the predictions. From these samples, we observe that the forecasts make sense.
+
+![multihorizon sample](../assets/timeseries.feedforward/feedforward_neural_net_multihorizon_sample.png)
+
+To observe the quality of the whole time range, we plot out the first forecast step and the corresponding ground truth. The naive forecast plotted in blue has an obvious shift, while the feedforward neural network plotted in red is much closer to the ground truth.
+
+![multihorizon results](../assets/timeseries.feedforward/feedforward_neural_net_multihorizon_results.png)
+
+
+| Metric | FFN | Naive |
+| --- | --- | --- |
+| Mean Absolute Error | 0.024640 | 0.109485 |
+| Mean Squared Error | 0.001116 | 0.014723 |
+| Symmetric Mean Absolute Percentage Error | 0.015637 | 0.059591 |
