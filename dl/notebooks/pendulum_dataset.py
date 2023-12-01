@@ -130,6 +130,22 @@ ds_de = DataFrameDataset(dataframe=df["theta"][:200], history_length=1, horizon=
 
 # +
 class DelayedEmbeddingAnimation:
+    """Builds an animation for univariate time series
+    using delayed embedding.
+
+    ```python
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    dea = DelayedEmbeddingAnimation(dataset=ds_de, fig=fig, ax=ax)
+    ani = dea.build(interval=10, save_count=dea.time_steps)
+    ani.save("results/pendulum_dataset/delayed_embedding_animation.mp4")
+    ```
+
+    :param dataset: a PyTorch dataset, input and target should have only length 1
+    :param fig: figure object from matplotlib
+    :param ax: axis object from matplotlib
+    """
+
     def __init__(
         self, dataset: DataFrameDataset, fig: mpl.figure.Figure, ax: mpl.axes.Axes
     ):
@@ -191,7 +207,7 @@ dea = DelayedEmbeddingAnimation(dataset=ds_de, fig=fig, ax=ax)
 
 ani = dea.build(interval=10, save_count=dea.time_steps)
 
-gif_writer = animation.PillowWriter(fps=15, metadata=dict(artist="Me"), bitrate=1800)
+gif_writer = animation.PillowWriter(fps=5, metadata=dict(artist="Lei Ma"), bitrate=100)
 
 ani.save("results/pendulum_dataset/delayed_embedding_animation.gif", writer=gif_writer)
 # ani.save("results/pendulum_dataset/delayed_embedding_animation.mp4")

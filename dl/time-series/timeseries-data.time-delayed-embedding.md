@@ -53,6 +53,21 @@ To illustrate the idea, we take our [pendulum dataset](../time-series-deep-learn
     ds_de = DataFrameDataset(dataframe=df["theta"][:200], history_length=1, horizon=1)
 
     class DelayedEmbeddingAnimation:
+        """Builds an animation for univariate time series
+        using delayed embedding.
+
+        ```python
+        fig, ax = plt.subplots(figsize=(10, 10))
+
+        dea = DelayedEmbeddingAnimation(dataset=ds_de, fig=fig, ax=ax)
+        ani = dea.build(interval=10, save_count=dea.time_steps)
+        ani.save("results/pendulum_dataset/delayed_embedding_animation.mp4")
+        ```
+
+        :param dataset: a PyTorch dataset, input and target should have only length 1
+        :param fig: figure object from matplotlib
+        :param ax: axis object from matplotlib
+        """
         def __init__(
             self, dataset: DataFrameDataset, fig: mpl.figure.Figure, ax: mpl.axes.Axes
         ):
@@ -83,6 +98,8 @@ To illustrate the idea, we take our [pendulum dataset](../time-series-deep-learn
             )
             ax.set_xlim([-1.1, 1.1])
             ax.set_ylim([-1.1, 1.1])
+            ax.set_xlabel("t")
+            ax.set_ylabel("t+1")
 
             return self.ax
 
@@ -112,12 +129,11 @@ To illustrate the idea, we take our [pendulum dataset](../time-series-deep-learn
 
     ani = dea.build(interval=10, save_count=dea.time_steps)
 
-    gif_writer = animation.PillowWriter(
-        fps=15,
-        metadata=dict(artist='Me'),
-        bitrate=1800
-    )
+    gif_writer = animation.PillowWriter(fps=5, metadata=dict(artist="Lei Ma"), bitrate=100)
 
     ani.save("results/pendulum_dataset/delayed_embedding_animation.gif", writer=gif_writer)
     # ani.save("results/pendulum_dataset/delayed_embedding_animation.mp4")
     ```
+
+
+In some advanced deep learning models, delayed embedding plays a crucial role. For example, Large Language Models (LLM) can perform good forecasts by taking in delayed embedding of time series[@Rasul2023-ep].
