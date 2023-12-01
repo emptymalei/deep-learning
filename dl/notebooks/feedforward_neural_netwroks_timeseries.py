@@ -412,5 +412,3 @@ fig, ax = plt.subplots(figsize=(10, 6.18))
 
 for i in np.arange(0, 1000, 120):
     evaluator_m_step.plot_one_sample(ax=ax, predictions=predictions_m_step, idx=i)
-
-# -
