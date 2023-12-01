@@ -79,17 +79,21 @@ class PendulumDataModule(L.LightningDataModule):
         history_length: int,
         horizon: int,
         dataframe: pd.DataFrame,
+        gap: int = 0,
         test_fraction: float = 0.3,
         val_fraction: float = 0.1,
         batch_size: int = 32,
+        num_workers: int = 0,
     ):
         super().__init__()
         self.history_length = history_length
         self.horizon = horizon
         self.batch_size = batch_size
         self.dataframe = dataframe
+        self.gap = gap
         self.test_fraction = test_fraction
         self.val_fraction = val_fraction
+        self.num_workers = num_workers
 
         self.train_dataset, self.val_dataset = self.split_train_val(
             self.train_val_dataset
@@ -121,6 +125,7 @@ class PendulumDataModule(L.LightningDataModule):
             dataframe=self.train_val_dataframe,
             history_length=self.history_length,
             horizon=self.horizon,
+            gap=self.gap,
         )
 
     @cached_property
@@ -129,6 +134,7 @@ class PendulumDataModule(L.LightningDataModule):
             dataframe=self.test_dataframe,
             history_length=self.history_length,
             horizon=self.horizon,
+            gap=self.gap,
         )
 
     def split_train_val(self, dataset: Dataset):
@@ -138,17 +144,28 @@ class PendulumDataModule(L.LightningDataModule):
 
     def train_dataloader(self):
         return DataLoader(
-            dataset=self.train_dataset, batch_size=self.batch_size, shuffle=True
+            dataset=self.train_dataset,
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=self.num_workers,
+            persistent_workers=True if self.num_workers > 0 else False,
         )
 
     def test_dataloader(self):
         return DataLoader(
-            dataset=self.test_dataset, batch_size=self.batch_size, shuffle=True
+            dataset=self.test_dataset,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
         )
 
     def val_dataloader(self):
         return DataLoader(
-            dataset=self.val_dataset, batch_size=self.batch_size, shuffle=True
+            dataset=self.val_dataset,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+            persistent_workers=True if self.num_workers > 0 else False,
         )
 
     def predict_dataloader(self):

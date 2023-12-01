@@ -1,9 +1,32 @@
+# ---
+# jupyter:
+#   jupytext:
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.14.5
+#   kernelspec:
+#     display_name: deep-learning
+#     language: python
+#     name: deep-learning
+# ---
+
+# # Creating Time Series Datasets
+#
+# In this notebook, we explain how to create a time series dataset for PyTorch using the moving slicing technique.
+#
+# The class `DataFrameDataset` is also included in our `ts_dl_utils` package.
+
+# +
 from typing import Tuple
 
 import numpy as np
 import pandas as pd
 from loguru import logger
 from torch.utils.data import Dataset
+
+# -
 
 
 class DataFrameDataset(Dataset):
@@ -96,3 +119,47 @@ class DataFrameDataset(Dataset):
 
     def __len__(self) -> int:
         return self.length
+
+
+# ## Examples
+
+# We create a sample dataframe with one single variable "y"
+
+df = pd.DataFrame(np.arange(15), columns=["y"])
+df
+
+# ### history_length=10, horizon=1
+
+ds_1 = DataFrameDataset(dataframe=df, history_length=10, horizon=1)
+
+list(ds_1)
+
+# ### history_length=10, horizon=2
+
+ds_2 = DataFrameDataset(dataframe=df, history_length=10, horizon=2)
+
+list(ds_2)
+
+# ### history_length=10, horizon=1, gap=1
+
+ds_1_gap_1 = DataFrameDataset(dataframe=df, history_length=10, horizon=1, gap=1)
+
+list(ds_1_gap_1)
+
+# ### history_length=10, horizon=1, gap=2
+
+ds_1_gap_2 = DataFrameDataset(dataframe=df, history_length=10, horizon=1, gap=2)
+
+list(ds_1_gap_2)
+
+# ### history_length=10, horizon=2, gap=1
+
+ds_2_gap_1 = DataFrameDataset(dataframe=df, history_length=10, horizon=2, gap=1)
+
+list(ds_2_gap_1)
+
+# ### history_length=10, horizon=2, gap=2
+
+ds_2_gap_2 = DataFrameDataset(dataframe=df, history_length=10, horizon=2, gap=2)
+
+list(ds_2_gap_2)
