@@ -63,9 +63,9 @@ The forecasts roughly captured the patterns of the pendulum. To quantify the res
 
 | Metric | Vanilla Transformer | Naive |
 | --- | --- | --- |
-| Mean Absolute Error | 0.050232 | 0.092666 |
-| Mean Squared Error | 0.003625 | 0.010553 |
-| Symmetric Mean Absolute Percentage Error | 0.108245 | 0.376550 |
+| Mean Absolute Error | **0.050232** | 0.092666 |
+| Mean Squared Error | **0.003625** | 0.010553 |
+| Symmetric Mean Absolute Percentage Error | **0.108245** | 0.376550 |
 
 
 ## Multi-horizon Forecasting
@@ -82,9 +82,9 @@ The following is a table of the metrics.
 
 | Metric | Vanilla Transformer | Naive |
 | --- | --- | --- |
-| Mean Absolute Error | 0.057219 | 0.109485 |
-| Mean Squared Error | 0.004241 | 0.014723 |
-| Symmetric Mean Absolute Percentage Error | 0.112247 | 0.423563 |
+| Mean Absolute Error | **0.057219** | 0.109485 |
+| Mean Squared Error | **0.004241** | 0.014723 |
+| Symmetric Mean Absolute Percentage Error | **0.112247** | 0.423563 |
 
 
 ## Generalization

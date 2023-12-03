@@ -139,9 +139,9 @@ The feedforward neural network learned the damped sine wave pattern of the pendu
 
 | Metric                                   | FFN    | Naive      |
 | ---------------------------------------- | ------ | ---------- |
-| Mean Absolute Error                      | 0.0251 | 0.0084     |
-| Mean Squared Error                       | 0.0010 | 8.7556e-05 |
-| Symmetric Mean Absolute Percentage Error | 0.1115 | 0.0630     |
+| Mean Absolute Error                      | **0.017704** |   0.092666  |
+| Mean Squared Error                       | **0.000571** | 0.010553 |
+| Symmetric Mean Absolute Percentage Error | **0.010806** |  0.050442    |
 
 Since the differences between each time step are small, the naive forecast performs quite well.
 
@@ -159,6 +159,6 @@ To observe the quality of the whole time range, we plot out the first forecast s
 
 | Metric | FFN | Naive |
 | --- | --- | --- |
-| Mean Absolute Error | 0.024640 | 0.109485 |
-| Mean Squared Error | 0.001116 | 0.014723 |
-| Symmetric Mean Absolute Percentage Error | 0.015637 | 0.059591 |
+| Mean Absolute Error | **0.024640** | 0.109485 |
+| Mean Squared Error | **0.001116** | 0.014723 |
+| Symmetric Mean Absolute Percentage Error | **0.015637** | 0.059591 |
