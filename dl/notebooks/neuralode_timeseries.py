@@ -226,14 +226,18 @@ class NODEForecaster(L.LightningModule):
 # #### DataModule
 
 pdm_1_step = PendulumDataModule(
-    history_length=history_length_1_step, horizon=horizon_1_step, dataframe=df[["theta"]],
-    gap=gap
+    history_length=history_length_1_step,
+    horizon=horizon_1_step,
+    dataframe=df[["theta"]],
+    gap=gap,
 )
 
 # #### LightningModule
 
 # +
-ts_model_params_1_step = TSNODEParams(hidden_widths=[256], time_span=torch.linspace(0, 1, 101))
+ts_model_params_1_step = TSNODEParams(
+    hidden_widths=[256], time_span=torch.linspace(0, 1, 101)
+)
 
 ts_node_1_step = TSNODE(
     history_length=history_length_1_step,
@@ -260,7 +264,7 @@ trainer_1_step = L.Trainer(
     callbacks=[
         EarlyStopping(monitor="val_loss", mode="min", min_delta=1e-4, patience=2)
     ],
-    logger=logger_1_step
+    logger=logger_1_step,
 )
 # -
 
@@ -270,7 +274,9 @@ trainer_1_step.fit(model=node_forecaster_1_step, datamodule=pdm_1_step)
 
 # #### Retrieving Predictions
 
-predictions_1_step = trainer_1_step.predict(model=node_forecaster_1_step, datamodule=pdm_1_step)
+predictions_1_step = trainer_1_step.predict(
+    model=node_forecaster_1_step, datamodule=pdm_1_step
+)
 
 # ### Naive Forecasters
 
@@ -324,7 +330,9 @@ pdm_m_step = PendulumDataModule(
 )
 
 # +
-ts_model_params_m_step = TSNODEParams(hidden_widths=[256], time_span=torch.linspace(0, 1, 101))
+ts_model_params_m_step = TSNODEParams(
+    hidden_widths=[256], time_span=torch.linspace(0, 1, 101)
+)
 
 ts_node_m_step = TSNODE(
     history_length=history_length_m_step,
@@ -349,13 +357,15 @@ trainer_m_step = L.Trainer(
     callbacks=[
         EarlyStopping(monitor="val_loss", mode="min", min_delta=1e-4, patience=2)
     ],
-    logger=logger_m_step
+    logger=logger_m_step,
 )
 # -
 
 trainer_m_step.fit(model=node_forecaster_m_step, datamodule=pdm_m_step)
 
-predictions_m_step = trainer_m_step.predict(model=node_forecaster_m_step, datamodule=pdm_m_step)
+predictions_m_step = trainer_m_step.predict(
+    model=node_forecaster_m_step, datamodule=pdm_m_step
+)
 
 # ### Naive Forecaster
 
@@ -398,5 +408,3 @@ for i in np.arange(0, 1000, 120):
 evaluator_m_step.metrics(predictions_m_step, pdm_m_step.predict_dataloader())
 
 evaluator_m_step.metrics(lobs_m_step_predictions, pdm_m_step.predict_dataloader())
-
-
