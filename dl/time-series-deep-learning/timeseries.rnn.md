@@ -15,7 +15,7 @@ In section [Recurrent Neural Network](../deep-learning-fundamentals/recurrent-ne
 
 === ":simple-abstract: RNN Model Description"
 
-    We build an RNN model with an input size of 96, a hidden size of 64 and one single layer.
+    We build an RNN model with an input size of 96, a hidden size of 64 and one single RNN block. We use L1 loss in the trainings.
 
 === ":material-code-json: RNN Model Code"
 
@@ -84,7 +84,10 @@ In section [Recurrent Neural Network](../deep-learning-fundamentals/recurrent-ne
     ```
 
 
-## Training
+## One Step Forecasting
+
+Similar to [Forecasting with Feedforward Neural Networks](timeseries.feedforward.md), we take 100 time steps as the input history and forecast 1 time step into the future, but with a gap of 10 time steps.
+
 
 ??? info "Training"
 
@@ -99,8 +102,36 @@ With just a few seconds of training, our RNN model can capture the pattern of th
 
 The metrics are listed in the following table.
 
-| Metric | Value |
-| --- | --- |
-| Mean Absolute Error | 0.0112 |
-| Mean Squared Error | 0.0002 |
-| Symmetric Mean Absolute Percentage Error | 0.0601 |
+| Metric | RNN | Naive |
+| --- | --- | --- |
+| Mean Absolute Error | 0.007229 | 0.092666 |
+| Mean Squared Error | 0.000074 | 0.010553 |
+| Symmetric Mean Absolute Percentage Error | 0.037245 | 0.376550 |
+
+
+## Multi-Horizon Forecasting
+
+We also trained the same model to forecast 3 steps into the future and also with a gap of 10 time steps.
+
+??? info "Training"
+
+    The details for model training can be found in this [:notebook: notebook](../../notebooks/rnn_timeseries_univariate). We will skip the details but show the loss curve here.
+
+    ![Training](assets/timeseries.rnn/rnn_univariate_pendulum_m_step_training.png)
+
+
+Visualizing a few examples of the forecasts, it looks reasonable in many cases.
+
+![RNN Multihorizon sample](assets/timeseries.rnn/rnn_univariate_multihorizon_sample.png)
+
+Similar to the single step forecast, we visualize a specific time step in the forecasts and comparing it to the ground truths. Here we choose to visualize the second time step in the forecasts.
+
+![RNN multihorizon results](assets/timeseries.rnn/rnn_univariate_pendulum_m_step_results.png)
+
+The metrics are listed in the following table.
+
+| Metric   | RNN | Naive |
+| -------- | --- | ----- |
+| Mean Absolute Error | 0.006714 | 0.109485 |
+| Mean Squared Error | 0.000069 | 0.014723 |
+| Symmetric Mean Absolute Percentage Error | 0.032914 | 0.423563  |

@@ -22,7 +22,7 @@ In this example, we use the [pendulumn physics dataset](timeseries.dataset.pendu
 
 ### Model
 
-We built a naive transformer that only has an encoder. The input is passed to a linear layer to convert the tensor to the shape accepted by the positional encoder and the encoder. The tensor is then passed to the positional encoder and the encoder. The output of the encoder is passed to another linear layer to convert the tensor to the shape of the output.
+We built a naive transformer that only has an encoder. The input is passed to a linear layer to convert the tensor to the shape accepted by the encoder. The tensor is then passed to the encoder. The output of the encoder is passed to another linear layer to convert the tensor to the shape of the output.
 
 ```mermaid
 flowchart TD
@@ -39,11 +39,15 @@ encoder --> output_linear_layer
 
 
 ??? note "Decoder is Good for Covariates"
+
     A decoder in a transformer model is good for capturing [future covariates](../time-series/timeseries-forecast.tasks.md). In our problem, we do not have any covariates at all.
 
+??? note "Positional Encoder"
+
+    In this experiment, we do not include positional encoder as it introduces more complexities but it doesn't help that much in our case.
 
 
-### Result
+### Evaluations
 
 ??? info "Training"
 
@@ -57,11 +61,30 @@ We trained the model using a history length of 50 and plotted the forecasts for 
 
 The forecasts roughly captured the patterns of the pendulum. To quantify the results, we compute a few metrics.
 
-| Metric | Value |
-| --- | --- |
-| Mean Absolute Error | 0.0476 |
-| Mean Squared Error | 0.0030 |
-| Symmetric Mean Absolute Percentage Error | 0.1460 |
+| Metric | Vanilla Transformer | Naive |
+| --- | --- | --- |
+| Mean Absolute Error | **0.050232** | 0.092666 |
+| Mean Squared Error | **0.003625** | 0.010553 |
+| Symmetric Mean Absolute Percentage Error | **0.108245** | 0.376550 |
+
+
+## Multi-horizon Forecasting
+
+We perform a similar experiment for multi-horizon forecasting (horizon=3). We plot out some samples. In the plot, the orange-shaded regions are the predictions.
+
+![Transformer m step result](assets/timeseries.transformer/transformer_univariate_m_step_forecasting_result.png)
+
+To verify that the forecasts make sense, we also plot out a few samples.
+
+![Transformer m step samples](assets/timeseries.transformer/transformer_univariate_m_step_forecasting_samples.png)
+
+The following is a table of the metrics.
+
+| Metric | Vanilla Transformer | Naive |
+| --- | --- | --- |
+| Mean Absolute Error | **0.057219** | 0.109485 |
+| Mean Squared Error | **0.004241** | 0.014723 |
+| Symmetric Mean Absolute Percentage Error | **0.112247** | 0.423563 |
 
 
 ## Generalization
