@@ -64,9 +64,15 @@ Neural ODE is a good forecaster for our pendulum dataset since the pendulum is s
 
 We perform a similar experiment but forecast 3 steps.
 
+![NODE results](../assets/timeseries.neural-ode/neuralode_univariate_m_step_results.png)
+
+We plot out some samples and shade the predictions using orange color. The plot below shows that the forecasts are mostly on the right trend.
+
+![NODE samples](../assets/timeseries.neural-ode/neuralode_univariate_m_step_samples.png)
+
 
 | Metric | Neural ODE | Naive |
 | --- | --- | ---- |
-| Mean Absolute Error |  |  |
-| Mean Squared Error |  |  |
-| Symmetric Mean Absolute Percentage Error |  |  |
+| Mean Absolute Error | **0.038421** | 0.109485 |
+| Mean Squared Error | **0.001478** | 0.014723 |
+| Symmetric Mean Absolute Percentage Error | **0.153392** | 0.423563 |
