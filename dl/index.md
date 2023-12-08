@@ -23,62 +23,84 @@ In [Coding Tips](engineering/index.md), we provide coding tips to help some read
 
 The following is my first version of the blueprint.
 
-- [x] Coding Tips
+- [x] Engineering Tips
     - [x] Environment, VSCode, Git, ...
     - [x] Python Project Tips
-- [x] Time Series Fundamentals
-    - [x] Data
-        - [x] Time Series Analysis
-        - [x] Data Augmentation
-        - [x] DTW and DBA
-        - [x] Time Delayed Embedding for Deep Learning
-    - [ ] Some Statistical Models
-        - [x] AR and VAR
-        - [ ] State Space Models
-        - [x] Naive Forecasters
-    - [x] Data Generating Process (DGP)
-        - [x] General discussions
-        - [x] Dynamical systems, e.g., the diffusion process
-        - [x] Creating synthetic data (GluonTS, [eerily](https://github.com/emptymalei/eerily))
-    - [x] Metrics
-        - [x] List of forecasting metrics, their properties and demos.
-    - [ ] Hierarchical Forecasting
-        - [x] Hierarchical time series data
-        - [x] Reconciliation
-        - [ ] End2End hierarchical forecasting methods
-    - [x] Useful Datasets
-- [ ] Deep Learning Fundamentals
-    - [ ] Energy-based Models
-        - [x] Diffusion models
-    - [ ]  Neural ODE
-        - [ ] Neural ODE Basics
-    - Generative
-        - [ ] AR
-        - [ ] AE
-        - [x] VAE
-        - [ ] Flow
-        - [ ] MADE
-        - [ ] MAF
-    - Constrastive
-        - [x] Deep Infomax
-        - [x] Contrastive Predictive Coding
-    - Adversarial
-        - [x] GAN
-        - [x] f-GAN
-        - [x] Info-GAN
-    - Transformers
-        - [x] Vanilla transformers
-- [ ] Deep Learning Models for Forecasting
-    - [ ] RNN, e.g., LSTM
-    - [ ] DeepAR, DeepVAR
-    - [x] Diffusion Models, e.g., TimeGrad
-    - [ ] Transformer
+- [x] Fundamentals of Time Series Forecasting
+    - [x]  Time Series Data and Terminologies
+    - [x]  Transformation of Time Series
+    - [x]  Two-way Fixed Effects
+    - [x]  Time Delayed Embedding
+    - [x]  Data Generating Process (DGP)
+    - [x]  DGP: Langevin Equation
+    - [x]  Kindergarten Models for Time Series Forecasting
+        - [x] Statistical Models
+        - [x] Statistical Model: AR
+        - [x] Statistical Model: VAR
+    - [x] Synthetic Datasets
+        - [x] Synthetic Time Series
+        - [x] Creating Synthetic Dataset
+    - [x] Data Augmentation
+    - [x] Forecasting
+        - [x] Time Series Forecasting Tasks
+        - [x] Naive Forecasts
+    - [x] Evaluation and Metrics
+        - [x] Time Series Forecasting Evaluation
+        - [x] Time Series Forecasting Metrics
+            - [x] CRPS
+    - [x] Hierarchical Time Series
+        - [x] Hierarchical Time Series Data
+        - [x] Hierarchical Time Series Reconciliation
+    - [x] Some Useful Datasets
+- [x] Trees
+    - [x] Tree-based Models
+    - [x] Random Forest
+    - [x] Gradient Boosted Trees
+    - [x] Forecasting with Trees
+- [ ] Fundamentals of Deep Learning
+    - [x] Deep Learning Introduction
+    - [x] Learning from Data
+    - [x] Neural Networks
+    - [x] Recurrent Neural Networks
+    - [x] Convolutional Neural Networks
+    - [x] Transformers
+    - [x] Dynamical Systems
+        - [x] Why Dynamical Systems
+        - [x] Neural ODE
+    - [x] Energy-based Models
+        - [x] Diffusion Models
+    - [x] Generative Models
+        - [x] Autoregressive Model
+        - [x] Auto-Encoder
+        - [x] Variational Auto-Encoder
+        - [x] Flow
+        - [x] Generative Adversarial Network (GAN)
+- [ ] Time Series Forecasting with Deep Learning
+    - [x] A Few Datasets
+    - [x] Forecasting with MLP
+    - [x] Forecasting with RNN
+    - [x] Forecasting with Transformers
         - [ ] TFT
         - [ ] DLinear
         - [ ] NLinear
+    - [ ] Forecasting with CNN
+    - [ ] Forecasting with VAE
+    - [ ] Forecasting with Flow
+    - [ ] Forecasting with GAN
+    - [x] Forecasting with Neural ODE
+    - [x] Forecasting with Diffusion Models
+- [ ] Extras Topics, Supplementary Concepts, and Code
+    - [x] DTW and DBA
+    - [x] f-GAN
+    - [x] Info-GAN
     - [ ] Spatial-temporal Models, e.g., GNN
     - [ ] Conformal Prediction
     - [ ] Graph Neural Networks
     - [ ] Spiking Neural Networks
+    - [x] Deep Infomax
+    - [x] Contrastive Predictive Coding
+    - [ ] MADE
+    - [ ] MAF
+    - [ ] ...
 
 [^nixtla-m3-ensemble]: Nixtla. statsforecast/experiments/m3 at main · Nixtla/statsforecast. In: GitHub [Internet]. [cited 12 Dec 2022]. Available: https://github.com/Nixtla/statsforecast/tree/main/experiments/m3

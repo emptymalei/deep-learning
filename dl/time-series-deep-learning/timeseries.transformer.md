@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # Transformers for Time Series Forecasting
 
 !!! info ":material-code-json: Jupyter Notebook Available"
@@ -44,7 +48,7 @@ encoder --> output_linear_layer
 
 ??? note "Positional Encoder"
 
-    In this experiment, we do not include positional encoder as it introduces more complexities but it doesn't help that much in our case.
+    In this experiment, we do not include positional encoder as it introduces more complexities but it doesn't help that much in our case[@Zhang2019-pq].
 
 
 ### Evaluations

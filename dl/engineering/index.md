@@ -1,19 +1,19 @@
 # Coding Tips
 
-In this book, we focus on python-based deep learning projects. In the main chapters, we will focus on the theories and actual code. Thus all the tech stack related topics are shoved into this chapter as references.
+In this book, we use Python as our programming language. In the main chapters, we will focus on the theories and actual code and skip the basic concepts. To make sure we are on the same page, we shove all the tech stack related topics into this chapter for future reference. It is not necessary to read this chapter before reading the main chapters. However, we recommend the readers go through this chapter at some point to make sure they are not missing some basic engineering concepts.
 
 !!! info
 
-    This chapter is not aiming to be a comprehensive note on these technologies but a few key components that may be missing in many research-oriented tech stacks. We assume the readers have worked with the essential technologies in a python-based deep learning project.
+    This chapter is not aiming to be a comprehensive note on these technologies but a few key components that may be missing in many research-oriented tech stacks. We assume the readers have worked with the essential technologies in a Python-based deep learning project.
 
 
 ## Good References for Coding in Research
 
-Some skills only take less than an hour to learn but people benefit from them for many years. Managing code exactly falls into this type of knowledge.
+Some skills only take less than an hour to learn but people benefit from them for many years. Managing code exactly falls into this bucket.
 
 [The Good Research Code Handbook](https://goodresearch.dev) is a very good and concise guide to build good coding habits. This should be a good first read.
 
-The Alan Turing Institute also has a [Research Software Engineering with Python course](https://alan-turing-institute.github.io/rse-course/html/index.html). This is a comprehensive generic course for boosting python coding skills in research.
+The Alan Turing Institute also has a [Research Software Engineering with Python course](https://alan-turing-institute.github.io/rse-course/html/index.html). This is a comprehensive generic course for boosting Python coding skills in research.
 
 
 !!! note "A Checklist of Tech Stack"

@@ -171,15 +171,12 @@ nav:
   - "Engineering Tips":
     - engineering/index.md
     - "Python": engineering/python.md
-  - "Time Series Forecasting Fundamentals":
+  - "Fundamentals of Time Series Forecasting":
     - time-series/index.md
-    - "Data":
-      - "Time Series Data Analysis": time-series/timeseries-data.analysis.md
-      - "Two-way Fixed Effects": time-series/timeseries-data.analysis.twfe.md
+    - "Time Series Data":
+      - "Terminologies of Time Series Data": time-series/timeseries-data.analysis.md
       - "Box-Cox Transformation": time-series/timeseries-data.box-cox.md
-      - "Augmentation": time-series/timeseries-data.data-augmentation.md
-      - "DTW": time-series/timeseries-data.dtw.md
-      - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
+      - "Two-way Fixed Effects": time-series/timeseries-data.analysis.twfe.md
       - "Time Delayed Embedding": time-series/timeseries-data.time-delayed-embedding.md
     - "Data Generating Process":
       - "DGP": time-series/timeseries-datasets.dgp.md
@@ -191,6 +188,7 @@ nav:
     - "Synthetic Datasets":
       - "Synthetic Time Series": time-series/timeseries-synthetic.md
       - "Creating Synthetic Dataset": time-series/timeseries-datasets.synthetic.md
+      - "Augmentation": time-series/timeseries-data.data-augmentation.md
     - "Forecasting":
       - "Time Series Forecasting Tasks": time-series/timeseries-forecast.tasks.md
       - "Naive Forecasts": time-series/timeseries-forecast.naive.md
@@ -211,12 +209,13 @@ nav:
     - "Tree-based Models": trees/tree.basics.md
     - "Random Forest": trees/tree.random-forest.md
     - "Gradient Boosted Trees": trees/tree.gbdt.md
-    - "Forecasting with Trees Using Darts": trees/tree.darts.md
-  - "Deep Learning Fundamentals":
+    - "Forecasting with Trees": trees/tree.darts.md
+  - "Fundamentals of Deep Learning":
     - "Deep Learning Introduction": deep-learning-fundamentals/index.md
     - "Learning from Data": deep-learning-fundamentals/learning.md
     - "Neural Networks": deep-learning-fundamentals/neural-net.md
     - "Recurrent Neural Networks": deep-learning-fundamentals/recurrent-neural-networks.md
+    - "Convolutional Neural Networks": deep-learning-fundamentals/convolutional-neural-networks.md
     - "Transformers":
       - "Vanilla Transformers": transformers/transformers.vanilla.md
     - "Dynamical Systems":
@@ -225,31 +224,25 @@ nav:
     - "Energy-based Models":
       - "Introduction": energy-based-models/intro.md
       - "Diffusion Models": energy-based-models/ebm.diffusion.md
-    - "Generative":
+    - "Generative Models":
       - "Introduction": self-supervised/generative/intro.md
       - "Autoregressive": self-supervised/generative/autoregressive.md
       - "AE": self-supervised/generative/ae.md
       - "VAE": self-supervised/generative/vae.md
       - "Flow": self-supervised/generative/flow.md
-      - "MADE": self-supervised/generative/made.md
-      - "MAF": self-supervised/generative/maf.md
-    - "Contrastive":
-      - "Introduction": self-supervised/contrastive/intro.md
-      - "Deep Infomax": self-supervised/contrastive/deep-infomax.md
-      - "Contrastive Predictive Coding": self-supervised/contrastive/contrastive-predictive-coding.md
-    - "Adversarial":
-      - "Introduction": self-supervised/adversarial/intro.md
       - "GAN": self-supervised/adversarial/gan.md
-      - "f-GAN": self-supervised/adversarial/f-gan.md
-      - "InfoGAN": self-supervised/adversarial/infogan.md
   - "Time Series Forecasting with Deep Learning":
     - "Introduction": "time-series-deep-learning/index.md"
     - "Pendulum Dataset": "time-series-deep-learning/timeseries.dataset.pendulum.md"
-    - "Forecasting with Feedforward Neural Networks": "time-series-deep-learning/timeseries.feedforward.md"
+    - "Forecasting with MLP": "time-series-deep-learning/timeseries.feedforward.md"
     - "Forecasting with RNN": time-series-deep-learning/timeseries.rnn.md
-    - "Time Series Forecasting with Transformers": "time-series-deep-learning/timeseries.transformer.md"
-    - "Time Series Forecasting with Neural ODE": time-series-deep-learning/timeseries.neural-ode.md
-    - "TimeGrad": time-series-deep-learning/timeseries.deep-learning.timegrad.md
+    - "Forecasting with Transformers": "time-series-deep-learning/timeseries.transformer.md"
+    - "Forecasting with CNN": "time-series-deep-learning/timeseries.cnn.md"
+    - "Forecasting with VAE": "time-series-deep-learning/timeseries.vae.md"
+    - "Forecasting with Flow": "time-series-deep-learning/timeseries.flow.md"
+    - "Forecasting with GAN": "time-series-deep-learning/timeseries.gan.md"
+    - "Forecasting with Neural ODE": time-series-deep-learning/timeseries.neural-ode.md
+    - "Forecasting with Diffusion Models": time-series-deep-learning/timeseries.deep-learning.timegrad.md
   - "Supplementary":
     - "About Supplementary Materials": supplementary.md
     - "How to Run Our Notebooks": utilities/notebooks-and-utilities.md
@@ -277,6 +270,17 @@ nav:
       - "Gini Impurity": concepts/gini-impurity.md
       - "Information Gain": concepts/information-gain.md
       - "Generalization": concepts/generalization.md
+      - "DTW": time-series/timeseries-data.dtw.md
+      - "DBA": time-series/timeseries-data.dtw-barycenter-averaging.md
+    - "Other Deep Learning Topics":
+      - "Contrastive":
+        - "Introduction": self-supervised/contrastive/intro.md
+        - "Deep Infomax": self-supervised/contrastive/deep-infomax.md
+        - "Contrastive Predictive Coding": self-supervised/contrastive/contrastive-predictive-coding.md
+        - "MADE": self-supervised/generative/made.md
+        - "MAF": self-supervised/generative/maf.md
+        - "f-GAN": self-supervised/adversarial/f-gan.md
+        - "InfoGAN": self-supervised/adversarial/infogan.md
   - "About":
     - "Roadmap": meta/roadmap.md
     - "Changelog": meta/changelog.md

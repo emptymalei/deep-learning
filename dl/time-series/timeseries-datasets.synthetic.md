@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # Synthetic Time Series
 
 With a proper understanding of the [DGP](timeseries-datasets.dgp.md), we can build data generators around the DGP we choose.

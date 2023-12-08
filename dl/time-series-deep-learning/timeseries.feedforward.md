@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # Forecasting with Feedforward Neural Networks
 
 !!! info ":material-code-json: Jupyter Notebook Available"
