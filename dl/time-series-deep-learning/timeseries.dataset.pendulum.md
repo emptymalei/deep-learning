@@ -1,3 +1,7 @@
+---
+tags:
+  - WIP
+---
 # Pendulum Dataset
 
 We create a synthetic dataset based on the physical model called pendulum. The pendulum is modeled as a damped harmonic oscillator, i.e.,
