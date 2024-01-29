@@ -1,15 +1,33 @@
 # Python
 
-Python will be our primary programming language. Thus we assume the readers have a good understanding of the Python language in this section. We will cover the following topics.
+We assume the readers have a good understanding of the Python programming language, as Python will be the primary programming language for demos and tutorials in this book. For engineering tips, we will cover a few topics here, including
 
 - Environment management;
 - Dependency management;
-- `pre-commit`.
+- [`pre-commit`](https://pre-commit.com/).
+
+!!! info "TL;DR"
+
+    1. Use [pyenv](https://github.com/pyenv/pyenv) to manage Python versions;
+    2. Use [poetry](https://github.com/python-poetry/poetry) to manage dependencies;
+    3. Always set up [`pre-commit``](https://pre-commit.com/) for your git repository.
 
 
-## Environment Management
+## Python Environment Management
 
-Python is notorious in environment management. The simple and out-of-the-box solution is `conda` for environment management.
+Environment management is never easy, and the same is true for the Python ecosystem. People have developed a lot of tools to make environment management easier. As you could imagine, this also means we have a zoo of tools to choose from.
+
+There are three things to manage in a Python project:
+
+1. Python version,
+2. Dependencies of the project, and
+3. An environment where we install our dependencies.
+
+Some tools can manage all three, and some tools focus on one or two of them. We discuss two popular sets of tools: `conda` and `pyenv` + `poetry`.
+
+### `conda`
+
+Many data scientists started with the simple and out-of-the-box choice called [`conda`](https://conda.io). `conda` is an all-in-one toolkit to manage Python versions, environments, and project dependencies.
 
 !!! note "`conda` cheatsheet"
 
@@ -18,42 +36,60 @@ Python is notorious in environment management. The simple and out-of-the-box sol
     1. Create an environment: `conda create -n my-env-name python=3.9 pip`, where
          1. `my-env-name` is the name of the environment,
          2. `python=3.9` specifies the version of Python,
-         3. `pip` is telling `conda` to install `pip` in this new environment.
+         3. `pip` at the end is telling `conda` to install `pip` in this new environment.
     2. Activate an environment: `conda activate my-env-name`
-    3. List all available environments: `conda env list`
-
+    3. Install new dependency: `conda install pandas`
+    4. List all available environments: `conda env list`
 
     Anaconda provides [a nice cheatsheet](https://docs.conda.io/projects/conda/en/latest/_downloads/843d9e0198f2a193a3484886fa28163c/conda-cheatsheet.pdf).
 
 
+### `pyenv` + `poetry`
 
-??? note "`pyenv` is a good alternative to `conda`"
+`conda` is powerful, but it is too powerful for a simple Python project. As of 2024, if you ask around, many Python developers will recommend [`poetry`](https://github.com/python-poetry/poetry).
 
-    [`pyenv`](https://github.com/pyenv/pyenv) is also a good tool for managing different versions and environments of python. However, `pyenv` only provides python version management. It is to be combined with [`venv`](https://docs.python.org/3/library/venv.html) to create local python environments.
+`poetry` manages dependencies and environments. We just need a tool like [`pyenv`](https://github.com/pyenv/pyenv) to manage Python versions.
+
+!!! note "The `poetry` workflow"
+
+    To work with poetry in an existing project `my_kuhl_project`
+
+    1. `poetry init` to initialize the project and follow the instructions;
+    2. `poetry env use 3.10` to specify the Python version. In this example, we use `3.10`;
+    3. `poetry add pandas` to add a package called `pandas`.
+
+    Everything we specified will be written into the `pyproject.toml` file.
+
+    `poetry` provides [a nice tutorial](https://python-poetry.org/docs/basic-usage/) on its website.
 
 
-## Dependency Management
+## Dependency Specifications
 
-We have a few choices to specify the dependencies. The most used method at the moment is `requirements.txt` + pip.
+We have a few choices to specify the dependencies. The most used method at the moment is `requirements.txt`. However, specifying dependencies in `pyproject.toml` is a much better choice.
+
+Python introduced `pyproject.toml` in [PEP518](https://peps.python.org/pep-0518/) which can be used together with [`poetry`](https://python-poetry.org) to [manage dependencies](https://python-poetry.org/docs/pyproject/#packages).
+
+While tutorials on how to use `poetry` are beyond the scope of this book, we highly recommend using `poetry` in a formal project.
+
+!!! warning "`poetry` is sometimes slow"
+
+    `poetry` can be very slow as it has to load many different versions of the packages to try out in some cases[^slowpoetry][^poery_faq].
 
 
-??? note "`conda`'s `environment.yml` is an alternative to `requirements.txt`"
+!!! note "`conda` with `pip`"
 
-    Alternatively, `conda` [provides its own requirement specification using `environment.yaml`](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file). However, this method doesn't make things better. If we ever need to make it more complicated than `requirements.txt`, `pyproject.toml` is the way to go.
+    If one insists on using `conda`, here we provide a few tips for `conda` users.
 
+    `conda` [provides its own requirement specification using `environment.yaml`](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file). However, many projects still prefer `requirements.txt` even though `conda`'s `environment.yaml` is quite powerful.
 
-??? note "Modern Python with `pyproject.toml` and `poetry`"
+    To use `requirements.txt` and `pip`, we always install `pip` when creating a new environment, e.g., `conda create -n my-env-name python=3.9 pip`.
 
-    Python introduced `pyproject.toml` in [PEP518](https://peps.python.org/pep-0518/) which can be used together with [`poetry`](https://python-poetry.org) to [sepcify dependencies](https://python-poetry.org/docs/pyproject/#packages).
-
-    Both `conda` and `pyenv` have trouble solving the actual full dependency graphs of all the packages used, sometimes. This problem is solved by `poetry`. However, this also means `poetry` can be very slow as it has to load many different versions of the packages to try out [^slowpoetry].
-
-    While tutorials on how to use `poetry` are not within the scope of this book, we highly recommend using `poetry` in a formal project.
+    Once the environment is activated (`conda activate my-env-name`), we can use `pip` to install dependencies, e.g., `pip install -r requirements.txt`.
 
 
 ## Python Styles and `pre-commit`
 
-In a Python project, it is important to have certain conventions or styles. To be consistent, one could follow some style guides for python. There are official proposals, such as [PEP8](https://peps.python.org/pep-0008/), and "third party" style guides, such as [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) [^pep8][^gpsg].
+In a Python project, it is important to have certain conventions or styles. To be consistent, one could follow some style guides for Python. There are official proposals, such as [PEP8](https://peps.python.org/pep-0008/), and "third party" style guides, such as [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) [^pep8][^gpsg].
 
 We also recommend [`pre-commit`](https://pre-commit.com/). `pre-commit` helps us manage git hooks to be executed before each commit. Once installed, every time we run `git commit -m "my commit message here"`, a series of commands will be executed first based on the configurations.
 
@@ -125,3 +161,4 @@ Adding tests to our code can save us time. We will not list all these benefits o
 [^pep8]: Guido van Rossum, Barry Warsaw, Nick Coghlan. PEP 8 – Style Guide for Python Code. In: peps.python.org [Internet]. 5 Jul 2001 [cited 23 Jul 2022]. Available: https://peps.python.org/pep-0008/
 [^gpsg]: Google Python Style Guide. In: Google Python Style Guide [Internet]. [cited 22 Jul 2022]. Available: https://google.github.io/styleguide/pyguide.html
 [^slowpoetry]: Poetry is extremely slow when resolving the dependencies · Issue #2094 · python-poetry/poetry. In: GitHub [Internet]. [cited 23 Jul 2022]. Available: https://github.com/python-poetry/poetry/issues/2094
+[^poery_faq]: FAQ. In: Poetry - Python dependency management and packaging made easy [Internet]. [cited 29 Jan 2024]. Available: https://python-poetry.org/docs/faq/#why-is-the-dependency-resolution-process-slow
