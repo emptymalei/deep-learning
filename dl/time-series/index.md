@@ -81,3 +81,5 @@ dimensions --> discriminative_generative
 dimensions --> theoretical_guarantees
 dimensions --> predictability_interpretability
 ```
+
+We will mention those different dimensions later in our discussion of different forecasting models. For example, random forest is an ensemble method, which we will discuss in detail later.
