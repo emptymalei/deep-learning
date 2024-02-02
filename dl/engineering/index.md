@@ -9,9 +9,9 @@ In this book, we use Python as our programming language. In the main chapters, w
 
 ## Good References for Coding in Research
 
-Some skills only take less than an hour to learn but people benefit from them for many years. Managing code exactly falls into this bucket.
+Some skills only take a while to learn but people benefit from them for their whole life. Managing code falls exactly into this bucket, for programmers.
 
-[The Good Research Code Handbook](https://goodresearch.dev) is a very good and concise guide to build good coding habits. This should be a good first read.
+[The Good Research Code Handbook](https://goodresearch.dev) is a very good and concise guide to building good coding habits. This should be a good first read.
 
 The Alan Turing Institute also has a [Research Software Engineering with Python course](https://alan-turing-institute.github.io/rse-course/html/index.html). This is a comprehensive generic course for boosting Python coding skills in research.
 
@@ -38,10 +38,11 @@ The Alan Turing Institute also has a [Research Software Engineering with Python 
     jupyter["Jupyter Notebooks"]
     python["Python Environment"]
     py_env["Python Environment Management"]
-    conda["Anaconda"]:::highlight
-    pyenv_venv["Pyenv + venv"]
-    poetry["Poetry"]
-    pyenv["pyenv"]
+    conda["Anaconda"]
+    pyenv_venv["Pyenv + venv + pip"]
+    pyenv_poetry["Pyenv + poetry"]
+    poetry["Poetry"]:::highlight
+    pyenv["pyenv"]:::highlight
     venv["venv"]
 
     click git "https://git-scm.com/" "Git"
@@ -66,10 +67,13 @@ The Alan Turing Institute also has a [Research Software Engineering with Python 
     python --- py_env
     py_env --- conda
     py_env --- pyenv_venv
-    py_env --- poetry
+    py_env --- pyenv_poetry
 
     pyenv_venv --- pyenv
     pyenv_venv --- venv
+
+    pyenv_poetry --- pyenv
+    pyenv_poetry --- poetry
     ```
 
 
@@ -123,6 +127,7 @@ The Alan Turing Institute also has a [Research Software Engineering with Python 
     pandas["Pandas"]:::highlight
     pytorch["PyTorch"]:::highlight
     lightning["PyTorch Lightning"]:::highlight
+    much_more["and more ..."]
 
     click pandas "https://pandas.pydata.org/"
     click pytorch "https://pytorch.org/"
@@ -131,4 +136,5 @@ The Alan Turing Institute also has a [Research Software Engineering with Python 
     dataml --- pandas
     dataml --- pytorch
     dataml --- lightning
+    dataml --- much_more
     ```
