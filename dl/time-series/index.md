@@ -31,43 +31,55 @@ A forecasting model $f$ will use $x^{(i)} _ {t-K:t}$ and $u^{(i)} _ {t-K:t+H}$ t
 In the section [Time Series Forecasting Tasks](timeseries-forecast.tasks.md), we will discuss more details of the forecasting problem.
 
 
-## Methods of Forecasting Methods
+## Categories of Forecasting Methods
 
-[Januschowsk et al](https://www.sciencedirect.com/science/article/pii/S0169207019301529) proposed a framework to classify the different forecasting methods[@Januschowski2020-ys]. We illustrate the different methods in the following charts.
-
+[Januschowsk et al](https://www.sciencedirect.com/science/article/pii/S0169207019301529) proposed a framework to classify the different forecasting methods[@Januschowski2020-ys]. We illustrate the different methods in the following charts. For simplicity, we simply merge all the possible dimensions in one chart.
 
 ```mermaid
-flowchart TB
+flowchart LR
+classDef subjective fill:#EE8866;
+classDef objective fill:#77AADD;
 
-subgraph Objective
+dimensions["Dimensions of Forecasting Methods"]
 
-params_shared["Parameter Shared Accross Series"]
+%% Objective
 
-params_shared --"True"-->Global
-params_shared --"False"-->Local
+params_shared["Parameter Shared Accross Series"]:::objective
 
-uncertainty["Uncertainty in Forecasts"]
-uncertainty --"True"--> Probabilistic["Probabilistic Forecasts:\n forecasts with predictive uncertainty"]
-uncertainty --"False"--> Point["Point Forecasts"]
+params_shared --"True"-->Global:::objective
+params_shared --"False"-->Local:::objective
 
-computational_complexity["Computational Complexity"]
+uncertainty["Uncertainty in Forecasts"]:::objective
+uncertainty --"True"--> Probabilistic["Probabilistic Forecasts:\n forecasts with predictive uncertainty"]:::objective
+uncertainty --"False"--> Point["Point Forecasts"]:::objective
 
-end
+computational_complexity["Computational Complexity"]:::objective
+linear_convexity["Linear and Convexity"]:::objective
+
+dimensions --> params_shared
+dimensions --> uncertainty
+dimensions --> computational_complexity
+dimensions --> linear_convexity
 
 
+%% Subjective
 
-subgraph Subjective
+structural_assumptions["Strong Structural Assumption"]:::subjective --"Yes"--> model_driven["Model-Driven"]:::subjective
+structural_assumptions --"No"--> data_driven["Data-Driven"]:::subjective
 
-structural_assumptions["Strong Structural Assumption"] --"Yes"--> model_driven["Model-Driven"]
-structural_assumptions --"No"--> data_driven["Data-Driven"]
+model_comb["Model Combinations"]:::subjective
 
-model_comb["Model Combinations"]
+discriminative_generative["Discriminative or Generative"]:::subjective
 
-discriminative_generative["Discriminative or Generative"]
+theoretical_guarantees["Theoretical Guarantees"]:::subjective
 
-theoretical_guarantees["Theoretical Guarantees"]
+predictability_interpretability["Predictability and Interpretibility"]:::subjective
 
-predictability_interpretability["Predictability and Interpretibility"]
-
-end
+dimensions --> structural_assumptions
+dimensions --> model_comb
+dimensions --> discriminative_generative
+dimensions --> theoretical_guarantees
+dimensions --> predictability_interpretability
 ```
+
+We will mention those different dimensions later in our discussion of different forecasting models. For example, random forest is an ensemble method, which we will discuss in detail later.

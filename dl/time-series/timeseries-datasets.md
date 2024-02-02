@@ -1,6 +1,6 @@
 # Time Series Datasets
 
-We list a few useful time series datasets here.
+We list a few useful real-world time series datasets here.
 
 | name | link | descriptions |
 |------|------|--------------|
@@ -8,3 +8,9 @@ We list a few useful time series datasets here.
 | NREL Solar Power | [Website](https://www.nrel.gov/grid/solar-power-data.html) |  |
 | Electricity | [UCI ElectricityLoadDiagrams20112014 Data Set](https://archive.ics.uci.edu/ml/datasets/ElectricityLoadDiagrams20112014) |  |
 | PEMS | [Caltrans PeMS](https://pems.dot.ca.gov/?dnode=Clearinghouse) |  |
+
+Apart from real-world data, we also use synthetic data to demonstrate time series analysis and forecasting. The following are some synthetic time series datasets.
+
+| name | link | descriptions |
+| ---- | ---- | ------------ |
+| Chaotic Systems | [williamgilpin/dysts](https://github.com/williamgilpin/dysts) |  [williamgilpin/dysts](https://github.com/williamgilpin/dysts)  |
