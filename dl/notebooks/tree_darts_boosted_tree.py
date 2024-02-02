@@ -1,7 +1,7 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py:light
+#     formats: ipynb,py
 #     text_representation:
 #       extension: .py
 #       format_name: light
@@ -10,7 +10,7 @@
 #   kernelspec:
 #     display_name: deep-learning
 #     language: python
-#     name: deep-learning
+#     name: python3
 # ---
 
 # + [markdown] id="nBR1ou1dwYGl"
@@ -18,13 +18,12 @@
 #
 # In this notebook, we explore some basic ideas of how to forecast using trees with the help of the package called [Darts](https://github.com/unit8co/darts).
 
+# + id="IyjC2kJDwYGn"
 from typing import Callable, Dict, List
 
 import darts.utils as du
 import matplotlib.pyplot as plt
 import numpy as np
-
-# + id="IyjC2kJDwYGn"
 import pandas as pd
 import seaborn as sns
 from darts import TimeSeries, metrics
