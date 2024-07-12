@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: deep-learning
 #     language: python
@@ -211,4 +211,3 @@ gif_writer = animation.PillowWriter(fps=5, metadata=dict(artist="Lei Ma"), bitra
 
 ani.save("results/pendulum_dataset/delayed_embedding_animation.gif", writer=gif_writer)
 # ani.save("results/pendulum_dataset/delayed_embedding_animation.mp4")
-# -
