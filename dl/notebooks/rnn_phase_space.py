@@ -18,7 +18,6 @@
 
 from functools import cached_property
 
-import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 
 # +
