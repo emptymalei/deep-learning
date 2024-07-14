@@ -19,14 +19,10 @@
 from functools import cached_property
 
 import matplotlib.pyplot as plt
-
-# +
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
 import seaborn as sns
-
-# -
 
 # ## RNN
 
@@ -196,4 +192,3 @@ for idx, i in enumerate(experiments_2d):
     )
 
 plt.legend()
-# -
