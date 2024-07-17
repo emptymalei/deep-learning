@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "ts_dl_utils", from = "dl/notebooks/"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "3.10.14"
 mkdocs-material = "^9.4.10"
 mkdocs-autorefs = "^0.5.0"
 mkdocstrings = "^0.23.0"
