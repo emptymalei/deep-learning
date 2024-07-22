@@ -1,9 +1,12 @@
+from functools import cached_property
 from typing import Tuple
 
+import lightning as L
 import numpy as np
 import pandas as pd
+import torch
 from loguru import logger
-from torch.utils.data import Dataset
+from torch.utils.data import DataLoader, Dataset
 
 
 class DataFrameDataset(Dataset):
@@ -96,3 +99,104 @@ class DataFrameDataset(Dataset):
 
     def __len__(self) -> int:
         return self.length
+
+
+class DataFrameDataModule(L.LightningDataModule):
+    def __init__(
+        self,
+        history_length: int,
+        horizon: int,
+        dataframe: pd.DataFrame,
+        gap: int = 0,
+        test_fraction: float = 0.3,
+        val_fraction: float = 0.1,
+        batch_size: int = 32,
+        num_workers: int = 0,
+    ):
+        super().__init__()
+        self.history_length = history_length
+        self.horizon = horizon
+        self.batch_size = batch_size
+        self.dataframe = dataframe
+        self.gap = gap
+        self.test_fraction = test_fraction
+        self.val_fraction = val_fraction
+        self.num_workers = num_workers
+
+        self.train_dataset, self.val_dataset = self.split_train_val(
+            self.train_val_dataset
+        )
+
+    @cached_property
+    def df_length(self):
+        return len(self.dataframe)
+
+    @cached_property
+    def df_test_length(self):
+        return int(self.df_length * self.test_fraction)
+
+    @cached_property
+    def df_train_val_length(self):
+        return self.df_length - self.df_test_length
+
+    @cached_property
+    def train_val_dataframe(self):
+        return self.dataframe.iloc[: self.df_train_val_length]
+
+    @cached_property
+    def test_dataframe(self):
+        return self.dataframe.iloc[self.df_train_val_length :]
+
+    @cached_property
+    def train_val_dataset(self):
+        return DataFrameDataset(
+            dataframe=self.train_val_dataframe,
+            history_length=self.history_length,
+            horizon=self.horizon,
+            gap=self.gap,
+        )
+
+    @cached_property
+    def test_dataset(self):
+        return DataFrameDataset(
+            dataframe=self.test_dataframe,
+            history_length=self.history_length,
+            horizon=self.horizon,
+            gap=self.gap,
+        )
+
+    def split_train_val(self, dataset: Dataset):
+        return torch.utils.data.random_split(
+            dataset, [1 - self.val_fraction, self.val_fraction]
+        )
+
+    def train_dataloader(self):
+        return DataLoader(
+            dataset=self.train_dataset,
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=self.num_workers,
+            persistent_workers=True if self.num_workers > 0 else False,
+        )
+
+    def test_dataloader(self):
+        return DataLoader(
+            dataset=self.test_dataset,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+        )
+
+    def val_dataloader(self):
+        return DataLoader(
+            dataset=self.val_dataset,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+            persistent_workers=True if self.num_workers > 0 else False,
+        )
+
+    def predict_dataloader(self):
+        return DataLoader(
+            dataset=self.test_dataset, batch_size=len(self.test_dataset), shuffle=False
+        )
