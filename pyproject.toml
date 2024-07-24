@@ -34,6 +34,7 @@ seaborn = "^0.12.2"
 
 [tool.poetry.group.data.dependencies]
 eerily = "^0.2.1"
+ts-bolt = "0.0.6"
 
 
 [tool.poetry.group.torch.dependencies]

@@ -26,9 +26,9 @@ import pandas as pd
 import torch
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 from torch import nn
-from ts_dl_utils.datasets.dataset import DataFrameDataModule
-from ts_dl_utils.evaluation.evaluator import Evaluator
-from ts_dl_utils.naive_forecasters.last_observation import LastObservationForecaster
+from ts_bolt.datamodules.pandas import DataFrameDataModule
+from ts_bolt.evaluation.evaluator import Evaluator
+from ts_bolt.naive_forecasters.last_observation import LastObservationForecaster
 
 # ## Data
 #
@@ -256,6 +256,15 @@ plt.legend()
 evaluator_1_step.metrics(predictions_1_step, pdm_1_step.predict_dataloader())
 
 evaluator_1_step.metrics(lobs_1_step_predictions, pdm_1_step.predict_dataloader())
+
+pd.merge(
+    evaluator_1_step.metrics(predictions_1_step, pdm_1_step.predict_dataloader()),
+    evaluator_1_step.metrics(lobs_1_step_predictions, pdm_1_step.predict_dataloader()),
+    how="inner",
+    left_index=True,
+    right_index=True,
+    suffixes=["_rnn", "_last_obs"],
+)
 
 # ## Real Life
 #
