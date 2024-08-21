@@ -14,6 +14,8 @@
 
 # # History of Transformer for Forecasting
 
+# **This is a temporary notebook to produce figures for my book.**
+
 import datetime
 import json
 
