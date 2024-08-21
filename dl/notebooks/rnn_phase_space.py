@@ -110,36 +110,114 @@ class RNNState:
                 "t": np.array(t_steps),
                 "h": np.array(h_t),
                 "dh": np.array(h_t_delta),
+                "z": np.pad(z, (1, 0), constant_values=0),
             },
             **{k: [v] * total_time_steps for k, v in self._metadata.items()},
         }
 
 
+# +
+def rnn_inference(rnn_params: list[dict], z: npt.ArrayLike) -> pd.DataFrame:
+    """
+    Run through a list of parameters and return the states
+
+    :param rnn_params: list of RNN parameters
+    :param z: input time series values
+    """
+    df_experiments = pd.DataFrame()
+    for p in rnn_params:
+        df_experiments = pd.concat(
+            [df_experiments, pd.DataFrame(RNNState(**p).states(z=z))]
+        )
+
+    return df_experiments
+
+
+def rnn_inference_1d_visual(dataframe_experiment: pd.DataFrame, title: str) -> None:
+    """
+    Visualize RNN inference experiments
+
+    :param dataframe_experiment: dataframe from the inference experiment
+    :param title: title of the figure
+    """
+
+    z = dataframe_experiment.loc[
+        dataframe_experiment.experiment == dataframe_experiment.experiment.iloc[0]
+    ].z
+
+    _, ax = plt.subplots(figsize=(10, 6.18))
+
+    sns.lineplot(
+        dataframe_experiment,
+        x="t",
+        y="h",
+        hue="w_h",
+        size="initial_state",
+        linestyle="dashed",
+        ax=ax,
+    )
+
+    ax_right = ax.twinx()
+
+    sns.lineplot(
+        x=np.arange(1, len(z) + 1),
+        y=z,
+        linestyle="dashed",
+        color="gray",
+        label=r"Input: $z$",
+        ax=ax_right,
+    )
+
+    ax_right.set_ylabel(r"$z$")
+    ax.legend(loc=1)
+    ax.set_title(title)
+    ax.legend(loc=4)
+
+
+# -
+
 # ## One Dimensional State
 
 z_1 = np.linspace(0, 10, 101)
-# z_1 = np.ones(10) * 0.5
-# z_1 = np.random.rand(100)
+# z_1 =
+z_1 = np.random.rand(20)
+# z_1 = np.sin(np.linspace(0, 10, 51))
 
-# +
 experiment_params = [
-    {"w_h": 0.5, "w_i": 0.5, "b": 0, "h_init": 0.5},
-    {"w_h": 1.5, "w_i": 1.5, "b": 0, "h_init": 0.5},
-    {"w_h": 0.5, "w_i": 0.5, "b": 0, "h_init": 1.5},
-    {"w_h": 1.5, "w_i": 1.5, "b": 0, "h_init": 1.5},
+    {"w_h": 0.5, "w_i": 1, "b": 0, "h_init": 0.1},
+    {"w_h": 1.5, "w_i": 1, "b": 0, "h_init": 0.1},
+    {"w_h": 0.5, "w_i": 1, "b": 0, "h_init": 2},
+    {"w_h": 1.5, "w_i": 1, "b": 0, "h_init": 2},
 ]
 
-df_1_experiments = pd.DataFrame()
-for p in experiment_params:
-    df_1_experiments = pd.concat(
-        [df_1_experiments, pd.DataFrame(RNNState(**p).states(z=z_1))]
-    )
+rnn_inference_1d_visual(
+    dataframe_experiment=rnn_inference(
+        rnn_params=experiment_params, z=np.ones(10) * 0.5
+    ),
+    title="RNN Inference for Long Forecast Horizon (Constant Input)",
+)
 
-# +
-_, ax = plt.subplots(figsize=(10, 6.18))
+rnn_inference_1d_visual(
+    dataframe_experiment=rnn_inference(
+        rnn_params=experiment_params, z=np.linspace(0, 10, 101)
+    ),
+    title="RNN Inference for Long Forecast Horizon (Linear Input)",
+)
 
-sns.lineplot(df_1_experiments, x="t", y="h", hue="experiment")
-# -
+rnn_inference_1d_visual(
+    dataframe_experiment=rnn_inference(
+        rnn_params=experiment_params, z=np.random.rand(20)
+    ),
+    title="RNN Inference for Long Forecast Horizon (Random Input)",
+)
+
+rnn_inference_1d_visual(
+    dataframe_experiment=rnn_inference(
+        rnn_params=experiment_params, z=np.sin(np.linspace(0, 10, 51))
+    ),
+    title="RNN Inference for Long Forecast Horizon (Sin Input)",
+)
+
 
 # ### Two dimensional state
 

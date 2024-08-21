@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.2
 #   kernelspec:
-#     display_name: deep-learning
+#     display_name: .venv
 #     language: python
-#     name: deep-learning
+#     name: python3
 # ---
 
 # # RNN for Univariate Time Series Forecasting
@@ -20,7 +20,6 @@
 import dataclasses
 
 # +
-import math
 from functools import cached_property
 from typing import Dict, List, Tuple
 

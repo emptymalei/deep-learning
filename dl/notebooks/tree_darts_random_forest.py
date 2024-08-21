@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: deep-learning
 #     language: python
@@ -22,8 +22,6 @@ from typing import Callable, Dict, List
 import darts.utils as du
 import matplotlib.pyplot as plt
 import numpy as np
-
-# +
 import pandas as pd
 import seaborn as sns
 from darts import TimeSeries, metrics
@@ -31,8 +29,6 @@ from darts.dataprocessing.transformers import BoxCox
 from darts.datasets import AirPassengersDataset
 from darts.models import LightGBMModel, NaiveDrift, RandomForest
 from sklearn.linear_model import LinearRegression
-
-# -
 
 # ## Following the Darts Official Tutorial
 #
@@ -358,4 +354,3 @@ metric_chart_grid.map(
 # for axes in metric_chart_grid.axes.flat:
 #     _ = axes.set_xticklabels(axes.get_xticklabels(), rotation=90)
 # metric_chart_grid.fig.tight_layout(w_pad=1)
-# -

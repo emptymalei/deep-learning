@@ -65,8 +65,8 @@ class TSRNNParams:
     :param num_layers: number of units stacked
     """
 
-    input_size: int
     hidden_size: int
+    input_size: int = 1
     num_layers: int = 1
 
 
@@ -84,8 +84,6 @@ class TSRNN(nn.Module):
         self.history_length = history_length
         self.horizon = horizon
 
-        self.regulate_input = nn.Linear(self.history_length, self.rnn_params.input_size)
-
         self.rnn = nn.RNN(
             input_size=self.rnn_params.input_size,
             hidden_size=self.rnn_params.hidden_size,
@@ -100,7 +98,7 @@ class TSRNN(nn.Module):
         return dataclasses.asdict(self.rnn_params)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.regulate_input(x)
+        # x = self.regulate_input(x)
         x, _ = self.rnn(x)
 
         return self.regulate_output(x)
@@ -181,7 +179,7 @@ pdm_1_step = DataFrameDataModule(
 # #### LightningModule
 
 # +
-ts_rnn_params_1_step = TSRNNParams(input_size=96, hidden_size=64, num_layers=1)
+ts_rnn_params_1_step = TSRNNParams(input_size=1, hidden_size=64, num_layers=1)
 
 ts_rnn_1_step = TSRNN(
     history_length=history_length_1_step,
