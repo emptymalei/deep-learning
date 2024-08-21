@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -17,13 +17,13 @@
 # # Forecast Reconciliation
 #
 # This is a notebook for the section [Hierarchical Time Series Reconciliation](https://dl.leima.is/time-series/timeseries-hierarchical.reconciliation/).
-
-import re
-
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-import seaborn as sns
+#
+# import re
+#
+# import matplotlib.pyplot as plt
+# import numpy as np
+# import pandas as pd
+# import seaborn as sns
 
 # + colab={"base_uri": "https://localhost:8080/"} id="Dv8Ua7IlbgcP" outputId="e1d62a51-78c6-4bfe-e7bf-717771baaf9c"
 import sympy as sp

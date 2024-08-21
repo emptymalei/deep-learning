@@ -1,12 +1,12 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py
+#     formats: ipynb,py:light
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: deep-learning
 #     language: python
@@ -479,4 +479,3 @@ for label in ax.yaxis.get_ticklabels()[::2]:
 
 
 ax.set_title("Upper Limit of Generalization Error of Random Forest")
-# -
