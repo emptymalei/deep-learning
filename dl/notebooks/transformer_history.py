@@ -34,8 +34,6 @@ data.keys()
 
 data["metadata"]
 
-data["items"][0]
-
 # +
 labels = {
     i["id"]: {
@@ -49,8 +47,15 @@ labels = {
 }
 
 labels
+# -
+
+datetime.datetime.strptime(
+    data["items"][0]["publicationDate"], "%Y-%m-%dT%H:%M:%SZ"
+).toordinal()
 
 # +
+rng = np.random.default_rng(42)
+
 coordinates = {
     i["id"]: np.array(
         [
@@ -59,13 +64,13 @@ coordinates = {
                     i["publicationDate"], "%Y-%m-%dT%H:%M:%SZ"
                 ).toordinal()
             ),
-            np.log(1 + i.get("forwardEdgeCount", 0)),
+            np.log(1 + i.get("forwardEdgeCount", 0)) * (1 + rng.random() * 0.2)
+            if i.get("forwardEdgeCount", 0) > 50
+            else np.log(1 + i.get("forwardEdgeCount", 0)) + rng.random() * 3,
         ]
     )
     for i in data["items"]
 }
-
-coordinates
 # -
 
 G = nx.Graph()
@@ -79,18 +84,29 @@ for i in data["items"]:
         except ValueError as e:
             print(f"{b}: {e}")
 
-# +
-fig, ax = plt.subplots(figsize=(20, 10))
+transformer_origin_id = 261105339
 
-node_sizes = [30 * np.log(1 + G.nodes[node]["forwardEdgeCount"]) for node in G.nodes()]
+# +
+fig, ax = plt.subplots(figsize=(25, 25))
+
+node_sizes = [
+    10 + 30 * np.log(1 + G.nodes[node]["forwardEdgeCount"]) for node in G.nodes()
+]
 
 nx.draw(G, pos=coordinates, ax=ax, edge_color="lightgray", node_size=node_sizes)
 for node, (x, y) in coordinates.items():
     plt.text(
         x,
-        y + 0.5,
+        y + 0.1,
         f'{labels[node]["first_author_last"]} {labels[node]["year"]}',
         horizontalalignment="center",
     )
+
+plt.text(
+    coordinates[transformer_origin_id][0],
+    coordinates[transformer_origin_id][1] - 0.3,
+    "Attention is All You Need",
+    horizontalalignment="center",
+)
 
 # -
