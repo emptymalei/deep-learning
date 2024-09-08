@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.2
 #   kernelspec:
-#     display_name: deep-learning
+#     display_name: .venv
 #     language: python
-#     name: deep-learning
+#     name: python3
 # ---
 
 # # Transformer for Univariate Time Series Forecasting
@@ -21,8 +21,6 @@ import dataclasses
 
 # +
 import math
-from functools import cached_property
-from typing import Dict, List, Tuple
 
 import lightning as L
 import matplotlib.pyplot as plt
@@ -30,9 +28,7 @@ import numpy as np
 import pandas as pd
 import torch
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
-from loguru import logger
 from torch import nn
-from torch.utils.data import DataLoader, Dataset
 from ts_dl_utils.datasets.pendulum import Pendulum, PendulumDataModule
 from ts_dl_utils.evaluation.evaluator import Evaluator
 from ts_dl_utils.naive_forecasters.last_observation import LastObservationForecaster
@@ -58,9 +54,9 @@ from ts_dl_utils.naive_forecasters.last_observation import LastObservationForeca
 # and $g$ being the surface gravity.
 
 
-pen = Pendulum(length=100)
+pen = Pendulum(length=10000)
 
-df = pd.DataFrame(pen(10, 400, initial_angle=1, beta=0.001))
+df = pd.DataFrame(pen(100, 400, initial_angle=1, beta=0.000001))
 
 # Since the damping constant is very small, the data generated is mostly a sin wave.
 
@@ -133,10 +129,7 @@ class TSTransformer(nn.Module):
         self.history_length = history_length
         self.horizon = horizon
 
-        self.regulate_input = nn.Linear(
-            self.history_length, self.transformer_params.d_model
-        )
-        self.regulate_output = nn.Linear(self.transformer_params.d_model, self.horizon)
+        self.embedding = nn.Linear(1, self.transformer_params.d_model)
 
         encoder_layer = nn.TransformerEncoderLayer(
             d_model=self.transformer_params.d_model,
@@ -147,16 +140,22 @@ class TSTransformer(nn.Module):
             encoder_layer, num_layers=self.transformer_params.num_encoder_layers
         )
 
+        self.reverse_embedding = nn.Linear(self.transformer_params.d_model, 1)
+
+        self.decoder = nn.Linear(self.history_length, self.horizon)
+
     @property
     def transformer_config(self):
         return dataclasses.asdict(self.transformer_params)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.regulate_input(x)
+        x = self.embedding(x)
 
         encoder_state = self.encoder(x)
 
-        return self.regulate_output(encoder_state)
+        decoder_in = self.reverse_embedding(encoder_state).squeeze(-1)
+
+        return self.decoder(decoder_in)
 
 
 # -
@@ -171,7 +170,7 @@ class TSTransformer(nn.Module):
 history_length_1_step = 100
 horizon_1_step = 1
 
-gap = 10
+gap = 0
 # -
 
 
@@ -192,7 +191,7 @@ class TransformerForecaster(L.LightningModule):
 
     def training_step(self, batch, batch_idx):
         x, y = batch
-        x = x.squeeze(-1).type(self.dtype)
+        # x = x.squeeze(-1).type(self.dtype)
         y = y.squeeze(-1).type(self.dtype)
 
         y_hat = self.transformer(x)
@@ -203,7 +202,7 @@ class TransformerForecaster(L.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
-        x = x.squeeze(-1).type(self.dtype)
+        # x = x.squeeze(-1).type(self.dtype)
         y = y.squeeze(-1).type(self.dtype)
 
         y_hat = self.transformer(x)
@@ -214,14 +213,14 @@ class TransformerForecaster(L.LightningModule):
 
     def predict_step(self, batch, batch_idx):
         x, y = batch
-        x = x.squeeze(-1).type(self.dtype)
+        # x = x.squeeze(-1).type(self.dtype)
         y = y.squeeze(-1).type(self.dtype)
 
         y_hat = self.transformer(x)
         return x, y_hat
 
     def forward(self, x):
-        x = x.squeeze(-1).type(self.dtype)
+        # x = x.squeeze(-1).type(self.dtype)
         return x, self.transformer(x)
 
 
@@ -275,6 +274,19 @@ trainer_1_step = L.Trainer(
 
 # #### Fitting
 
+demo_x = list(pdm_1_step.train_dataloader())[0][0].type(
+    transformer_forecaster_1_step.dtype
+)
+demo_x.shape
+
+nn.Linear(
+    1,
+    ts_transformer_1_step.transformer_params.d_model,
+    dtype=transformer_forecaster_1_step.dtype,
+)(demo_x).shape
+
+ts_transformer_1_step.encoder(ts_transformer_1_step.embedding(demo_x)).shape
+
 trainer_1_step.fit(model=transformer_forecaster_1_step, datamodule=pdm_1_step)
 
 # #### Retrieving Predictions
@@ -299,7 +311,7 @@ lobs_1_step_predictions = trainer_naive_1_step.predict(
 evaluator_1_step = Evaluator(step=0)
 
 # +
-fig, ax = plt.subplots(figsize=(10, 6.18))
+fig, ax = plt.subplots(figsize=(50, 6.18))
 
 ax.plot(
     evaluator_1_step.y_true(dataloader=pdm_1_step.predict_dataloader()),
@@ -312,13 +324,46 @@ ax.plot(evaluator_1_step.y(predictions_1_step), "r--", label="predictions")
 ax.plot(evaluator_1_step.y(lobs_1_step_predictions), "b-.", label="naive predictions")
 
 plt.legend()
+
+# +
+fig, ax = plt.subplots(figsize=(10, 6.18))
+
+inspection_slice_length = 400
+
+ax.plot(
+    evaluator_1_step.y_true(dataloader=pdm_1_step.predict_dataloader())[
+        :inspection_slice_length
+    ],
+    "g-",
+    label="truth",
+)
+
+ax.plot(
+    evaluator_1_step.y(predictions_1_step)[:inspection_slice_length],
+    "r--",
+    label="predictions",
+)
+
+ax.plot(
+    evaluator_1_step.y(lobs_1_step_predictions)[:inspection_slice_length],
+    "b-.",
+    label="naive predictions",
+)
+
+plt.legend()
 # -
 
 # To quantify the results, we compute a few metrics.
 
-evaluator_1_step.metrics(predictions_1_step, pdm_1_step.predict_dataloader())
+pd.merge(
+    evaluator_1_step.metrics(predictions_1_step, pdm_1_step.predict_dataloader()),
+    evaluator_1_step.metrics(lobs_1_step_predictions, pdm_1_step.predict_dataloader()),
+    how="left",
+    left_index=True,
+    right_index=True,
+    suffixes=["_transformer", "_naive"],
+)
 
-evaluator_1_step.metrics(lobs_1_step_predictions, pdm_1_step.predict_dataloader())
 
 # ## Forecasting (horizon=3)
 
