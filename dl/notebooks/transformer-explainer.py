@@ -17,14 +17,10 @@
 import math
 
 import matplotlib.pyplot as plt
-
-# +
 import numpy as np
 import scipy as sp
 import torch
 from torch import nn
-
-# -
 
 # ## Examples
 
@@ -362,5 +358,3 @@ i_de = DataEmbedding_inverted(10, hidden_size)
 i_enc_out = i_de(x, None)
 
 i_enc_out.shape
-
-# -
