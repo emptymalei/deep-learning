@@ -48,6 +48,13 @@ torch-tb-profiler = "^0.4.3"
 
 [tool.poetry.group.nixtla.dependencies]
 neuralforecast = "^1.7.4"
+mlforecast = "^0.13.4"
+statsforecast = "^1.7.6"
+datasetsforecast = "^0.0.8"
+
+
+[tool.poetry.group.huggingface.dependencies]
+transformers = "^4.44.2"
 
 [build-system]
 requires = ["poetry-core"]
