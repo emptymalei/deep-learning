@@ -14,25 +14,33 @@
 
 # # Transformer Forecaster with neuralforecast
 
+import matplotlib.pyplot as plt
+
+# +
 import pandas as pd
 import seaborn as sns
+
+sns.set_theme(context="paper", style="ticks", palette="colorblind")
+# -
 
 # ## Load Data
 
 # +
-data_source = "https://gist.githubusercontent.com/emptymalei/921a624ce44e6a60bb6ec637b195ceaf/raw/4cb52fa20dcc598e16891eae2749fd96a97750e9/sunspot.csv"
+data_source = "https://gist.githubusercontent.com/emptymalei/15e548f483e896be0afc99e49dd6fbc9/raw/8384d82cdaaed4d9b0a555888efb70d79911dd2a/sunspot_nixtla.csv"
 
-df = (
-    pd.read_csv(data_source, parse_dates=["date"])
-    .rename(columns={"date": "ds", "avg_sunspot_area": "y"})
-    .assign(unique_id=1)
-)
+df = pd.read_csv(data_source, parse_dates=["ds"])
 
 # -
 
 df.describe()
 
-df.plot(x="ds", y="y")
+# +
+_, ax = plt.subplots()
+sns.lineplot(df, x="ds", y="y", ax=ax)
+
+ax.set_title("Sunspot Time Series")
+ax.set_ylabel("Sunspot Number")
+# -
 
 # ## Prepare Data
 
@@ -55,8 +63,47 @@ sf = StatsForecast(models=[AutoARIMA(season_length=12)], freq="YS")
 
 sf.fit(df_train)
 
-df_y_hat_arima = sf.predict(h=horizon, level=[95])
-df_y_hat_arima
+
+def forecast_test(forecaster_pred, df_train, df_test):
+    dfs_pred = []
+    for i in range(len(df_test)):
+        df_pred_input_i = pd.concat([df_train, df_test[:i]])
+        print(df_pred_input_i.ds.max())
+        df_pred_output_i = forecaster_pred(df_pred_input_i)
+        df_pred_output_i["step"] = i
+        dfs_pred.append(df_pred_output_i)
+    df_y_hat = pd.concat(dfs_pred).reset_index(drop=False)
+    return df_y_hat
+
+
+def visualize_predictions(
+    df_train: pd.DataFrame,
+    df_test: pd.DataFrame,
+    df_pred: pd.DataFrame,
+    model_name: str,
+):
+    _, ax = plt.subplots()
+
+    sns.lineplot(df_train, x="ds", y="y", ax=ax)
+
+    sns.lineplot(df_test, x="ds", y="y", color="k", ax=ax)
+
+    sns.lineplot(df_pred, x="ds", y=model_name, hue="step", ax=ax)
+
+    ax.set_title("Sunspot Forecast", fontsize=22)
+    ax.set_ylabel("Sunspot Number", fontsize=20)
+    ax.set_xlabel("Year", fontsize=20)
+    ax.legend(prop={"size": 15})
+    ax.grid()
+
+
+df_y_hat_arima = forecast_test(
+    lambda x: sf.predict(h=horizon, level=[95]), df_train=df_train, df_test=df_test
+)
+
+visualize_predictions(
+    df_train=df_train, df_test=df_test, df_pred=df_y_hat_arima, model_name="AutoARIMA"
+)
 
 # +
 import matplotlib.pyplot as plt
@@ -83,55 +130,7 @@ ax.grid()
 # ## Transformers
 
 from neuralforecast import NeuralForecast
-from neuralforecast.auto import AutoVanillaTransformer
 from neuralforecast.models import NBEATS, NHITS, VanillaTransformer, iTransformer
-
-# +
-# vt_config = dict(
-#     max_steps=1, val_check_steps=1, input_size=12, hidden_size=8
-# )
-auto_vt_model = AutoVanillaTransformer(h=horizon, backend="optuna")
-
-nf_auto = NeuralForecast(models=[auto_vt_model], freq="YS")
-# -
-
-nf_auto.fit(df=df_train, val_size=3)
-
-results = nf_auto.models[0].results.trials_dataframe()
-results.drop(columns="user_attrs_ALL_PARAMS")
-
-
-df_y_hat_optuna = nf_auto.predict().reset_index()
-df_y_hat_optuna.head()
-
-# +
-import matplotlib.pyplot as plt
-
-fig, ax = plt.subplots(1, 1, figsize=(20, 7))
-df_chart = df_test.merge(df_y_hat_optuna, how="left", on=["unique_id", "ds"])
-df_chart = pd.concat([df_train, df_chart]).set_index("ds")
-
-df_chart[
-    [
-        "y",
-        "AutoVanillaTransformer",
-    ]
-].plot(ax=ax, linewidth=2)
-
-ax.set_title("Forecast", fontsize=22)
-ax.set_ylabel("Sunspot Area", fontsize=20)
-ax.set_xlabel("Timestamp [t]", fontsize=20)
-ax.legend(prop={"size": 15})
-ax.grid()
-# -
-
-nf_auto.models[0].results.best_trial.params
-
-# +
-# nf_auto.save("lightning_logs/nf_auto_vanilla_transformer_sunspot")
-# -
-
-# ## Transformers
 
 models = [
     VanillaTransformer(

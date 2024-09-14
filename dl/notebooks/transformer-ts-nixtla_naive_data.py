@@ -125,4 +125,3 @@ ax.set_ylabel("Monthly Passengers", fontsize=20)
 ax.set_xlabel("Timestamp [t]", fontsize=20)
 ax.legend(prop={"size": 15})
 ax.grid()
-# -

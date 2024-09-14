@@ -30,7 +30,7 @@ jupytext = "^1.15.2"
 
 
 [tool.poetry.group.visualization.dependencies]
-seaborn = "^0.12.2"
+seaborn = "^0.13.2"
 
 
 [tool.poetry.group.data.dependencies]
