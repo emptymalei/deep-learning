@@ -228,5 +228,3 @@ evaluation_df = accuracy(
 )
 
 evaluation_df.head()
-
-# -
