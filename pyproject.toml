@@ -30,7 +30,7 @@ jupytext = "^1.15.2"
 
 
 [tool.poetry.group.visualization.dependencies]
-seaborn = "^0.12.2"
+seaborn = "^0.13.2"
 
 
 [tool.poetry.group.data.dependencies]
@@ -43,6 +43,18 @@ lightning = "^2.1.2"
 tensorboard = "^2.15.1"
 torchmetrics = "^1.2.0"
 torchdyn = "^1.0.6"
+torch-tb-profiler = "^0.4.3"
+
+
+[tool.poetry.group.nixtla.dependencies]
+neuralforecast = "^1.7.4"
+mlforecast = "^0.13.4"
+statsforecast = "^1.7.6"
+datasetsforecast = "^0.0.8"
+
+
+[tool.poetry.group.huggingface.dependencies]
+transformers = "^4.44.2"
 
 [build-system]
 requires = ["poetry-core"]
