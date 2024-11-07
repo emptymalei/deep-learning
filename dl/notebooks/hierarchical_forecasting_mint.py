@@ -176,7 +176,6 @@ fig.show()
 # + id="nmCgX4OWAud0"
 
 
-
 # + [markdown] id="C416Q_Zn7sJD"
 # ## Load data
 #
@@ -470,4 +469,3 @@ ts_test[ca_columns].plot()
 reconciliator_mint_cov.transform(ts_pred)[ca_columns].plot(linestyle="--")
 
 # + id="uTOQnpE9Vdt7"
-

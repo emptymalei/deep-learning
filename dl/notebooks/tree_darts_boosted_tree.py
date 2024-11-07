@@ -301,7 +301,6 @@ pred_gbdt_linear_tree_ap.plot(label="Linear Tree Prediction", linestyle="--")
 # + id="HHAeUz4zSs-5"
 
 
-
 # + [markdown] id="76W-UUf4wYGt"
 # ### Metrics
 
@@ -381,4 +380,3 @@ metric_chart_grid.map(
 # metric_chart_grid.fig.tight_layout(w_pad=1)
 
 # + id="tsk_WtuCW2JD"
-
