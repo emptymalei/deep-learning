@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.2
 #   kernelspec:
-#     display_name: deep-learning
+#     display_name: .venv
 #     language: python
-#     name: deep-learning
+#     name: python3
 # ---
 
 # # Transformer for Univariate Time Series Forecasting
@@ -21,8 +21,6 @@ import dataclasses
 
 # +
 import math
-from functools import cached_property
-from typing import Dict, List, Tuple
 
 import lightning as L
 import matplotlib.pyplot as plt
@@ -30,9 +28,7 @@ import numpy as np
 import pandas as pd
 import torch
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
-from loguru import logger
 from torch import nn
-from torch.utils.data import DataLoader, Dataset
 from ts_dl_utils.datasets.pendulum import Pendulum, PendulumDataModule
 from ts_dl_utils.evaluation.evaluator import Evaluator
 from ts_dl_utils.naive_forecasters.last_observation import LastObservationForecaster
@@ -58,9 +54,9 @@ from ts_dl_utils.naive_forecasters.last_observation import LastObservationForeca
 # and $g$ being the surface gravity.
 
 
-pen = Pendulum(length=100)
+pen = Pendulum(length=10000)
 
-df = pd.DataFrame(pen(10, 400, initial_angle=1, beta=0.001))
+df = pd.DataFrame(pen(100, 400, initial_angle=1, beta=0.000001))
 
 # Since the damping constant is very small, the data generated is mostly a sin wave.
 
@@ -82,7 +78,9 @@ df.plot(x="t", y="theta", ax=ax)
 # +
 @dataclasses.dataclass
 class TSTransformerParams:
-    """A dataclass to be served as our parameters for the model."""
+    """A dataclass that contains all
+    the parameters for the transformer model.
+    """
 
     d_model: int = 512
     nhead: int = 8
@@ -91,13 +89,24 @@ class TSTransformerParams:
 
 
 class PositionalEncoding(nn.Module):
-    """Positional encoding for our transformer.
+    """Positional encoding to be added to
+    input embedding.
 
-    We borrowed it from https://pytorch.org/tutorials/beginner/transformer_tutorial.html
+    :param d_model: hidden dimension of the encoder
+    :param dropout: rate of dropout
+    :param max_len: maximum length of our positional
+        encoder. The encoder can not encode sequence
+        length longer than max_len.
     """
 
-    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000):
+    def __init__(
+        self,
+        d_model: int,
+        dropout: float = 0.1,
+        max_len: int = 5000,
+    ):
         super().__init__()
+        self.max_len = max_len
         self.dropout = nn.Dropout(p=dropout)
 
         position = torch.arange(max_len).unsqueeze(1)
@@ -111,9 +120,12 @@ class PositionalEncoding(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
-        :param x: Tensor, shape `[seq_len, batch_size, embedding_dim]`
+        :param x: input embedded time series,
+            shape `[batch_size, seq_len, embedding_dim]`
         """
-        x = x + self.pe[: x.size(0)]
+        history_length = x.size(1)
+        x = x + self.pe[:history_length]
+
         return self.dropout(x)
 
 
@@ -122,21 +134,25 @@ class TSTransformer(nn.Module):
 
     :param history_length: the length of the input history.
     :param horizon: the number of steps to be forecasted.
-    :param transformer_params: the parameters for the transformer.
+    :param transformer_params: all the parameters.
     """
 
     def __init__(
-        self, history_length: int, horizon: int, transformer_params: TSTransformerParams
+        self,
+        history_length: int,
+        horizon: int,
+        transformer_params: TSTransformerParams,
     ):
         super().__init__()
         self.transformer_params = transformer_params
         self.history_length = history_length
         self.horizon = horizon
 
-        self.regulate_input = nn.Linear(
-            self.history_length, self.transformer_params.d_model
+        self.embedding = nn.Linear(1, self.transformer_params.d_model)
+
+        self.positional_encoding = PositionalEncoding(
+            d_model=self.transformer_params.d_model
         )
-        self.regulate_output = nn.Linear(self.transformer_params.d_model, self.horizon)
 
         encoder_layer = nn.TransformerEncoderLayer(
             d_model=self.transformer_params.d_model,
@@ -147,16 +163,28 @@ class TSTransformer(nn.Module):
             encoder_layer, num_layers=self.transformer_params.num_encoder_layers
         )
 
+        self.reverse_embedding = nn.Linear(self.transformer_params.d_model, 1)
+
+        self.decoder = nn.Linear(self.history_length, self.horizon)
+
     @property
-    def transformer_config(self):
+    def transformer_config(self) -> dict:
+        """all the param in dict format"""
         return dataclasses.asdict(self.transformer_params)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.regulate_input(x)
+        """
+        :param x: input historical time series,
+            shape `[batch_size, seq_len, n_var]`
+        """
+        x = self.embedding(x)
+        x = self.positional_encoding(x)
 
         encoder_state = self.encoder(x)
 
-        return self.regulate_output(encoder_state)
+        decoder_in = self.reverse_embedding(encoder_state).squeeze(-1)
+
+        return self.decoder(decoder_in)
 
 
 # -
@@ -171,7 +199,7 @@ class TSTransformer(nn.Module):
 history_length_1_step = 100
 horizon_1_step = 1
 
-gap = 10
+gap = 0
 # -
 
 
@@ -182,17 +210,23 @@ gap = 10
 
 
 class TransformerForecaster(L.LightningModule):
+    """Transformer forecasting training, validation,
+    and prediction all collected in one class.
+
+    :param transformer: pre-defined transformer model
+    """
+
     def __init__(self, transformer: nn.Module):
         super().__init__()
         self.transformer = transformer
 
-    def configure_optimizers(self):
+    def configure_optimizers(self) -> torch.optim.Optimizer:
         optimizer = torch.optim.SGD(self.parameters(), lr=1e-3)
+
         return optimizer
 
-    def training_step(self, batch, batch_idx):
+    def training_step(self, batch: tuple[torch.Tensor], batch_idx: int) -> torch.Tensor:
         x, y = batch
-        x = x.squeeze(-1).type(self.dtype)
         y = y.squeeze(-1).type(self.dtype)
 
         y_hat = self.transformer(x)
@@ -201,27 +235,30 @@ class TransformerForecaster(L.LightningModule):
         self.log_dict({"train_loss": loss}, prog_bar=True)
         return loss
 
-    def validation_step(self, batch, batch_idx):
+    def validation_step(
+        self, batch: tuple[torch.Tensor], batch_idx: int
+    ) -> torch.Tensor:
         x, y = batch
-        x = x.squeeze(-1).type(self.dtype)
         y = y.squeeze(-1).type(self.dtype)
 
         y_hat = self.transformer(x)
 
         loss = nn.functional.mse_loss(y_hat, y)
         self.log_dict({"val_loss": loss}, prog_bar=True)
+
         return loss
 
-    def predict_step(self, batch, batch_idx):
+    def predict_step(
+        self, batch: list[torch.Tensor], batch_idx: int
+    ) -> tuple[torch.Tensor]:
         x, y = batch
-        x = x.squeeze(-1).type(self.dtype)
         y = y.squeeze(-1).type(self.dtype)
 
         y_hat = self.transformer(x)
+
         return x, y_hat
 
-    def forward(self, x):
-        x = x.squeeze(-1).type(self.dtype)
+    def forward(self, x: torch.Tensor) -> tuple[torch.Tensor]:
         return x, self.transformer(x)
 
 
@@ -250,9 +287,12 @@ ts_transformer_1_step = TSTransformer(
 )
 
 ts_transformer_1_step
-# -
 
+# +
 transformer_forecaster_1_step = TransformerForecaster(transformer=ts_transformer_1_step)
+
+transformer_forecaster_1_step
+# -
 
 # #### Trainer
 
@@ -274,6 +314,19 @@ trainer_1_step = L.Trainer(
 # -
 
 # #### Fitting
+
+demo_x = list(pdm_1_step.train_dataloader())[0][0].type(
+    transformer_forecaster_1_step.dtype
+)
+demo_x.shape
+
+nn.Linear(
+    1,
+    ts_transformer_1_step.transformer_params.d_model,
+    dtype=transformer_forecaster_1_step.dtype,
+)(demo_x).shape
+
+ts_transformer_1_step.encoder(ts_transformer_1_step.embedding(demo_x)).shape
 
 trainer_1_step.fit(model=transformer_forecaster_1_step, datamodule=pdm_1_step)
 
@@ -299,7 +352,7 @@ lobs_1_step_predictions = trainer_naive_1_step.predict(
 evaluator_1_step = Evaluator(step=0)
 
 # +
-fig, ax = plt.subplots(figsize=(10, 6.18))
+fig, ax = plt.subplots(figsize=(50, 6.18))
 
 ax.plot(
     evaluator_1_step.y_true(dataloader=pdm_1_step.predict_dataloader()),
@@ -312,13 +365,47 @@ ax.plot(evaluator_1_step.y(predictions_1_step), "r--", label="predictions")
 ax.plot(evaluator_1_step.y(lobs_1_step_predictions), "b-.", label="naive predictions")
 
 plt.legend()
+
+# +
+fig, ax = plt.subplots(figsize=(10, 6.18))
+
+inspection_slice_length = 200
+
+ax.plot(
+    evaluator_1_step.y_true(dataloader=pdm_1_step.predict_dataloader())[
+        :inspection_slice_length
+    ],
+    "g-",
+    label="truth",
+)
+
+ax.plot(
+    evaluator_1_step.y(predictions_1_step)[:inspection_slice_length],
+    "r--",
+    label="predictions",
+)
+
+ax.plot(
+    evaluator_1_step.y(lobs_1_step_predictions)[:inspection_slice_length],
+    "b-.",
+    label="naive predictions",
+)
+
+plt.legend()
 # -
 
 # To quantify the results, we compute a few metrics.
 
-evaluator_1_step.metrics(predictions_1_step, pdm_1_step.predict_dataloader())
+pd.merge(
+    evaluator_1_step.metrics(predictions_1_step, pdm_1_step.predict_dataloader()),
+    evaluator_1_step.metrics(lobs_1_step_predictions, pdm_1_step.predict_dataloader()),
+    how="left",
+    left_index=True,
+    right_index=True,
+    suffixes=["_transformer", "_naive"],
+)
 
-evaluator_1_step.metrics(lobs_1_step_predictions, pdm_1_step.predict_dataloader())
+# Here SMAPE is better because of better forecasts for larger values
 
 # ## Forecasting (horizon=3)
 
