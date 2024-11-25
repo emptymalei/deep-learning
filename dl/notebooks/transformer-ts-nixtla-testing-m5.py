@@ -22,13 +22,11 @@ os.environ["NIXTLA_ID_AS_COL"] = "1"
 import datetime
 from typing import Optional
 
-# +
 import pandas as pd
-
-# +
 from loguru import logger
 
 # -
+
 
 # ## Load Data
 
@@ -424,4 +422,3 @@ visualize_predictions(
     title="Forecasting 3 Steps Ahead (iTransformer)",
     ax=ax[2],
 )
-# -
