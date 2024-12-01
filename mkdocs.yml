@@ -260,6 +260,7 @@ nav:
       - "Forecasting with Transformer": notebooks/transformer_timeseries_univariate.py
       - "Forecasting with NeuralODE": notebooks/neuralode_timeseries.py
       - "Generate Time Series Using Statistics": notebooks/time-series-data-generation.py
+      - "Comparing Time Series": notebooks/timeseries-comparison.py
     - "Small Yet Powerful Concepts":
       - concepts/index.md
       - "Entropy": concepts/entropy.md
