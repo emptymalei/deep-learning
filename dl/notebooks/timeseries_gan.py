@@ -489,7 +489,7 @@ class BaseModel:
             self.ori_data, self.ori_time, self.opt.batch_size
         )
         self.Z = random_generator(
-            num_samples, self.opt.z_dim, self.T, self.max_seq_len, mean, std
+            num_samples, self.opt.z_dim, self.T, self.max_seq_len  # , mean, std
         )
         self.Z = torch.tensor(self.Z, dtype=torch.float32).to(self.device)
         self.E_hat = self.netg(self.Z)  # [?, 24, 24]
@@ -863,7 +863,7 @@ model_params = {
 }
 # -
 
-data = sine_data_generation(3661, 24, 6)
+data = sine_data_generation(3661, 24, 1)
 
 # +
 
@@ -871,3 +871,14 @@ model = TimeGAN(ModelParams(**model_params), data)
 # -
 
 model.train()
+
+model.generated_data.shape
+
+model.generated_data
+
+import matplotlib.pyplot as plt
+
+data[0]
+
+for i in range(len(data)):
+    plt.plot(data[i].shape, ".")
