@@ -318,7 +318,7 @@ class VAEEncoder(nn.Module):
         z_log_var = self.z_log_var_layer(x)
         epsilon = torch.randn(
             batch_size, self.params.n_features, self.params.latent_size
-        )
+        ).type_as(x)
         z = z_mean + torch.exp(0.5 * z_log_var) * epsilon
 
         return z_mean, z_log_var, z
@@ -387,7 +387,9 @@ decoder = VAEDecoder(
 decoder(torch.ones(32, 1, 10)).size()
 
 
-# +
+# -
+
+
 class VAE(nn.Module):
     def __init__(self, encoder: nn.Module, decoder: nn.Module):
         super().__init__()
@@ -400,22 +402,25 @@ class VAE(nn.Module):
         return x_reconstructed, z_mean, z_log_var
 
 
-# -
-
-
 class VAEModel(L.LightningModule):
     """VAE model using VAEEncoder, VAEDecoder, and VAE"""
 
-    def __init__(self, model: VAE):
+    def __init__(self, model: VAE, reconstruction_weight: float = 1.0):
         super().__init__()
         self.model = model
+        self.reconstruction_weight = reconstruction_weight
 
     def forward(self, x):
         return self.model(x)
 
     def training_step(self, batch: torch.Tensor, batch_idx: int) -> torch.Tensor:
-        batch_reconstructed, _, _ = self.model(batch)
-        loss_total, loss_reconstruction, loss_kl = self.loss(batch_reconstructed, batch)
+        batch_reconstructed, z_mean, z_log_var = self.model(batch)
+        loss_total, loss_reconstruction, loss_kl = self.loss(
+            x=batch,
+            x_reconstructed=batch_reconstructed,
+            z_mean=z_mean,
+            z_log_var=z_log_var,
+        )
 
         self.log_dict(
             {
@@ -428,8 +433,13 @@ class VAEModel(L.LightningModule):
         return loss_total
 
     def validation_step(self, batch: torch.Tensor, batch_idx: int) -> torch.Tensor:
-        batch_reconstructed, _, _ = self.model(batch)
-        loss_total, loss_reconstruction, loss_kl = self.loss(batch_reconstructed, batch)
+        batch_reconstructed, z_mean, z_log_var = self.model(batch)
+        loss_total, loss_reconstruction, loss_kl = self.loss(
+            x=batch,
+            x_reconstructed=batch_reconstructed,
+            z_mean=z_mean,
+            z_log_var=z_log_var,
+        )
         self.log_dict(
             {
                 "val_loss_total": loss_total,
@@ -441,8 +451,13 @@ class VAEModel(L.LightningModule):
         return loss_total
 
     def test_step(self, batch: torch.Tensor, batch_idx: int) -> torch.Tensor:
-        batch_reconstructed, _, _ = self.model(batch)
-        loss_total, loss_reconstruction, loss_kl = self.loss(batch_reconstructed, batch)
+        batch_reconstructed, z_mean, z_log_var = self.model(batch)
+        loss_total, loss_reconstruction, loss_kl = self.loss(
+            x=batch,
+            x_reconstructed=batch_reconstructed,
+            z_mean=z_mean,
+            z_log_var=z_log_var,
+        )
         self.log_dict(
             {
                 "test_loss_total": loss_total,
@@ -461,7 +476,7 @@ class VAEModel(L.LightningModule):
     ):
         loss_reconstruction = self.reconstruction_loss(x, x_reconstructed)
         loss_kl = -0.5 * torch.sum(1 + z_log_var - z_mean**2 - z_log_var.exp())
-        loss_total = self.reconstruction_wt * loss_reconstruction + loss_kl
+        loss_total = self.reconstruction_weight * loss_reconstruction + loss_kl
 
         return (
             loss_total / x.size(0),
@@ -494,10 +509,14 @@ class VAEModel(L.LightningModule):
 # +
 vae = VAE(
     encoder=VAEEncoder(
-        VAEParams(hidden_layer_sizes=[40, 30], latent_size=10, sequence_length=50)
+        VAEParams(
+            hidden_layer_sizes=[200, 100, 50, 30], latent_size=10, sequence_length=30
+        )
     ),
     decoder=VAEDecoder(
-        VAEParams(hidden_layer_sizes=[30, 40], latent_size=10, sequence_length=50)
+        VAEParams(
+            hidden_layer_sizes=[30, 50, 100, 200], latent_size=10, sequence_length=30
+        )
     ),
 )
 
@@ -505,17 +524,24 @@ vae_model = VAEModel(vae)
 # -
 
 trainer = L.Trainer(
-    precision="32",
-    max_epochs=100,
+    precision="64",
+    max_epochs=1000,
     min_epochs=5,
-    callbacks=[
-        EarlyStopping(monitor="val_loss_total", mode="min", min_delta=1e-7, patience=3)
-    ],
+    # callbacks=[
+    #     EarlyStopping(monitor="val_loss_total", mode="min", min_delta=1e-10, patience=10)
+    # ],
     logger=L.pytorch.loggers.TensorBoardLogger(
-        save_dir="lightning_logs", name="transformer_ts_1_step"
+        save_dir="lightning_logs", name="time_vae_naive"
     ),
 )
 
-trainer.fit(model=vae_model, datamodule=time_vae_dm)
+trainer.fit(
+    model=vae_model,
+    datamodule=TimeVAEDataModule(
+        window_size=30, dataframe=df[["theta"]], batch_size=32
+    ),
+)
+
+#
 
 #
