@@ -250,11 +250,13 @@ class TimeVAEDataModule(L.LightningDataModule):
         )
 
 
-time_vae_dm = TimeVAEDataModule(window_size=20, dataframe=df[["theta"]], batch_size=32)
+time_vae_dm_example = TimeVAEDataModule(
+    window_size=30, dataframe=df[["theta"]], batch_size=32
+)
 
-len(list(time_vae_dm.train_dataloader()))
+len(list(time_vae_dm_example.train_dataloader()))
 
-list(time_vae_dm.train_dataloader())[0].shape
+list(time_vae_dm_example.train_dataloader())[0].shape
 
 
 # ## Model
@@ -506,26 +508,38 @@ class VAEModel(L.LightningModule):
         return optimizer
 
 
+# # Training
+#
+
+# +
+window_size = 24
+
+time_vae_dm = TimeVAEDataModule(
+    window_size=window_size, dataframe=df[["theta"]], batch_size=32
+)
+
 # +
 vae = VAE(
     encoder=VAEEncoder(
         VAEParams(
-            hidden_layer_sizes=[200, 100, 50, 30], latent_size=10, sequence_length=30
+            hidden_layer_sizes=[200, 100, 50],
+            latent_size=8,
+            sequence_length=window_size,
         )
     ),
     decoder=VAEDecoder(
         VAEParams(
-            hidden_layer_sizes=[30, 50, 100, 200], latent_size=10, sequence_length=30
+            hidden_layer_sizes=[30, 50, 100], latent_size=8, sequence_length=window_size
         )
     ),
 )
 
-vae_model = VAEModel(vae)
+vae_model = VAEModel(vae, reconstruction_weight=1)
 # -
 
 trainer = L.Trainer(
     precision="64",
-    max_epochs=1000,
+    max_epochs=2000,
     min_epochs=5,
     # callbacks=[
     #     EarlyStopping(monitor="val_loss_total", mode="min", min_delta=1e-10, patience=10)
@@ -535,13 +549,22 @@ trainer = L.Trainer(
     ),
 )
 
-trainer.fit(
-    model=vae_model,
-    datamodule=TimeVAEDataModule(
-        window_size=30, dataframe=df[["theta"]], batch_size=32
-    ),
-)
+trainer.fit(model=vae_model, datamodule=time_vae_dm)
 
-#
+for i in time_vae_dm.predict_dataloader():
+    print(i.size())
+    i_pred = vae_model.model(i)
+    break
 
-#
+i_pred[0].size()
+
+import matplotlib.pyplot as plt
+
+# +
+_, ax = plt.subplots()
+
+element = 100
+
+ax.plot(i.detach().numpy()[element, :, 0])
+ax.plot(i_pred[0].detach().numpy()[element, :, 0], "x-")
+# -
