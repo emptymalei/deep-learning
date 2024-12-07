@@ -567,4 +567,3 @@ element = 100
 
 ax.plot(i.detach().numpy()[element, :, 0])
 ax.plot(i_pred[0].detach().numpy()[element, :, 0], "x-")
-# -
