@@ -14,18 +14,26 @@
 
 # # TimeVAE
 #
+# Use VAE to generate time series data. In this example, we will train a VAE model to sinusoidal time series data. The overall structure of the model is shown below:
+#
+# ```mermaid
+# graph TD
+# data["Time Series Chunks"] --> E[Encoder]
+#     E --> L[Latent Space]
+#     L --> D[Decoder]
+#     D --> gen["Generated Time Series Chunks"]
+# ```
+#
 # Reference:
 # https://github.com/wangyz1999/timeVAE-pytorch
 
 import dataclasses
 
 # +
-import os
 from functools import cached_property
 from typing import Dict, List, Tuple
 
 import lightning as L
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -34,12 +42,13 @@ from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 from loguru import logger
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
-from ts_dl_utils.datasets.dataset import DataFrameDataset
 from ts_dl_utils.datasets.pendulum import Pendulum
 
 # -
 
 # ## Data
+#
+# We will reuse our classic pendulum dataset.
 
 pen = Pendulum(length=100)
 
@@ -163,6 +172,19 @@ class TimeVAEDataset(Dataset):
 
 
 class TimeVAEDataModule(L.LightningDataModule):
+    """Lightning DataModule for Time Series VAE.
+
+    This data module takes a pandas dataframe and generates
+    the corresponding dataloaders for training, validation and
+    testing.
+
+    ```python
+    time_vae_dm_example = TimeVAEDataModule(
+        window_size=30, dataframe=df[["theta"]], batch_size=32
+    )
+    ```
+    """
+
     def __init__(
         self,
         window_size: int,
@@ -229,7 +251,7 @@ class TimeVAEDataModule(L.LightningDataModule):
             batch_size=self.batch_size,
             shuffle=True,
             num_workers=self.num_workers,
-            persistent_workers=True if self.num_workers > 0 else False,
+            persistent_workers=(True if self.num_workers > 0 else False),
         )
 
     def test_dataloader(self):
@@ -246,7 +268,7 @@ class TimeVAEDataModule(L.LightningDataModule):
             batch_size=self.batch_size,
             shuffle=False,
             num_workers=self.num_workers,
-            persistent_workers=True if self.num_workers > 0 else False,
+            persistent_workers=(True if self.num_workers > 0 else False),
         )
 
     def predict_dataloader(self):
@@ -267,10 +289,15 @@ list(time_vae_dm_example.train_dataloader())[0].shape
 # ## Model
 
 
-# +
 @dataclasses.dataclass
 class VAEParams:
-    """Parameters for VAEEncoder and VAEDecoder"""
+    """Parameters for VAEEncoder and VAEDecoder
+
+    :param hidden_layer_sizes: list of hidden layer sizes
+    :param latent_size: latent space dimension
+    :param sequence_length: input sequence length
+    :param n_features: number of features
+    """
 
     hidden_layer_sizes: List[int]
     latent_size: int
@@ -278,14 +305,14 @@ class VAEParams:
     n_features: int = 1
 
     @cached_property
-    def data_size(self):
+    def data_size(self) -> int:
+        """The dimension of the input data
+        when flattened.
+        """
         return self.sequence_length * self.n_features
 
-    def asdict(self):
+    def asdict(self) -> dict:
         return dataclasses.asdict(self)
-
-
-# +
 
 
 class VAEMLPEncoder(nn.Module):
@@ -328,11 +355,21 @@ class VAEMLPEncoder(nn.Module):
         return nn.Sequential(*[nn.Linear(size_in, size_out), nn.ReLU()])
 
 
-# -
-
-
 class VAEEncoder(nn.Module):
-    """Encoder of TimeVAE"""
+    """Encoder of TimeVAE
+
+    ```python
+    encoder = VAEEncoder(
+        VAEParams(
+            hidden_layer_sizes=[40, 30],
+            latent_size=10,
+            sequence_length=50
+        )
+    )
+    ```
+
+    :param params: parameters for the encoder
+    """
 
     def __init__(self, params: VAEParams):
         super().__init__()
@@ -383,7 +420,8 @@ class VAEEncoder(nn.Module):
             ]
         )
 
-    def cal_conv1d_output_dim(self):
+    def cal_conv1d_output_dim(self) -> int:
+        """the output dimension of all the Conv1d layers"""
         output_size = self.params.sequence_length * self.params.n_features
 
         for l in self.layers_used_to_encode:
@@ -397,6 +435,9 @@ class VAEEncoder(nn.Module):
         return output_size
 
     def _conv1d_output_dim(self, layer: nn.Module, input_size: int) -> int:
+        """Formula to calculate
+        the output size of Conv1d layer
+        """
         return (
             (input_size + 2 * layer.padding[0] - layer.kernel_size[0])
             // layer.stride[0]
@@ -424,7 +465,20 @@ encoder = VAEEncoder(
 
 
 class VAEDecoder(nn.Module):
-    """Decoder of TimeVAE"""
+    """Decoder of TimeVAE
+
+    ```python
+    decoder = VAEDecoder(
+        VAEParams(
+            hidden_layer_sizes=[30, 40],
+            latent_size=10,
+            sequence_length=50,
+        )
+    )
+    ```
+
+    :param params: parameters for the decoder
+    """
 
     def __init__(self, params: VAEParams):
         super().__init__()
@@ -452,6 +506,7 @@ class VAEDecoder(nn.Module):
         return output.view(-1, self.params.sequence_length, self.params.n_features)
 
     def _linear_block(self, size_in: int, size_out: int) -> nn.Module:
+        """create linear block based on the specified sizes"""
         return nn.Sequential(*[nn.Linear(size_in, size_out), nn.Softplus()])
 
 
@@ -467,6 +522,12 @@ decoder(torch.ones(32, 1, 10)).size()
 
 
 class VAE(nn.Module):
+    """VAE model with encoder and decoder
+
+    :param encoder: encoder module
+    :param decoder: decoder module
+    """
+
     def __init__(self, encoder: nn.Module, decoder: nn.Module):
         super().__init__()
         self.encoder = encoder
@@ -485,7 +546,13 @@ class VAE(nn.Module):
 
 
 class VAEModel(L.LightningModule):
-    """VAE model using VAEEncoder, VAEDecoder, and VAE"""
+    """VAE model using VAEEncoder, VAEDecoder, and VAE
+
+    :param model: VAE model
+    :param reconstruction_weight: weight for the reconstruction loss
+    :param learning_rate: learning rate for the optimizer
+    :param scheduler_max_epochs: maximum epochs for the scheduler
+    """
 
     def __init__(
         self,
@@ -575,7 +642,7 @@ class VAEModel(L.LightningModule):
         x_reconstructed: torch.Tensor,
         z_log_var: torch.Tensor,
         z_mean: torch.Tensor,
-    ):
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         loss_reconstruction = self.reconstruction_loss(x, x_reconstructed)
         loss_kl = -0.5 * torch.sum(1 + z_log_var - z_mean**2 - z_log_var.exp())
         loss_total = self.reconstruction_weight * loss_reconstruction + loss_kl
@@ -602,7 +669,7 @@ class VAEModel(L.LightningModule):
 
         return loss
 
-    def configure_optimizers(self) -> torch.optim.Optimizer:
+    def configure_optimizers(self) -> dict:
         optimizer = torch.optim.SGD(self.parameters(), lr=self.learning_rate)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
             optimizer, T_max=self.scheduler_max_epochs
@@ -617,8 +684,6 @@ class VAEModel(L.LightningModule):
                 "frequency": 1,
             },
         }
-
-        # return torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
 
 
 # # Training
@@ -659,9 +724,11 @@ trainer = L.Trainer(
     precision="64",
     max_epochs=max_epochs,
     min_epochs=5,
-    # callbacks=[
-    #     EarlyStopping(monitor="val_loss_total", mode="min", min_delta=1e-10, patience=10)
-    # ],
+    callbacks=[
+        EarlyStopping(
+            monitor="val_loss_total", mode="min", min_delta=1e-10, patience=10
+        )
+    ],
     logger=L.pytorch.loggers.TensorBoardLogger(
         save_dir="lightning_logs", name="time_vae_naive"
     ),
@@ -669,12 +736,12 @@ trainer = L.Trainer(
 
 trainer.fit(model=vae_model, datamodule=time_vae_dm)
 
+# ## Fitted Model
+
 for i in time_vae_dm.predict_dataloader():
     print(i.size())
     i_pred = vae_model.model(i)
     break
-
-i_pred
 
 i_pred[0].size()
 
@@ -687,18 +754,11 @@ element = 4
 
 ax.plot(i.detach().numpy()[element, :, 0])
 ax.plot(i_pred[0].detach().numpy()[element, :, 0], "x-")
-
-# +
-_, ax = plt.subplots()
-
-element = 4
-
-ax.plot(i.detach().numpy()[element, :, 0])
-ax.plot(i_pred[0].detach().numpy()[element, :, 0], "x-")
 # -
 
+# Data generation using the decoder.
 
-sampling_z = torch.randn(10, vae_model.model.encoder.params.latent_size).type_as(
+sampling_z = torch.randn(2, vae_model.model.encoder.params.latent_size).type_as(
     vae_model.model.encoder.z_mean_layer.weight
 )
 sampling_x = vae_model.model.decoder(sampling_z)
@@ -708,7 +768,7 @@ sampling_x.size()
 # +
 _, ax = plt.subplots()
 
-for i in range(4):
+for i in range(min(len(sampling_x), 4)):
     ax.plot(sampling_x.detach().numpy()[i, :, 0], "x-")
 
 # -
