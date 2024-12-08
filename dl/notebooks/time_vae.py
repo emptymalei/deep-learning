@@ -452,7 +452,7 @@ class VAEDecoder(nn.Module):
         return output.view(-1, self.params.sequence_length, self.params.n_features)
 
     def _linear_block(self, size_in: int, size_out: int) -> nn.Module:
-        return nn.Sequential(*[nn.Linear(size_in, size_out), nn.Tanh()])
+        return nn.Sequential(*[nn.Linear(size_in, size_out), nn.Softplus()])
 
 
 # +
