@@ -43,9 +43,14 @@ from ts_dl_utils.datasets.pendulum import Pendulum
 
 pen = Pendulum(length=100)
 
-df = pd.DataFrame(pen(100, 100, initial_angle=1, beta=0.0001))
+df = pd.DataFrame(pen(300, 30, initial_angle=1, beta=0.00001))
 
 df["theta"] = df["theta"] + 2
+
+# +
+_, ax = plt.subplots(figsize=(10, 6.18))
+
+df.head(100).plot(x="t", y="theta", ax=ax)
 
 # +
 _, ax = plt.subplots(figsize=(10, 6.18))
@@ -262,14 +267,6 @@ list(time_vae_dm_example.train_dataloader())[0].shape
 # ## Model
 
 
-@dataclasses.dataclass
-class VAEParams:
-    """Parameters for TimeVAE"""
-
-    latent_size: int
-    hidden_layer_sizes: List[int]
-
-
 # +
 @dataclasses.dataclass
 class VAEParams:
@@ -284,9 +281,15 @@ class VAEParams:
     def data_size(self):
         return self.sequence_length * self.n_features
 
+    def asdict(self):
+        return dataclasses.asdict(self)
 
-class VAEEncoder(nn.Module):
-    """Encoder of TimeVAE"""
+
+# +
+
+
+class VAEMLPEncoder(nn.Module):
+    """MLP Encoder of TimeVAE"""
 
     def __init__(self, params: VAEParams):
         super().__init__()
@@ -294,20 +297,16 @@ class VAEEncoder(nn.Module):
         self.params = params
 
         encode_layer_sizes = [self.params.data_size] + self.params.hidden_layer_sizes
-        self.encode = nn.Sequential(
-            *[
-                self._linear_block(size_in, size_out)
-                for size_in, size_out in zip(
-                    encode_layer_sizes[:-1], encode_layer_sizes[1:]
-                )
-            ]
-        )
-        self.z_mean_layer = nn.Linear(
-            self.params.hidden_layer_sizes[-1], self.params.latent_size
-        )
-        self.z_log_var_layer = nn.Linear(
-            self.params.hidden_layer_sizes[-1], self.params.latent_size
-        )
+        self.layers_used_to_encode = [
+            self._linear_block(size_in, size_out)
+            for size_in, size_out in zip(
+                encode_layer_sizes[:-1], encode_layer_sizes[1:]
+            )
+        ]
+        self.encode = nn.Sequential(*self.layers_used_to_encode)
+        encoded_size = self.params.hidden_layer_sizes[-1]
+        self.z_mean_layer = nn.Linear(encoded_size, self.params.latent_size)
+        self.z_log_var_layer = nn.Linear(encoded_size, self.params.latent_size)
 
     def forward(
         self, x: torch.Tensor
@@ -329,6 +328,90 @@ class VAEEncoder(nn.Module):
         return nn.Sequential(*[nn.Linear(size_in, size_out), nn.ReLU()])
 
 
+# -
+
+
+class VAEEncoder(nn.Module):
+    """Encoder of TimeVAE"""
+
+    def __init__(self, params: VAEParams):
+        super().__init__()
+
+        self.params = params
+        self.hparams = params.asdict()
+
+        encode_layer_sizes = [self.params.n_features] + self.params.hidden_layer_sizes
+        self.layers_used_to_encode = [
+            self._conv_block(size_in, size_out)
+            for size_in, size_out in zip(
+                encode_layer_sizes[:-1], encode_layer_sizes[1:]
+            )
+        ] + [nn.Flatten()]
+        self.encode = nn.Sequential(*self.layers_used_to_encode)
+        encoded_size = self.cal_conv1d_output_dim() * self.params.hidden_layer_sizes[-1]
+        self.z_mean_layer = nn.Linear(encoded_size, self.params.latent_size)
+        self.z_log_var_layer = nn.Linear(encoded_size, self.params.latent_size)
+
+    def forward(
+        self, x: torch.Tensor
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        batch_size, _, _ = x.size()
+        x = x.transpose(1, 2)
+        x = self.encode(x)
+
+        z_mean = self.z_mean_layer(x).view(
+            batch_size, self.params.n_features, self.params.latent_size
+        )
+        z_log_var = self.z_log_var_layer(x).view(
+            batch_size, self.params.n_features, self.params.latent_size
+        )
+        epsilon = torch.randn(
+            batch_size, self.params.n_features, self.params.latent_size
+        ).type_as(x)
+        z = z_mean + torch.exp(0.5 * z_log_var) * epsilon
+
+        return z_mean, z_log_var, z
+
+    def _linear_block(self, size_in: int, size_out: int) -> nn.Module:
+        return nn.Sequential(*[nn.Linear(size_in, size_out), nn.ReLU()])
+
+    def _conv_block(self, size_in: int, size_out: int) -> nn.Module:
+        return nn.Sequential(
+            *[
+                nn.Conv1d(size_in, size_out, kernel_size=3, stride=2, padding=1),
+                nn.ReLU(),
+            ]
+        )
+
+    def cal_conv1d_output_dim(self):
+        output_size = self.params.sequence_length * self.params.n_features
+
+        for l in self.layers_used_to_encode:
+            if l._get_name() == "Conv1d":
+                output_size = self._conv1d_output_dim(l, output_size)
+            elif l._get_name() == "Sequential":
+                for l2 in l:
+                    if l2._get_name() == "Conv1d":
+                        output_size = self._conv1d_output_dim(l2, output_size)
+
+        return output_size
+
+    def _conv1d_output_dim(self, layer: nn.Module, input_size: int) -> int:
+        return (
+            (input_size + 2 * layer.padding[0] - layer.kernel_size[0])
+            // layer.stride[0]
+        ) + 1
+
+
+# +
+mlp_encoder = VAEMLPEncoder(
+    VAEParams(hidden_layer_sizes=[40, 30], latent_size=10, sequence_length=50)
+)
+
+[i.size() for i in mlp_encoder(torch.ones(32, 50, 1))], mlp_encoder(
+    torch.ones(32, 50, 1)
+)[-1]
+
 # +
 encoder = VAEEncoder(
     VAEParams(hidden_layer_sizes=[40, 30], latent_size=10, sequence_length=50)
@@ -336,18 +419,8 @@ encoder = VAEEncoder(
 
 [i.size() for i in encoder(torch.ones(32, 50, 1))], encoder(torch.ones(32, 50, 1))[-1]
 
-# +
-# @dataclasses.dataclass
-# class VAEDecoderParams:
-#     """Parameters for VAEDecoder"""
-#     hidden_layer_sizes: List[int]
-#     latent_size: int
-#     sequence_length: int
-#     n_features: int = 1
 
-#     @property
-#     def data_size(self):
-#         return self.sequence_length * self.n_features
+# -
 
 
 class VAEDecoder(nn.Module):
@@ -357,6 +430,7 @@ class VAEDecoder(nn.Module):
         super().__init__()
 
         self.params = params
+        self.hparams = params.asdict()
 
         decode_layer_sizes = (
             [self.params.latent_size]
@@ -373,12 +447,12 @@ class VAEDecoder(nn.Module):
             ]
         )
 
-    def forward(self, z):
+    def forward(self, z: torch.Tensor) -> torch.Tensor:
         output = self.decode(z)
         return output.view(-1, self.params.sequence_length, self.params.n_features)
 
     def _linear_block(self, size_in: int, size_out: int) -> nn.Module:
-        return nn.Sequential(*[nn.Linear(size_in, size_out), nn.ReLU()])
+        return nn.Sequential(*[nn.Linear(size_in, size_out), nn.Tanh()])
 
 
 # +
@@ -397,8 +471,14 @@ class VAE(nn.Module):
         super().__init__()
         self.encoder = encoder
         self.decoder = decoder
+        self.hparams = {
+            **{f"encoder_{k}": v for k, v in self.encoder.hparams.items()},
+            **{f"decoder_{k}": v for k, v in self.decoder.hparams.items()},
+        }
 
-    def forward(self, x):
+    def forward(
+        self, x: torch.Tensor
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         z_mean, z_log_var, z = self.encoder(x)
         x_reconstructed = self.decoder(z)
         return x_reconstructed, z_mean, z_log_var
@@ -407,10 +487,30 @@ class VAE(nn.Module):
 class VAEModel(L.LightningModule):
     """VAE model using VAEEncoder, VAEDecoder, and VAE"""
 
-    def __init__(self, model: VAE, reconstruction_weight: float = 1.0):
+    def __init__(
+        self,
+        model: VAE,
+        reconstruction_weight: float = 1.0,
+        learning_rate: float = 1e-3,
+        scheduler_max_epochs: int = 10000,
+    ):
         super().__init__()
         self.model = model
         self.reconstruction_weight = reconstruction_weight
+        self.learning_rate = learning_rate
+        self.scheduler_max_epochs = scheduler_max_epochs
+
+        self.hparams.update(
+            {
+                **model.hparams,
+                **{
+                    "reconstruction_weight": reconstruction_weight,
+                    "learning_rate": learning_rate,
+                    "scheduler_max_epochs": scheduler_max_epochs,
+                },
+            }
+        )
+        self.save_hyperparameters(self.hparams)
 
     def forward(self, x):
         return self.model(x)
@@ -503,9 +603,22 @@ class VAEModel(L.LightningModule):
         return loss
 
     def configure_optimizers(self) -> torch.optim.Optimizer:
-        optimizer = torch.optim.SGD(self.parameters(), lr=1e-3)
+        optimizer = torch.optim.SGD(self.parameters(), lr=self.learning_rate)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, T_max=self.scheduler_max_epochs
+        )
 
-        return optimizer
+        return {
+            "optimizer": optimizer,
+            "lr_scheduler": {
+                "scheduler": scheduler,
+                "monitor": "train_loss",
+                "interval": "step",
+                "frequency": 1,
+            },
+        }
+
+        # return torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
 
 
 # # Training
@@ -513,6 +626,7 @@ class VAEModel(L.LightningModule):
 
 # +
 window_size = 24
+max_epochs = 2000
 
 time_vae_dm = TimeVAEDataModule(
     window_size=window_size, dataframe=df[["theta"]], batch_size=32
@@ -534,12 +648,16 @@ vae = VAE(
     ),
 )
 
-vae_model = VAEModel(vae, reconstruction_weight=1)
+vae_model = VAEModel(
+    vae,
+    reconstruction_weight=3,
+    scheduler_max_epochs=max_epochs * len(time_vae_dm.train_dataloader()),
+)
 # -
 
 trainer = L.Trainer(
     precision="64",
-    max_epochs=2000,
+    max_epochs=max_epochs,
     min_epochs=5,
     # callbacks=[
     #     EarlyStopping(monitor="val_loss_total", mode="min", min_delta=1e-10, patience=10)
@@ -556,6 +674,8 @@ for i in time_vae_dm.predict_dataloader():
     i_pred = vae_model.model(i)
     break
 
+i_pred
+
 i_pred[0].size()
 
 import matplotlib.pyplot as plt
@@ -563,7 +683,32 @@ import matplotlib.pyplot as plt
 # +
 _, ax = plt.subplots()
 
-element = 100
+element = 4
 
 ax.plot(i.detach().numpy()[element, :, 0])
 ax.plot(i_pred[0].detach().numpy()[element, :, 0], "x-")
+
+# +
+_, ax = plt.subplots()
+
+element = 4
+
+ax.plot(i.detach().numpy()[element, :, 0])
+ax.plot(i_pred[0].detach().numpy()[element, :, 0], "x-")
+# -
+
+
+sampling_z = torch.randn(10, vae_model.model.encoder.params.latent_size).type_as(
+    vae_model.model.encoder.z_mean_layer.weight
+)
+sampling_x = vae_model.model.decoder(sampling_z)
+
+sampling_x.size()
+
+# +
+_, ax = plt.subplots()
+
+for i in range(4):
+    ax.plot(sampling_x.detach().numpy()[i, :, 0], "x-")
+
+# -
