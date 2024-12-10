@@ -738,9 +738,15 @@ trainer.fit(model=vae_model, datamodule=time_vae_dm)
 
 # ## Fitted Model
 
+checkpoint_path = (
+    "lightning_logs/time_vae_naive/version_29/checkpoints/epoch=1999-step=354000.ckpt"
+)
+vae_model_reloaded = VAEModel.load_from_checkpoint(checkpoint_path, model=vae)
+
+
 for i in time_vae_dm.predict_dataloader():
     print(i.size())
-    i_pred = vae_model.model(i)
+    i_pred = vae_model_reloaded.model(i.float().cuda())
     break
 
 i_pred[0].size()
@@ -753,15 +759,15 @@ _, ax = plt.subplots()
 element = 4
 
 ax.plot(i.detach().numpy()[element, :, 0])
-ax.plot(i_pred[0].detach().numpy()[element, :, 0], "x-")
+ax.plot(i_pred[0].cpu().detach().numpy()[element, :, 0], "x-")
 # -
 
 # Data generation using the decoder.
 
-sampling_z = torch.randn(2, vae_model.model.encoder.params.latent_size).type_as(
-    vae_model.model.encoder.z_mean_layer.weight
-)
-sampling_x = vae_model.model.decoder(sampling_z)
+sampling_z = torch.randn(
+    2, vae_model_reloaded.model.encoder.params.latent_size
+).type_as(vae_model_reloaded.model.encoder.z_mean_layer.weight)
+sampling_x = vae_model_reloaded.model.decoder(sampling_z)
 
 sampling_x.size()
 
@@ -769,6 +775,6 @@ sampling_x.size()
 _, ax = plt.subplots()
 
 for i in range(min(len(sampling_x), 4)):
-    ax.plot(sampling_x.detach().numpy()[i, :, 0], "x-")
+    ax.plot(sampling_x.cpu().detach().numpy()[i, :, 0], "x-")
 
 # -
