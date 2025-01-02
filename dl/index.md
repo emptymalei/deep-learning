@@ -3,6 +3,11 @@ hide:
   - navigation
 ---
 
+!!! info ""
+
+    Pre-order my new book: [Time Series with PyTorch: Modern Deep Learning Toolkit for Real-World Forecasting Challenges](https://www.amazon.com/Time-PyTorch-Real-World-Forecasting-Challenges-ebook/dp/B0DK5LR6XL/).
+    
+
 # Time Series Forecasting using Deep Learning
 
 Forecasting the future is an extremely valuable superpower. The forecasting game has been dominated by statisticians who are real experts in time series problems. As the amount of data increases, many of the statistical methods are not squeezing enough out of the massive datasets. Consequently, time series forecasting using deep learning emerges and became a fast-growing field. It is trendy, not only in LinkedIn debates but also in academic papers. We plotted the number of related publications per year using [the keyword "deep learning forecasting" on dimensions.ai](https://app.dimensions.ai/analytics/publication/overview/timeline?search_mode=content&search_text=deep%20learning%20forecasting&search_type=kws&search_field=full_search&year_from=2015&year_to=2021)) [@dimensionsai].
