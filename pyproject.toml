@@ -59,6 +59,10 @@ datasetsforecast = "^0.0.8"
 [tool.poetry.group.huggingface.dependencies]
 transformers = "^4.44.2"
 
+
+[tool.poetry.group.pretrained.dependencies]
+tabpfn = "^2.0.6"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
