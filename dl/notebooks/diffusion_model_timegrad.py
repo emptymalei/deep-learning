@@ -28,8 +28,6 @@ import torch
 import torch.nn as nn
 from loguru import logger
 
-# -
-
 
 # +
 @dataclasses.dataclass
@@ -465,7 +463,6 @@ encoder(
 )[0].shape, encoder(
     x=torch.rand(8, 5, 1),
 )[-1].shape
-# -
 
 
 # +

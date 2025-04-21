@@ -33,89 +33,62 @@ from loguru import logger
 
 # +
 @dataclasses.dataclass
-class DiffusionParams:
-    """ """
+class DiffusionPocessParams:
+    """Parameter that defines a diffusion process.
+
+    :param steps: Number of steps in the diffusion process.
+    :param beta: Beta parameter for the diffusion process.
+    """
 
     steps: int
     beta: float
 
     @cached_property
     def alpha(self) -> float:
-        """ """
+        r"""$\alpha = 1 - \beta$"""
         return 1.0 - self.beta
 
     @cached_property
-    def alpha_bar_by_step(self) -> np.ndarray:
-        """ """
-        return np.cumprod(self.alpha_by_step)
-
-    @cached_property
     def beta_by_step(self) -> np.ndarray:
-        """ """
+        """the beta parameter for each step in the diffusion process."""
         return np.array([self.beta] * self.steps)
 
     @cached_property
     def alpha_by_step(self) -> np.ndarray:
-        """ """
+        """the alpha parameter for each step in the diffusion process."""
         return np.array([self.alpha] * self.steps)
 
-    # @cached_property
-    # def sigma_q_squared(self) -> float:
-    #     r"""
 
-    #     $$
-    #     \sigma_q^2(t) = \frac{
-    #         (1 - \alpha(t))(1 - \bar\alpha(t-1))
-    #     }{1 - \bar\alpha(t)}
-    #     $$
-    #     """
-    #     sigma_q_squared = (
-    #         1 - self.alpha_by_step[1:]
-    #     ) * (1 - self.alpha_bar_by_step[:-1]) / (1 - self.alpha_bar_by_step[1:])
-    #     return np.insert(sigma_q_squared, 0, 0)
+def gaussian_noise(n_var: int, length: int) -> torch.Tensor:
+    """Generate a Gaussian noise tensor.
+
+    :param n_var: Number of variables.
+    :param length: Length of the tensor.
+    """
+    return torch.normal(mean=0, std=1, size=(n_var, length))
 
 
-class Diffusion(nn.Module):
+class DiffusionProcess:
+    """
+    Diffusion process.
+
+    :param params: DiffusionParams that defines how the diffusion process works
+    :param noise: noise tensor, shape is (batch_size, params.steps)
+    """
+
     def __init__(
         self,
-        batch_size: int,
-        params: DiffusionParams,
+        params: DiffusionPocessParams,
+        noise: torch.Tensor,
         dtype: torch.dtype = torch.float32,
     ):
-        self.batch_size = batch_size
         self.params = params
+        self.noise = noise
         self.dtype = dtype
 
     @cached_property
-    def alpha_bar_by_step(self) -> torch.Tensor:
-        return torch.tensor(self.params.alpha_bar_by_step, dtype=self.dtype).detach()
-
-    @cached_property
     def alpha_by_step(self) -> torch.Tensor:
-        return torch.tensor(self.params.alpha_by_step, dtype=self.dtype).detach()
-
-    # @cached_property
-    # def sigma_q_squared(self) -> torch.Tensor:
-    #     return torch.tensor(self.params.sigma_q_squared, dtype=self.dtype)
-
-    def likelihood(self):
-        pass
-
-    def _gaussian(self, n_var: int, length: int) -> torch.Tensor:
-        return torch.normal(mean=0, std=1, size=(n_var, length))
-
-    @cached_property
-    def noise(self) -> torch.Tensor:
-        return self._gaussian(self.batch_size, self.params.steps).detach()
-
-    def _forward_process(self, initial: torch.Tensor) -> torch.Tensor:
-        return (
-            torch.outer(
-                initial,
-                torch.sqrt(self.alpha_bar_by_step),
-            )
-            + torch.sqrt(1 - self.alpha_bar_by_step) * self.noise
-        )
+        return torch.tensor(self.params.alpha_by_step, dtype=self.dtype)
 
     def _forward_process_by_step(self, state: torch.Tensor, step: int) -> torch.Tensor:
         r"""Assuming that we know the noise at step $t$,
@@ -141,20 +114,19 @@ class Diffusion(nn.Module):
             state - torch.sqrt(1 - self.alpha_by_step[step]) * self.noise[:, step]
         ) / torch.sqrt(self.alpha_by_step[step])
 
-    def forward(self):
-        pass
 
-
-# -
-
-diffusion_params = DiffusionParams(
+# +
+diffusion_process_params = DiffusionPocessParams(
     steps=100,
     beta=0.005,
     # beta=0,
 )
 diffusion_batch_size = 1000
 # diffusion_batch_size = 2
-diffusion_process = Diffusion(diffusion_batch_size, diffusion_params)
+
+noise = gaussian_noise(diffusion_batch_size, diffusion_process_params.steps)
+
+diffusion_process = DiffusionProcess(diffusion_process_params, noise=noise)
 
 
 # +
@@ -179,7 +151,7 @@ diffusion_initial_x
 # +
 diffusion_steps_step_by_step = [diffusion_initial_x.detach().numpy()]
 
-for i in range(0, diffusion_params.steps):
+for i in range(0, diffusion_process_params.steps):
     logger.info(f"step {i}")
     i_state = (
         diffusion_process._forward_process_by_step(
@@ -199,22 +171,12 @@ px.histogram(diffusion_steps_step_by_step[0])
 
 px.histogram(diffusion_steps_step_by_step[-1])
 
-# ## Calculate State at time t in one batch
-
-# +
-diffusion_steps = diffusion_process._forward_process(diffusion_initial_x)
-
-diffusion_initial_x.shape, diffusion_steps.shape
-# -
-
-px.histogram(diffusion_steps[:, -1].detach().numpy().squeeze())
-
 # ## Reverse step by step
 
 # +
 diffusion_steps_reverse = [diffusion_steps_step_by_step[-1]]
 
-for i in range(diffusion_params.steps - 1, -1, -1):
+for i in range(diffusion_process_params.steps - 1, -1, -1):
     logger.info(f"step {i}")
     i_state = (
         diffusion_process._inverse_process_by_step(
@@ -228,24 +190,16 @@ for i in range(diffusion_params.steps - 1, -1, -1):
 
 # -
 
-px.histogram(diffusion_steps_reverse[-1])
-
 px.histogram(diffusion_steps_reverse[0])
+
+px.histogram(diffusion_steps_reverse[-1])
 
 # ## Diffusion Distributions
 
-px.line(diffusion_params.alpha_bar_by_step)
-
 # +
 df_diffusion_example = pd.DataFrame(
-    np.concatenate(
-        [
-            diffusion_initial_x.reshape(1, diffusion_batch_size).detach().numpy(),
-            diffusion_steps.T.detach().numpy(),
-        ]
-    ),
-    columns=[f"x_{i}" for i in range(len(diffusion_steps))],
-)
+    {i: v for i, v in enumerate(diffusion_steps_step_by_step)}
+).T
 df_diffusion_example["step"] = df_diffusion_example.index
 
 df_diffusion_example_melted = df_diffusion_example.melt(
@@ -318,22 +272,28 @@ ax.set_xlabel("Position")
 # # Model
 
 
+# We create a naive model based on the idea of diffusion.
+#
+# 1. Connect the real data to the latent space through diffusion process.
+# 2. We forecast in the latent space.
+
+import lightning.pytorch as pl
 from lightning import LightningModule
 
 
 # +
 @dataclasses.dataclass
-class DiffusionEncoderParams:
-    """Parameters for VAEEncoder and VAEDecoder
+class LatentRNNParams:
+    """Parameters for Diffusion process.
 
     :param latent_size: latent space dimension
     :param history_length: input sequence length
     :param n_features: number of features
     """
 
+    history_length: int
     latent_size: int = 40
     num_layers: int = 2
-    history_length: int
     n_features: int = 1
     initial_state: torch.Tensor = None
 
@@ -348,10 +308,10 @@ class DiffusionEncoderParams:
         return dataclasses.asdict(self)
 
 
-class Encoder(nn.Module):
-    """ """
+class LatentRNN(nn.Module):
+    """Forecasting the next step in latent space."""
 
-    def __init__(self, params: DiffusionEncoderParams):
+    def __init__(self, params: LatentRNNParams):
         super().__init__()
 
         self.params = params
@@ -370,242 +330,307 @@ class Encoder(nn.Module):
 
         :param x: input data, shape (batch_size, history_length, n_features)
         """
-        batch_size, _, _ = x.size()
         x = x.transpose(1, 2)
 
-        outputs, state = self.rnn(x, self.params.initial_state)
+        outputs, _ = self.rnn(x, self.params.initial_state)
 
-        return outputs, state
+        return outputs.transpose(1, 2)
 
 
-class Distribution(nn.Module):
-    """ """
+class DiffusionEncoder(nn.Module):
+    """Embedding the time series into the latent space."""
 
-    def __init__(self, params: DiffusionEncoderParams, samples: int = 100):
+    def __init__(
+        self,
+        params: DiffusionPocessParams,
+        noise: torch.Tensor,
+    ):
         super().__init__()
-
         self.params = params
-        self.hparams = params.asdict()
-        self.samples = samples
+        self.noise = noise
 
-        self.linear = nn.Linear(self.params.latent_size, samples)
+    @staticmethod
+    def _forward_process_by_step(
+        state: torch.Tensor, alpha_by_step: torch.Tensor, noise: torch.Tensor, step: int
+    ) -> torch.Tensor:
+        r"""Assuming that we know the noise at step $t$,
+
+        $$
+        x(t) = \sqrt{\alpha(t)}x(t-1) + \sqrt{1 - \alpha(t)}\epsilon(t)
+        $$
+        """
+        batch_size = state.shape[0]
+        return (
+            torch.sqrt(alpha_by_step[step]) * state
+            + torch.sqrt(1 - alpha_by_step[step]) * noise[:batch_size, step]
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.linear(x)
+        """Encoding the latent space into a distribution.
+
+        :param x: input data, shape (batch_size, history_length, n_features)
+        """
+
+        alpha_by_step = torch.tensor(self.params.alpha_by_step).to(x)
+        self.noise = self.noise.to(x)
+        # logger.debug(
+        #     f"alpha_by_step: {alpha_by_step.shape}"
+        #     f"noise: {self.noise.shape}"
+        #     f"x: {x.shape}"
+        # )
+
+        diffusion_steps_step_by_step = [x]
+
+        for i in range(0, diffusion_process.params.steps):
+            i_state = self._forward_process_by_step(
+                diffusion_steps_step_by_step[-1],
+                alpha_by_step=alpha_by_step,
+                noise=self.noise,
+                step=i,
+            )
+            diffusion_steps_step_by_step.append(i_state)
+
+        return diffusion_steps_step_by_step[-1]
 
 
-class DiffusionModel(nn.Module):
-    """ """
+class DiffusionDecoder(nn.Module):
+    """Decode the latent space into a distribution."""
 
     def __init__(
         self,
-        encoder_params: DiffusionEncoderParams,
-        diffusion_params: DiffusionParams,
-        batch_size: int,
+        params: DiffusionPocessParams,
+        noise: torch.Tensor,
     ):
         super().__init__()
+        self.params = params
+        self.noise = noise
+
+    @staticmethod
+    def _inverse_process_by_step(
+        state: torch.Tensor, alpha_by_step: torch.Tensor, noise: torch.Tensor, step: int
+    ) -> torch.Tensor:
+        r"""Assuming that we know the noise at step $t$,
+
+        $$
+        x(t-1) = \frac{1}{\sqrt{\alpha(t)}}
+        (x(t) - \sqrt{1 - \alpha(t)}\epsilon(t))
+        $$
+        """
+        batch_size = state.shape[0]
+        return (
+            state - torch.sqrt(1 - alpha_by_step[step]) * noise[:batch_size, step]
+        ) / torch.sqrt(alpha_by_step[step])
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        outputs, state = self.encoder(x)
-        distribution = self.distribution(outputs)
+        """Encoding the latent space into a distribution.
 
-        return distribution
+        :param x: input data, shape (batch_size, history_length, n_features)
+        """
+        alpha_by_step = torch.tensor(self.params.alpha_by_step).to(x)
+        self.noise = self.noise.to(x)
+
+        diffusion_steps_reverse = [x]
+
+        for i in range(diffusion_process.params.steps - 1, -1, -1):
+            i_state = self._inverse_process_by_step(
+                state=diffusion_steps_reverse[-1],
+                alpha_by_step=alpha_by_step,
+                noise=self.noise,
+                step=i,
+            )
+            diffusion_steps_reverse.append(i_state)
+
+        return diffusion_steps_reverse[-1]
 
 
-class Model(LightningModule):
+class NaiveDiffusionModel(nn.Module):
+    """A naive diffusion model that explicitly calculates
+    the diffusion process.
+    """
+
     def __init__(
         self,
-        encoder_params: DiffusionEncoderParams,
-        diffusion_params: DiffusionParams,
-        batch_size: int,
+        rnn: LatentRNN,
+        diffusion_encoder: DiffusionEncoder,
+        diffusion_decoder: DiffusionDecoder,
     ):
-        self.encoder = Encoder(encoder_params)
-        self.diffusion = Diffusion(batch_size, diffusion_params)
-        self.distribution = Distribution(encoder_params, samples=100)
+        super().__init__()
+        self.rnn = rnn
+        self.diffusion_encoder = diffusion_encoder
+        self.diffusion_decoder = diffusion_decoder
+        # self.scale = nn.Linear(
+        #     in_features=diffusion_encoder.params.steps,
+        #     out_features=diffusion_encoder.params.steps,
+        # )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        outputs, state = self.encoder(x)
-        distribution = self.distribution(outputs)
 
-        return distribution
+        # logger.debug(f"x: {x.shape=}")
+        x_latent = self.diffusion_decoder(x)
+        # logger.debug(f"x_latent: {x_latent.shape=}")
+        y_latent = self.rnn(x_latent)
+        # logger.debug(f"y_latent: {y_latent.shape=}")
+        y_hat = self.diffusion_encoder(y_latent[:, -1, :])
+        # logger.debug(f"y_hat: {y_hat.shape=}")
 
-    def training_step(self, batch: torch.Tensor, batch_idx: int) -> torch.Tensor:
-        x = batch["x"]
-        y = batch["y"]
+        return y_hat
 
-        distribution = self(x)
 
-        loss = self.loss(distribution, y)
+class NaiveDiffusionForecaster(LightningModule):
+    """A assembled lightning module for the naive diffusion model."""
+
+    def __init__(
+        self,
+        model: NaiveDiffusionModel,
+        loss: nn.Module = nn.MSELoss(),
+    ):
+        super().__init__()
+        self.model = model
+        self.loss = loss
+
+    def configure_optimizers(self):
+        optimizer = torch.optim.SGD(self.parameters(), lr=1e-3)
+        return optimizer
+
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        x = x.type(self.dtype)
+        y = y.type(self.dtype)
+        batch_size = x.shape[0]
+
+        y_hat = self.model(x)[:batch_size, :].mean(-1).reshape_as(y)
+
+        loss = self.loss(y_hat, y).mean()
+        self.log_dict({"train_loss": loss}, prog_bar=True)
 
         return loss
 
-    def loss(self, y: torch.Tensor, y_hat: torch.Tensor) -> torch.Tensor:
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        x = x.type(self.dtype)
+        y = y.type(self.dtype)
+        batch_size = x.shape[0]
 
-        return
+        y_hat = self.model(x)[:batch_size, :].mean(-1).reshape_as(y)
 
+        loss = self.loss(y_hat, y).mean()
+        self.log_dict({"val_loss": loss}, prog_bar=True)
+        return loss
 
-# -
+    def predict_step(self, batch, batch_idx):
+        x, y = batch
+        x = x.type(self.dtype)
+        y = y.type(self.dtype)
+        batch_size = x.shape[0]
 
-diffusion_params.steps
+        y_hat = self.model(x)[:batch_size, :].mean(1).reshape_as(y)
+        return x, y_hat
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = x.to(self.model.rnn.rnn.weight_ih_l0)
+        return self.model(x)
+
 
 # +
-enc_params = DiffusionEncoderParams(
-    latent_size=10,
-    num_layers=1,
-    history_length=5,
-    n_features=1,
-    initial_state=None,
+df = pd.DataFrame(
+    {"t": np.linspace(0, 100, 501), "y": np.sin(np.linspace(0, 100, 501))}
 )
-encoder = Encoder(
-    params=enc_params,
+
+_, ax = plt.subplots(figsize=(10, 6.18))
+
+df.plot(x="t", y="y", ax=ax)
+# -
+
+torch.rand(32, 1, 1000).mean(-1).shape
+
+# ## Traning
+
+from ts_bolt.datamodules.pandas import DataFrameDataModule
+
+# +
+history_length_1_step = 100
+horizon_1_step = 1
+training_batch_size = 64
+
+training_noise = gaussian_noise(training_batch_size, diffusion_process_params.steps)
+# -
+
+pdm_1_step = DataFrameDataModule(
+    history_length=history_length_1_step,
+    horizon=horizon_1_step,
+    dataframe=df[["y"]].astype(np.float32),
+    batch_size=training_batch_size,
 )
 
-encoder(
-    x=torch.rand(8, 5, 1),
-)[0].shape, encoder(
-    x=torch.rand(8, 5, 1),
-)[-1].shape
-# -
-
+diffusion_encoder = DiffusionEncoder(diffusion_process_params, training_noise)
+diffusion_decoder = DiffusionDecoder(diffusion_process_params, training_noise)
 
 # +
-class DiffusionEmbedding(nn.Module):
-    def __init__(self, dim, proj_dim, max_steps=500):
-        super().__init__()
-        self.register_buffer(
-            "embedding", self._build_embedding(dim, max_steps), persistent=False
-        )
-        self.projection1 = nn.Linear(dim * 2, proj_dim)
-        self.projection2 = nn.Linear(proj_dim, proj_dim)
+latent_rnn_params = LatentRNNParams(history_length=history_length_1_step)
 
-    def forward(self, diffusion_step):
-        x = self.embedding[diffusion_step]
-        x = self.projection1(x)
-        x = F.silu(x)
-        x = self.projection2(x)
-        x = F.silu(x)
-        return x
-
-    def _build_embedding(self, dim, max_steps):
-        steps = torch.arange(max_steps).unsqueeze(1)  # [T,1]
-        dims = torch.arange(dim).unsqueeze(0)  # [1,dim]
-        table = steps * 10.0 ** (dims * 4.0 / dim)  # [T,dim]
-        table = torch.cat([torch.sin(table), torch.cos(table)], dim=1)
-        return table
-
-
-class EpsilonTheta(nn.Module):
-    def __init__(
-        self,
-        target_dim,
-        cond_length,
-        time_emb_dim=16,
-        residual_layers=8,
-        residual_channels=8,
-        dilation_cycle_length=2,
-        residual_hidden=64,
-    ):
-        super().__init__()
-        self.input_projection = nn.Conv1d(
-            1, residual_channels, 1, padding=2, padding_mode="circular"
-        )
-        self.diffusion_embedding = DiffusionEmbedding(
-            time_emb_dim, proj_dim=residual_hidden
-        )
-        self.cond_upsampler = CondUpsampler(
-            target_dim=target_dim, cond_length=cond_length
-        )
-        self.residual_layers = nn.ModuleList(
-            [
-                ResidualBlock(
-                    residual_channels=residual_channels,
-                    dilation=2 ** (i % dilation_cycle_length),
-                    hidden_size=residual_hidden,
-                )
-                for i in range(residual_layers)
-            ]
-        )
-        self.skip_projection = nn.Conv1d(residual_channels, residual_channels, 3)
-        self.output_projection = nn.Conv1d(residual_channels, 1, 3)
-
-        nn.init.kaiming_normal_(self.input_projection.weight)
-        nn.init.kaiming_normal_(self.skip_projection.weight)
-        nn.init.zeros_(self.output_projection.weight)
-
-    def forward(self, inputs, time, cond):
-        x = self.input_projection(inputs)
-        x = F.leaky_relu(x, 0.4)
-
-        diffusion_step = self.diffusion_embedding(time)
-        cond_up = self.cond_upsampler(cond)
-        skip = []
-        for layer in self.residual_layers:
-            x, skip_connection = layer(x, cond_up, diffusion_step)
-            skip.append(skip_connection)
-
-        x = torch.sum(torch.stack(skip), dim=0) / math.sqrt(len(self.residual_layers))
-        x = self.skip_projection(x)
-        x = F.leaky_relu(x, 0.4)
-        x = self.output_projection(x)
-        return x
-
-
-# +
-def extract(a, t, x_shape):
-    b, *_ = t.shape
-    out = a.gather(-1, t)
-    mm = len(x_shape) - 1
-    return out.reshape(b, *((1,) * mm))
-
-
-def q_sample(x_start, t, noise=None):
-    noise = default(noise, lambda: torch.randn_like(x_start))
-
-    return (
-        extract(sqrt_alphas_cumprod, t, x_start.shape) * x_start
-        + extract(sqrt_one_minus_alphas_cumprod, t, x_start.shape) * noise
-    )
-
-
-def p_losses(x_start, cond, t, noise=None):
-    loss_type = "l2"
-    noise = default(noise, lambda: torch.randn_like(x_start))
-
-    x_noisy = q_sample(x_start=x_start, t=t, noise=noise)
-    x_recon = denoise_fn(x_noisy, t, cond=cond)
-
-    if loss_type == "l1":
-        loss = torch.nn.functional.l1_loss(x_recon, noise)
-    elif loss_type == "l2":
-        loss = torch.nn.functional.mse_loss(x_recon, noise)
-    elif loss_type == "huber":
-        loss = torch.nn.functional.smooth_l1_loss(x_recon, noise)
-    else:
-        raise NotImplementedError()
-
-    return loss
-
-
-def log_prob(self, x, cond, *args, **kwargs):
-    if self.scale is not None:
-        x /= self.scale
-
-    B, T, _ = x.shape
-
-    time = torch.randint(0, self.num_timesteps, (B * T,), device=x.device).long()
-    loss = p_losses(
-        x.reshape(B * T, 1, -1), cond.reshape(B * T, 1, -1), time, *args, **kwargs
-    )
-
-    return loss
-
-
+latent_rnn = LatentRNN(latent_rnn_params)
 # -
 
-tmp_x_start = torch.ones((2, 3))
-tmp_x_start
+naive_diffusion_model = NaiveDiffusionModel(
+    rnn=latent_rnn,
+    diffusion_encoder=diffusion_encoder,
+    diffusion_decoder=diffusion_decoder,
+)
+naive_diffusion_forecaster = NaiveDiffusionForecaster(
+    model=naive_diffusion_model.float(),
+)
 
-tmp_a = torch.Tensor([1, 2, 3, 4, 5])
-tmp_a
+naive_diffusion_forecaster
 
-extract(tmp_a, tmp_t, x_shape=tmp_x_start.shape)
+# +
+logger_1_step = pl.loggers.TensorBoardLogger(
+    save_dir="lightning_logs", name="naive_diffusion_ts_1_step"
+)
+
+trainer_1_step = pl.Trainer(
+    precision="32",
+    max_epochs=3000,
+    min_epochs=5,
+    # callbacks=[
+    #     pl.callbacks.early_stopping.EarlyStopping(monitor="val_loss", mode="min", min_delta=1e-8, patience=4)
+    # ],
+    logger=logger_1_step,
+    accelerator="mps",
+)
+# -
+
+trainer_1_step.fit(model=naive_diffusion_forecaster, datamodule=pdm_1_step)
+
+# # Evaluation
+
+from ts_bolt.evaluation.evaluator import Evaluator
+from ts_bolt.naive_forecasters.last_observation import LastObservationForecaster
+
+evaluator_1_step = Evaluator(step=0)
+
+predictions_1_step = trainer_1_step.predict(
+    model=naive_diffusion_forecaster, datamodule=pdm_1_step
+)
+
+# +
+fig, ax = plt.subplots(figsize=(10, 6.18))
+
+ax.plot(
+    evaluator_1_step.y_true(dataloader=pdm_1_step.predict_dataloader()),
+    "g-",
+    label="truth",
+)
+
+ax.plot(evaluator_1_step.y(predictions_1_step), "r--", label="predictions")
+
+# ax.plot(evaluator_1_step.y(lobs_1_step_predictions), "b-.", label="naive predictions")
+
+plt.legend()
+
+# +
+trainer_naive_1_step = pl.Trainer(precision="32")
+
+lobs_forecaster_1_step = LastObservationForecaster(horizon=horizon_1_step)
+lobs_1_step_predictions = trainer_naive_1_step.predict(
+    model=lobs_forecaster_1_step, datamodule=pdm_1_step
+)
