@@ -28,8 +28,6 @@ import torch
 import torch.nn as nn
 from loguru import logger
 
-# -
-
 
 # +
 @dataclasses.dataclass
@@ -568,15 +566,11 @@ test_state.shape
 torch.sqrt(torch.from_numpy(diffusion_process_params.alpha_by_step)[0])
 
 
-# +
 (
     test_state
     - torch.sqrt(torch.from_numpy(diffusion_process_params.alpha_by_step)[0])
     * training_noise[:, 0].reshape(training_batch_size, 1)
 ).shape
-
-
-# -
 
 pdm_1_step = DataFrameDataModule(
     history_length=history_length_1_step,
