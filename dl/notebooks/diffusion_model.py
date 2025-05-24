@@ -48,30 +48,26 @@ class DiffusionPocessParams:
 
     @cached_property
     def beta_by_step(self) -> np.ndarray:
-        """the beta parameter for each step in the diffusion process."""
+        """the beta parameter for each step
+        in the diffusion process.
+        """
         return np.array([self.beta] * self.steps)
 
     @cached_property
     def alpha_by_step(self) -> np.ndarray:
-        """the alpha parameter for each step in the diffusion process."""
+        """the alpha parameter for each step
+        in the diffusion process."""
         return np.array([self.alpha] * self.steps)
-
-
-def gaussian_noise(n_var: int, length: int) -> torch.Tensor:
-    """Generate a Gaussian noise tensor.
-
-    :param n_var: Number of variables.
-    :param length: Length of the tensor.
-    """
-    return torch.normal(mean=0, std=1, size=(n_var, length))
 
 
 class DiffusionProcess:
     """
     Diffusion process.
 
-    :param params: DiffusionParams that defines how the diffusion process works
-    :param noise: noise tensor, shape is (batch_size, params.steps)
+    :param params: DiffusionParams that defines
+        how the diffusion process works
+    :param noise: noise tensor,
+        shape is (batch_size, params.steps)
     """
 
     def __init__(
@@ -86,14 +82,23 @@ class DiffusionProcess:
 
     @cached_property
     def alpha_by_step(self) -> torch.Tensor:
+        """The alpha parameter for each step
+        in the diffusion process.
+        """
         return torch.tensor(self.params.alpha_by_step, dtype=self.dtype)
 
     def _forward_process_by_step(self, state: torch.Tensor, step: int) -> torch.Tensor:
-        r"""Assuming that we know the noise at step $t$,
+        r"""Assuming that we know
+        the noise at step $t$,
 
         $$
-        x(t) = \sqrt{\alpha(t)}x(t-1) + \sqrt{1 - \alpha(t)}\epsilon(t)
+        x(t) = \sqrt{\alpha(t)}x(t-1)
+        + \sqrt{1 - \alpha(t)}\epsilon(t)
         $$
+
+        :param state: The state at step $t-1$.
+        :param step: The current step $t$.
+        :return: The state at step $t$.
         """
         return (
             torch.sqrt(self.alpha_by_step[step]) * state
@@ -101,7 +106,8 @@ class DiffusionProcess:
         )
 
     def _inverse_process_by_step(self, state: torch.Tensor, step: int) -> torch.Tensor:
-        r"""Assuming that we know the noise at step $t$,
+        r"""Assuming that we know
+        the noise at step $t$,
 
         $$
         x(t-1) = \frac{1}{\sqrt{\alpha(t)}}
@@ -111,6 +117,15 @@ class DiffusionProcess:
         return (
             state - torch.sqrt(1 - self.alpha_by_step[step]) * self.noise[:, step]
         ) / torch.sqrt(self.alpha_by_step[step])
+
+
+def gaussian_noise(n_var: int, length: int) -> torch.Tensor:
+    """Generate a Gaussian noise tensor.
+
+    :param n_var: Number of variables.
+    :param length: Length of the tensor.
+    """
+    return torch.normal(mean=0, std=1, size=(n_var, length))
 
 
 # +
@@ -267,6 +282,55 @@ ax.set_xlabel("Position")
 # -
 
 
+df_diffusion_example_melted
+
+# + vscode={"languageId": "javascript"}
+_, ax = plt.subplots(figsize=(15, 6))
+
+sns.lineplot(
+    df_diffusion_example_melted.loc[
+        df_diffusion_example_melted["variable"].isin(
+            [0, 100, 200, 300, 400, 500, 600, 700, 800, 900]
+        )
+    ].rename(columns={"variable": "particle id"}),
+    x="step",
+    y="value",
+    style="particle id",
+)
+
+ax.set_xlabel("Time Step")
+ax.set_ylabel("Particle Position")
+
+# +
+ridge_steps = 10
+
+
+fig, ax = plt.subplots(figsize=(8, 6))
+colors = plt.cm.viridis(np.linspace(0, 1, ridge_steps))
+bin_edges = np.histogram_bin_edges(df_diffusion_example_melted["value"], bins="auto")
+
+for i, step in enumerate([0, 10, 20, 30, 40, 50, 60, 70, 80, 90]):
+    values = df_diffusion_example_melted[df_diffusion_example_melted["step"] == step][
+        "value"
+    ]
+    counts, _ = np.histogram(values, bins=bin_edges)
+    counts = counts / counts.max()
+
+    offset = i * 1.2
+    ax.fill_between(
+        bin_edges[:-1], offset, counts + offset, step="mid", color=colors[i], alpha=0.7
+    )
+    ax.text(bin_edges[-1] + 0.2, offset, step, va="center")
+
+
+ax.axes.get_yaxis().set_visible(False)
+
+plt.axis("off")
+ax.set_xlabel("Position")
+plt.tight_layout()
+
+# -
+
 # # Model
 
 
@@ -335,8 +399,8 @@ class LatentRNN(nn.Module):
         return outputs
 
 
-class DiffusionDecoder(nn.Module):
-    """Decoding the time series into the latent space."""
+class DiffusionEncoder(nn.Module):
+    """Encode the time series into the latent space."""
 
     def __init__(
         self,
@@ -390,8 +454,8 @@ class DiffusionDecoder(nn.Module):
         return diffusion_steps_step_by_step[-1]
 
 
-class DiffusionEncoder(nn.Module):
-    """Encode the latent space into a distribution."""
+class DiffusionDecoder(nn.Module):
+    """Decode the latent space into a distribution."""
 
     def __init__(
         self,
