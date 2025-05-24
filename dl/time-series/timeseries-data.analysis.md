@@ -61,4 +61,5 @@ Terminologies for time series data may be different in different fields[^Hyndman
 [^Das2019]: Das P. Econometrics in Theory and Practice. Springer Nature Singapore; [doi:10.1007/978-981-32-9019-8](https://link.springer.com/book/10.1007/978-981-32-9019-8)
 [^Dawid2022]: Dawid P, Tewari A. On learnability under general stochastic processes. Harvard Data Science Review. 2022;
 [^Hyndman2020]: Hyndman R. Rob J Hyndman - Terminology matters. In: Rob J Hyndman [Internet]. 26 Jun 2020 [cited 9 Nov 2023]. Available: https://robjhyndman.com/hyndsight/terminology-matters/#same-concept-different-terminology
-4. [doi:10.1162/99608f92.dec7d780](https://hdsr.mitpress.mit.edu/pub/qixx99zn/release/1)
+
+1. [doi:10.1162/99608f92.dec7d780](https://hdsr.mitpress.mit.edu/pub/qixx99zn/release/1)
