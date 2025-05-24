@@ -666,29 +666,131 @@ naive_diffusion_forecaster = NaiveDiffusionForecaster(
 
 naive_diffusion_forecaster
 
-# +
 logger_1_step = pl.loggers.TensorBoardLogger(
     save_dir="lightning_logs", name="naive_diffusion_ts_1_step"
 )
-
+precision = "64"
 trainer_1_step = pl.Trainer(
-    precision="32",
-    max_epochs=5000,
+    # precision="32",
+    precision=precision,
+    # max_epochs=5000,
+    max_epochs=10000,
     min_epochs=5,
     # callbacks=[
     #     pl.callbacks.early_stopping.EarlyStopping(monitor="val_loss", mode="min", min_delta=1e-8, patience=4)
     # ],
     logger=logger_1_step,
-    accelerator="mps",
+    # accelerator="mps",
+    accelerator="cuda",
 )
-# -
 
 trainer_1_step.fit(model=naive_diffusion_forecaster, datamodule=pdm_1_step)
 
 # # Evaluation
 
+# +
+from typing import Dict, List, Sequence, Tuple
+
+import matplotlib as mpl
+import numpy as np
+import pandas as pd
+import torch
+from torch.utils.data import DataLoader
+from torchmetrics import MetricCollection
+from torchmetrics.regression import (
+    MeanAbsoluteError,
+    MeanAbsolutePercentageError,
+    MeanSquaredError,
+    SymmetricMeanAbsolutePercentageError,
+)
 from ts_bolt.evaluation.evaluator import Evaluator
 from ts_bolt.naive_forecasters.last_observation import LastObservationForecaster
+
+
+class Evaluator:
+    """Evaluate the predictions
+
+    :param step: which prediction step to be evaluated.
+    :param gap: gap between input history and target/prediction.
+    """
+
+    def __init__(self, step: int = 0, gap: int = 0):
+        self.step = step
+        self.gap = gap
+
+    @staticmethod
+    def get_one_history(
+        predictions: Sequence[Sequence], idx: int, batch_idx: int = 0
+    ) -> torch.Tensor:
+        return predictions[batch_idx][0][idx, ...]
+
+    @staticmethod
+    def get_one_pred(predictions: List, idx: int, batch_idx: int = 0) -> torch.Tensor:
+        return predictions[batch_idx][1][idx, ...]
+
+    @staticmethod
+    def get_y(predictions: List, step: int) -> List[torch.Tensor]:
+        return [i[1][..., step] for i in predictions]
+
+    def y(self, predictions: List, batch_idx: int = 0) -> torch.Tensor:
+        return self.get_y(predictions, self.step)[batch_idx].detach()
+
+    @staticmethod
+    def get_y_true(dataloader: DataLoader, step: int) -> list[torch.Tensor]:
+        return [i[1][..., step] for i in dataloader]
+
+    def y_true(self, dataloader: DataLoader, batch_idx: int = 0) -> torch.Tensor:
+        return self.get_y_true(dataloader, step=self.step)[batch_idx].detach()
+
+    def get_one_sample(
+        self, predictions: List, idx: int, batch_idx: int = 0
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        return (
+            self.get_one_history(predictions, idx, batch_idx),
+            self.get_one_pred(predictions, idx, batch_idx),
+        )
+
+    def plot_one_sample(
+        self, ax: mpl.axes.Axes, predictions: List, idx: int, batch_idx: int = 0
+    ) -> None:
+        history, pred = self.get_one_sample(predictions, idx, batch_idx)
+
+        x_raw = np.arange(len(history) + len(pred) + self.gap)
+        x_history = x_raw[: len(history)]
+        x_pred = x_raw[len(history) + self.gap :]
+        x = np.concatenate([x_history, x_pred])
+
+        y = np.concatenate([history, pred])
+
+        ax.plot(x, y, marker=".", label=f"input ({idx})")
+
+        ax.axvspan(x_pred[0], x_pred[-1], color="orange", alpha=0.1)
+
+    @property
+    def metric_collection(self) -> MetricCollection:
+        return MetricCollection(
+            MeanAbsoluteError(),
+            MeanAbsolutePercentageError(),
+            MeanSquaredError(),
+            SymmetricMeanAbsolutePercentageError(),
+        )
+
+    @staticmethod
+    def metric_dataframe(metrics: Dict) -> pd.DataFrame:
+        return pd.DataFrame(
+            [{k: float(v) for k, v in metrics.items()}], index=["values"]
+        ).T
+
+    def metrics(
+        self, predictions: List, dataloader: DataLoader, batch_idx: int = 0
+    ) -> pd.DataFrame:
+        truths = self.y_true(dataloader)
+        preds = self.y(predictions, batch_idx=batch_idx)
+
+        return self.metric_dataframe(self.metric_collection(preds, truths))
+
+
+# -
 
 evaluator_1_step = Evaluator(step=0)
 
@@ -712,9 +814,32 @@ ax.plot(evaluator_1_step.y(predictions_1_step), "r--", label="predictions")
 plt.legend()
 
 # +
-trainer_naive_1_step = pl.Trainer(precision="32")
+trainer_naive_1_step = pl.Trainer(precision=precision)
 
 lobs_forecaster_1_step = LastObservationForecaster(horizon=horizon_1_step)
 lobs_1_step_predictions = trainer_naive_1_step.predict(
     model=lobs_forecaster_1_step, datamodule=pdm_1_step
+)
+
+# +
+fig, ax = plt.subplots(figsize=(10, 6.18))
+
+ax.plot(
+    evaluator_1_step.y_true(dataloader=pdm_1_step.predict_dataloader()),
+    "g-",
+    label="truth",
+)
+
+ax.plot(evaluator_1_step.y(predictions_1_step), "r--", label="predictions")
+
+ax.plot(evaluator_1_step.y(lobs_1_step_predictions), "b-.", label="naive predictions")
+
+plt.legend()
+# -
+
+evaluator_1_step.metrics(predictions_1_step, pdm_1_step.predict_dataloader())
+
+evaluator_1_step.metrics(
+    [[i.unsqueeze(-1) for i in lobs_1_step_predictions[0]]],
+    pdm_1_step.predict_dataloader(),
 )
