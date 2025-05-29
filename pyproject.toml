@@ -33,6 +33,7 @@ jupytext = "^1.15.2"
 [tool.poetry.group.visualization.dependencies]
 seaborn = "^0.13.2"
 opentsne = "^1.0.2"
+plotly = "^6.1.1"
 
 
 [tool.poetry.group.data.dependencies]
