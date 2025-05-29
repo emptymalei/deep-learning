@@ -262,6 +262,7 @@ nav:
       - "Generate Time Series Using Statistics": notebooks/time-series-data-generation.py
       - "Generate Time Series Using VAE": notebooks/time_vae.py
       - "Comparing Time Series": notebooks/timeseries-comparison.py
+      - "Diffusion Models": notebooks/diffusion_model.py
     - "Small Yet Powerful Concepts":
       - concepts/index.md
       - "Entropy": concepts/entropy.md

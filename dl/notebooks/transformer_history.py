@@ -72,9 +72,11 @@ coordinate_calculator = lambda i: np.array(
                 i["publicationDate"], "%Y-%m-%dT%H:%M:%SZ"
             ).toordinal()
         ),
-        np.log(1 + i.get("forwardEdgeCount", 0)) * (1 + rng.random() * 0.2)
-        if i.get("forwardEdgeCount", 0) > 50
-        else np.log(1 + i.get("forwardEdgeCount", 0)) + rng.random() * 3,
+        (
+            np.log(1 + i.get("forwardEdgeCount", 0)) * (1 + rng.random() * 0.2)
+            if i.get("forwardEdgeCount", 0) > 50
+            else np.log(1 + i.get("forwardEdgeCount", 0)) + rng.random() * 3
+        ),
     ]
 )
 

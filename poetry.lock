@@ -2722,6 +2722,30 @@ files = [
 ]
 
 [[package]]
+name = "narwhals"
+version = "1.40.0"
+description = "Extremely lightweight compatibility layer between dataframe libraries"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "narwhals-1.40.0-py3-none-any.whl", hash = "sha256:1e6c731811d01c61147c52433b4d4edfb6511aaf2c859aa01c2e8ca6ff4d27e5"},
+    {file = "narwhals-1.40.0.tar.gz", hash = "sha256:17064abffd264ea1cfe6aefc8a0080f3a4ffb3659a98bcad5456ca80b88f2a0a"},
+]
+
+[package.extras]
+cudf = ["cudf (>=24.10.0)"]
+dask = ["dask[dataframe] (>=2024.8)"]
+duckdb = ["duckdb (>=1.0)"]
+ibis = ["ibis-framework (>=6.0.0)", "packaging", "pyarrow-hotfix", "rich"]
+modin = ["modin"]
+pandas = ["pandas (>=0.25.3)"]
+polars = ["polars (>=0.20.3)"]
+pyarrow = ["pyarrow (>=11.0.0)"]
+pyspark = ["pyspark (>=3.5.0)"]
+pyspark-connect = ["pyspark[connect] (>=3.5.0)"]
+sqlframe = ["sqlframe (>=3.22.0)"]
+
+[[package]]
 name = "nbclient"
 version = "0.8.0"
 description = "A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor."
@@ -3450,6 +3474,26 @@ files = [
 [package.extras]
 docs = ["furo (>=2023.3.27)", "proselint (>=0.13)", "sphinx (>=6.2.1)", "sphinx-autodoc-typehints (>=1.23,!=1.23.4)"]
 test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.3.1)", "pytest-cov (>=4)", "pytest-mock (>=3.10)"]
+
+[[package]]
+name = "plotly"
+version = "6.1.1"
+description = "An open-source interactive data visualization library for Python"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "plotly-6.1.1-py3-none-any.whl", hash = "sha256:9cca7167406ebf7ff541422738402159ec3621a608ff7b3e2f025573a1c76225"},
+    {file = "plotly-6.1.1.tar.gz", hash = "sha256:84a4f3d36655f1328fa3155377c7e8a9533196697d5b79a4bc5e905bdd09a433"},
+]
+
+[package.dependencies]
+narwhals = ">=1.15.1"
+packaging = "*"
+
+[package.extras]
+dev = ["black (==25.1.0)"]
+express = ["numpy"]
+kaleido = ["kaleido (==1.0.0rc13)"]
 
 [[package]]
 name = "pmdarima"
@@ -6020,4 +6064,4 @@ test = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "3.10.14"
-content-hash = "d60d46a90877b7d0a5a457b0d97b0dd6cbcf1a1a228129c0d0645d572c110a6a"
+content-hash = "0aa12366838d486e92f0db596d2345b19b0fffb646d82694381814c3f2bc65f8"
