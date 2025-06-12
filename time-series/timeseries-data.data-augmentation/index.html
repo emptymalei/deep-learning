@@ -1,0 +1,4235 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Time Series with Deep Learning Quick Bite">
+      
+      
+        <meta name="author" content="Lei Ma">
+      
+      
+        <link rel="canonical" href="https://emptymalei.github.io/deep-learning/time-series/timeseries-data.data-augmentation/">
+      
+      
+        <link rel="prev" href="../timeseries-datasets.synthetic/">
+      
+      
+        <link rel="next" href="../timeseries-forecast.tasks/">
+      
+      
+      <link rel="icon" href="../../assets/logo_badge.svg">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.10">
+    
+    
+      
+        <title>Augmentation - Time Series with Deep Learning Quick Bite</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.fad675c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.356b1318.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings1.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings2.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings3.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings4.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings5.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings6.css">
+    
+      <link rel="stylesheet" href="../../css/print-site.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-material.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-9XN0RGHSE1"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-9XN0RGHSE1",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-9XN0RGHSE1",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+  
+    <script>var consent;"undefined"==typeof __md_analytics||(consent=__md_get("__consent"))&&consent.analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="deep-orange">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-augmentation-for-time-series" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Time Series with Deep Learning Quick Bite" class="md-header__button md-logo" aria-label="Time Series with Deep Learning Quick Bite" data-md-component="logo">
+      
+  <img src="../../assets/logo_badge.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Time Series with Deep Learning Quick Bite
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Augmentation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/emptymalei/deep-learning" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    emptymalei/machine-learning
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../engineering/" class="md-tabs__link">
+          
+  
+  Engineering Tips
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  Fundamentals of Time Series Forecasting
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../trees/tree.basics/" class="md-tabs__link">
+          
+  
+  Trees
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deep-learning-fundamentals/" class="md-tabs__link">
+          
+  
+  Fundamentals of Deep Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../time-series-deep-learning/" class="md-tabs__link">
+          
+  
+  Time Series Forecasting with Deep Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../supplementary/" class="md-tabs__link">
+          
+  
+  Supplementary
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../meta/roadmap/" class="md-tabs__link">
+          
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Time Series with Deep Learning Quick Bite" class="md-nav__button md-logo" aria-label="Time Series with Deep Learning Quick Bite" data-md-component="logo">
+      
+  <img src="../../assets/logo_badge.svg" alt="logo">
+
+    </a>
+    Time Series with Deep Learning Quick Bite
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/emptymalei/deep-learning" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    emptymalei/machine-learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Engineering Tips
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Engineering Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Coding Tips
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/python/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Fundamentals of Time Series Forecasting
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Fundamentals of Time Series Forecasting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Data and Statistical Forecasting Mothods
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Time Series Data
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Time Series Data
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Terminologies of Time Series Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.box-cox/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Box-Cox Transformation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.analysis.twfe/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Two-way Fixed Effects
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.time-delayed-embedding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Delayed Embedding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Data Generating Process
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Data Generating Process
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.dgp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DGP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.dgp.langevin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DGP: Langevin Equation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Kindergarten Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Kindergarten Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.statistical-models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Statistical Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.ar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AR
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.var/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    VAR
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Synthetic Datasets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Synthetic Datasets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-synthetic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Synthetic Time Series
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.synthetic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Creating Synthetic Dataset
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Augmentation
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Augmentation
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#augmenting-the-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Augmenting the Dataset
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Augmenting the Dataset">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#perturbation-in-fourier-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      Perturbation in Fourier Domain
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slicing-permutation-and-bootstrapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Slicing, Permutation, and Bootstrapping
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Warping
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#barycenter-averaging-based-on-dtw-distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Barycenter Averaging Based on DTW Distance
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Barycenter Averaging Based on DTW Distance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#series-mixing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Series Mixing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-generating-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Generating Process
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Generating Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-factor-model-dfm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Factor Model (DFM)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#applying-the-synthetic-data-to-model-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Applying the Synthetic Data to Model Training
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Forecasting
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            Forecasting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-forecast.tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Forecasting Tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-forecast.naive/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Naive Forecasts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Evaluation and Metrics
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            Evaluation and Metrics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-evaluation.forecasting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Forecasting Evaluation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-metrics.forecasting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Forecasting Metrics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-metrics.forecasting.crps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CRPS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Hierarchical Time Series
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            Hierarchical Time Series
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-hierarchical.data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hierarchical Time Series Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-hierarchical.reconciliation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hierarchical Time Series Reconciliation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Useful Datasets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            Useful Datasets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Datasets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.ecb-exchange-rate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exchange Rate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.nrel-solar-energy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NREL Solar Power Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.uci-electricity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Electricity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.pems/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PeMS Traffic Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Trees
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Trees
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.basics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tree-based Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.random-forest/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Random Forest
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.gbdt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Gradient Boosted Trees
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.darts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Trees
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Fundamentals of Deep Learning
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Fundamentals of Deep Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deep Learning Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Learning from Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/neural-net/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Neural Networks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/recurrent-neural-networks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recurrent Neural Networks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/convolutional-neural-networks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Convolutional Neural Networks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Transformers
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            Transformers
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../transformers/transformers.vanilla/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vanilla Transformers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Dynamical Systems
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_7">
+            <span class="md-nav__icon md-icon"></span>
+            Dynamical Systems
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dynamical-systems/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Why Dynamical Systems
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dynamical-systems/neural-ode/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Neural ODE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Energy-based Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_8">
+            <span class="md-nav__icon md-icon"></span>
+            Energy-based Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energy-based-models/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energy-based-models/ebm.diffusion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Diffusion Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_9" id="__nav_5_9_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Generative Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_9">
+            <span class="md-nav__icon md-icon"></span>
+            Generative Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/autoregressive/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Autoregressive
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/ae/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/vae/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    VAE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/flow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Flow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/gan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Time Series Forecasting with Deep Learning
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Time Series Forecasting with Deep Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.dataset.pendulum/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pendulum Dataset
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.feedforward/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with MLP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.rnn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with RNN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.transformer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Transformers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.cnn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with CNN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.vae/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with VAE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.flow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Flow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.gan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with GAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.neural-ode/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Neural ODE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.deep-learning.timegrad/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Diffusion Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Supplementary
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Supplementary
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../supplementary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About Supplementary Materials
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utilities/notebooks-and-utilities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to Run Our Notebooks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Notebooks
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_3">
+            <span class="md-nav__icon md-icon"></span>
+            Notebooks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/timeseries_data_box-cox/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Box-Cox Transformation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/pendulum_dataset/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    A Dataset Generated by Damped Pendulum
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/hierarchical_forecasting_mint/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecast Reconciliation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_basics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tree Basics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_random_forest/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Random Forest Playground
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_darts_random_forest/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Trees Using Darts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_darts_boosted_tree/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Boosted Trees Using Darts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/creating_time_series_datasets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Creating Time Series Datasets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/feedforward_neural_netwroks_timeseries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Feedforward Neural Networks for Univariate Time Series Forecasting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/rnn_timeseries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RNN for Univariate Time Series Forecasting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/transformer_timeseries_univariate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transformer for Univariate Time Series Forecasting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/neuralode_timeseries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NeuralODE for Univariate Time Series Forecasting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time-series-data-generation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Data Generation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time_vae/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TimeVAE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/timeseries-comparison/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Comparing Time Series with Each Other
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/diffusion_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Diffusion Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time_series_data_and_embedding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Data and Embeddings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_4" id="__nav_7_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Small Yet Powerful Concepts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_4">
+            <span class="md-nav__icon md-icon"></span>
+            Small Yet Powerful Concepts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Appendices
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/entropy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Entropy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/mutual-information/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mutual Information
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/kl-divergence/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    KL Divergence
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/f-divergence/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    f-divergence
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/elbo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ELBO
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/alignment-and-uniformity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Alignment and Uniformity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/gini-impurity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Gini Impurity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/information-gain/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Information Gain
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/generalization/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Generalization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/timeseries-data.dtw/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DTW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/timeseries-data.dtw-barycenter-averaging/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5" id="__nav_7_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Other Deep Learning Topics
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_5">
+            <span class="md-nav__icon md-icon"></span>
+            Other Deep Learning Topics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5_1" id="__nav_7_5_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Contrastive
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_7_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            Contrastive
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/deep-infomax/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deep Infomax
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/contrastive-predictive-coding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contrastive Predictive Coding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/made/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MADE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/maf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MAF
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/f-gan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    f-GAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/infogan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    InfoGAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meta/roadmap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Roadmap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meta/changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#augmenting-the-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Augmenting the Dataset
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Augmenting the Dataset">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#perturbation-in-fourier-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      Perturbation in Fourier Domain
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slicing-permutation-and-bootstrapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Slicing, Permutation, and Bootstrapping
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Warping
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#barycenter-averaging-based-on-dtw-distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Barycenter Averaging Based on DTW Distance
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Barycenter Averaging Based on DTW Distance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#series-mixing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Series Mixing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-generating-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Generating Process
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Generating Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-factor-model-dfm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Factor Model (DFM)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#applying-the-synthetic-data-to-model-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Applying the Synthetic Data to Model Training
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+  
+
+  
+                  
+
+  
+  
+
+
+<h1 id="data-augmentation-for-time-series">Data Augmentation for Time Series<a class="headerlink" href="#data-augmentation-for-time-series" title="Permanent link">¶</a></h1>
+<p>In deep learning, our dataset should help the optimization mechanism locate a good spot in the parameter space. However, real-world data is not necessarily diverse enough that covers the required situations with enough records. For example, some datasets may be extremely imbalanced class labels which leads to poor performance in classification tasks <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">3</a></sup>. Another problem with a limited dataset is that the trained model may not generalize well <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">4</a></sup><sup id="fnref:3"><a class="footnote-ref" href="#fn:3">5</a></sup>.</p>
+<p>We will cover two topics in this section: Augmenting the dataset and application of the augmented data to model training.</p>
+<h2 id="augmenting-the-dataset">Augmenting the Dataset<a class="headerlink" href="#augmenting-the-dataset" title="Permanent link">¶</a></h2>
+<p>There are many different ways of augmenting time series data <sup id="fnref2:2"><a class="footnote-ref" href="#fn:2">4</a></sup><sup id="fnref:4"><a class="footnote-ref" href="#fn:4">6</a></sup>. We categorize the methods into the following groups:</p>
+<ul>
+<li>Random transformations, e.g., jittering;</li>
+<li>Pattern mixing, e.g., DBA;<sup id="fnref6:5"><a class="footnote-ref" href="#fn:5">7</a></sup></li>
+<li>Generative models, e.g.,<ul>
+<li>phenomenological generative models such as AR <sup id="fnref2:6"><a class="footnote-ref" href="#fn:6">8</a></sup>,</li>
+<li>first principle models such as economical models <sup id="fnref3:7"><a class="footnote-ref" href="#fn:7">9</a></sup>,</li>
+<li>deep generative models such as TimeGAN or TS GAN <sup id="fnref:8"><a class="footnote-ref" href="#fn:8">10</a></sup><sup id="fnref:9"><a class="footnote-ref" href="#fn:9">11</a></sup>.</li>
+</ul>
+</li>
+</ul>
+<p>We also treat the first two methods, random transformations and pattern mixing as basic methods.</p>
+<h3 id="basic-methods">Basic Methods<a class="headerlink" href="#basic-methods" title="Permanent link">¶</a></h3>
+<p>In the following table, we group some of the data augmentation methods by two dimensions, the category of the method, and the domain of where the method is applied.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Projected Domain</th>
+<th>Time Scale</th>
+<th>Magnitude</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Random Transformation</td>
+<td>Frequency Masking, Frequency Warping, Fourier Transform, STFT</td>
+<td>Permutation, Slicing, Time Warping, Time Masking, Cropping</td>
+<td>Jittering, Flipping, Scaling, Magnitude Warping</td>
+</tr>
+<tr>
+<td>Pattern Mixing</td>
+<td>EMDA<sup id="fnref2:10"><a class="footnote-ref" href="#fn:10">12</a></sup>, SFM<sup id="fnref2:11"><a class="footnote-ref" href="#fn:11">13</a></sup></td>
+<td>Guided Warping<sup id="fnref:12"><a class="footnote-ref" href="#fn:12">14</a></sup></td>
+<td>DFM<sup id="fnref2:7"><a class="footnote-ref" href="#fn:7">9</a></sup>, Interpolation, DBA<sup id="fnref5:5"><a class="footnote-ref" href="#fn:5">7</a></sup></td>
+</tr>
+</tbody>
+</table>
+<p>For completeness, we will explain some of the methods in more detail in the following.</p>
+<h4 id="perturbation-in-fourier-domain">Perturbation in Fourier Domain<a class="headerlink" href="#perturbation-in-fourier-domain" title="Permanent link">¶</a></h4>
+<p>In the Fourier domain, for each the amplitude <span class="arithmatex">\(A_f\)</span> and phase <span class="arithmatex">\(\phi_f\)</span> at a specific frequency, we can perform<sup id="fnref:13"><a class="footnote-ref" href="#fn:13">15</a></sup></p>
+<ul>
+<li>magnitude replacement using a Gaussian distribution, and</li>
+<li>phase shift by adding Gaussian noise.</li>
+</ul>
+<p>We perform such perturbations at some chosen frequency.</p>
+<h4 id="slicing-permutation-and-bootstrapping">Slicing, Permutation, and Bootstrapping<a class="headerlink" href="#slicing-permutation-and-bootstrapping" title="Permanent link">¶</a></h4>
+<p>We can slice a series into small segments. With the slices, we can perform different operations to create new series.</p>
+<ul>
+<li>Window Slicing (<strong>WS</strong>): In a classification task, we can take the slices from the original series and assign the same class label to the slice <sup id="fnref:14"><a class="footnote-ref" href="#fn:14">16</a></sup>. The slices can also be interpolated to match the length of the original series <sup id="fnref3:2"><a class="footnote-ref" href="#fn:2">4</a></sup>.</li>
+<li>Permutation: We take the slices and permute them to form a new series <sup id="fnref:15"><a class="footnote-ref" href="#fn:15">17</a></sup>.</li>
+<li>Moving Block Bootstrapping (<strong>MBB</strong>): First, we remove the trend and seasonability. Then we draw blocks of fixed length from the residual of the series until the desired length of the series is met. Finally, we combine the newly formed residual with trend and seasonality to form a new series <sup id="fnref:16"><a class="footnote-ref" href="#fn:16">18</a></sup>.</li>
+</ul>
+<h4 id="warping">Warping<a class="headerlink" href="#warping" title="Permanent link">¶</a></h4>
+<p>Both the time scale and magnitude can be warped. For example,</p>
+<ul>
+<li>Time Warping: We distort time intervals by taking a range of data points and upsample or downsample it <sup id="fnref2:4"><a class="footnote-ref" href="#fn:4">6</a></sup>.</li>
+<li>Magnitude Warping: the magnitude of the time series is rescaled.</li>
+</ul>
+<details class="note">
+<summary>Dynamic Time Warping (<strong>DTW</strong>)</summary>
+<p>Given two sequences, <span class="arithmatex">\(S^{(1)}\)</span> and <span class="arithmatex">\(S^{(2)}\)</span>, the Dynamic Time Warping (<strong>DTW</strong>) algorithm finds the best way to align two sequences. During this alignment process, we quantify the misalignment using a distance similar to the Levenshtein distance, where the distance between two series <span class="arithmatex">\(S^{(1)}_{1:i}\)</span> (with <span class="arithmatex">\(i\)</span> elements) and <span class="arithmatex">\(S^{(2)}_{1:j}\)</span> (with <span class="arithmatex">\(j\)</span> elements) is<sup id="fnref4:5"><a class="footnote-ref" href="#fn:5">7</a></sup></p>
+<div class="arithmatex">\[
+\begin{align}
+D(S^{(1)}_{1:i}, S^{(2)}_{1:j}) =&amp; d(S^{(1)}_i, S^{(2)}_j)\\
+&amp; + \operatorname{min}\left[ D(S^{(1)}_{1:i-1}, S^{(2)}_{1:j-1}), D(S^{(1)}_{1:i}, S^{(2)}_{1:j-1}), D(S^{(1)}_{1:i-1}, S^{(2)}_{1:j}) \right],
+\end{align}
+\]</div>
+<p>where <span class="arithmatex">\(S^{(1)}_i\)</span> is the <span class="arithmatex">\(i\)</span>the element of the series <span class="arithmatex">\(S^{(1)}\)</span>, <span class="arithmatex">\(d(x,y)\)</span> is a predetermined distance, e.g., Euclidean distance. This definition reveals the recursive nature of the DTW distance.</p>
+<details class="note">
+<summary>Notations in the Definition: <span class="arithmatex">\(S_{1:i}\)</span> and <span class="arithmatex">\(S_{i}\)</span></summary>
+<p>The notation <span class="arithmatex">\(S_{1:i}\)</span> stands for a series that contains the elements starting from the first to the <span class="arithmatex">\(i\)</span>th in series <span class="arithmatex">\(S\)</span>. For example, we have a series</p>
+<div class="arithmatex">\[
+S^1 = [s^1_1, s^1_2, s^1_3, s^1_4, s^1_5, s^1_6].
+\]</div>
+<p>The notation <span class="arithmatex">\(S^1_{1:4}\)</span> represents</p>
+<div class="arithmatex">\[
+S^1_{1:4} = [s^1_1, s^1_2, s^1_3, s^1_4].
+\]</div>
+<p>The notation <span class="arithmatex">\(S_i\)</span> indicates the <span class="arithmatex">\(i\)</span>th element in <span class="arithmatex">\(S\)</span>. For example,</p>
+<div class="arithmatex">\[
+S^1_4 = s^1_4.
+\]</div>
+<p>If we map these two notations to Python,</p>
+<ul>
+<li><span class="arithmatex">\(S_{1:i}\)</span> is equivalent to <code>S[0:i]</code>, and</li>
+<li><span class="arithmatex">\(S_i\)</span> is equivalent to <code>S[i-1]</code>.</li>
+</ul>
+<p>Note that the indices in Python look strange. This is also the reason we choose to use subscripts not square brackets in our definition.</p>
+</details>
+<details class="note">
+<summary>Levenshtein Distance</summary>
+<p>Given two words, e.g., <span class="arithmatex">\(w^{a} = \mathrm{cats}\)</span> and <span class="arithmatex">\(w^{b} = \mathrm{katz}\)</span>. Suppose we can only use three operations: insertions, deletions and substitutions. The Levenshtein distance calculates the number of such operations needed to change from the first word <span class="arithmatex">\(w^a\)</span> to the second one <span class="arithmatex">\(w^b\)</span> by applying single-character edits. In this example, we need two replacements, i.e., <code>"c" -&gt; "k"</code> and <code>"s" -&gt; "z"</code>.</p>
+<p>The Levenshtein distance can be solved using recursive algorithms <sup id="fnref:trekhleb"><a class="footnote-ref" href="#fn:trekhleb">1</a></sup>.</p>
+</details>
+<p>DTW is very useful when comparing series with different lengths. For example, most error metrics require the actual time series and predicted series to have the same length. In the case of different lengths, we can perform DTW when calculating these metrics<sup id="fnref:darts-dtw-metric"><a class="footnote-ref" href="#fn:darts-dtw-metric">2</a></sup>.</p>
+<p>The forecasting package darts provides a <a href="https://unit8co.github.io/darts/examples/12-Dynamic-Time-Warping-example.html">demo of DTW</a>.</p>
+</details>
+<details class="note">
+<summary>DTW Barycenter Averaging</summary>
+<p><a href="timeseries-data.dtw.md">DTW</a> Barycenter Averaging (<strong>DBA</strong>) constructs a series <span class="arithmatex">\(\bar{\mathcal S}\)</span> out of a set of series <span class="arithmatex">\(\{\mathcal S^{(\alpha)}\}\)</span> so that <span class="arithmatex">\(\bar{\mathcal S}\)</span> is the barycenter of <span class="arithmatex">\(\{\mathcal S^{(\alpha)}\}\)</span> measured by Dynamic Time Warping (<strong>DTW</strong>) distance <sup id="fnref3:5"><a class="footnote-ref" href="#fn:5">7</a></sup>.</p>
+<h2 id="barycenter-averaging-based-on-dtw-distance">Barycenter Averaging Based on DTW Distance<a class="headerlink" href="#barycenter-averaging-based-on-dtw-distance" title="Permanent link">¶</a></h2>
+<p>Petitjean et al proposed a time series averaging algorithm based on DTW distance which is dubbed DTW Barycenter Averaging (<strong>DBA</strong>).</p>
+<div class="admonition note">
+<p class="admonition-title">DBA Implementation</p>
+<p><a href="https://github.com/fpetitjean/DBA">https://github.com/fpetitjean/DBA</a></p>
+</div>
+</details>
+<h3 id="series-mixing">Series Mixing<a class="headerlink" href="#series-mixing" title="Permanent link">¶</a></h3>
+<p>Another class of data augmentation methods is mixing the series. For example, we take two randomly drawn series and average them using DTW Barycenter Averaging (<strong>DBA</strong>) <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">7</a></sup>. (DTW, dynamic time warping, is an algorithm to calculate the distance between sequential datasets by matching the data points on each of the series <sup id="fnref2:5"><a class="footnote-ref" href="#fn:5">7</a></sup><sup id="fnref:17"><a class="footnote-ref" href="#fn:17">19</a></sup>.) To augment a dataset, we can choose from a list of strategies <sup id="fnref:18"><a class="footnote-ref" href="#fn:18">20</a></sup><sup id="fnref:19"><a class="footnote-ref" href="#fn:19">21</a></sup>:</p>
+<ul>
+<li>Average All series using different sets of weights to create new synthetic series.</li>
+<li>Average Selected series based on some strategies. For example, Forestier et al proposed choosing an initial series and combining it with its nearest neighbors <sup id="fnref2:19"><a class="footnote-ref" href="#fn:19">21</a></sup>.</li>
+<li>Average Selected with Distance is Average Selected but neighbors that are far from the initial series are down-weighted <sup id="fnref3:19"><a class="footnote-ref" href="#fn:19">21</a></sup>.</li>
+</ul>
+<p>Some other similar methods are</p>
+<ul>
+<li>Equalized Mixture Data Augmentation (<strong>EMDA</strong>) calculates the weighted average of spectrograms of the same class label<sup id="fnref:10"><a class="footnote-ref" href="#fn:10">12</a></sup>.</li>
+<li>Stochastic Feature Mapping (<strong>SFM</strong>) is a data augmentation method in audio data<sup id="fnref:11"><a class="footnote-ref" href="#fn:11">13</a></sup>.</li>
+</ul>
+<h3 id="data-generating-process">Data Generating Process<a class="headerlink" href="#data-generating-process" title="Permanent link">¶</a></h3>
+<p>Time series data can also be augmented using some assumed data generating process (<strong>DGP</strong>). Some methods, such as GRATIS <sup id="fnref:6"><a class="footnote-ref" href="#fn:6">8</a></sup>, utilize simple generic methods such as AR/MAR. Some other methods, such as Gaussian Trees <sup id="fnref:20"><a class="footnote-ref" href="#fn:20">22</a></sup>, utilize more complicated hidden structures using graphs, which can approximate more complicated data generating processes. These methods do not necessarily reflect the actual data generating process but the data is generated using some parsimonious phenomenological models. Some other methods are more tuned toward detailed mechanisms. There are also methods using generative deep neural networks such as <a href="../../self-supervised/adversarial/gan/">GAN</a>.</p>
+<h4 id="dynamic-factor-model-dfm">Dynamic Factor Model (<strong>DFM</strong>)<a class="headerlink" href="#dynamic-factor-model-dfm" title="Permanent link">¶</a></h4>
+<p>For example, we have a series <span class="arithmatex">\(X(t)\)</span> which depends on a latent variable <span class="arithmatex">\(f(t)\)</span><sup id="fnref:7"><a class="footnote-ref" href="#fn:7">9</a></sup>,</p>
+<div class="arithmatex">\[
+X(t) = \mathbf A f(t) + \eta(t),
+\]</div>
+<p>where <span class="arithmatex">\(f(t)\)</span> is determined by a differential equation</p>
+<div class="arithmatex">\[
+\frac{f(t)}{dt} = \mathbf B f(t) + \xi(t).
+\]</div>
+<p>In the above equations, <span class="arithmatex">\(\eta(t)\)</span> and <span class="arithmatex">\(\xi(t)\)</span> are the irreducible noise.</p>
+<p>The above two equations can be combined into one first-order differential equation.</p>
+<p>Once the model is fit, it can be used to generate new data points. However, we will have to understand whether the data is generated in such processes.</p>
+<h2 id="applying-the-synthetic-data-to-model-training">Applying the Synthetic Data to Model Training<a class="headerlink" href="#applying-the-synthetic-data-to-model-training" title="Permanent link">¶</a></h2>
+<p>Once we prepared the synthetic dataset, there are two strategies to include them in our model training <sup id="fnref2:18"><a class="footnote-ref" href="#fn:18">20</a></sup>.</p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pooled Strategy</td>
+<td>Synthetic data + original data -&gt; model</td>
+</tr>
+<tr>
+<td>Transfer Strategy</td>
+<td>Synthetic data -&gt; pre-trained model; pre-trained model + original data -&gt; model</td>
+</tr>
+</tbody>
+</table>
+<p>The pooled strategy takes the synthetic data and original data then feeds them together into the training pipeline. The transfer strategy uses the synthetic data to pre-train the model, then uses transfer learning methods (e.g., freeze weights of some layers) to train the model on the original data.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:trekhleb">
+<p>trekhleb. javascript-algorithms/src/algorithms/string/levenshtein-distance at master · trekhleb/javascript-algorithms. In: GitHub [Internet]. [cited 27 Jul 2022]. Available: <a href="https://github.com/trekhleb/javascript-algorithms/tree/master/src/algorithms/string/levenshtein-distance">https://github.com/trekhleb/javascript-algorithms/tree/master/src/algorithms/string/levenshtein-distance</a>&#160;<a class="footnote-backref" href="#fnref:trekhleb" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:darts-dtw-metric">
+<p>Unit8. Metrics — darts  documentation. In: Darts [Internet]. [cited 7 Mar 2023]. Available: <a href="https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html?highlight=dtw#darts.metrics.metrics.dtw_metric">https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html?highlight=dtw#darts.metrics.metrics.dtw_metric</a>&#160;<a class="footnote-backref" href="#fnref:darts-dtw-metric" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>Hasibi R, Shokri M, Dehghan M. Augmentation scheme for dealing with imbalanced network traffic classification using deep learning. 2019.<a href="http://arxiv.org/abs/1901.00204">http://arxiv.org/abs/1901.00204</a>.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Iwana BK, Uchida S. An empirical survey of data augmentation for time series classification with neural networks. 2020.<a href="http://arxiv.org/abs/2007.15951">http://arxiv.org/abs/2007.15951</a>.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:2" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:2" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Shorten C, Khoshgoftaar TM. <a href="https://doi.org/10.1186/s40537-019-0197-0">A survey on image data augmentation for deep learning</a>. <em>Journal of Big Data</em> 2019; <strong>6</strong>: 1–48.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>Wen Q, Sun L, Yang F, Song X, Gao J, Wang X <em>et al.</em> Time series data augmentation for deep learning: A survey. 2020.<a href="http://arxiv.org/abs/2002.12478">http://arxiv.org/abs/2002.12478</a>.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 6 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:4" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>Petitjean F, Ketterlin A, Gançarski P. <a href="https://doi.org/10.1016/j.patcog.2010.09.013">A global averaging method for dynamic time warping, with applications to clustering</a>. <em>Pattern recognition</em> 2011; <strong>44</strong>: 678–693.&#160;<a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:5" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:5" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:5" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:5" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:5" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+</li>
+<li id="fn:6">
+<p>Kang Y, Hyndman RJ, Li F. GRATIS: GeneRAting TIme series with diverse and controllable characteristics. 2019.<a href="http://arxiv.org/abs/1903.02787">http://arxiv.org/abs/1903.02787</a>.&#160;<a class="footnote-backref" href="#fnref:6" title="Jump back to footnote 8 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:6" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+</li>
+<li id="fn:7">
+<p>Stock JH, Watson MW. <a href="https://doi.org/10.1016/bs.hesmac.2016.04.002">Chapter 8 - dynamic factor models, Factor-Augmented vector autoregressions, and structural vector autoregressions in macroeconomics</a>. In: Taylor JB, Uhlig H (eds). <em>Handbook of macroeconomics</em>. Elsevier, 2016, pp 415–525.&#160;<a class="footnote-backref" href="#fnref:7" title="Jump back to footnote 9 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:7" title="Jump back to footnote 9 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:7" title="Jump back to footnote 9 in the text">&#8617;</a></p>
+</li>
+<li id="fn:8">
+<p>Yoon J, Jarrett D, Schaar M van der. Time-series generative adversarial networks. In: Wallach H, Larochell H, Beygelzime A, Buc F dAlche, Fox E, Garnett R (eds). <em>Advances in neural information processing systems</em>. Curran Associates, Inc., 2019<a href="https://papers.nips.cc/paper/2019/hash/c9efe5f26cd17ba6216bbe2a7d26d490-Abstract.html">https://papers.nips.cc/paper/2019/hash/c9efe5f26cd17ba6216bbe2a7d26d490-Abstract.html</a>.&#160;<a class="footnote-backref" href="#fnref:8" title="Jump back to footnote 10 in the text">&#8617;</a></p>
+</li>
+<li id="fn:9">
+<p>Brophy E, Wang Z, She Q, Ward T. Generative adversarial networks in time series: A survey and taxonomy. 2021.<a href="http://arxiv.org/abs/2107.11098">http://arxiv.org/abs/2107.11098</a>.&#160;<a class="footnote-backref" href="#fnref:9" title="Jump back to footnote 11 in the text">&#8617;</a></p>
+</li>
+<li id="fn:10">
+<p>Takahashi N, Gygli M, Van Gool L. AENet: Learning deep audio features for video analysis. 2017.<a href="http://arxiv.org/abs/1701.00599">http://arxiv.org/abs/1701.00599</a>.&#160;<a class="footnote-backref" href="#fnref:10" title="Jump back to footnote 12 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:10" title="Jump back to footnote 12 in the text">&#8617;</a></p>
+</li>
+<li id="fn:11">
+<p>Cui X, Goel V, Kingsbury B. <a href="https://doi.org/10.1109/ICASSP.2014.6854671">Data augmentation for deep neural network acoustic modeling</a>. In: <em>2014 IEEE international conference on acoustics, speech and signal processing (ICASSP)</em>. 2014, pp 5582–5586.&#160;<a class="footnote-backref" href="#fnref:11" title="Jump back to footnote 13 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:11" title="Jump back to footnote 13 in the text">&#8617;</a></p>
+</li>
+<li id="fn:12">
+<p>Iwana BK, Uchida S. Time series data augmentation for neural networks by time warping with a discriminative teacher. 2020.<a href="http://arxiv.org/abs/2004.08780">http://arxiv.org/abs/2004.08780</a>.&#160;<a class="footnote-backref" href="#fnref:12" title="Jump back to footnote 14 in the text">&#8617;</a></p>
+</li>
+<li id="fn:13">
+<p>Gao J, Song X, Wen Q, Wang P, Sun L, Xu H. RobustTAD: Robust time series anomaly detection via decomposition and convolutional neural networks. 2020.<a href="http://arxiv.org/abs/2002.09545">http://arxiv.org/abs/2002.09545</a>.&#160;<a class="footnote-backref" href="#fnref:13" title="Jump back to footnote 15 in the text">&#8617;</a></p>
+</li>
+<li id="fn:14">
+<p>Le Guennec A, Malinowski S, Tavenard R. Data augmentation for time series classification using convolutional neural networks. In: <em>ECML/PKDD workshop on advanced analytics and learning on temporal data</em>. 2016<a href="https://halshs.archives-ouvertes.fr/halshs-01357973/document">https://halshs.archives-ouvertes.fr/halshs-01357973/document</a>.&#160;<a class="footnote-backref" href="#fnref:14" title="Jump back to footnote 16 in the text">&#8617;</a></p>
+</li>
+<li id="fn:15">
+<p>Um TT, Pfister FMJ, Pichler D, Endo S, Lang M, Hirche S <em>et al.</em> Data augmentation of wearable sensor data for parkinson’s disease monitoring using convolutional neural networks. 2017.<a href="http://arxiv.org/abs/1706.00527">http://arxiv.org/abs/1706.00527</a>.&#160;<a class="footnote-backref" href="#fnref:15" title="Jump back to footnote 17 in the text">&#8617;</a></p>
+</li>
+<li id="fn:16">
+<p>Bergmeir C, Hyndman RJ, Benı́tez JM. <a href="https://doi.org/10.1016/j.ijforecast.2015.07.002">Bagging exponential smoothing methods using STL decomposition and Box–Cox transformation</a>. <em>International journal of forecasting</em> 2016; <strong>32</strong>: 303–312.&#160;<a class="footnote-backref" href="#fnref:16" title="Jump back to footnote 18 in the text">&#8617;</a></p>
+</li>
+<li id="fn:17">
+<p>Hewamalage H, Bergmeir C, Bandara K. Recurrent neural networks for time series forecasting: Current status and future directions. 2019.<a href="http://arxiv.org/abs/1909.00590">http://arxiv.org/abs/1909.00590</a>.&#160;<a class="footnote-backref" href="#fnref:17" title="Jump back to footnote 19 in the text">&#8617;</a></p>
+</li>
+<li id="fn:18">
+<p>Bandara K, Hewamalage H, Liu Y-H, Kang Y, Bergmeir C. Improving the accuracy of global forecasting models using time series data augmentation. 2020.<a href="http://arxiv.org/abs/2008.02663">http://arxiv.org/abs/2008.02663</a>.&#160;<a class="footnote-backref" href="#fnref:18" title="Jump back to footnote 20 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:18" title="Jump back to footnote 20 in the text">&#8617;</a></p>
+</li>
+<li id="fn:19">
+<p>Forestier G, Petitjean F, Dau HA, Webb GI, Keogh E. <a href="https://doi.org/10.1109/ICDM.2017.106">Generating synthetic time series to augment sparse datasets</a>. In: <em>2017 IEEE international conference on data mining (ICDM)</em>. 2017, pp 865–870.&#160;<a class="footnote-backref" href="#fnref:19" title="Jump back to footnote 21 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:19" title="Jump back to footnote 21 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:19" title="Jump back to footnote 21 in the text">&#8617;</a></p>
+</li>
+<li id="fn:20">
+<p>Cao H, Tan VYF, Pang JZF. <a href="https://doi.org/10.1109/TNNLS.2014.2308321">A parsimonious mixture of gaussian trees model for oversampling in imbalanced and multimodal time-series classification</a>. <em>IEEE transactions on neural networks and learning systems</em> 2014; <strong>25</strong>: 2226–2239.&#160;<a class="footnote-backref" href="#fnref:20" title="Jump back to footnote 22 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+  
+
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 10.3 14 9.5 14.7 8 15.5 8s1.5.7 1.5 1.5m-5 7.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81Z"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10m-6.5-4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m2 4.5c1.75 0 3.29.72 4.19 1.81l-1.42 1.42C14.32 16.5 13.25 16 12 16s-2.32.5-2.77 1.23l-1.42-1.42C8.71 14.72 10.25 14 12 14Z"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1" hidden>
+              
+              
+                
+              
+              Thanks for your feedback!
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              Thanks for your feedback! Help us improve this page by using our <a href="https://github.com/emptymalei/deep-learning/issues" target="_blank" rel="noopener">GitHub Issues or Discussions</a>.
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+                
+
+  
+    <hr>
+    <div class="md-source-date">
+      <small>
+          Contributors: <span class='git-page-authors git-authors'><a href='mailto:hi@leima.is'>LM</a></span>
+      </small>
+    </div>
+  
+
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/emptymalei/deep-learning" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/leima137/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+  
+    
+  
+
+
+  
+    
+  
+
+
+
+  
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+      
+      
+        
+        
+      
+      <li class="task-list-item">
+        <label class="task-list-control">
+          <input type="checkbox" name="analytics" checked>
+          <span class="task-list-indicator"></span>
+          Google Analytics
+        </label>
+      </li>
+    
+      
+      
+        
+        
+      
+      <li class="task-list-item">
+        <label class="task-list-control">
+          <input type="checkbox" name="github" checked>
+          <span class="task-list-indicator"></span>
+          GitHub
+        </label>
+      </li>
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout(function(){document.querySelector("[data-md-component=consent]").hidden=!1},250);var action,form=document.forms.consent;for(action of["submit","reset"])form.addEventListener(action,function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map(function(e){return[e,!0]}))),location.hash="",location.reload()})</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.6c14ae12.min.js"></script>
+      
+        <script src="../../js/print-site.js"></script>
+      
+        <script src="../../assets/js/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
