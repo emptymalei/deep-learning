@@ -8,7 +8,7 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.2
 #   kernelspec:
-#     display_name: .venv
+#     display_name: deep-learning-py3.10
 #     language: python
 #     name: python3
 # ---
@@ -219,6 +219,7 @@ class TransformerForecaster(L.LightningModule):
     def __init__(self, transformer: nn.Module):
         super().__init__()
         self.transformer = transformer
+        self.save_hyperparameters()
 
     def configure_optimizers(self) -> torch.optim.Optimizer:
         optimizer = torch.optim.SGD(self.parameters(), lr=1e-3)
@@ -501,3 +502,35 @@ for i in np.arange(0, 1000, 120):
 evaluator_m_step.metrics(predictions_m_step, pdm_m_step.predict_dataloader())
 
 evaluator_m_step.metrics(lobs_m_step_predictions, pdm_m_step.predict_dataloader())
+
+# # Investigations
+
+logger_1_step.log_dir
+
+# +
+transformer_forecaster_1_step_re = TransformerForecaster.load_from_checkpoint(
+    logger_1_step.log_dir + "/checkpoints/epoch=6-step=5495.ckpt"
+)
+
+transformer_forecaster_1_step_re
+
+
+# -
+
+
+def embedding_output(forecaster, x: torch.Tensor) -> torch.Tensor:
+    x_embedding = forecaster.transformer.embedding(x)
+    x_positional = forecaster.transformer.positional_encoding(x_embedding)
+
+    encoder_state = forecaster.transformer.encoder(x_positional)
+
+    return x_embedding, x_positional, encoder_state
+
+
+list(pdm_1_step.train_dataloader())[0][0].shape
+
+embedding_example, positional_example, encoder_example = embedding_output(
+    transformer_forecaster_1_step, list(pdm_1_step.train_dataloader())[0][0]
+)
+
+embedding_example.shape
