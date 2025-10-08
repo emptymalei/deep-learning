@@ -505,11 +505,23 @@ evaluator_m_step.metrics(lobs_m_step_predictions, pdm_m_step.predict_dataloader(
 
 # # Investigations
 
-logger_1_step.log_dir
+# +
+from pathlib import Path
+
+import pandas as pd
+import plotly.express as px
+
+# +
+# load_from_checkpoint = Path(
+#     "lightning_logs/transformer_ts_1_step/version_9"
+# )
+
+load_from_checkpoint = Path(logger_1_step.log_dir) / "checkpoints"
 
 # +
 transformer_forecaster_1_step_re = TransformerForecaster.load_from_checkpoint(
-    logger_1_step.log_dir + "/checkpoints/epoch=6-step=5495.ckpt"
+    # load_from_checkpoint / "checkpoints/epoch=11-step=5495.ckpt"
+    list(load_from_checkpoint.iterdir())[0]
 )
 
 transformer_forecaster_1_step_re
@@ -524,13 +536,41 @@ def embedding_output(forecaster, x: torch.Tensor) -> torch.Tensor:
 
     encoder_state = forecaster.transformer.encoder(x_positional)
 
-    return x_embedding, x_positional, encoder_state
+    reversed = forecaster.transformer.reverse_embedding(encoder_state).squeeze(-1)
+
+    return x_embedding, x_positional, encoder_state, reversed
 
 
-list(pdm_1_step.train_dataloader())[0][0].shape
+input_example = list(pdm_1_step.train_dataloader())[0][0]
+input_example.shape
 
-embedding_example, positional_example, encoder_example = embedding_output(
-    transformer_forecaster_1_step, list(pdm_1_step.train_dataloader())[0][0]
+embedding_example, positional_example, encoder_example, reversed_example = (
+    embedding_output(transformer_forecaster_1_step, input_example)
 )
 
-embedding_example.shape
+(
+    embedding_example.shape,
+    positional_example.shape,
+    encoder_example.shape,
+    reversed_example.shape,
+)
+
+input_example.squeeze(-1).shape
+
+df_example = pd.concat(
+    [
+        pd.DataFrame(
+            {
+                "input": input_example.squeeze(-1).numpy()[i],
+                "reversed": reversed_example.detach().numpy()[i],
+            }
+        ).assign(sample=i)
+        for i in range(input_example.shape[0])
+    ]
+)
+df_example
+
+
+px.scatter(
+    df_example, x="input", y="reversed", color="sample", height=600, width=600
+).update_layout(yaxis_scaleanchor="x")
