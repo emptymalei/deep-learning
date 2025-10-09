@@ -555,7 +555,7 @@ investigation_dl = DataLoader(
         horizon=horizon_1_step,
         gap=gap,
     ),
-    batch_size=1000,
+    batch_size=400,
     shuffle=False,
 )
 
@@ -596,29 +596,56 @@ px.scatter(
     df_example, x="input", y="reversed", color="sample", height=600, width=600
 ).update_layout(yaxis_scaleanchor="x")
 
+import numpy as np
 from torchdr import UMAP
 
-input_example.squeeze(-1).shape
-
 # +
-# Visualize the UMAP embedding
 umap_result = UMAP(n_neighbors=30, backend="torch").fit_transform(
-    input_example.squeeze(-1).numpy().astype("float32")
+    np.concatenate(
+        [
+            input_example.squeeze(-1).numpy().astype("float32"),
+            reversed_example.detach().numpy().astype("float32"),
+        ],
+        axis=0,
+    )
 )
 
-# Create a DataFrame for plotting
+
+# -
 umap_df = pd.DataFrame(umap_result, columns=["UMAP1", "UMAP2"])
+umap_df["type"] = ["input"] * (len(umap_df) // 2) + ["embedded"] * (
+    len(umap_df) - len(umap_df) // 2
+)
 umap_df["sample_idx"] = range(len(umap_df))
 
-# Plot the embedding
-fig = px.scatter(
+
+px.scatter(
     umap_df,
+    x="UMAP1",
+    y="UMAP2",
+    color="sample_idx",
+    symbol="type",
+    title="UMAP Embedding of Input Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+# +
+
+umap_reversed_result = UMAP(n_neighbors=30, backend="torch").fit_transform(
+    reversed_example.detach().numpy().astype("float32")
+)
+umap_reversed_df = pd.DataFrame(umap_reversed_result, columns=["UMAP1", "UMAP2"])
+umap_reversed_df["sample_idx"] = range(len(umap_reversed_df))
+# -
+
+
+px.scatter(
+    umap_reversed_df,
     x="UMAP1",
     y="UMAP2",
     color="sample_idx",
     title="UMAP Embedding of Input Time Series",
     height=600,
     width=800,
-)
-fig.show()
-# -
+).show()
