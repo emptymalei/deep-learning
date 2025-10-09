@@ -510,13 +510,16 @@ from pathlib import Path
 
 import pandas as pd
 import plotly.express as px
+from torch.utils.data import DataLoader
+from ts_dl_utils.datasets.dataset import DataFrameDataset
 
 # +
-# load_from_checkpoint = Path(
-#     "lightning_logs/transformer_ts_1_step/version_9"
-# )
+load_from_checkpoint = (
+    Path("lightning_logs/transformer_ts_1_step/version_9") / "checkpoints"
+)
 
-load_from_checkpoint = Path(logger_1_step.log_dir) / "checkpoints"
+# load_from_checkpoint = Path(logger_1_step.log_dir) / "checkpoints"
+load_from_checkpoint, logger_1_step.log_dir
 
 # +
 transformer_forecaster_1_step_re = TransformerForecaster.load_from_checkpoint(
@@ -531,7 +534,10 @@ transformer_forecaster_1_step_re
 
 
 def embedding_output(forecaster, x: torch.Tensor) -> torch.Tensor:
-    x_embedding = forecaster.transformer.embedding(x)
+    forecaster.transformer.to(x.device)
+    x_embedding = forecaster.transformer.embedding(
+        x.type_as(forecaster.transformer.embedding.weight)
+    )
     x_positional = forecaster.transformer.positional_encoding(x_embedding)
 
     encoder_state = forecaster.transformer.encoder(x_positional)
@@ -541,7 +547,22 @@ def embedding_output(forecaster, x: torch.Tensor) -> torch.Tensor:
     return x_embedding, x_positional, encoder_state, reversed
 
 
-input_example = list(pdm_1_step.train_dataloader())[0][0]
+# +
+investigation_dl = DataLoader(
+    dataset=DataFrameDataset(
+        dataframe=df[["theta"]],
+        history_length=history_length_1_step,
+        horizon=horizon_1_step,
+        gap=gap,
+    ),
+    batch_size=1000,
+    shuffle=False,
+)
+
+investigation_dl
+# -
+
+input_example = list(investigation_dl)[0][0]
 input_example.shape
 
 embedding_example, positional_example, encoder_example, reversed_example = (
@@ -574,3 +595,30 @@ df_example
 px.scatter(
     df_example, x="input", y="reversed", color="sample", height=600, width=600
 ).update_layout(yaxis_scaleanchor="x")
+
+from torchdr import UMAP
+
+input_example.squeeze(-1).shape
+
+# +
+# Visualize the UMAP embedding
+umap_result = UMAP(n_neighbors=30, backend="torch").fit_transform(
+    input_example.squeeze(-1).numpy().astype("float32")
+)
+
+# Create a DataFrame for plotting
+umap_df = pd.DataFrame(umap_result, columns=["UMAP1", "UMAP2"])
+umap_df["sample_idx"] = range(len(umap_df))
+
+# Plot the embedding
+fig = px.scatter(
+    umap_df,
+    x="UMAP1",
+    y="UMAP2",
+    color="sample_idx",
+    title="UMAP Embedding of Input Time Series",
+    height=600,
+    width=800,
+)
+fig.show()
+# -
