@@ -504,6 +504,8 @@ evaluator_m_step.metrics(predictions_m_step, pdm_m_step.predict_dataloader())
 evaluator_m_step.metrics(lobs_m_step_predictions, pdm_m_step.predict_dataloader())
 
 # # Investigations
+#
+# We dive deeper into the intermediate results of the model.
 
 # +
 from pathlib import Path
@@ -532,8 +534,17 @@ transformer_forecaster_1_step_re
 
 # -
 
+# ## Visualize Embeddings of Intermediate Layers
 
-def embedding_output(forecaster, x: torch.Tensor) -> torch.Tensor:
+
+def embedding_output(
+    forecaster: TransformerForecaster, x: torch.Tensor
+) -> tuple[torch.Tensor]:
+    """compute the embeddings based on the input
+
+    :param forecaster: the trained forecaster
+    :param x: input historical time series,
+    """
     forecaster.transformer.to(x.device)
     x_embedding = forecaster.transformer.embedding(
         x.type_as(forecaster.transformer.embedding.weight)
@@ -599,8 +610,14 @@ px.scatter(
 import numpy as np
 from torchdr import UMAP
 
+# Latent space visualization
+
 # +
-umap_result = UMAP(n_neighbors=30, backend="torch").fit_transform(
+n_components = 3
+
+umap_result = UMAP(
+    n_neighbors=30, backend="torch", n_components=n_components
+).fit_transform(
     np.concatenate(
         [
             input_example.squeeze(-1).numpy().astype("float32"),
@@ -612,17 +629,18 @@ umap_result = UMAP(n_neighbors=30, backend="torch").fit_transform(
 
 
 # -
-umap_df = pd.DataFrame(umap_result, columns=["UMAP1", "UMAP2"])
+umap_df = pd.DataFrame(umap_result, columns=[f"UMAP{i+1}" for i in range(n_components)])
 umap_df["type"] = ["input"] * (len(umap_df) // 2) + ["embedded"] * (
     len(umap_df) - len(umap_df) // 2
 )
-umap_df["sample_idx"] = range(len(umap_df))
+umap_df["sample_idx"] = list(range(len(umap_df) // 2)) + list(range(len(umap_df) // 2))
 
 
-px.scatter(
+px.scatter_3d(
     umap_df,
     x="UMAP1",
     y="UMAP2",
+    z="UMAP3",
     color="sample_idx",
     symbol="type",
     title="UMAP Embedding of Input Time Series",
@@ -630,22 +648,62 @@ px.scatter(
     width=800,
 ).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
 
-# +
-
-umap_reversed_result = UMAP(n_neighbors=30, backend="torch").fit_transform(
-    reversed_example.detach().numpy().astype("float32")
-)
-umap_reversed_df = pd.DataFrame(umap_reversed_result, columns=["UMAP1", "UMAP2"])
-umap_reversed_df["sample_idx"] = range(len(umap_reversed_df))
-# -
-
-
-px.scatter(
-    umap_reversed_df,
+px.scatter_3d(
+    umap_df.loc[umap_df["type"] == "embedded"],
     x="UMAP1",
     y="UMAP2",
+    z="UMAP3",
     color="sample_idx",
+    symbol="type",
     title="UMAP Embedding of Input Time Series",
     height=600,
     width=800,
-).show()
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+# Embedding outout
+
+embedding_example.detach()[0].shape
+
+embedding_result = UMAP(
+    n_neighbors=30, backend="torch", n_components=n_components
+).fit_transform(
+    np.concatenate(
+        [
+            embedding_example.detach()[i].numpy().astype("float32")
+            for i in range(embedding_example.shape[0])
+        ],
+        axis=0,
+    )
+)
+
+# +
+umap_embedding_df = pd.DataFrame(
+    embedding_result, columns=[f"UMAP{i+1}" for i in range(n_components)]
+)
+
+umap_embedding_df["type"] = sum(
+    [
+        [i] * (len(umap_embedding_df) // embedding_example.shape[0])
+        for i in range(embedding_example.shape[0])
+    ],
+    [],
+)
+
+umap_embedding_df["sample_idx"] = (
+    list(range(len(umap_embedding_df) // embedding_example.shape[0]))
+    * embedding_example.shape[0]
+)
+# -
+
+px.scatter(
+    umap_embedding_df,
+    x="UMAP1",
+    y="UMAP2",
+    # z='UMAP3',
+    # color='sample_idx',
+    # symbol='type',
+    color="type",
+    title="UMAP Embedding of Input Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
