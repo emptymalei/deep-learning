@@ -7,7 +7,7 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.2
 #   kernelspec:
-#     display_name: .venv
+#     display_name: deep-learning-py3.10
 #     language: python
 #     name: python3
 # ---
@@ -773,7 +773,7 @@ generated_samples_x = (
     vae_model_reloaded.model.decoder(sampling_z).cpu().detach().numpy().squeeze()
 )
 
-generated_samples_x.size()
+generated_samples_x.shape
 
 # +
 _, ax = plt.subplots()
@@ -827,3 +827,196 @@ ax.scatter(
 ax.set_title("t-SNE of original and generated samples")
 ax.set_xlabel("t-SNE 1")
 ax.set_ylabel("t-SNE 2")
+# -
+
+# ## Investigation of Embeddings
+
+# +
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import plotly.express as px
+from torch.utils.data import DataLoader
+from torchdr import PCA, TSNE, UMAP
+from ts_dl_utils.datasets.dataset import DataFrameDataset
+
+# -
+
+vae_model_reloaded
+
+
+def embedding_extractor(forecaster: VAEModel, x: torch.Tensor) -> tuple[torch.Tensor]:
+    """compute the embeddings based on the input
+
+    :param forecaster: the trained forecaster
+    :param x: input historical time series,
+    """
+    forecaster.model.to(x.device)
+    _, _, z = forecaster.model.encoder(
+        x.type_as(forecaster.model.encoder.z_mean_layer.weight)
+    )
+
+    return z
+
+
+# +
+investigation_dl = DataLoader(
+    dataset=DataFrameDataset(
+        dataframe=df[["theta"]], history_length=window_size, horizon=1, gap=0
+    ),
+    batch_size=400,
+    shuffle=False,
+)
+
+investigation_dl
+# -
+
+input_example = list(investigation_dl)[0][0]
+input_example.shape
+
+z_example = embedding_extractor(vae_model_reloaded, input_example)
+z_example.shape
+
+z_example.squeeze().shape
+
+# +
+n_components = 3
+
+# dr_z_result = TSNE(
+dr_input_result = PCA(
+    # n_neighbors=30, backend='torch',
+    # perplexity=30,
+    n_components=n_components
+).fit_transform(input_example.detach().squeeze())
+
+dr_input_result.shape
+
+# +
+# dr_z_result = TSNE(
+dr_z_result = PCA(
+    # n_neighbors=30, backend='torch',
+    # perplexity=30,
+    n_components=n_components
+).fit_transform(z_example.detach().squeeze())
+
+dr_z_result.shape
+# -
+
+input_example.detach().shape
+
+
+def create_embedding_dataframe(
+    dr_result: torch.Tensor,
+    n_batches: int,
+    input_example: torch.Tensor,
+    n_components: int,
+) -> pd.DataFrame:
+
+    dr_df = pd.DataFrame(
+        dr_result.detach().numpy(), columns=[f"DR_{i+1}" for i in range(n_components)]
+    )
+
+    dr_df["batch"] = sum(
+        [[i] * (len(dr_df) // n_batches) for i in range(n_batches)], []
+    )
+
+    dr_df["sample_idx"] = list(range(len(dr_df) // n_batches)) * n_batches
+
+    # dr_df["input"] = np.concatenate(
+    #     input_example[:n_batches].detach().numpy().astype("float32")
+    # )
+
+    dr_df = dr_df.merge(
+        pd.DataFrame(
+            input_example[:n_batches].detach()[:, 0, 0].numpy(),
+            columns=["batch_first_value"],
+        )
+        .reset_index()
+        .rename(columns={"index": "batch"}),
+        how="left",
+        on="batch",
+    )
+
+    return dr_df
+
+
+dr_input_df = create_embedding_dataframe(
+    dr_result=dr_input_result,
+    n_batches=input_example.shape[0],
+    input_example=input_example,
+    n_components=n_components,
+)
+
+px.scatter(
+    dr_input_df,
+    x="DR_1",
+    y="DR_2",
+    # z='DR_3',
+    # z='batch_first_value',
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch",
+    # color="DR_3",
+    color="batch_first_value",
+    title="Embedding of Input Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+dr_z_df = create_embedding_dataframe(
+    dr_result=dr_z_result,
+    n_batches=z_example.shape[0],
+    input_example=input_example,
+    n_components=n_components,
+)
+
+dr_z_df
+
+px.scatter(
+    dr_z_df,
+    x="DR_1",
+    y="batch_first_value",
+    # y='DR_2',
+    # z='DR_3',
+    # z='batch_first_value',
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch",
+    color="DR_2",
+    # color="batch_first_value",
+    title="UMAP Embedding of Encoder Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter(
+    dr_z_df,
+    x="DR_1",
+    y="DR_2",
+    # z='DR_3',
+    # z='batch_first_value',
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch",
+    # color="DR_3",
+    color="batch_first_value",
+    title="UMAP Embedding of Encoder Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter_3d(
+    dr_z_df,
+    x="DR_1",
+    y="DR_2",
+    z="DR_3",
+    # z='batch_first_value',
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch",
+    color="batch_first_value",
+    title="UMAP Embedding of Encoder Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()

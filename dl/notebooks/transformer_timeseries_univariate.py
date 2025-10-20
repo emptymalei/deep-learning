@@ -537,6 +537,27 @@ transformer_forecaster_1_step_re
 # ## Visualize Embeddings of Intermediate Layers
 
 
+def embedding_extractor(
+    forecaster: TransformerForecaster, x: torch.Tensor
+) -> tuple[torch.Tensor]:
+    """compute the embeddings based on the input
+
+    :param forecaster: the trained forecaster
+    :param x: input historical time series,
+    """
+    forecaster.transformer.to(x.device)
+    x_embedding = forecaster.transformer.embedding(
+        x.type_as(forecaster.transformer.embedding.weight)
+    )
+    x_positional = forecaster.transformer.positional_encoding(x_embedding)
+
+    encoder_state = forecaster.transformer.encoder(x_positional)
+
+    reversed = forecaster.transformer.reverse_embedding(encoder_state).squeeze(-1)
+
+    return x_embedding, x_positional, encoder_state, reversed
+
+
 def create_embedding_dataframe(
     dr_result: torch.Tensor,
     n_batches: int,
@@ -570,27 +591,6 @@ def create_embedding_dataframe(
     )
 
     return dr_df
-
-
-def embedding_extractor(
-    forecaster: TransformerForecaster, x: torch.Tensor
-) -> tuple[torch.Tensor]:
-    """compute the embeddings based on the input
-
-    :param forecaster: the trained forecaster
-    :param x: input historical time series,
-    """
-    forecaster.transformer.to(x.device)
-    x_embedding = forecaster.transformer.embedding(
-        x.type_as(forecaster.transformer.embedding.weight)
-    )
-    x_positional = forecaster.transformer.positional_encoding(x_embedding)
-
-    encoder_state = forecaster.transformer.encoder(x_positional)
-
-    reversed = forecaster.transformer.reverse_embedding(encoder_state).squeeze(-1)
-
-    return x_embedding, x_positional, encoder_state, reversed
 
 
 # Prepare input data for embedding visualization.
