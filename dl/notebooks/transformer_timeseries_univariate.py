@@ -537,7 +537,42 @@ transformer_forecaster_1_step_re
 # ## Visualize Embeddings of Intermediate Layers
 
 
-def embedding_output(
+def create_embedding_dataframe(
+    dr_result: torch.Tensor,
+    n_batches: int,
+    input_example: torch.Tensor,
+    n_components: int,
+) -> pd.DataFrame:
+
+    dr_df = pd.DataFrame(
+        dr_result.detach().numpy(), columns=[f"DR_{i+1}" for i in range(n_components)]
+    )
+
+    dr_df["batch"] = sum(
+        [[i] * (len(dr_df) // n_batches) for i in range(n_batches)], []
+    )
+
+    dr_df["sample_idx"] = list(range(len(dr_df) // n_batches)) * n_batches
+
+    dr_df["input"] = np.concatenate(
+        input_example[:n_batches].detach().numpy().astype("float32")
+    )
+
+    dr_df = dr_df.merge(
+        pd.DataFrame(
+            input_example[:n_batches].detach()[:, 0, 0].numpy(),
+            columns=["batch_first_value"],
+        )
+        .reset_index()
+        .rename(columns={"index": "batch"}),
+        how="left",
+        on="batch",
+    )
+
+    return dr_df
+
+
+def embedding_extractor(
     forecaster: TransformerForecaster, x: torch.Tensor
 ) -> tuple[torch.Tensor]:
     """compute the embeddings based on the input
@@ -558,6 +593,8 @@ def embedding_output(
     return x_embedding, x_positional, encoder_state, reversed
 
 
+# Prepare input data for embedding visualization.
+
 # +
 investigation_dl = DataLoader(
     dataset=DataFrameDataset(
@@ -576,8 +613,8 @@ investigation_dl
 input_example = list(investigation_dl)[0][0]
 input_example.shape
 
-embedding_example, positional_example, encoder_example, reversed_example = (
-    embedding_output(transformer_forecaster_1_step, input_example)
+(embedding_example, positional_example, encoder_example, reversed_example) = (
+    embedding_extractor(transformer_forecaster_1_step, input_example)
 )
 
 (
@@ -587,18 +624,13 @@ embedding_example, positional_example, encoder_example, reversed_example = (
     reversed_example.shape,
 )
 
-input_example.squeeze(-1).shape
-
-df_example = pd.concat(
-    [
-        pd.DataFrame(
-            {
-                "input": input_example.squeeze(-1).numpy()[i],
-                "reversed": reversed_example.detach().numpy()[i],
-            }
-        ).assign(sample=i)
-        for i in range(input_example.shape[0])
-    ]
+n_batches, seq_len, _ = input_example.shape
+df_example = pd.DataFrame(
+    {
+        "input": input_example.squeeze(-1).detach().cpu().numpy().reshape(-1),
+        "reversed": reversed_example.detach().cpu().numpy().reshape(-1),
+        "sample": np.repeat(np.arange(n_batches), seq_len),
+    }
 )
 df_example
 
@@ -615,7 +647,7 @@ from torchdr import PCA, TSNE, UMAP
 # +
 n_components = 3
 
-umap_result = TSNE(
+dr_reversed_result = TSNE(
     # n_neighbors=30, backend='torch',
     perplexity=30,
     n_components=n_components,
@@ -628,36 +660,40 @@ umap_result = TSNE(
         axis=0,
     )
 )
-
-
 # -
-umap_df = pd.DataFrame(umap_result, columns=[f"UMAP{i+1}" for i in range(n_components)])
-umap_df["type"] = ["input"] * (len(umap_df) // 2) + ["embedded"] * (
-    len(umap_df) - len(umap_df) // 2
+dr_reversed_df = pd.DataFrame(
+    dr_reversed_result, columns=[f"DR_{i+1}" for i in range(n_components)]
 )
-umap_df["sample_idx"] = list(range(len(umap_df) // 2)) + list(range(len(umap_df) // 2))
+dr_reversed_df["type"] = ["input"] * (len(dr_reversed_df) // 2) + ["embedded"] * (
+    len(dr_reversed_df) - len(dr_reversed_df) // 2
+)
+dr_reversed_df["sample_idx"] = list(range(len(dr_reversed_df) // 2)) + list(
+    range(len(dr_reversed_df) // 2)
+)
 
 
 px.scatter_3d(
-    umap_df,
-    x="UMAP1",
-    y="UMAP2",
-    z="UMAP3",
+    dr_reversed_df,
+    x="DR_1",
+    y="DR_2",
+    z="DR_3",
     color="sample_idx",
+    # color="DR_4",
     symbol="type",
-    title="UMAP Embedding of Input Time Series",
+    title="Embedding of Input and Encoded Time Series",
     height=600,
     width=800,
 ).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
 
 px.scatter_3d(
-    umap_df.loc[umap_df["type"] == "embedded"],
-    x="UMAP1",
-    y="UMAP2",
-    z="UMAP3",
+    dr_reversed_df.loc[dr_reversed_df["type"] == "embedded"],
+    x="DR_1",
+    y="DR_2",
+    z="DR_3",
     color="sample_idx",
+    # color="DR_4",
     symbol="type",
-    title="UMAP Embedding of Input Time Series",
+    title="Embedding of Input Time Series",
     height=600,
     width=800,
 ).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
@@ -671,42 +707,22 @@ embedding_result = TSNE(
     # n_neighbors=30, backend='torch',
     perplexity=30,
     n_components=n_components,
-).fit_transform(np.concatenate(embedding_example.detach().numpy().astype("float32")))
+).fit_transform(
+    # np.concatenate(
+    #     embedding_example.detach().numpy().astype("float32")
+    # )
+    embedding_example.detach().reshape(-1, embedding_example.shape[-1])
+)
 
 embedding_result.shape
-
-# +
-dr_embedding_df = pd.DataFrame(
-    embedding_result, columns=[f"DR_{i+1}" for i in range(n_components)]
-)
-
-dr_embedding_df["batch"] = sum(
-    [
-        [i] * (len(dr_embedding_df) // embedding_example.shape[0])
-        for i in range(embedding_example.shape[0])
-    ],
-    [],
-)
-
-dr_embedding_df["sample_idx"] = (
-    list(range(len(dr_embedding_df) // embedding_example.shape[0]))
-    * embedding_example.shape[0]
-)
-
-
-# +
-dr_embedding_df["input"] = np.concatenate(
-    input_example.detach().numpy().astype("float32")
-)
-
-dr_embedding_df = dr_embedding_df.merge(
-    pd.DataFrame(input_example.detach()[:, 0, 0].numpy(), columns=["batch_first_value"])
-    .reset_index()
-    .rename(columns={"index": "batch"}),
-    how="left",
-    on="batch",
-)
 # -
+
+dr_embedding_df = create_embedding_dataframe(
+    dr_result=embedding_result,
+    n_batches=embedding_example.shape[0],
+    input_example=input_example,
+    n_components=n_components,
+)
 
 dr_embedding_df
 
@@ -751,8 +767,10 @@ px.scatter(
 positional_example_sample_size = 100
 
 # +
-positional_result = UMAP(
-    n_neighbors=30, backend="torch", n_components=n_components
+positional_result = TSNE(
+    # n_neighbors=30, backend='torch',
+    perplexity=30,
+    n_components=n_components,
 ).fit_transform(
     positional_example[:positional_example_sample_size]
     .detach()
@@ -760,6 +778,14 @@ positional_result = UMAP(
 )
 
 positional_result.shape
+# -
+
+dr_positional_df = create_embedding_dataframe(
+    dr_result=positional_result,
+    n_batches=positional_example_sample_size,
+    input_example=input_example,
+    n_components=n_components,
+)
 
 # +
 dr_positional_df = pd.DataFrame(
@@ -829,55 +855,17 @@ px.scatter(
 
 # Encoder output
 
-encoder_example.shape
-
 # +
-encoder_result = UMAP(
-    n_neighbors=30, backend="torch", n_components=n_components
+encoder_result = TSNE(
+    # n_neighbors=30, backend='torch',
+    perplexity=30,
+    n_components=n_components,
 ).fit_transform(encoder_example.detach().reshape(-1, encoder_example.shape[-1]))
 
 encoder_result.shape
-
-
 # -
 
-
-def create_dataframe(
-    dr_result: torch.Tensor,
-    n_batches: int,
-    input_example: torch.Tensor,
-    n_components: int,
-) -> pd.DataFrame:
-
-    dr_df = pd.DataFrame(
-        dr_result.detach().numpy(), columns=[f"DR_{i+1}" for i in range(n_components)]
-    )
-
-    dr_df["batch"] = sum(
-        [[i] * (len(dr_df) // n_batches) for i in range(n_batches)], []
-    )
-
-    dr_df["sample_idx"] = list(range(len(dr_df) // n_batches)) * n_batches
-
-    dr_df["input"] = np.concatenate(
-        input_example[:n_batches].detach().numpy().astype("float32")
-    )
-
-    dr_df = dr_df.merge(
-        pd.DataFrame(
-            input_example[:n_batches].detach()[:, 0, 0].numpy(),
-            columns=["batch_first_value"],
-        )
-        .reset_index()
-        .rename(columns={"index": "batch"}),
-        how="left",
-        on="batch",
-    )
-
-    return dr_df
-
-
-dr_encoder_df = create_dataframe(
+dr_encoder_df = create_embedding_dataframe(
     dr_result=encoder_result,
     n_batches=encoder_example.shape[0],
     input_example=input_example,
