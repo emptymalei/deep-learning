@@ -608,15 +608,17 @@ px.scatter(
 ).update_layout(yaxis_scaleanchor="x")
 
 import numpy as np
-from torchdr import UMAP
+from torchdr import PCA, TSNE, UMAP
 
 # Latent space visualization
 
 # +
 n_components = 3
 
-umap_result = UMAP(
-    n_neighbors=30, backend="torch", n_components=n_components
+umap_result = TSNE(
+    # n_neighbors=30, backend='torch',
+    perplexity=30,
+    n_components=n_components,
 ).fit_transform(
     np.concatenate(
         [
@@ -662,48 +664,236 @@ px.scatter_3d(
 
 # Embedding outout
 
-embedding_example.detach()[0].shape
-
-embedding_result = UMAP(
-    n_neighbors=30, backend="torch", n_components=n_components
-).fit_transform(
-    np.concatenate(
-        [
-            embedding_example.detach()[i].numpy().astype("float32")
-            for i in range(embedding_example.shape[0])
-        ],
-        axis=0,
-    )
-)
+embedding_example.detach()[0].shape, input_example.detach()[0].shape
 
 # +
-umap_embedding_df = pd.DataFrame(
-    embedding_result, columns=[f"UMAP{i+1}" for i in range(n_components)]
+embedding_result = TSNE(
+    # n_neighbors=30, backend='torch',
+    perplexity=30,
+    n_components=n_components,
+).fit_transform(np.concatenate(embedding_example.detach().numpy().astype("float32")))
+
+embedding_result.shape
+
+# +
+dr_embedding_df = pd.DataFrame(
+    embedding_result, columns=[f"DR_{i+1}" for i in range(n_components)]
 )
 
-umap_embedding_df["type"] = sum(
+dr_embedding_df["batch"] = sum(
     [
-        [i] * (len(umap_embedding_df) // embedding_example.shape[0])
+        [i] * (len(dr_embedding_df) // embedding_example.shape[0])
         for i in range(embedding_example.shape[0])
     ],
     [],
 )
 
-umap_embedding_df["sample_idx"] = (
-    list(range(len(umap_embedding_df) // embedding_example.shape[0]))
+dr_embedding_df["sample_idx"] = (
+    list(range(len(dr_embedding_df) // embedding_example.shape[0]))
     * embedding_example.shape[0]
+)
+
+
+# +
+dr_embedding_df["input"] = np.concatenate(
+    input_example.detach().numpy().astype("float32")
+)
+
+dr_embedding_df = dr_embedding_df.merge(
+    pd.DataFrame(input_example.detach()[:, 0, 0].numpy(), columns=["batch_first_value"])
+    .reset_index()
+    .rename(columns={"index": "batch"}),
+    how="left",
+    on="batch",
 )
 # -
 
+dr_embedding_df
+
 px.scatter(
-    umap_embedding_df,
-    x="UMAP1",
-    y="UMAP2",
-    # z='UMAP3',
+    dr_embedding_df,
+    x="DR_1",
+    y="DR_2",
+    # z='DR_3',
     # color='sample_idx',
     # symbol='type',
-    color="type",
+    color="batch_first_value",
+    # color="input",
+    title="Dimension Reduction for Embedding of Input Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter_3d(
+    dr_embedding_df,
+    x="DR_1",
+    y="DR_2",
+    z="input",
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch",
+    # color="batch_first_value",
     title="UMAP Embedding of Input Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter(
+    pd.DataFrame(input_example.detach()[:, 0, :].numpy()).reset_index(),
+    x="index",
+    y=0,
+    height=600,
+    width=800,
+)
+
+# Positional encoding output
+
+positional_example_sample_size = 100
+
+# +
+positional_result = UMAP(
+    n_neighbors=30, backend="torch", n_components=n_components
+).fit_transform(
+    positional_example[:positional_example_sample_size]
+    .detach()
+    .reshape(-1, positional_example.shape[-1])
+)
+
+positional_result.shape
+
+# +
+dr_positional_df = pd.DataFrame(
+    positional_result.detach().numpy(),
+    columns=[f"DR_{i+1}" for i in range(n_components)],
+)
+
+dr_positional_df["batch"] = sum(
+    [
+        [i] * (len(dr_positional_df) // positional_example_sample_size)
+        for i in range(positional_example_sample_size)
+    ],
+    [],
+)
+
+dr_positional_df["sample_idx"] = (
+    list(range(len(dr_positional_df) // positional_example_sample_size))
+    * positional_example_sample_size
+)
+
+dr_positional_df["input"] = np.concatenate(
+    input_example[:positional_example_sample_size].detach().numpy().astype("float32")
+)
+
+dr_positional_df = dr_positional_df.merge(
+    pd.DataFrame(
+        input_example[:positional_example_sample_size].detach()[:, 0, 0].numpy(),
+        columns=["batch_first_value"],
+    )
+    .reset_index()
+    .rename(columns={"index": "batch"}),
+    how="left",
+    on="batch",
+)
+# -
+
+
+dr_positional_df
+
+px.scatter_3d(
+    dr_positional_df,
+    x="DR_1",
+    y="DR_2",
+    z="input",
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch",
+    color="batch_first_value",
+    title="UMAP Embedding of Positional Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter(
+    dr_positional_df,
+    x="DR_1",
+    y="DR_2",
+    # z='input',
+    # symbol='type',
+    color="batch",
+    # color="input",
+    # color="batch_first_value",
+    title="UMAP Embedding of Positional Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+# Encoder output
+
+encoder_example.shape
+
+# +
+encoder_result = UMAP(
+    n_neighbors=30, backend="torch", n_components=n_components
+).fit_transform(encoder_example.detach().reshape(-1, encoder_example.shape[-1]))
+
+encoder_result.shape
+
+
+# -
+
+
+def create_dataframe(
+    dr_result: torch.Tensor,
+    n_batches: int,
+    input_example: torch.Tensor,
+    n_components: int,
+) -> pd.DataFrame:
+
+    dr_df = pd.DataFrame(
+        dr_result.detach().numpy(), columns=[f"DR_{i+1}" for i in range(n_components)]
+    )
+
+    dr_df["batch"] = sum(
+        [[i] * (len(dr_df) // n_batches) for i in range(n_batches)], []
+    )
+
+    dr_df["sample_idx"] = list(range(len(dr_df) // n_batches)) * n_batches
+
+    dr_df["input"] = np.concatenate(
+        input_example[:n_batches].detach().numpy().astype("float32")
+    )
+
+    dr_df = dr_df.merge(
+        pd.DataFrame(
+            input_example[:n_batches].detach()[:, 0, 0].numpy(),
+            columns=["batch_first_value"],
+        )
+        .reset_index()
+        .rename(columns={"index": "batch"}),
+        how="left",
+        on="batch",
+    )
+
+    return dr_df
+
+
+dr_encoder_df = create_dataframe(
+    dr_result=encoder_result,
+    n_batches=encoder_example.shape[0],
+    input_example=input_example,
+    n_components=n_components,
+)
+
+px.scatter_3d(
+    dr_encoder_df,
+    x="DR_1",
+    y="DR_2",
+    z="input",
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch",
+    color="batch_first_value",
+    title="UMAP Embedding of Encoder Encoded Time Series",
     height=600,
     width=800,
 ).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
