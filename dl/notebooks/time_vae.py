@@ -853,11 +853,11 @@ def embedding_extractor(forecaster: VAEModel, x: torch.Tensor) -> tuple[torch.Te
     :param x: input historical time series,
     """
     forecaster.model.to(x.device)
-    _, _, z = forecaster.model.encoder(
+    z_mean, z_log_var, z = forecaster.model.encoder(
         x.type_as(forecaster.model.encoder.z_mean_layer.weight)
     )
 
-    return z
+    return z_mean, z_log_var, z
 
 
 # +
@@ -875,10 +875,12 @@ investigation_dl
 input_example = list(investigation_dl)[0][0]
 input_example.shape
 
-z_example = embedding_extractor(vae_model_reloaded, input_example)
+z_mean_example, z_log_var_example, z_example = embedding_extractor(
+    vae_model_reloaded, input_example
+)
 z_example.shape
 
-z_example.squeeze().shape
+(z_example.shape, z_mean_example.shape, z_log_var_example.shape)
 
 # +
 n_components = 3
@@ -893,14 +895,17 @@ dr_input_result = PCA(
 dr_input_result.shape
 
 # +
-# dr_z_result = TSNE(
-dr_z_result = PCA(
+dr_z_mean_result = TSNE(
+    # dr_z_result = PCA(
     # n_neighbors=30, backend='torch',
     # perplexity=30,
     n_components=n_components
-).fit_transform(z_example.detach().squeeze())
+).fit_transform(
+    # z_example.detach().squeeze()
+    z_mean_example.detach().squeeze()
+)
 
-dr_z_result.shape
+dr_z_mean_result.shape
 # -
 
 input_example.detach().shape
@@ -965,7 +970,7 @@ px.scatter(
 ).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
 
 dr_z_df = create_embedding_dataframe(
-    dr_result=dr_z_result,
+    dr_result=dr_z_mean_result,
     n_batches=z_example.shape[0],
     input_example=input_example,
     n_components=n_components,
@@ -976,15 +981,15 @@ dr_z_df
 px.scatter(
     dr_z_df,
     x="DR_1",
-    y="batch_first_value",
-    # y='DR_2',
+    # y="batch_first_value",
+    y="DR_2",
     # z='DR_3',
     # z='batch_first_value',
     # color='sample_idx',
     # symbol='type',
     # color="batch",
-    color="DR_2",
-    # color="batch_first_value",
+    # color="DR_2",
+    color="batch_first_value",
     title="UMAP Embedding of Encoder Encoded Time Series",
     height=600,
     width=800,
