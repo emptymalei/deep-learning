@@ -885,14 +885,16 @@ z_example.shape
 # +
 n_components = 3
 
-# dr_z_result = TSNE(
-dr_input_result = PCA(
+dr_input_result = TSNE(
+    # dr_input_result = PCA(
     # n_neighbors=30, backend='torch',
-    # perplexity=30,
-    n_components=n_components
+    perplexity=30,
+    n_components=n_components,
 ).fit_transform(input_example.detach().squeeze())
 
 dr_input_result.shape
+# -
+
 
 # +
 dr_z_mean_result = TSNE(
@@ -1025,3 +1027,11 @@ px.scatter_3d(
     height=600,
     width=800,
 ).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.imshow(input_example.squeeze().T, aspect="auto")
+
+px.imshow(dr_input_result.T.detach().numpy(), aspect="auto")
+
+px.imshow(dr_z_mean_result.T.detach().numpy(), aspect="auto")
+
+px.imshow(dr_z_df[["DR_1", "DR_2", "DR_3"]].T, aspect="auto")

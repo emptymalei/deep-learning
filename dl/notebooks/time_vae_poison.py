@@ -1075,3 +1075,7 @@ px.scatter(
     height=600,
     width=800,
 ).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.imshow(input_example.squeeze().T, aspect="auto")
+
+px.imshow(dr_input_result.T, aspect="auto")
