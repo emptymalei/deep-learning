@@ -517,11 +517,18 @@ from ts_dl_utils.datasets.dataset import DataFrameDataset
 
 # +
 load_from_checkpoint = (
-    Path("lightning_logs/transformer_ts_1_step/version_9") / "checkpoints"
+    Path(
+        # "lightning_logs/transformer_ts_1_step/version_9"
+        "lightning_logs/transformer_ts_1_step/version_7"
+    )
+    / "checkpoints"
 )
 
 # load_from_checkpoint = Path(logger_1_step.log_dir) / "checkpoints"
 load_from_checkpoint, logger_1_step.log_dir
+# -
+
+list(load_from_checkpoint.iterdir())[0]
 
 # +
 transformer_forecaster_1_step_re = TransformerForecaster.load_from_checkpoint(
@@ -618,6 +625,7 @@ input_example.shape
 )
 
 (
+    input_example.shape,
     embedding_example.shape,
     positional_example.shape,
     encoder_example.shape,
@@ -645,10 +653,13 @@ from torchdr import PCA, TSNE, UMAP
 # Latent space visualization
 
 # +
-n_components = 3
+n_components = 2
 
 dr_reversed_result = TSNE(
-    # n_neighbors=30, backend='torch',
+    # dr_reversed_result = UMAP(
+    # dr_reversed_result = PCA(
+    # n_neighbors=30,
+    # backend='torch',
     perplexity=30,
     n_components=n_components,
 ).fit_transform(
@@ -671,6 +682,19 @@ dr_reversed_df["sample_idx"] = list(range(len(dr_reversed_df) // 2)) + list(
     range(len(dr_reversed_df) // 2)
 )
 
+
+px.scatter(
+    dr_reversed_df,
+    x="DR_1",
+    y="DR_2",
+    # z="DR_3",
+    color="sample_idx",
+    # color="DR_4",
+    symbol="type",
+    title="Embedding of Input and Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
 
 px.scatter_3d(
     dr_reversed_df,
@@ -703,9 +727,11 @@ px.scatter_3d(
 embedding_example.detach()[0].shape, input_example.detach()[0].shape
 
 # +
-embedding_result = TSNE(
-    # n_neighbors=30, backend='torch',
-    perplexity=30,
+embedding_result = UMAP(
+    # embedding_result = TSNE(
+    n_neighbors=30,
+    backend="torch",
+    # perplexity=30,
     n_components=n_components,
 ).fit_transform(
     # np.concatenate(
@@ -728,12 +754,14 @@ dr_embedding_df
 
 px.scatter(
     dr_embedding_df,
-    x="DR_1",
-    y="DR_2",
+    x="input",
+    y="DR_1",
+    # x='DR_1',
+    # y='DR_2',
     # z='DR_3',
     # color='sample_idx',
     # symbol='type',
-    color="batch_first_value",
+    # color="batch_first_value",
     # color="input",
     title="Dimension Reduction for Embedding of Input Time Series",
     height=600,
@@ -744,11 +772,13 @@ px.scatter_3d(
     dr_embedding_df,
     x="DR_1",
     y="DR_2",
+    # z='DR_3',
     z="input",
     # color='sample_idx',
     # symbol='type',
     # color="batch",
     # color="batch_first_value",
+    color="input",
     title="UMAP Embedding of Input Time Series",
     height=600,
     width=800,
@@ -764,12 +794,14 @@ px.scatter(
 
 # Positional encoding output
 
-positional_example_sample_size = 100
+positional_example_sample_size = 10
 
 # +
-positional_result = TSNE(
-    # n_neighbors=30, backend='torch',
-    perplexity=30,
+positional_result = UMAP(
+    # positional_result = TSNE(
+    n_neighbors=30,
+    backend="torch",
+    # perplexity=30,
     n_components=n_components,
 ).fit_transform(
     positional_example[:positional_example_sample_size]
