@@ -794,19 +794,18 @@ px.scatter(
 
 # Positional encoding output
 
-positional_example_sample_size = 10
+positional_example_sample_size = 100
 
 # +
-positional_result = UMAP(
-    # positional_result = TSNE(
-    n_neighbors=30,
-    backend="torch",
-    # perplexity=30,
+# positional_result = UMAP(
+positional_result = TSNE(
+    # n_neighbors=30, backend='torch',
+    perplexity=30,
     n_components=n_components,
 ).fit_transform(
-    positional_example[:positional_example_sample_size]
-    .detach()
-    .reshape(-1, positional_example.shape[-1])
+    positional_example.detach()[:positional_example_sample_size].reshape(
+        -1, positional_example.shape[-1]
+    )
 )
 
 positional_result.shape
@@ -885,21 +884,34 @@ px.scatter(
     width=800,
 ).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
 
+px.scatter(
+    dr_positional_df,
+    x="input",
+    y="DR_1",
+    color="batch_first_value",
+)
+
 # Encoder output
 
 # +
-encoder_result = TSNE(
+# encoder_result = TSNE(
+encoder_result = PCA(
     # n_neighbors=30, backend='torch',
-    perplexity=30,
-    n_components=n_components,
-).fit_transform(encoder_example.detach().reshape(-1, encoder_example.shape[-1]))
+    # perplexity=30,
+    n_components=n_components
+).fit_transform(
+    encoder_example.detach()[:positional_example_sample_size].reshape(
+        -1, encoder_example.shape[-1]
+    )
+)
 
 encoder_result.shape
 # -
 
 dr_encoder_df = create_embedding_dataframe(
     dr_result=encoder_result,
-    n_batches=encoder_example.shape[0],
+    # n_batches=encoder_example.shape[0],
+    n_batches=positional_example_sample_size,
     input_example=input_example,
     n_components=n_components,
 )
@@ -917,3 +929,10 @@ px.scatter_3d(
     height=600,
     width=800,
 ).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter(
+    dr_encoder_df,
+    x="input",
+    y="DR_1",
+    color="batch_first_value",
+)
