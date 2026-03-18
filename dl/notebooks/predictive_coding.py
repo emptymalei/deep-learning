@@ -333,7 +333,7 @@ class CPCAR(nn.Module):
         dim_output: int,
         n_levels_gru: int = 1,
         rnn_type: Literal["GRU", "LSTM", "RNN"] = "LSTM",
-        # reverse: bool = False,
+        reverse: bool = False,
     ):
         """Initialize recurrent AR module.
 
@@ -342,11 +342,11 @@ class CPCAR(nn.Module):
             module.
         :param n_levels_gru: Number of recurrent layers.
         :param rnn_type: Recurrent cell type.
-        # :param reverse: If ``True``, run AR in reverse time and flip output
+        :param reverse: If ``True``, run AR in reverse time and flip output
             back.
         """
         super().__init__()
-        # self.reverse = reverse
+        self.reverse = reverse
 
         rnn_cls = {"LSTM": nn.LSTM, "RNN": nn.RNN, "GRU": nn.GRU}[rnn_type]
         self.rnn = rnn_cls(
@@ -364,15 +364,15 @@ class CPCAR(nn.Module):
         :param x: Encoded tensor with shape ``[B, T, C]``.
         :returns: Context tensor with shape ``[B, T, C_ctx]``.
         """
-        # if self.reverse:
-        #     x = torch.flip(x, [1])
-        # try:
-        #     self.rnn.flatten_parameters()
-        # except RuntimeError:
-        #     pass
+        if self.reverse:
+            x = torch.flip(x, [1])
+        try:
+            self.rnn.flatten_parameters()
+        except RuntimeError:
+            pass
         x, _ = self.rnn(x)
-        # if self.reverse:
-        #     x = torch.flip(x, [1])
+        if self.reverse:
+            x = torch.flip(x, [1])
         return x
 
 
@@ -605,7 +605,7 @@ class CPCLightningModule(L.LightningModule):
             dim_output=config.ar.hidden_size,
             n_levels_gru=config.ar.n_levels,
             rnn_type=config.ar.mode,
-            # reverse=config.ar.reverse,
+            reverse=config.ar.reverse,
         )
 
         self.model = CPCModel(encoder, ar)
@@ -712,14 +712,268 @@ trainer.fit(lightning_module, datamodule=data_module)
 
 # ## Load Artifacts and Interpret
 
+import pandas as pd
+import plotly.express as px
+
 for i in data_module.train_dataloader():
     pred_data, pred_label = i
     break
 
 pred_data.shape, pred_label.shape
 
+# +
+data_pca2 = PCA(
+    n_components=2,
+).fit_transform(pred_data.detach().numpy()[:, 0, :])
+
+df_data_pca = pd.DataFrame(data_pca2, columns=["pc_1", "pc_2"])
+
+df_data_pca["label"] = pred_label.numpy().astype(str)
+
+df_data_pca.head()
+# -
+
+px.scatter(
+    df_data_pca,
+    x="pc_1",
+    y="pc_2",
+    color="label",
+    title="PCA of CPC Input Data",
+    width=800,
+    height=600,
+    color_discrete_sequence=px.colors.qualitative.Set2,
+)
+
 pred_label.numpy()
 
 pred_context, pred_encoded = trainer.model.predict_step(pred_data)
 
 pred_context.shape, pred_encoded.shape
+
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LogisticRegression
+from sklearn.manifold import TSNE
+from sklearn.metrics import silhouette_score
+from sklearn.model_selection import StratifiedKFold, cross_val_score
+
+# +
+context_pca2 = PCA(
+    n_components=2,
+).fit_transform(pred_context.detach().numpy()[:, 0, :])
+
+df_context = pd.DataFrame(context_pca2, columns=["pc_1", "pc_2"])
+
+df_context["label"] = pred_label.numpy().astype(str)
+
+df_context.head()
+# -
+
+px.scatter(
+    df_context,
+    x="pc_1",
+    y="pc_2",
+    color="label",
+    title="PCA of CPC Context Representations",
+    width=800,
+    height=600,
+    color_discrete_sequence=px.colors.qualitative.Set2,
+)
+
+# +
+context_tsne2d = TSNE(
+    n_components=2,
+    perplexity=20,
+    random_state=0,
+    # init="pca"
+).fit_transform(
+    # PCA(
+    #     n_components=10,
+    # ).fit_transform(
+    #     pred_context.detach().numpy()[:,0,:]
+    # )
+    pred_context.detach().numpy()[:, 0, :]
+)
+
+df_context_tsne = pd.DataFrame(context_tsne2d, columns=["tsne_1", "tsne_2"])
+
+df_context_tsne["label"] = pred_label.numpy().astype(str)
+
+df_context_tsne.head()
+# -
+
+px.scatter(
+    df_context_tsne,
+    x="tsne_1",
+    y="tsne_2",
+    color="label",
+    title="t-SNE of CPC Context Representations",
+    width=800,
+    height=600,
+    color_discrete_sequence=px.colors.qualitative.Set2,
+)
+
+# +
+encoded_pca2 = PCA(
+    n_components=2,
+).fit_transform(pred_encoded.detach().numpy()[:, 0, :])
+
+df_encoded_pca = pd.DataFrame(encoded_pca2, columns=["pc_1", "pc_2"])
+
+df_encoded_pca["label"] = pred_label.numpy().astype(str)
+
+df_encoded_pca.head()
+# -
+
+px.scatter(
+    df_encoded_pca,
+    x="pc_1",
+    y="pc_2",
+    color="label",
+    title="PCA of CPC Encoded Representations",
+    width=800,
+    height=600,
+    color_discrete_sequence=px.colors.qualitative.Set2,
+)
+
+# +
+encoded_tsne2d = TSNE(
+    n_components=2,
+    perplexity=20,
+    random_state=0,
+    # init="pca"
+).fit_transform(
+    # PCA(
+    #     n_components=10,
+    # ).fit_transform(
+    #     pred_encoded.detach().numpy()[:,0,:]
+    # )
+    pred_encoded.detach().numpy()[:, 0, :]
+)
+
+df_encoded_tsne = pd.DataFrame(encoded_tsne2d, columns=["tsne_1", "tsne_2"])
+
+df_encoded_tsne["label"] = pred_label.numpy().astype(str)
+
+df_encoded_tsne.head()
+# -
+
+px.scatter(
+    df_encoded_tsne,
+    x="tsne_1",
+    y="tsne_2",
+    color="label",
+    title="t-SNE of CPC Encoded Representations",
+    width=800,
+    height=600,
+    color_discrete_sequence=px.colors.qualitative.Set2,
+)
+
+# ### Visuals
+
+# +
+# Faceted comparison: raw vs context vs encoded for the same reduction method
+# Produces two figures:
+# 1) PCA with facet rows (raw/context/encoded)
+# 2) t-SNE with facet rows (raw/context/encoded)
+
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import torch
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+
+# Rebuild tensors if they are not already in memory
+if (
+    "raw_all" not in globals()
+    or "context_all" not in globals()
+    or "encoded_all" not in globals()
+):
+    module = trainer.model if hasattr(trainer, "model") else lightning_module
+    module.eval()
+    device = module.device
+
+    all_raw, all_context, all_encoded, all_labels = [], [], [], []
+    with torch.no_grad():
+        for x, y_batch in data_module.train_dataloader():
+            x = x.float().to(device)
+            context, encoded = module.model(x)
+
+            all_raw.append(x.cpu())
+            all_context.append(context.cpu())
+            all_encoded.append(encoded.cpu())
+            all_labels.append(y_batch.cpu())
+
+    raw_all = torch.cat(all_raw, dim=0)  # [N, C_in, T]
+    context_all = torch.cat(all_context, dim=0)  # [N, T_enc, C]
+    encoded_all = torch.cat(all_encoded, dim=0)  # [N, T_enc, C]
+    y = torch.cat(all_labels, dim=0).numpy()
+    y_str = y.astype(str)
+
+# Choose one view per family for fair visual comparison
+Z_by_family = {
+    "raw": raw_all.reshape(raw_all.shape[0], -1).numpy(),  # flatten_all_channels
+    "context": context_all.reshape(context_all.shape[0], -1).numpy(),  # flatten_tokens
+    "encoded": encoded_all.reshape(encoded_all.shape[0], -1).numpy(),  # flatten_tokens
+}
+
+family_order = ["raw", "context", "encoded"]
+
+
+def reduce_family(Z, method="pca", random_state=0):
+    if method == "pca":
+        return PCA(n_components=2, random_state=random_state).fit_transform(Z)
+    if method == "tsne":
+        n = Z.shape[0]
+        perp = max(5, min(30, (n - 1) // 3))
+        return TSNE(
+            n_components=2,
+            perplexity=perp,
+            random_state=random_state,
+            init="pca",
+        ).fit_transform(Z)
+    raise ValueError(f"Unknown method: {method}")
+
+
+def build_facet_df(method):
+    rows = []
+    for fam in family_order:
+        Z2 = reduce_family(Z_by_family[fam], method=method, random_state=0)
+        df_f = pd.DataFrame(
+            {
+                "dim1": Z2[:, 0],
+                "dim2": Z2[:, 1],
+                "label": y_str,
+                "family": fam,
+            }
+        )
+        rows.append(df_f)
+    return pd.concat(rows, ignore_index=True)
+
+
+def plot_facet(method, width=1000, height=1100):
+    df_plot = build_facet_df(method)
+    title = f"{method.upper()} comparison by family (facet rows)"
+    fig = px.scatter(
+        df_plot,
+        x="dim1",
+        y="dim2",
+        color="label",
+        facet_row="family",
+        category_orders={"family": family_order},
+        title=title,
+        width=width,
+        height=height,
+        color_discrete_sequence=px.colors.qualitative.Set2,
+        opacity=0.8,
+    )
+    fig.update_traces(marker=dict(size=5))
+    fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
+    fig.update_layout(legend_title_text="label")
+    fig.show()
+
+
+# Show both methods with the same faceting layout
+plot_facet("pca")
+plot_facet("tsne")
+# -
