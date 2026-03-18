@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.19.1
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: .venv
 #     language: python
@@ -25,12 +25,12 @@
 # configs
 
 from pathlib import Path
-
-# +
 from typing import Literal
 
 import yaml
 from pydantic import BaseModel, Field
+
+# +
 
 
 class DataConfig(BaseModel):
@@ -48,112 +48,11 @@ class DataloaderConfig(BaseModel):
     num_workers: int = 0
 
 
-class ConvLayerConfig(BaseModel):
-    """Single 1D convolution specification.
-
-    Parameters define one convolution block as
-    ``Conv1d(in_channels, out_channels, kernel_size, stride, padding)``.
-    """
-
-    kernel_size: int
-    stride: int
-    padding: int
-
-
-class EncoderConfig(BaseModel):
-    """Encoder architecture and normalization settings."""
-
-    hidden_size: int = 256
-    norm_mode: Literal["batchNorm", "instanceNorm", "ID", "layerNorm"] = "layerNorm"
-    conv_layers: list[ConvLayerConfig] = Field(
-        default_factory=lambda: [
-            ConvLayerConfig(kernel_size=10, stride=5, padding=3),
-            ConvLayerConfig(kernel_size=8, stride=4, padding=2),
-            ConvLayerConfig(kernel_size=4, stride=2, padding=1),
-            ConvLayerConfig(kernel_size=4, stride=2, padding=1),
-            ConvLayerConfig(kernel_size=4, stride=2, padding=1),
-        ]
-    )
-
-
-class TransformerARConfig(BaseModel):
-    """Transformer autoregressive block hyperparameters."""
-
-    layers: int = 1
-    heads: int = 4
-    dropout: float = 0.1
-    max_seq_len: int = 512
-    abspos: bool = False
-
-
-class ARConfig(BaseModel):
-    """Autoregressive model selection and parameters.
-
-    Supports recurrent modes (GRU/LSTM/RNN), Transformer mode, and
-    identity mode (``no_ar``).
-    """
-
-    mode: Literal["GRU", "LSTM", "RNN", "transformer", "no_ar"] = "LSTM"
-    hidden_size: int = 256
-    n_levels: int = 1
-    reverse: bool = False
-    transformer: TransformerARConfig = Field(default_factory=TransformerARConfig)
-
-
-class LossConfig(BaseModel):
-    """CPC/InfoNCE objective configuration."""
-
-    n_predictions: int = 12
-    negative_sampling_ext: int = 128
-    temperature: float = 0.07
-
-
-class OptimizerConfig(BaseModel):
-    """Optimizer hyperparameters."""
-
-    learning_rate: float = 2e-4
-    weight_decay: float = 1e-6
-
-
-class TrainerConfig(BaseModel):
-    """Trainer runtime options, including epoch count and output path."""
-
-    epochs: int = 100
-    output_dir: str = "outputs/cpc_standalone"
-
-
-class RuntimeConfig(BaseModel):
-    """Execution environment settings such as seed and device."""
-
-    seed: int = 0
-    accelerator: Literal["auto", "cpu", "gpu", "mps"] = "auto"
-    devices: int = 1
-
-
-class TrainConfig(BaseModel):
+class DataModuleConfig(BaseModel):
     """Top-level configuration object for CPC training."""
 
     data: DataConfig = Field(default_factory=DataConfig)
     dataloader: DataloaderConfig = Field(default_factory=DataloaderConfig)
-    encoder: EncoderConfig = Field(default_factory=EncoderConfig)
-    ar: ARConfig = Field(default_factory=ARConfig)
-    loss: LossConfig = Field(default_factory=LossConfig)
-    optimizer: OptimizerConfig = Field(default_factory=OptimizerConfig)
-    trainer: TrainerConfig = Field(default_factory=TrainerConfig)
-    runtime: RuntimeConfig = Field(default_factory=RuntimeConfig)
-
-    @classmethod
-    def from_yaml(cls, path: Path) -> "TrainConfig":
-        """Load a training configuration from YAML.
-
-        :param path: Path to a YAML file containing any subset of
-            ``TrainConfig`` fields.
-        :returns: Parsed configuration with defaults applied to omitted
-            fields.
-        """
-        with open(path) as f:
-            data = yaml.safe_load(f)
-        return cls(**(data or {}))
 
 
 # -
@@ -222,10 +121,10 @@ class CPCDataset(Dataset):
 class CPCDataModule(L.LightningDataModule):
     """Lightning data module for CPC train/validation loaders."""
 
-    def __init__(self, config: TrainConfig):
+    def __init__(self, config: DataModuleConfig):
         """Initialize data module.
 
-        :param config: Training configuration containing data and dataloader
+        :param config: datamodule configuration containing data and dataloader
             settings.
         """
         super().__init__()
@@ -289,6 +188,57 @@ class CPCDataModule(L.LightningDataModule):
 
 # Modules
 
+
+# +
+class ConvLayerConfig(BaseModel):
+    """Single 1D convolution specification.
+
+    Parameters define one convolution block as
+    ``Conv1d(in_channels, out_channels, kernel_size, stride, padding)``.
+    """
+
+    kernel_size: int
+    stride: int
+    padding: int
+
+
+class EncoderConfig(BaseModel):
+    """Encoder architecture and normalization settings."""
+
+    hidden_size: int = 256
+    norm_mode: Literal["batchNorm", "instanceNorm", "ID", "layerNorm"] = "layerNorm"
+    conv_layers: list[ConvLayerConfig] = Field(
+        default_factory=lambda: [
+            ConvLayerConfig(kernel_size=10, stride=5, padding=3),
+            ConvLayerConfig(kernel_size=8, stride=4, padding=2),
+            ConvLayerConfig(kernel_size=4, stride=2, padding=1),
+            ConvLayerConfig(kernel_size=4, stride=2, padding=1),
+            ConvLayerConfig(kernel_size=4, stride=2, padding=1),
+        ]
+    )
+
+
+class ARConfig(BaseModel):
+    """Autoregressive model selection and parameters.
+
+    Supports recurrent modes (GRU/LSTM/RNN), Transformer mode, and
+    identity mode (``no_ar``).
+    """
+
+    mode: Literal["GRU", "LSTM", "RNN", "transformer", "no_ar"] = "LSTM"
+    hidden_size: int = 256
+    n_levels: int = 1
+    reverse: bool = False
+
+
+class LossConfig(BaseModel):
+    """CPC/InfoNCE objective configuration."""
+
+    n_predictions: int = 12
+    negative_sampling_ext: int = 128
+    temperature: float = 0.07
+
+
 import math
 
 # +
@@ -298,52 +248,6 @@ from typing import Callable, Literal
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
-
-class ChannelNorm(nn.Module):
-    """Normalize over channels for each time step.
-
-    This layer is designed for sequence tensors and keeps the same shape.
-    Given input ``x`` with shape ``[B, C, T]``, it computes mean and
-    variance across ``C`` (channels) for every sample/time position.
-
-    :param num_features: Number of channels ``C`` in the input tensor.
-    :param epsilon: Small constant added to variance for numerical stability.
-    :param affine: If ``True``, apply learnable per-channel scale and bias.
-    """
-
-    def __init__(self, num_features: int, epsilon: float = 1e-5, affine: bool = True):
-        """Initialize channel normalization.
-
-        :param num_features: Number of channels ``C`` in an input tensor of
-            shape ``[B, C, T]``.
-        :param epsilon: Small constant added to variance for numerical
-            stability.
-        :param affine: If ``True``, apply learnable per-channel scale and
-            bias.
-        """
-        super().__init__()
-        self.epsilon = epsilon
-        self.affine = affine
-        if affine:
-            self.weight = nn.Parameter(torch.ones(1, num_features, 1))
-            self.bias = nn.Parameter(torch.zeros(1, num_features, 1))
-        else:
-            self.weight = None
-            self.bias = None
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Apply normalization.
-
-        :param x: Input tensor with shape ``[B, C, T]``.
-        :returns: Normalized tensor with shape ``[B, C, T]``.
-        """
-        mean = x.mean(dim=1, keepdim=True)
-        var = x.var(dim=1, keepdim=True)
-        x = (x - mean) * torch.rsqrt(var + self.epsilon)
-        if self.weight is not None:
-            x = x * self.weight + self.bias
-        return x
 
 
 class CPCEncoder(nn.Module):
@@ -357,9 +261,6 @@ class CPCEncoder(nn.Module):
         self,
         input_channels: int = 1,
         size_hidden: int = 256,
-        norm_mode: Literal[
-            "batchNorm", "instanceNorm", "ID", "layerNorm"
-        ] = "layerNorm",
         conv_specs: list[tuple[int, int, int]] | None = None,
     ):
         """Build the encoder stack.
@@ -367,7 +268,6 @@ class CPCEncoder(nn.Module):
         :param input_channels: Number of input channels ``C_in``.
         :param size_hidden: Number of output channels for each convolution
             block.
-        :param norm_mode: Normalization type used after each convolution.
         :param conv_specs: List of convolution settings as
             ``(kernel_size, stride, padding)``. If ``None``, a default
             5-layer downsampling stack is used.
@@ -375,14 +275,7 @@ class CPCEncoder(nn.Module):
         super().__init__()
 
         norm_factory: Callable[[int], nn.Module]
-        if norm_mode == "instanceNorm":
-            norm_factory = lambda c: nn.InstanceNorm1d(c, affine=True)
-        elif norm_mode == "ID":
-            norm_factory = nn.Identity
-        elif norm_mode == "layerNorm":
-            norm_factory = ChannelNorm
-        else:
-            norm_factory = nn.BatchNorm1d
+        norm_factory = nn.BatchNorm1d
 
         if conv_specs is None:
             conv_specs = [
@@ -414,7 +307,7 @@ class CPCEncoder(nn.Module):
         self.output_dim = size_hidden
 
     @cached_property
-    def get_dim_output(self) -> int:
+    def output_dimension(self) -> int:
         """Return the encoder feature dimension ``H``."""
         return self.output_dim
 
@@ -440,7 +333,7 @@ class CPCAR(nn.Module):
         dim_output: int,
         n_levels_gru: int = 1,
         rnn_type: Literal["GRU", "LSTM", "RNN"] = "LSTM",
-        reverse: bool = False,
+        # reverse: bool = False,
     ):
         """Initialize recurrent AR module.
 
@@ -449,11 +342,11 @@ class CPCAR(nn.Module):
             module.
         :param n_levels_gru: Number of recurrent layers.
         :param rnn_type: Recurrent cell type.
-        :param reverse: If ``True``, run AR in reverse time and flip output
+        # :param reverse: If ``True``, run AR in reverse time and flip output
             back.
         """
         super().__init__()
-        self.reverse = reverse
+        # self.reverse = reverse
 
         rnn_cls = {"LSTM": nn.LSTM, "RNN": nn.RNN, "GRU": nn.GRU}[rnn_type]
         self.rnn = rnn_cls(
@@ -461,7 +354,7 @@ class CPCAR(nn.Module):
         )
 
     @cached_property
-    def get_dim_output(self) -> int:
+    def output_dimension(self) -> int:
         """Return context feature dimension ``C_ctx``."""
         return self.rnn.hidden_size
 
@@ -471,110 +364,16 @@ class CPCAR(nn.Module):
         :param x: Encoded tensor with shape ``[B, T, C]``.
         :returns: Context tensor with shape ``[B, T, C_ctx]``.
         """
-        if self.reverse:
-            x = torch.flip(x, [1])
-        try:
-            self.rnn.flatten_parameters()
-        except RuntimeError:
-            pass
+        # if self.reverse:
+        #     x = torch.flip(x, [1])
+        # try:
+        #     self.rnn.flatten_parameters()
+        # except RuntimeError:
+        #     pass
         x, _ = self.rnn(x)
-        if self.reverse:
-            x = torch.flip(x, [1])
+        # if self.reverse:
+        #     x = torch.flip(x, [1])
         return x
-
-
-class NoAr(nn.Module):
-    """Identity autoregressive module.
-
-    Useful baseline that returns encoded representations unchanged.
-    """
-
-    def __init__(self, dim_encoded: int):
-        """Initialize identity AR.
-
-        :param dim_encoded: Feature dimension ``C`` of inputs and outputs.
-        """
-        super().__init__()
-        self.dim_encoded = dim_encoded
-
-    @cached_property
-    def get_dim_output(self) -> int:
-        """Return feature dimension ``C``."""
-        return self.dim_encoded
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Return input unchanged.
-
-        :param x: Tensor with shape ``[B, T, C]``.
-        :returns: Same tensor shape ``[B, T, C]``.
-        """
-        return x
-
-
-class TransformerAR(nn.Module):
-    """Causal Transformer autoregressive model.
-
-    Applies a causal self-attention stack on ``[B, T, C]`` sequences.
-    """
-
-    def __init__(
-        self,
-        dim_encoded: int,
-        n_layers: int = 1,
-        n_heads: int = 4,
-        dropout: float = 0.1,
-        max_seq_len: int = 512,
-        abspos: bool = False,
-    ):
-        """Initialize Transformer AR.
-
-        :param dim_encoded: Token feature dimension ``C``.
-        :param n_layers: Number of Transformer encoder layers.
-        :param n_heads: Number of attention heads per layer.
-        :param dropout: Dropout probability in Transformer blocks.
-        :param max_seq_len: Maximum sequence length used when absolute
-            positional embeddings are enabled.
-        :param abspos: If ``True``, learn and add absolute positional
-            embeddings.
-        """
-        super().__init__()
-        self.dim_encoded = dim_encoded
-        self.abspos = abspos
-        self.max_seq_len = max_seq_len
-
-        if abspos:
-            self.pos = nn.Parameter(torch.zeros(1, max_seq_len, dim_encoded))
-            nn.init.normal_(self.pos, mean=0.0, std=1.0 / math.sqrt(dim_encoded))
-
-        layer = nn.TransformerEncoderLayer(
-            d_model=dim_encoded,
-            nhead=n_heads,
-            dim_feedforward=dim_encoded * 4,
-            dropout=dropout,
-            batch_first=True,
-        )
-        self.encoder = nn.TransformerEncoder(layer, num_layers=n_layers)
-
-    @cached_property
-    def get_dim_output(self) -> int:
-        """Return context feature dimension ``C``."""
-        return self.dim_encoded
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Apply causal Transformer.
-
-        :param x: Encoded tensor with shape ``[B, T, C]``.
-        :returns: Context tensor with shape ``[B, T, C]``.
-        """
-        seq_len = x.size(1)
-        if self.abspos:
-            x = x + self.pos[:, :seq_len, :]
-
-        causal_mask = torch.triu(
-            torch.ones((seq_len, seq_len), device=x.device, dtype=torch.bool),
-            diagonal=1,
-        )
-        return self.encoder(x, mask=causal_mask)
 
 
 class CPCModel(nn.Module):
@@ -703,13 +502,68 @@ class CPCCriterion(nn.Module):
                 "Use fewer downsampling conv layers, smaller strides, or lower n_predictions."
             )
 
-        assert total_loss is not None
+        if total_loss is None:
+            raise RuntimeError(
+                "CPCCriterion failed to compute loss: total_loss is None after processing all prediction steps. "
+            )
+
         return total_loss / used_steps
 
 
 # -
 
 # Model
+
+# +
+
+
+class OptimizerConfig(BaseModel):
+    """Optimizer hyperparameters."""
+
+    learning_rate: float = 2e-4
+    weight_decay: float = 1e-6
+
+
+class TrainerConfig(BaseModel):
+    """Trainer runtime options, including epoch count and output path."""
+
+    epochs: int = 100
+    output_dir: str = "lightning_logs/ts_cpc"
+
+
+class RuntimeConfig(BaseModel):
+    """Execution environment settings such as seed and device."""
+
+    seed: int = 0
+    accelerator: Literal["auto", "cpu", "gpu", "mps"] = "auto"
+    devices: int = 1
+
+
+class TrainConfig(BaseModel):
+    """Top-level configuration object for CPC training."""
+
+    data: DataConfig = Field(default_factory=DataConfig)
+    dataloader: DataloaderConfig = Field(default_factory=DataloaderConfig)
+    encoder: EncoderConfig = Field(default_factory=EncoderConfig)
+    ar: ARConfig = Field(default_factory=ARConfig)
+    loss: LossConfig = Field(default_factory=LossConfig)
+    optimizer: OptimizerConfig = Field(default_factory=OptimizerConfig)
+    trainer: TrainerConfig = Field(default_factory=TrainerConfig)
+    runtime: RuntimeConfig = Field(default_factory=RuntimeConfig)
+
+    @classmethod
+    def from_yaml(cls, path: Path) -> "TrainConfig":
+        """Load a training configuration from YAML.
+
+        :param path: Path to a YAML file containing any subset of
+            ``TrainConfig`` fields.
+        :returns: Parsed configuration with defaults applied to omitted
+            fields.
+        """
+        with open(path) as f:
+            data = yaml.safe_load(f)
+        return cls(**(data or {}))
+
 
 # +
 import os
@@ -740,36 +594,24 @@ class CPCLightningModule(L.LightningModule):
         encoder = CPCEncoder(
             input_channels=input_channels,
             size_hidden=config.encoder.hidden_size,
-            norm_mode=config.encoder.norm_mode,
+            # norm_mode=config.encoder.norm_mode,
             conv_specs=[
                 (l.kernel_size, l.stride, l.padding) for l in config.encoder.conv_layers
             ],
         )
 
-        if config.ar.mode == "transformer":
-            ar = TransformerAR(
-                dim_encoded=config.encoder.hidden_size,
-                n_layers=config.ar.transformer.layers,
-                n_heads=config.ar.transformer.heads,
-                dropout=config.ar.transformer.dropout,
-                max_seq_len=config.ar.transformer.max_seq_len,
-                abspos=config.ar.transformer.abspos,
-            )
-        elif config.ar.mode == "no_ar":
-            ar = NoAr(dim_encoded=config.encoder.hidden_size)
-        else:
-            ar = CPCAR(
-                dim_encoded=config.encoder.hidden_size,
-                dim_output=config.ar.hidden_size,
-                n_levels_gru=config.ar.n_levels,
-                rnn_type=config.ar.mode,
-                reverse=config.ar.reverse,
-            )
+        ar = CPCAR(
+            dim_encoded=config.encoder.hidden_size,
+            dim_output=config.ar.hidden_size,
+            n_levels_gru=config.ar.n_levels,
+            rnn_type=config.ar.mode,
+            # reverse=config.ar.reverse,
+        )
 
         self.model = CPCModel(encoder, ar)
         self.criterion = CPCCriterion(
-            dim_context=ar.get_dim_output,
-            dim_encoded=encoder.get_dim_output,
+            dim_context=ar.output_dimension,
+            dim_encoded=encoder.output_dimension,
             n_predictions=config.loss.n_predictions,
             n_negatives=config.loss.negative_sampling_ext,
             temperature=config.loss.temperature,
@@ -814,6 +656,19 @@ class CPCLightningModule(L.LightningModule):
         """
         self._shared_step(batch, "val")
 
+    def predict_step(
+        self, data, batch_idx: int = 0
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Run one prediction step.
+
+        :param data: Mini-batch tuple ``(x, y)``.
+        :param batch_idx: Batch index within the prediction epoch.
+        :returns: Tuple of context and encoded tensors.
+        """
+        x = data.float()
+        context, encoded = self.model(x)
+        return context, encoded
+
     def configure_optimizers(self):
         """Create optimizer for model and criterion parameters.
 
@@ -826,51 +681,45 @@ class CPCLightningModule(L.LightningModule):
         )
 
 
-def train_from_args(config: TrainConfig):
-    """Run end-to-end CPC training from a parsed configuration.
-
-    :param config: Full training configuration including data, model, loss,
-        and runtime settings.
-    """
-    L.seed_everything(config.runtime.seed, workers=True)
-    os.makedirs(config.trainer.output_dir, exist_ok=True)
-
-    data_module = CPCDataModule(config)
-    data_module.setup(stage="fit")
-    lightning_module = CPCLightningModule(
-        config=config, input_channels=data_module.input_channels
-    )
-
-    checkpoint_callback = ModelCheckpoint(
-        dirpath=config.trainer.output_dir,
-        filename=f"ts_cpc_{config.data.dataset_name}" + "-{epoch:03d}-{val_loss:.4f}",
-        save_top_k=1,
-        save_last=True,
-        monitor="val_loss",
-        mode="min",
-    )
-
-    trainer = L.Trainer(
-        max_epochs=config.trainer.epochs,
-        accelerator=config.runtime.accelerator,
-        devices=config.runtime.devices,
-        default_root_dir=config.trainer.output_dir,
-        callbacks=[checkpoint_callback],
-        log_every_n_steps=10,
-    )
-    trainer.fit(lightning_module, datamodule=data_module)
-
-    if checkpoint_callback.best_model_path:
-        print(f"Best checkpoint: {checkpoint_callback.best_model_path}")
-
-
 # +
-config = Path("configs/predictive_coding/config.ecg200.yaml")
+config = TrainConfig.from_yaml(Path("configs/predictive_coding/config.ecg200.yaml"))
 
-train_from_args(TrainConfig.from_yaml(config))
+L.seed_everything(config.runtime.seed, workers=True)
+os.makedirs(config.trainer.output_dir, exist_ok=True)
+
+data_module = CPCDataModule(
+    DataModuleConfig(
+        data=config.data,
+        dataloader=config.dataloader,
+    )
+)
+data_module.setup(stage="fit")
+lightning_module = CPCLightningModule(
+    config=config, input_channels=data_module.input_channels
+)
+
+trainer = L.Trainer(
+    max_epochs=config.trainer.epochs,
+    accelerator=config.runtime.accelerator,
+    devices=config.runtime.devices,
+    default_root_dir=config.trainer.output_dir,
+    log_every_n_steps=5,
+)
+trainer.fit(lightning_module, datamodule=data_module)
+
 # -
 
 
 # ## Load Artifacts and Interpret
 
-#
+for i in data_module.train_dataloader():
+    pred_data, pred_label = i
+    break
+
+pred_data.shape, pred_label.shape
+
+pred_label.numpy()
+
+pred_context, pred_encoded = trainer.model.predict_step(pred_data)
+
+pred_context.shape, pred_encoded.shape

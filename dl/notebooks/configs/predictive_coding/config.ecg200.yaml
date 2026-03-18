@@ -22,16 +22,16 @@ ar:
   # mode: no_ar
   hidden_size: 128
   n_levels: 1
-  reverse: false
-  transformer:
-    layers: 1
-    heads: 4
-    dropout: 0.1
-    max_seq_len: 256
-    abspos: false
+  # reverse: false
+  # transformer:
+  #   layers: 1
+  #   heads: 4
+  #   dropout: 0.1
+  #   max_seq_len: 256
+  #   abspos: false
 
 loss:
-  n_predictions: 1
+  n_predictions: 2
   negative_sampling_ext: 64
   temperature: 0.07
 
@@ -41,7 +41,7 @@ optimizer:
 
 trainer:
   epochs: 150
-  output_dir: outputs/ecg200_cpc
+  output_dir: lightning_logs/ecg200_cpc
 
 runtime:
   seed: 0
