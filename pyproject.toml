@@ -40,7 +40,7 @@ plotly = "^6.1.1"
 
 [tool.poetry.group.data.dependencies]
 eerily = "^0.2.1"
-ts-bolt = "0.0.6"
+ts-bolt = "0.0.7"
 
 
 [tool.poetry.group.torch.dependencies]

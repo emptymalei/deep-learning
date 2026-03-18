@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.15.2
+#       jupytext_version: 1.19.1
 #   kernelspec:
 #     display_name: deep-learning-py3.10
 #     language: python
@@ -893,7 +893,6 @@ dr_input_result = TSNE(
 ).fit_transform(input_example.detach().squeeze())
 
 dr_input_result.shape
-# -
 
 
 # +

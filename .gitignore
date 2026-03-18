@@ -237,3 +237,5 @@ dl/notebooks/**/*.ipynb
 !dl/notebooks/**/tree_darts.ipynb
 dl/notebooks/lightning_logs/*
 dl/notebooks/tmp/*
+
+dl/notebooks/data/predictive_coding/ECG200
