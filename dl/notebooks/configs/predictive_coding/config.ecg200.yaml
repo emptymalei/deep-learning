@@ -6,9 +6,10 @@ dataloader:
   batch_size: 32
   drop_last: false
   num_workers: 0
+  val_split: 0.1
 
 encoder:
-  hidden_size: 128
+  hidden_size: 50
   norm_mode: layerNorm
   conv_layers:
     - {kernel_size: 10, stride: 5, padding: 3}
@@ -21,7 +22,7 @@ ar:
   # mode: transformer
   mode: GRU
   # mode: no_ar
-  hidden_size: 128
+  hidden_size: 150
   n_levels: 1
   reverse: true
   # transformer:
@@ -41,10 +42,10 @@ optimizer:
   weight_decay: 0.000001
 
 trainer:
-  epochs: 150
+  epochs: 400
   output_dir: lightning_logs/ecg200_cpc
 
 runtime:
-  seed: 0
+  seed: 137
   accelerator: auto
   devices: 1

@@ -46,6 +46,7 @@ class DataloaderConfig(BaseModel):
     batch_size: int = 64
     drop_last: bool = False
     num_workers: int = 0
+    val_split: float = 0.1
 
 
 class DataModuleConfig(BaseModel):
@@ -65,7 +66,7 @@ import os
 import lightning as L
 import numpy as np
 import torch
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset, Subset
 
 
 class CPCDataset(Dataset):
@@ -118,27 +119,31 @@ class CPCDataset(Dataset):
         return self.samples[index], self.labels[index]
 
 
+def _stratified_split(
+    labels: np.ndarray, val_fraction: float, random_state: int = 42
+) -> tuple[np.ndarray, np.ndarray]:
+    """Stratified train/val index split without sklearn."""
+    rng = np.random.default_rng(random_state)
+    train_idx, val_idx = [], []
+    for cls in np.unique(labels):
+        cls_indices = np.where(labels == cls)[0]
+        rng.shuffle(cls_indices)
+        n_val = max(1, round(len(cls_indices) * val_fraction))
+        val_idx.extend(cls_indices[:n_val].tolist())
+        train_idx.extend(cls_indices[n_val:].tolist())
+    return np.array(train_idx), np.array(val_idx)
+
+
 class CPCDataModule(L.LightningDataModule):
-    """Lightning data module for CPC train/validation loaders."""
-
     def __init__(self, config: DataModuleConfig):
-        """Initialize data module.
-
-        :param config: datamodule configuration containing data and dataloader
-            settings.
-        """
         super().__init__()
         self.config = config
         self.train_loader = None
         self.val_loader = None
+        self.test_loader = None
         self.input_channels = None
 
     def setup(self, stage=None):
-        """Load serialized datasets and build data loaders.
-
-        :param stage: Lightning setup stage. Present for Lightning
-            compatibility.
-        """
         if self.train_loader is not None:
             return
 
@@ -148,40 +153,45 @@ class CPCDataModule(L.LightningDataModule):
         train_obj = torch.load(os.path.join(dataset_path, "train.pt"))
         test_obj = torch.load(os.path.join(dataset_path, "test.pt"))
 
-        train_ds = CPCDataset(train_obj)
+        full_train_ds = CPCDataset(train_obj)
         test_ds = CPCDataset(test_obj)
 
-        self.input_channels = int(train_ds.samples.shape[1])
-        self.train_loader = DataLoader(
-            train_ds,
+        self.input_channels = int(full_train_ds.samples.shape[1])
+
+        labels = full_train_ds.labels.numpy()
+        train_idx, val_idx = _stratified_split(
+            labels,
+            val_fraction=self.config.dataloader.val_split,
+            random_state=42,
+        )
+        train_ds = Subset(full_train_ds, train_idx)
+        val_ds = Subset(full_train_ds, val_idx)
+
+        dl_kwargs = dict(
             batch_size=self.config.dataloader.batch_size,
-            shuffle=True,
-            drop_last=self.config.dataloader.drop_last,
             num_workers=self.config.dataloader.num_workers,
         )
+        self.train_loader = DataLoader(
+            train_ds,
+            shuffle=True,
+            drop_last=self.config.dataloader.drop_last,
+            **dl_kwargs,
+        )
         self.val_loader = DataLoader(
-            test_ds,
-            batch_size=self.config.dataloader.batch_size,
-            shuffle=False,
-            drop_last=False,
-            num_workers=self.config.dataloader.num_workers,
+            val_ds, shuffle=False, drop_last=False, **dl_kwargs
+        )
+        self.test_loader = DataLoader(
+            test_ds, shuffle=False, drop_last=False, **dl_kwargs
         )
 
     def train_dataloader(self):
-        """Return training data loader.
-
-        :returns: Loader yielding batches ``(x, y)`` with ``x`` shape
-            ``[B, C_in, T]``.
-        """
         return self.train_loader
 
     def val_dataloader(self):
-        """Return validation data loader.
-
-        :returns: Loader yielding batches ``(x, y)`` with ``x`` shape
-            ``[B, C_in, T]``.
-        """
         return self.val_loader
+
+    def test_dataloader(self):
+        return self.test_loader
 
 
 # -
@@ -275,7 +285,8 @@ class CPCEncoder(nn.Module):
         super().__init__()
 
         norm_factory: Callable[[int], nn.Module]
-        norm_factory = nn.BatchNorm1d
+        # norm_factory = nn.BatchNorm1d
+        norm_factory = nn.Identity
 
         if conv_specs is None:
             conv_specs = [
@@ -682,7 +693,10 @@ class CPCLightningModule(L.LightningModule):
 
 
 # +
-config = TrainConfig.from_yaml(Path("configs/predictive_coding/config.ecg200.yaml"))
+# config = TrainConfig.from_yaml(
+#     Path("configs/predictive_coding/config.ecg200.yaml")
+# )
+config = TrainConfig.from_yaml(Path("configs/predictive_coding/config.ecg5000.yaml"))
 
 L.seed_everything(config.runtime.seed, workers=True)
 os.makedirs(config.trainer.output_dir, exist_ok=True)
@@ -712,8 +726,16 @@ trainer.fit(lightning_module, datamodule=data_module)
 
 # ## Load Artifacts and Interpret
 
+import numpy as np
 import pandas as pd
 import plotly.express as px
+import torch
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+# ### Visualize One Batch
 
 for i in data_module.train_dataloader():
     pred_data, pred_label = i
@@ -868,7 +890,13 @@ px.scatter(
     color_discrete_sequence=px.colors.qualitative.Set2,
 )
 
-# ### Visuals
+# ### Visualizez All
+
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from sklearn.decomposition import PCA
 
 # +
 # Faceted comparison: raw vs context vs encoded for the same reduction method
@@ -876,12 +904,6 @@ px.scatter(
 # 1) PCA with facet rows (raw/context/encoded)
 # 2) t-SNE with facet rows (raw/context/encoded)
 
-import numpy as np
-import pandas as pd
-import plotly.express as px
-import torch
-from sklearn.decomposition import PCA
-from sklearn.manifold import TSNE
 
 # Rebuild tensors if they are not already in memory
 if (
@@ -914,7 +936,10 @@ if (
 Z_by_family = {
     "raw": raw_all.reshape(raw_all.shape[0], -1).numpy(),  # flatten_all_channels
     "context": context_all.reshape(context_all.shape[0], -1).numpy(),  # flatten_tokens
-    "encoded": encoded_all.reshape(encoded_all.shape[0], -1).numpy(),  # flatten_tokens
+    # "encoded": encoded_all.reshape(encoded_all.shape[0], -1).numpy(),# flatten_tokens
+    "encoded": encoded_all[:, 0, :]
+    .reshape(encoded_all.shape[0], -1)
+    .numpy(),  # flatten_tokens
 }
 
 family_order = ["raw", "context", "encoded"]
@@ -922,7 +947,10 @@ family_order = ["raw", "context", "encoded"]
 
 def reduce_family(Z, method="pca", random_state=0):
     if method == "pca":
-        return PCA(n_components=2, random_state=random_state).fit_transform(Z)
+        return make_pipeline(
+            StandardScaler(),
+            PCA(n_components=2, random_state=random_state),
+        ).fit_transform(Z)
     if method == "tsne":
         n = Z.shape[0]
         perp = max(5, min(30, (n - 1) // 3))
@@ -951,8 +979,8 @@ def build_facet_df(method):
     return pd.concat(rows, ignore_index=True)
 
 
-def plot_facet(method, width=1000, height=1100):
-    df_plot = build_facet_df(method)
+def plot_facet(dataframe, method, width=700, height=1100):
+    df_plot = dataframe.copy()
     title = f"{method.upper()} comparison by family (facet rows)"
     fig = px.scatter(
         df_plot,
@@ -964,16 +992,550 @@ def plot_facet(method, width=1000, height=1100):
         title=title,
         width=width,
         height=height,
-        color_discrete_sequence=px.colors.qualitative.Set2,
+        # color_discrete_sequence=px.colors.qualitative.Set2,
         opacity=0.8,
     )
     fig.update_traces(marker=dict(size=5))
     fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
     fig.update_layout(legend_title_text="label")
+    fig.update_xaxes(matches=None)
+    fig.update_yaxes(matches=None)
     fig.show()
 
 
 # Show both methods with the same faceting layout
-plot_facet("pca")
-plot_facet("tsne")
+df_plot_pca = build_facet_df("pca")
+plot_facet(df_plot_pca, "pca")
+df_plot_tsne = build_facet_df("tsne")
+plot_facet(df_plot_tsne, "tsne")
 # -
+df_dr = pd.merge(
+    df_plot_pca[["dim1", "dim2"]],
+    df_plot_tsne,
+    how="left",
+    left_index=True,
+    right_index=True,
+    suffixes=("_pca", "_tsne"),
+)
+df_dr
+
+# +
+import numpy as np
+import pandas as pd
+
+# Expect df_dr columns from your merge:
+# dim1_pca, dim2_pca, dim1_tsne, dim2_tsne, label, family
+
+required = {"dim1_pca", "dim2_pca", "label", "family"}
+missing = required - set(df_dr.columns)
+if missing:
+    raise ValueError(f"df_dr is missing required columns: {missing}")
+
+# Keep only families needed for this vector
+df_tmp = df_dr[df_dr["family"].isin(["raw", "encoded"])].copy()
+
+# Create per-sample index inside each family block so raw and encoded can be paired
+df_tmp["idx"] = df_tmp.groupby("family").cumcount()
+
+# Split and rename PCA columns
+raw_df = (
+    df_tmp[df_tmp["family"] == "raw"][["idx", "label", "dim1_pca", "dim2_pca"]]
+    .rename(columns={"dim1_pca": "raw_x", "dim2_pca": "raw_y"})
+    .reset_index(drop=True)
+)
+
+enc_df = (
+    df_tmp[df_tmp["family"] == "encoded"][["idx", "label", "dim1_pca", "dim2_pca"]]
+    .rename(columns={"dim1_pca": "enc_x", "dim2_pca": "enc_y", "label": "label_enc"})
+    .reset_index(drop=True)
+)
+
+# Pair raw and encoded rows by idx (and optionally validate labels)
+df_vec = raw_df.merge(enc_df, on="idx", how="inner")
+
+# Optional sanity check: label consistency
+if not (df_vec["label"] == df_vec["label_enc"]).all():
+    print("Warning: label mismatch found between raw and encoded pairing.")
+df_vec = df_vec.drop(columns=["label_enc"])
+
+# Vector components and norm
+df_vec["vec_x"] = df_vec["enc_x"] - df_vec["raw_x"]
+df_vec["vec_y"] = df_vec["enc_y"] - df_vec["raw_y"]
+df_vec["vec_norm"] = np.linalg.norm(df_vec[["vec_x", "vec_y"]].to_numpy(), axis=1)
+
+df_vec.head()
+
+
+# +
+labels = sorted(df_vec["label"].unique())
+label_symbols = ["circle", "square", "triangle-up", "star", "hexagram"]
+
+raw_color = "rgba(31, 119, 180, 0.85)"  # blue
+enc_color = "rgba(214, 39, 40, 0.85)"  # red
+
+line_x = np.column_stack(
+    [df_vec["raw_x"], df_vec["enc_x"], np.full(len(df_vec), np.nan)]
+).ravel()
+line_y = np.column_stack(
+    [df_vec["raw_y"], df_vec["enc_y"], np.full(len(df_vec), np.nan)]
+).ravel()
+
+fig = go.Figure()
+
+fig.add_trace(
+    go.Scatter(
+        x=line_x,
+        y=line_y,
+        mode="lines",
+        line=dict(color="rgba(80,80,80,0.20)", width=1),
+        hoverinfo="skip",
+        showlegend=False,
+    )
+)
+
+for i, lbl in enumerate(labels):
+    sym = label_symbols[i % len(label_symbols)]
+    mask = df_vec["label"] == lbl
+    subset = df_vec[mask]
+
+    # raw — blue, label symbol
+    fig.add_trace(
+        go.Scatter(
+            x=subset["raw_x"],
+            y=subset["raw_y"],
+            mode="markers",
+            marker=dict(
+                size=9, symbol=sym, color=raw_color, line=dict(width=1, color="white")
+            ),
+            name=f"raw (label={lbl})",
+            legendgroup=f"label_{lbl}",
+            text=[f"idx={r}, label={lbl}" for r in subset["idx"]],
+            hovertemplate="RAW<br>%{text}<br>x=%{x:.3f}, y=%{y:.3f}<extra></extra>",
+        )
+    )
+
+    # encoded — red, same label symbol
+    fig.add_trace(
+        go.Scatter(
+            x=subset["enc_x"],
+            y=subset["enc_y"],
+            mode="markers",
+            marker=dict(
+                size=9, symbol=sym, color=enc_color, line=dict(width=1, color="white")
+            ),
+            name=f"encoded (label={lbl})",
+            legendgroup=f"label_{lbl}",
+            text=[
+                f"idx={r}, label={lbl}, norm={n:.3f}"
+                for r, n in zip(subset["idx"], subset["vec_norm"])
+            ],
+            hovertemplate="ENCODED<br>%{text}<br>x=%{x:.3f}, y=%{y:.3f}<extra></extra>",
+        )
+    )
+
+fig.update_layout(
+    title=f"Per-index vectors — color: raw(blue)/encoded(red), symbol: label (N={len(df_vec)})",
+    xaxis_title="PC1 (raw space) / PC1 (encoded space)",
+    yaxis_title="PC2",
+    width=980,
+    height=720,
+    legend=dict(groupclick="toggleitem"),
+)
+fig.show()
+
+# +
+
+
+# Derive vec_x / vec_y from whichever df_vec is in scope
+vec_x = (df_vec["enc_x"] - df_vec["raw_x"]).values
+vec_y = (df_vec["enc_y"] - df_vec["raw_y"]).values
+V = np.stack([vec_x, vec_y], axis=1)  # [N, 2]
+labels = df_vec["label"].values
+
+# 1) Mean displacement and residuals
+v_mean = V.mean(axis=0)
+residuals = V - v_mean
+residual_norms = np.linalg.norm(residuals, axis=1)
+vector_norms = np.linalg.norm(V, axis=1)
+explained_by_mean = 1 - (residual_norms / (vector_norms + 1e-9))
+
+print(f"Mean displacement vector: ({v_mean[0]:.3f}, {v_mean[1]:.3f})")
+print(f"Mean |v|:        {vector_norms.mean():.3f}  ±  {vector_norms.std():.3f}")
+print(f"Mean |residual|: {residual_norms.mean():.3f}  ±  {residual_norms.std():.3f}")
+print(f"Fraction explained by global shift: {explained_by_mean.mean():.3f}")
+
+# 2) Angle relative to mean direction
+v_mean_unit = v_mean / (np.linalg.norm(v_mean) + 1e-9)
+cos_sim = np.clip(V @ v_mean_unit / (vector_norms + 1e-9), -1, 1)
+angles_deg = np.degrees(np.arccos(cos_sim))
+
+# 3) PCA of displacement vectors
+pca_v = PCA(n_components=2).fit(V)
+print(
+    f"\nPCA of displacement vectors — variance explained: {pca_v.explained_variance_ratio_}"
+)
+
+df_angle = pd.DataFrame(
+    {
+        "angle_deg": angles_deg,
+        "residual_norm": residual_norms,
+        "vec_norm": vector_norms,
+        "label": labels,
+    }
+)
+
+fig = px.histogram(
+    df_angle,
+    x="angle_deg",
+    color="label",
+    nbins=30,
+    barmode="overlay",
+    opacity=0.7,
+    title="Distribution of displacement angle relative to mean vector (degrees)<br>"
+    "<sup>Near 0° = moves with the crowd; large angle = outlier movement</sup>",
+    labels={"angle_deg": "Angle to mean displacement (°)"},
+    width=850,
+    height=450,
+)
+fig.show()
+
+fig2 = px.scatter(
+    df_angle,
+    x="vec_norm",
+    y="residual_norm",
+    color="label",
+    title="Vector norm vs residual norm after removing global shift<br>"
+    "<sup>Near x-axis = moved with global trend; high residual = distinctive movement</sup>",
+    labels={"vec_norm": "|v|", "residual_norm": "|v - v̄|"},
+    width=800,
+    height=500,
+    opacity=0.8,
+)
+fig2.add_hline(y=0, line_dash="dot", line_color="gray")
+fig2.show()
+# -
+
+# ## Downstream Tasks
+
+import lightning as L
+
+# +
+import numpy as np
+import pandas as pd
+import torch
+import torch.nn as nn
+from lightning.pytorch.callbacks import EarlyStopping
+from sklearn.metrics import accuracy_score, f1_score
+from sklearn.model_selection import RepeatedStratifiedKFold
+from sklearn.preprocessing import StandardScaler
+from torch.utils.data import DataLoader, TensorDataset
+
+
+class SmallMLPClassifier(L.LightningModule):
+    def __init__(
+        self,
+        input_dim: int,
+        n_classes: int,
+        hidden_dim: int = 128,
+        dropout: float = 0.2,
+        lr: float = 1e-3,
+        weight_decay: float = 1e-4,
+        class_weights: torch.Tensor | None = None,
+    ):
+        super().__init__()
+        self.save_hyperparameters(ignore=["class_weights"])
+
+        self.net = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(hidden_dim, hidden_dim // 2),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(hidden_dim // 2, n_classes),
+        )
+        self.loss_fn = nn.CrossEntropyLoss(weight=class_weights)
+
+    def forward(self, x):
+        return self.net(x)
+
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self(x)
+        loss = self.loss_fn(logits, y)
+        self.log("train_loss", loss, prog_bar=False, on_epoch=True, on_step=False)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self(x)
+        loss = self.loss_fn(logits, y)
+        self.log("val_loss", loss, prog_bar=False, on_epoch=True, on_step=False)
+        return loss
+
+    def predict_step(self, batch, batch_idx, dataloader_idx=0):
+        x, _ = batch
+        return self(x)
+
+    def configure_optimizers(self):
+        return torch.optim.AdamW(
+            self.parameters(),
+            lr=self.hparams.lr,
+            weight_decay=self.hparams.weight_decay,
+        )
+
+
+def collect_raw_and_encoded(loader, model_module):
+    x_raw, x_enc, y_all = [], [], []
+
+    model_module.eval()
+    device = model_module.device
+
+    with torch.no_grad():
+        for x_batch, y_batch in loader:
+            x_batch = x_batch.float()
+
+            raw_feat = x_batch.reshape(x_batch.size(0), -1).cpu().numpy()
+            _, encoded = model_module.model(x_batch.to(device))
+            # encoded is [B, T_enc, C]; pool over time (second dimension) -> [B, C]
+            # enc_feat = encoded.mean(dim=1).cpu().numpy()
+            # flatten the encoded
+            enc_feat = encoded.reshape(encoded.size(0), -1).cpu().numpy()
+
+            x_raw.append(raw_feat)
+            x_enc.append(enc_feat)
+            y_all.append(y_batch.cpu().numpy())
+
+    X_raw = np.concatenate(x_raw, axis=0)
+    X_enc = np.concatenate(x_enc, axis=0)
+    y = np.concatenate(y_all, axis=0)
+    return X_raw, X_enc, y
+
+
+def fit_predict_mlp_on_fold(
+    X_train,
+    y_train,
+    X_val,
+    y_val,
+    seed: int = 0,
+    max_epochs: int = 80,
+    batch_size: int = 32,
+):
+    # Scale inside each fold to avoid leakage
+    scaler = StandardScaler()
+    X_train_s = scaler.fit_transform(X_train).astype(np.float32)
+    X_val_s = scaler.transform(X_val).astype(np.float32)
+
+    y_train_t = torch.from_numpy(y_train.astype(np.int64))
+    y_val_t = torch.from_numpy(y_val.astype(np.int64))
+
+    train_ds = TensorDataset(torch.from_numpy(X_train_s), y_train_t)
+    val_ds = TensorDataset(torch.from_numpy(X_val_s), y_val_t)
+
+    train_loader = DataLoader(
+        train_ds, batch_size=batch_size, shuffle=True, num_workers=0
+    )
+    val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=0)
+
+    n_classes = int(np.unique(y_train).size)
+    counts = np.bincount(y_train, minlength=n_classes).astype(np.float32)
+    class_weights = counts.sum() / np.maximum(counts, 1.0)
+    class_weights = class_weights / class_weights.mean()
+    class_weights_t = torch.tensor(class_weights, dtype=torch.float32)
+
+    L.seed_everything(seed, workers=True)
+
+    model = SmallMLPClassifier(
+        input_dim=X_train_s.shape[1],
+        n_classes=n_classes,
+        hidden_dim=64,
+        dropout=0.2,
+        lr=1e-3,
+        weight_decay=1e-4,
+        class_weights=class_weights_t,
+    )
+
+    trainer = L.Trainer(
+        max_epochs=max_epochs,
+        accelerator="auto",
+        devices=1,
+        logger=False,
+        enable_checkpointing=False,
+        enable_progress_bar=False,
+        deterministic=True,
+        callbacks=[EarlyStopping(monitor="val_loss", mode="min", patience=8)],
+    )
+    trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)
+
+    pred_batches = trainer.predict(model, dataloaders=val_loader)
+    logits = torch.cat(pred_batches, dim=0)
+    y_pred = torch.argmax(logits, dim=1).cpu().numpy()
+    return y_pred
+
+
+def evaluate_representation_cv_mlp(X, y, splits, rep_name):
+    rows = []
+    for split_id, (idx_tr, idx_va) in enumerate(splits, start=1):
+        y_pred = fit_predict_mlp_on_fold(
+            X_train=X[idx_tr],
+            y_train=y[idx_tr],
+            X_val=X[idx_va],
+            y_val=y[idx_va],
+            seed=split_id,
+            max_epochs=80,
+            batch_size=32,
+        )
+
+        rows.append(
+            {
+                "representation": rep_name,
+                "split_id": split_id,
+                "repeat": (split_id - 1) // 5 + 1,
+                "fold": (split_id - 1) % 5 + 1,
+                "accuracy": accuracy_score(y[idx_va], y_pred),
+                "f1_macro": f1_score(y[idx_va], y_pred, average="macro"),
+                "f1_weighted": f1_score(y[idx_va], y_pred, average="weighted"),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+# Fixed CPC model
+module = trainer.model if hasattr(trainer, "model") else lightning_module
+
+# Feature extraction once (CPC frozen)
+train_loader = data_module.train_dataloader()
+test_loader = data_module.val_dataloader()
+
+X_train_raw, X_train_enc, y_train = collect_raw_and_encoded(train_loader, module)
+X_test_raw, X_test_enc, y_test = collect_raw_and_encoded(test_loader, module)
+
+USE_TEST_IN_CV = False
+if USE_TEST_IN_CV:
+    X_raw = np.concatenate([X_train_raw, X_test_raw], axis=0)
+    X_enc = np.concatenate([X_train_enc, X_test_enc], axis=0)
+    y_all = np.concatenate([y_train, y_test], axis=0)
+else:
+    X_raw = X_train_raw
+    X_enc = X_train_enc
+    y_all = y_train
+
+cv = RepeatedStratifiedKFold(n_splits=5, n_repeats=5, random_state=42)
+splits = list(cv.split(X_raw, y_all))
+
+df_raw = evaluate_representation_cv_mlp(X_raw, y_all, splits, "raw")
+df_enc = evaluate_representation_cv_mlp(X_enc, y_all, splits, "encoded")
+df_cv = pd.concat([df_raw, df_enc], ignore_index=True)
+
+summary = (
+    df_cv.groupby("representation")[["accuracy", "f1_macro", "f1_weighted"]]
+    .agg(["mean", "std"])
+    .round(4)
+)
+
+paired = df_raw[["split_id", "accuracy", "f1_macro", "f1_weighted"]].merge(
+    df_enc[["split_id", "accuracy", "f1_macro", "f1_weighted"]],
+    on="split_id",
+    suffixes=("_raw", "_enc"),
+)
+paired["acc_delta_enc_minus_raw"] = paired["accuracy_enc"] - paired["accuracy_raw"]
+paired["f1m_delta_enc_minus_raw"] = paired["f1_macro_enc"] - paired["f1_macro_raw"]
+paired["f1w_delta_enc_minus_raw"] = (
+    paired["f1_weighted_enc"] - paired["f1_weighted_raw"]
+)
+
+print("=== MLP Repeated Stratified 5x5 CV Summary (mean ± std) ===")
+print(summary)
+
+print("\n=== Paired Delta Across Same Splits (encoded - raw) ===")
+print(
+    paired[
+        [
+            "acc_delta_enc_minus_raw",
+            "f1m_delta_enc_minus_raw",
+            "f1w_delta_enc_minus_raw",
+        ]
+    ]
+    .agg(["mean", "std", "min", "max"])
+    .round(4)
+)
+
+print("\n=== Win Rate (encoded > raw) ===")
+print(
+    {
+        "accuracy": float((paired["acc_delta_enc_minus_raw"] > 0).mean()),
+        "f1_macro": float((paired["f1m_delta_enc_minus_raw"] > 0).mean()),
+        "f1_weighted": float((paired["f1w_delta_enc_minus_raw"] > 0).mean()),
+    }
+)
+
+df_cv.head()
+
+# +
+
+
+from scipy.stats import binomtest, ttest_rel, wilcoxon
+
+
+def summarize_paired(metric_name, col_raw, col_enc):
+    d = paired[col_enc] - paired[col_raw]
+    n = len(d)
+
+    t_res = ttest_rel(paired[col_enc], paired[col_raw], alternative="two-sided")
+    w_res = wilcoxon(d, zero_method="wilcox", alternative="two-sided", correction=False)
+
+    wins = int((d > 0).sum())
+    losses = int((d < 0).sum())
+    ties = int((d == 0).sum())
+
+    # Sign test ignores ties
+    n_sign = wins + losses
+    sign_p = np.nan
+    if n_sign > 0:
+        sign_p = binomtest(k=wins, n=n_sign, p=0.5, alternative="two-sided").pvalue
+
+    mean_delta = float(d.mean())
+    std_delta = float(d.std(ddof=1))
+    se = std_delta / np.sqrt(n)
+    ci95_low = mean_delta - 1.96 * se
+    ci95_high = mean_delta + 1.96 * se
+
+    return {
+        "metric": metric_name,
+        "n_splits": n,
+        "mean_delta_enc_minus_raw": mean_delta,
+        "std_delta": std_delta,
+        "ci95_low": ci95_low,
+        "ci95_high": ci95_high,
+        "wins": wins,
+        "losses": losses,
+        "ties": ties,
+        "ttest_p": float(t_res.pvalue),
+        "wilcoxon_p": float(w_res.pvalue),
+        "sign_test_p": float(sign_p) if not np.isnan(sign_p) else np.nan,
+    }
+
+
+stats_rows = [
+    summarize_paired("accuracy", "accuracy_raw", "accuracy_enc"),
+    summarize_paired("f1_macro", "f1_macro_raw", "f1_macro_enc"),
+    summarize_paired("f1_weighted", "f1_weighted_raw", "f1_weighted_enc"),
+]
+
+df_stats = pd.DataFrame(stats_rows).round(6)
+
+print("=== Paired significance tests: encoded vs raw (same 25 splits) ===")
+print(df_stats.to_string(index=False))
+
+alpha = 0.05
+print("\n=== Quick significance flags at alpha=0.05 ===")
+for _, r in df_stats.iterrows():
+    print(
+        f"{r['metric']}: "
+        f"ttest={r['ttest_p'] < alpha}, "
+        f"wilcoxon={r['wilcoxon_p'] < alpha}, "
+        f"sign_test={r['sign_test_p'] < alpha if not np.isnan(r['sign_test_p']) else False}"
+    )
+# -
+
+#
