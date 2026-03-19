@@ -30,12 +30,8 @@ from typing import Literal
 import numpy as np
 import pandas as pd
 import plotly.express as px
-
-# +
 import yaml
 from pydantic import BaseModel, Field
-
-# -
 
 df = pd.DataFrame(
     {"t": np.linspace(0, 100, 501), "y": np.sin(np.linspace(0, 100, 501))}
