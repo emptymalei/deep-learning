@@ -692,11 +692,24 @@ class CPCLightningModule(L.LightningModule):
         )
 
 
-# +
+# -
+
+
 # config = TrainConfig.from_yaml(
 #     Path("configs/predictive_coding/config.ecg200.yaml")
 # )
-config = TrainConfig.from_yaml(Path("configs/predictive_coding/config.ecg5000.yaml"))
+# config = TrainConfig.from_yaml(
+# Path("configs/predictive_coding/config.ecg5000.yaml")
+# )
+# config = TrainConfig.from_yaml(
+#     Path("configs/predictive_coding/config.forda.yaml")
+# )
+config = TrainConfig.from_yaml(Path("configs/predictive_coding/config.sleep.yaml"))
+
+config.model_dump()
+
+# +
+
 
 L.seed_everything(config.runtime.seed, workers=True)
 os.makedirs(config.trainer.output_dir, exist_ok=True)
@@ -937,7 +950,7 @@ Z_by_family = {
     "raw": raw_all.reshape(raw_all.shape[0], -1).numpy(),  # flatten_all_channels
     "context": context_all.reshape(context_all.shape[0], -1).numpy(),  # flatten_tokens
     # "encoded": encoded_all.reshape(encoded_all.shape[0], -1).numpy(),# flatten_tokens
-    "encoded": encoded_all[:, 0, :]
+    "encoded": encoded_all[:, 1, :]
     .reshape(encoded_all.shape[0], -1)
     .numpy(),  # flatten_tokens
 }
