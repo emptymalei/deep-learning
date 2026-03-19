@@ -238,5 +238,4 @@ dl/notebooks/**/*.ipynb
 dl/notebooks/lightning_logs/*
 dl/notebooks/tmp/*
 
-dl/notebooks/data/predictive_coding/ECG200
-dl/notebooks/data/predictive_coding/ECG5000
+dl/notebooks/data/predictive_coding/
