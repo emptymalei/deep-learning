@@ -285,8 +285,8 @@ class CPCEncoder(nn.Module):
         super().__init__()
 
         norm_factory: Callable[[int], nn.Module]
-        # norm_factory = nn.BatchNorm1d
-        norm_factory = nn.Identity
+        norm_factory = nn.BatchNorm1d
+        # norm_factory = nn.Identity
 
         if conv_specs is None:
             conv_specs = [
@@ -692,9 +692,7 @@ class CPCLightningModule(L.LightningModule):
         )
 
 
-# -
-
-
+# +
 # config = TrainConfig.from_yaml(
 #     Path("configs/predictive_coding/config.ecg200.yaml")
 # )
@@ -702,9 +700,14 @@ class CPCLightningModule(L.LightningModule):
 # Path("configs/predictive_coding/config.ecg5000.yaml")
 # )
 # config = TrainConfig.from_yaml(
-#     Path("configs/predictive_coding/config.forda.yaml")
+# Path("configs/predictive_coding/config.forda.yaml")
 # )
-config = TrainConfig.from_yaml(Path("configs/predictive_coding/config.sleep.yaml"))
+# config = TrainConfig.from_yaml(Path("configs/predictive_coding/config.sleep.yaml"))
+
+config = TrainConfig.from_yaml(
+    Path("configs/predictive_coding/config.binaryheartbeat.yaml")
+)
+# -
 
 config.model_dump()
 
@@ -817,7 +820,7 @@ px.scatter(
 # +
 context_tsne2d = TSNE(
     n_components=2,
-    perplexity=20,
+    perplexity=15,
     random_state=0,
     # init="pca"
 ).fit_transform(
@@ -873,7 +876,7 @@ px.scatter(
 # +
 encoded_tsne2d = TSNE(
     n_components=2,
-    perplexity=20,
+    perplexity=15,
     random_state=0,
     # init="pca"
 ).fit_transform(
@@ -949,10 +952,12 @@ if (
 Z_by_family = {
     "raw": raw_all.reshape(raw_all.shape[0], -1).numpy(),  # flatten_all_channels
     "context": context_all.reshape(context_all.shape[0], -1).numpy(),  # flatten_tokens
-    # "encoded": encoded_all.reshape(encoded_all.shape[0], -1).numpy(),# flatten_tokens
-    "encoded": encoded_all[:, 1, :]
-    .reshape(encoded_all.shape[0], -1)
-    .numpy(),  # flatten_tokens
+    "encoded": encoded_all.reshape(encoded_all.shape[0], -1).numpy(),  # flatten_tokens
+    # "encoded": (
+    #     encoded_all[:, 0, :]
+    #     .reshape(encoded_all.shape[0], -1)
+    #     .numpy(),  # flatten_tokens
+    # )
 }
 
 family_order = ["raw", "context", "encoded"]
@@ -1153,6 +1158,85 @@ fig.update_layout(
     width=980,
     height=720,
     legend=dict(groupclick="toggleitem"),
+)
+fig.show()
+
+# +
+# Pick one label value to plot
+target_label = 1.0  # change this to the label you want
+
+# For float/continuous labels, exact equality can be brittle, so use tolerance
+tol = 1e-8
+subset = df_vec[
+    np.isclose(df_vec["label"].astype(float), float(target_label), atol=tol)
+].copy()
+
+if subset.empty:
+    raise ValueError(f"No rows found for target_label={target_label} (tol={tol})")
+
+raw_color = "rgba(31, 119, 180, 0.85)"  # blue
+enc_color = "rgba(214, 39, 40, 0.85)"  # red
+
+# Connector lines for only the selected label
+line_x = np.column_stack(
+    [subset["raw_x"], subset["enc_x"], np.full(len(subset), np.nan)]
+).ravel()
+line_y = np.column_stack(
+    [subset["raw_y"], subset["enc_y"], np.full(len(subset), np.nan)]
+).ravel()
+
+fig = go.Figure()
+
+fig.add_trace(
+    go.Scatter(
+        x=line_x,
+        y=line_y,
+        mode="lines",
+        line=dict(color="rgba(80,80,80,0.20)", width=1),
+        hoverinfo="skip",
+        showlegend=False,
+    )
+)
+
+fig.add_trace(
+    go.Scatter(
+        x=subset["raw_x"],
+        y=subset["raw_y"],
+        mode="markers",
+        marker=dict(
+            size=9, symbol="circle", color=raw_color, line=dict(width=1, color="white")
+        ),
+        name=f"raw (label={target_label})",
+        text=[
+            f"idx={r}, label={lbl}" for r, lbl in zip(subset["idx"], subset["label"])
+        ],
+        hovertemplate="RAW<br>%{text}<br>x=%{x:.3f}, y=%{y:.3f}<extra></extra>",
+    )
+)
+
+fig.add_trace(
+    go.Scatter(
+        x=subset["enc_x"],
+        y=subset["enc_y"],
+        mode="markers",
+        marker=dict(
+            size=9, symbol="diamond", color=enc_color, line=dict(width=1, color="white")
+        ),
+        name=f"encoded (label={target_label})",
+        text=[
+            f"idx={r}, label={lbl}, norm={n:.3f}"
+            for r, lbl, n in zip(subset["idx"], subset["label"], subset["vec_norm"])
+        ],
+        hovertemplate="ENCODED<br>%{text}<br>x=%{x:.3f}, y=%{y:.3f}<extra></extra>",
+    )
+)
+
+fig.update_layout(
+    title=f"Per-index vectors for label={target_label} (N={len(subset)})",
+    xaxis_title="PC1 (raw space) / PC1 (encoded space)",
+    yaxis_title="PC2",
+    width=980,
+    height=720,
 )
 fig.show()
 
