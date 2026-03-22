@@ -20,6 +20,8 @@ mkdocs-print-site-plugin = "^2.3.6"
 loguru = "^0.7.2"
 tabulate = "^0.9.0"
 dtaidistance = "^2.3.12"
+torchdr = "^0.3"
+faiss-gpu = "^1.7.2"
 
 
 [tool.poetry.group.darts.dependencies]
@@ -38,7 +40,7 @@ plotly = "^6.1.1"
 
 [tool.poetry.group.data.dependencies]
 eerily = "^0.2.1"
-ts-bolt = "0.0.6"
+ts-bolt = "0.0.7"
 
 
 [tool.poetry.group.torch.dependencies]

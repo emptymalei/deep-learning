@@ -6,9 +6,9 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.15.2
+#       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: .venv
+#     display_name: deep-learning-py3.10
 #     language: python
 #     name: python3
 # ---
@@ -219,6 +219,7 @@ class TransformerForecaster(L.LightningModule):
     def __init__(self, transformer: nn.Module):
         super().__init__()
         self.transformer = transformer
+        self.save_hyperparameters()
 
     def configure_optimizers(self) -> torch.optim.Optimizer:
         optimizer = torch.optim.SGD(self.parameters(), lr=1e-3)
@@ -501,3 +502,437 @@ for i in np.arange(0, 1000, 120):
 evaluator_m_step.metrics(predictions_m_step, pdm_m_step.predict_dataloader())
 
 evaluator_m_step.metrics(lobs_m_step_predictions, pdm_m_step.predict_dataloader())
+
+# # Investigations
+#
+# We dive deeper into the intermediate results of the model.
+
+# +
+from pathlib import Path
+
+import pandas as pd
+import plotly.express as px
+from torch.utils.data import DataLoader
+from ts_dl_utils.datasets.dataset import DataFrameDataset
+
+# +
+load_from_checkpoint = (
+    Path(
+        # "lightning_logs/transformer_ts_1_step/version_9"
+        "lightning_logs/transformer_ts_1_step/version_7"
+    )
+    / "checkpoints"
+)
+
+# load_from_checkpoint = Path(logger_1_step.log_dir) / "checkpoints"
+load_from_checkpoint, logger_1_step.log_dir
+# -
+
+list(load_from_checkpoint.iterdir())[0]
+
+# +
+transformer_forecaster_1_step_re = TransformerForecaster.load_from_checkpoint(
+    # load_from_checkpoint / "checkpoints/epoch=11-step=5495.ckpt"
+    list(load_from_checkpoint.iterdir())[0]
+)
+
+transformer_forecaster_1_step_re
+
+
+# -
+
+# ## Visualize Embeddings of Intermediate Layers
+
+
+def embedding_extractor(
+    forecaster: TransformerForecaster, x: torch.Tensor
+) -> tuple[torch.Tensor]:
+    """compute the embeddings based on the input
+
+    :param forecaster: the trained forecaster
+    :param x: input historical time series,
+    """
+    forecaster.transformer.to(x.device)
+    x_embedding = forecaster.transformer.embedding(
+        x.type_as(forecaster.transformer.embedding.weight)
+    )
+    x_positional = forecaster.transformer.positional_encoding(x_embedding)
+
+    encoder_state = forecaster.transformer.encoder(x_positional)
+
+    reversed = forecaster.transformer.reverse_embedding(encoder_state).squeeze(-1)
+
+    return x_embedding, x_positional, encoder_state, reversed
+
+
+def create_embedding_dataframe(
+    dr_result: torch.Tensor,
+    n_batches: int,
+    input_example: torch.Tensor,
+    n_components: int,
+) -> pd.DataFrame:
+
+    dr_df = pd.DataFrame(
+        dr_result.detach().numpy(), columns=[f"DR_{i+1}" for i in range(n_components)]
+    )
+
+    dr_df["batch"] = sum(
+        [[i] * (len(dr_df) // n_batches) for i in range(n_batches)], []
+    )
+
+    dr_df["sample_idx"] = list(range(len(dr_df) // n_batches)) * n_batches
+
+    dr_df["input"] = np.concatenate(
+        input_example[:n_batches].detach().numpy().astype("float32")
+    )
+
+    dr_df = dr_df.merge(
+        pd.DataFrame(
+            input_example[:n_batches].detach()[:, 0, 0].numpy(),
+            columns=["batch_first_value"],
+        )
+        .reset_index()
+        .rename(columns={"index": "batch"}),
+        how="left",
+        on="batch",
+    )
+
+    return dr_df
+
+
+# Prepare input data for embedding visualization.
+
+# +
+investigation_dl = DataLoader(
+    dataset=DataFrameDataset(
+        dataframe=df[["theta"]],
+        history_length=history_length_1_step,
+        horizon=horizon_1_step,
+        gap=gap,
+    ),
+    batch_size=400,
+    shuffle=False,
+)
+
+investigation_dl
+# -
+
+input_example = list(investigation_dl)[0][0]
+input_example.shape
+
+(embedding_example, positional_example, encoder_example, reversed_example) = (
+    embedding_extractor(transformer_forecaster_1_step, input_example)
+)
+
+(
+    input_example.shape,
+    embedding_example.shape,
+    positional_example.shape,
+    encoder_example.shape,
+    reversed_example.shape,
+)
+
+n_batches, seq_len, _ = input_example.shape
+df_example = pd.DataFrame(
+    {
+        "input": input_example.squeeze(-1).detach().cpu().numpy().reshape(-1),
+        "reversed": reversed_example.detach().cpu().numpy().reshape(-1),
+        "sample": np.repeat(np.arange(n_batches), seq_len),
+    }
+)
+df_example
+
+
+px.scatter(
+    df_example, x="input", y="reversed", color="sample", height=600, width=600
+).update_layout(yaxis_scaleanchor="x")
+
+import numpy as np
+from torchdr import PCA, TSNE, UMAP
+
+# Latent space visualization
+
+# +
+n_components = 2
+
+dr_reversed_result = TSNE(
+    # dr_reversed_result = UMAP(
+    # dr_reversed_result = PCA(
+    # n_neighbors=30,
+    # backend='torch',
+    perplexity=30,
+    n_components=n_components,
+).fit_transform(
+    np.concatenate(
+        [
+            input_example.squeeze(-1).numpy().astype("float32"),
+            reversed_example.detach().numpy().astype("float32"),
+        ],
+        axis=0,
+    )
+)
+# -
+dr_reversed_df = pd.DataFrame(
+    dr_reversed_result, columns=[f"DR_{i+1}" for i in range(n_components)]
+)
+dr_reversed_df["type"] = ["input"] * (len(dr_reversed_df) // 2) + ["embedded"] * (
+    len(dr_reversed_df) - len(dr_reversed_df) // 2
+)
+dr_reversed_df["sample_idx"] = list(range(len(dr_reversed_df) // 2)) + list(
+    range(len(dr_reversed_df) // 2)
+)
+
+
+px.scatter(
+    dr_reversed_df,
+    x="DR_1",
+    y="DR_2",
+    # z="DR_3",
+    color="sample_idx",
+    # color="DR_4",
+    symbol="type",
+    title="Embedding of Input and Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter_3d(
+    dr_reversed_df,
+    x="DR_1",
+    y="DR_2",
+    z="DR_3",
+    color="sample_idx",
+    # color="DR_4",
+    symbol="type",
+    title="Embedding of Input and Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter_3d(
+    dr_reversed_df.loc[dr_reversed_df["type"] == "embedded"],
+    x="DR_1",
+    y="DR_2",
+    z="DR_3",
+    color="sample_idx",
+    # color="DR_4",
+    symbol="type",
+    title="Embedding of Input Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+# Embedding outout
+
+embedding_example.detach()[0].shape, input_example.detach()[0].shape
+
+# +
+embedding_result = UMAP(
+    # embedding_result = TSNE(
+    n_neighbors=30,
+    backend="torch",
+    # perplexity=30,
+    n_components=n_components,
+).fit_transform(
+    # np.concatenate(
+    #     embedding_example.detach().numpy().astype("float32")
+    # )
+    embedding_example.detach().reshape(-1, embedding_example.shape[-1])
+)
+
+embedding_result.shape
+# -
+
+dr_embedding_df = create_embedding_dataframe(
+    dr_result=embedding_result,
+    n_batches=embedding_example.shape[0],
+    input_example=input_example,
+    n_components=n_components,
+)
+
+dr_embedding_df
+
+px.scatter(
+    dr_embedding_df,
+    x="input",
+    y="DR_1",
+    # x='DR_1',
+    # y='DR_2',
+    # z='DR_3',
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch_first_value",
+    # color="input",
+    title="Dimension Reduction for Embedding of Input Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter_3d(
+    dr_embedding_df,
+    x="DR_1",
+    y="DR_2",
+    # z='DR_3',
+    z="input",
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch",
+    # color="batch_first_value",
+    color="input",
+    title="UMAP Embedding of Input Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter(
+    pd.DataFrame(input_example.detach()[:, 0, :].numpy()).reset_index(),
+    x="index",
+    y=0,
+    height=600,
+    width=800,
+)
+
+# Positional encoding output
+
+positional_example_sample_size = 100
+
+# +
+# positional_result = UMAP(
+positional_result = TSNE(
+    # n_neighbors=30, backend='torch',
+    perplexity=30,
+    n_components=n_components,
+).fit_transform(
+    positional_example.detach()[:positional_example_sample_size].reshape(
+        -1, positional_example.shape[-1]
+    )
+)
+
+positional_result.shape
+# -
+
+dr_positional_df = create_embedding_dataframe(
+    dr_result=positional_result,
+    n_batches=positional_example_sample_size,
+    input_example=input_example,
+    n_components=n_components,
+)
+
+# +
+dr_positional_df = pd.DataFrame(
+    positional_result.detach().numpy(),
+    columns=[f"DR_{i+1}" for i in range(n_components)],
+)
+
+dr_positional_df["batch"] = sum(
+    [
+        [i] * (len(dr_positional_df) // positional_example_sample_size)
+        for i in range(positional_example_sample_size)
+    ],
+    [],
+)
+
+dr_positional_df["sample_idx"] = (
+    list(range(len(dr_positional_df) // positional_example_sample_size))
+    * positional_example_sample_size
+)
+
+dr_positional_df["input"] = np.concatenate(
+    input_example[:positional_example_sample_size].detach().numpy().astype("float32")
+)
+
+dr_positional_df = dr_positional_df.merge(
+    pd.DataFrame(
+        input_example[:positional_example_sample_size].detach()[:, 0, 0].numpy(),
+        columns=["batch_first_value"],
+    )
+    .reset_index()
+    .rename(columns={"index": "batch"}),
+    how="left",
+    on="batch",
+)
+# -
+
+
+dr_positional_df
+
+px.scatter_3d(
+    dr_positional_df,
+    x="DR_1",
+    y="DR_2",
+    z="input",
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch",
+    color="batch_first_value",
+    title="UMAP Embedding of Positional Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter(
+    dr_positional_df,
+    x="DR_1",
+    y="DR_2",
+    # z='input',
+    # symbol='type',
+    color="batch",
+    # color="input",
+    # color="batch_first_value",
+    title="UMAP Embedding of Positional Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter(
+    dr_positional_df,
+    x="input",
+    y="DR_1",
+    color="batch_first_value",
+)
+
+# Encoder output
+
+# +
+# encoder_result = TSNE(
+encoder_result = PCA(
+    # n_neighbors=30, backend='torch',
+    # perplexity=30,
+    n_components=n_components
+).fit_transform(
+    encoder_example.detach()[:positional_example_sample_size].reshape(
+        -1, encoder_example.shape[-1]
+    )
+)
+
+encoder_result.shape
+# -
+
+dr_encoder_df = create_embedding_dataframe(
+    dr_result=encoder_result,
+    # n_batches=encoder_example.shape[0],
+    n_batches=positional_example_sample_size,
+    input_example=input_example,
+    n_components=n_components,
+)
+
+px.scatter_3d(
+    dr_encoder_df,
+    x="DR_1",
+    y="DR_2",
+    z="input",
+    # color='sample_idx',
+    # symbol='type',
+    # color="batch",
+    color="batch_first_value",
+    title="UMAP Embedding of Encoder Encoded Time Series",
+    height=600,
+    width=800,
+).update_layout(legend=dict(itemsizing="constant", orientation="h", y=-0.2)).show()
+
+px.scatter(
+    dr_encoder_df,
+    x="input",
+    y="DR_1",
+    color="batch_first_value",
+)

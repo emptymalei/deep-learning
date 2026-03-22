@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.15.2
+#       jupytext_version: 1.19.1
 #   kernelspec:
 #     display_name: .venv
 #     language: python
@@ -16,12 +16,8 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-
-# +
 import pandas as pd
 import plotly.express as px
-
-# -
 
 
 def plot_arrow_chart(

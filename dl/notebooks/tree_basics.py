@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.15.2
+#       jupytext_version: 1.19.1
 #   kernelspec:
 #     display_name: deep-learning
 #     language: python
