@@ -1,0 +1,4665 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Time Series with Deep Learning Quick Bite">
+      
+      
+        <meta name="author" content="Lei Ma">
+      
+      
+        <link rel="canonical" href="https://emptymalei.github.io/deep-learning/time-series/timeseries-metrics.forecasting/">
+      
+      
+        <link rel="prev" href="../timeseries-evaluation.forecasting/">
+      
+      
+        <link rel="next" href="../timeseries-metrics.forecasting.crps/">
+      
+      
+      <link rel="icon" href="../../assets/logo_badge.svg">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.10">
+    
+    
+      
+        <title>Time Series Forecasting Metrics - Time Series with Deep Learning Quick Bite</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.fad675c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.356b1318.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings1.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings2.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings3.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings4.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings5.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-enum-headings6.css">
+    
+      <link rel="stylesheet" href="../../css/print-site.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-material.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-9XN0RGHSE1"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-9XN0RGHSE1",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-9XN0RGHSE1",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+  
+    <script>var consent;"undefined"==typeof __md_analytics||(consent=__md_get("__consent"))&&consent.analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="deep-orange">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#time-series-forecasting-metrics" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Time Series with Deep Learning Quick Bite" class="md-header__button md-logo" aria-label="Time Series with Deep Learning Quick Bite" data-md-component="logo">
+      
+  <img src="../../assets/logo_badge.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Time Series with Deep Learning Quick Bite
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Time Series Forecasting Metrics
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/emptymalei/deep-learning" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    emptymalei/machine-learning
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../engineering/" class="md-tabs__link">
+          
+  
+  Engineering Tips
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  Fundamentals of Time Series Forecasting
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../trees/tree.basics/" class="md-tabs__link">
+          
+  
+  Trees
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deep-learning-fundamentals/" class="md-tabs__link">
+          
+  
+  Fundamentals of Deep Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../time-series-deep-learning/" class="md-tabs__link">
+          
+  
+  Time Series Forecasting with Deep Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../supplementary/" class="md-tabs__link">
+          
+  
+  Supplementary
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../meta/roadmap/" class="md-tabs__link">
+          
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Time Series with Deep Learning Quick Bite" class="md-nav__button md-logo" aria-label="Time Series with Deep Learning Quick Bite" data-md-component="logo">
+      
+  <img src="../../assets/logo_badge.svg" alt="logo">
+
+    </a>
+    Time Series with Deep Learning Quick Bite
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/emptymalei/deep-learning" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    emptymalei/machine-learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Engineering Tips
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Engineering Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Coding Tips
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/python/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Fundamentals of Time Series Forecasting
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Fundamentals of Time Series Forecasting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Data and Statistical Forecasting Mothods
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Time Series Data
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Time Series Data
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Terminologies of Time Series Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.box-cox/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Box-Cox Transformation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.analysis.twfe/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Two-way Fixed Effects
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.time-delayed-embedding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Delayed Embedding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Data Generating Process
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Data Generating Process
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.dgp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DGP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.dgp.langevin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DGP: Langevin Equation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Kindergarten Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Kindergarten Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.statistical-models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Statistical Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.ar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AR
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.var/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    VAR
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Synthetic Datasets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Synthetic Datasets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-synthetic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Synthetic Time Series
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.synthetic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Creating Synthetic Dataset
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.data-augmentation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Augmentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Forecasting
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            Forecasting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-forecast.tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Forecasting Tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-forecast.naive/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Naive Forecasts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Evaluation and Metrics
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            Evaluation and Metrics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-evaluation.forecasting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Forecasting Evaluation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Time Series Forecasting Metrics
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Forecasting Metrics
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#list-of-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      List of Metrics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="List of Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-norm-mae" class="md-nav__link">
+    <span class="md-ellipsis">
+      1-Norm: MAE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-norm-mse" class="md-nav__link">
+    <span class="md-ellipsis">
+      2-Norm: MSE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rmse" class="md-nav__link">
+    <span class="md-ellipsis">
+      RMSE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mase" class="md-nav__link">
+    <span class="md-ellipsis">
+      MASE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rmsle" class="md-nav__link">
+    <span class="md-ellipsis">
+      RMSLE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mape" class="md-nav__link">
+    <span class="md-ellipsis">
+      MAPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smape" class="md-nav__link">
+    <span class="md-ellipsis">
+      sMAPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wmape" class="md-nav__link">
+    <span class="md-ellipsis">
+      wMAPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quantile-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quantile Loss
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other Metrics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics-applied-on-a-toy-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metrics Applied on a Toy Problem
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-metrics.forecasting.crps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CRPS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Hierarchical Time Series
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            Hierarchical Time Series
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-hierarchical.data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hierarchical Time Series Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-hierarchical.reconciliation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hierarchical Time Series Reconciliation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Useful Datasets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            Useful Datasets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Datasets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.ecb-exchange-rate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exchange Rate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.nrel-solar-energy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NREL Solar Power Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.uci-electricity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Electricity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.pems/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PeMS Traffic Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Trees
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Trees
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.basics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tree-based Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.random-forest/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Random Forest
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.gbdt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Gradient Boosted Trees
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.darts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Trees
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Fundamentals of Deep Learning
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Fundamentals of Deep Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deep Learning Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Learning from Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/neural-net/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Neural Networks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/recurrent-neural-networks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recurrent Neural Networks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/convolutional-neural-networks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Convolutional Neural Networks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Transformers
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            Transformers
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../transformers/transformers.vanilla/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vanilla Transformers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Dynamical Systems
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_7">
+            <span class="md-nav__icon md-icon"></span>
+            Dynamical Systems
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dynamical-systems/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Why Dynamical Systems
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dynamical-systems/neural-ode/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Neural ODE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Energy-based Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_8">
+            <span class="md-nav__icon md-icon"></span>
+            Energy-based Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energy-based-models/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energy-based-models/ebm.diffusion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Diffusion Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_9" id="__nav_5_9_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Generative Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_9">
+            <span class="md-nav__icon md-icon"></span>
+            Generative Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/autoregressive/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Autoregressive
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/ae/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/vae/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    VAE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/flow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Flow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/gan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Time Series Forecasting with Deep Learning
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Time Series Forecasting with Deep Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.dataset.pendulum/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pendulum Dataset
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.feedforward/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with MLP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.rnn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with RNN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.transformer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Transformers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.cnn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with CNN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.vae/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with VAE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.flow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Flow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.gan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with GAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.neural-ode/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Neural ODE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.deep-learning.timegrad/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Diffusion Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Supplementary
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Supplementary
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../supplementary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About Supplementary Materials
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utilities/notebooks-and-utilities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to Run Our Notebooks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Notebooks
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_3">
+            <span class="md-nav__icon md-icon"></span>
+            Notebooks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/timeseries_data_box-cox/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Box-Cox Transformation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/pendulum_dataset/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    A Dataset Generated by Damped Pendulum
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/hierarchical_forecasting_mint/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecast Reconciliation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_basics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tree Basics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_random_forest/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Random Forest Playground
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_darts_random_forest/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Trees Using Darts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_darts_boosted_tree/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forecasting with Boosted Trees Using Darts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/creating_time_series_datasets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Creating Time Series Datasets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/feedforward_neural_netwroks_timeseries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Feedforward Neural Networks for Univariate Time Series Forecasting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/rnn_timeseries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RNN for Univariate Time Series Forecasting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/transformer_timeseries_univariate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transformer for Univariate Time Series Forecasting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/neuralode_timeseries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NeuralODE for Univariate Time Series Forecasting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time-series-data-generation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Data Generation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time_vae/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TimeVAE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/timeseries-comparison/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Comparing Time Series with Each Other
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/diffusion_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Diffusion Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time_series_data_and_embedding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Time Series Data and Embeddings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_4" id="__nav_7_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Small Yet Powerful Concepts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_4">
+            <span class="md-nav__icon md-icon"></span>
+            Small Yet Powerful Concepts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Appendices
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/entropy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Entropy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/mutual-information/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mutual Information
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/kl-divergence/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    KL Divergence
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/f-divergence/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    f-divergence
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/elbo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ELBO
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/alignment-and-uniformity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Alignment and Uniformity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/gini-impurity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Gini Impurity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/information-gain/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Information Gain
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/generalization/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Generalization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/timeseries-data.dtw/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DTW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/timeseries-data.dtw-barycenter-averaging/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DBA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5" id="__nav_7_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Other Deep Learning Topics
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_5">
+            <span class="md-nav__icon md-icon"></span>
+            Other Deep Learning Topics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5_1" id="__nav_7_5_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Contrastive
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_7_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            Contrastive
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/deep-infomax/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deep Infomax
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/contrastive-predictive-coding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contrastive Predictive Coding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/made/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MADE
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/maf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MAF
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/f-gan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    f-GAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/infogan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    InfoGAN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meta/roadmap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Roadmap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meta/changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#list-of-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      List of Metrics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="List of Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-norm-mae" class="md-nav__link">
+    <span class="md-ellipsis">
+      1-Norm: MAE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-norm-mse" class="md-nav__link">
+    <span class="md-ellipsis">
+      2-Norm: MSE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rmse" class="md-nav__link">
+    <span class="md-ellipsis">
+      RMSE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mase" class="md-nav__link">
+    <span class="md-ellipsis">
+      MASE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rmsle" class="md-nav__link">
+    <span class="md-ellipsis">
+      RMSLE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mape" class="md-nav__link">
+    <span class="md-ellipsis">
+      MAPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smape" class="md-nav__link">
+    <span class="md-ellipsis">
+      sMAPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wmape" class="md-nav__link">
+    <span class="md-ellipsis">
+      wMAPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quantile-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quantile Loss
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other Metrics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics-applied-on-a-toy-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metrics Applied on a Toy Problem
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+  
+
+  
+                  
+
+  
+  
+
+
+<h1 id="time-series-forecasting-metrics">Time Series Forecasting Metrics<a class="headerlink" href="#time-series-forecasting-metrics" title="Permanent link">¶</a></h1>
+<p>Measuring the goodness of a forecaster is nontrivial. Tons of metrics are devised to measure forecasting results, applying the wrong metric may lead to "consequences" in decisions.</p>
+<p>In the following discussion, we assume the forecast at time <span class="arithmatex">\(t\)</span> to be <span class="arithmatex">\(\hat y(t)\)</span> and the actual value is <span class="arithmatex">\(y(t)\)</span>. The forecast horizon is defined as <span class="arithmatex">\(H\)</span>. In general, we look for a function</p>
+<div class="arithmatex">\[
+L\left(\{y(t_1), \cdots, y(t_H)\}, \{\hat y(t_1), \cdots, \hat y(t_H)\}; \{C(t)\}, \{y(t)\} \right),
+\]</div>
+<p>where <span class="arithmatex">\(\{C(t)\}\)</span> are the covariates and <span class="arithmatex">\(\{y(t)\}\)</span> represents the past target variables.</p>
+<div class="admonition info">
+<p class="admonition-title">Distance between Truths and Forecasts</p>
+<p>Naive choices of such metrics are distances between the truth vector <span class="arithmatex">\(\{y(t_1), \cdots, y(t_H)\}\)</span> and the forecast vector <span class="arithmatex">\(\{\hat y(t_1), \cdots, \hat y(t_H)\}\)</span>.</p>
+<p>For example, we can use norms of the deviation vector <span class="arithmatex">\(\{y(t_1) - \hat y(t_1), \cdots, y(t_H) - \hat y(t_H)\}\)</span>.</p>
+<p>In Hyndman &amp; Koehler (2006), <span class="arithmatex">\(y(t_i) - \hat y(t_i)\)</span> is defined as the <strong>forecast error</strong> <span class="arithmatex">\(e_i\equiv y(t_i) - \hat y(t_i)\)</span><sup id="fnref2:1"><a class="footnote-ref" href="#fn:1">4</a></sup>. While it is a bit confusing, the term <strong>forecast error</strong> is used in many kinds of literature.</p>
+<p>The authors also defined the <strong>relative error</strong> <span class="arithmatex">\(r_i = e_i/e^*_i\)</span> with <span class="arithmatex">\(e^*_i\)</span> being the reference forecast error from the baseline.</p>
+</div>
+<p>In this section, we explore some frequently used metrics. Hyndman &amp; Koehler (2006) discussed four different types of metrics<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">4</a></sup></p>
+<ol>
+<li>scaled-dependent measures, e.g., errors based on <span class="arithmatex">\(\{y(t_1) - \hat y(t_1), \cdots, y(t_H) - \hat y(t_H)\}\)</span>,</li>
+<li>percentage errors, e.g., errors based on <span class="arithmatex">\(\{\frac{y(t_1) - \hat y(t_1)}{y(t_1)}, \cdots, \frac{y(t_H) - \hat y(t_H)}{y(t_H)}\}\)</span>,</li>
+<li>relative errors, e.g., errors based on <span class="arithmatex">\(\{\frac{y(t_1) - \hat y(t_1)}{y(t_1) - \hat y^*(t_1)}, \cdots, \frac{y(t_H) - \hat y(t_H)}{y(t_H) - \hat y^*(t_H)}\}\)</span>, where <span class="arithmatex">\(\hat y^*(t_i)\)</span> is a baseline forecast at time <span class="arithmatex">\(t_i\)</span>,</li>
+<li>relative metrics, e.g., the ratio of the MAE for the experiment and the baseline, <span class="arithmatex">\(\operatorname{MAE}/\operatorname{MAE}_{\text{baseline}}\)</span>,</li>
+<li>in-sample scaled errors, e.g., MASE.</li>
+</ol>
+<p>Apart from the above categories, there are some other properties of metrics. Some metrics are bounded while others are not. Also, some metrics specifically require probabilistic forecasts. In the following table, we list some of the useful metrics.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Probabilistic</th>
+<th>Theoretical Range</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MAE</td>
+<td></td>
+<td><span class="arithmatex">\([0,\infty)\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>MSE</td>
+<td></td>
+<td><span class="arithmatex">\([0,\infty)\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>RMSE</td>
+<td></td>
+<td><span class="arithmatex">\([0,\infty)\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>MASE</td>
+<td></td>
+<td><span class="arithmatex">\([0,\infty)\)</span></td>
+<td>Scaled in practice; requires insample data</td>
+</tr>
+<tr>
+<td>RMSLE</td>
+<td></td>
+<td><span class="arithmatex">\([0,\infty)\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>MAPE</td>
+<td></td>
+<td><span class="arithmatex">\([0,\infty]\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>sMAPE</td>
+<td></td>
+<td><span class="arithmatex">\([0, 2]\)</span></td>
+<td>For values of the same sign</td>
+</tr>
+<tr>
+<td>wMAPE</td>
+<td></td>
+<td>-</td>
+<td>Depends on what weights are used</td>
+</tr>
+<tr>
+<td>Quantile Score</td>
+<td><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td><span class="arithmatex">\([0,\infty)\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../timeseries-metrics.forecasting.crps/">CRPS</a></td>
+<td><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td><span class="arithmatex">\([0,\infty)\)</span></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Recommended Reading</p>
+<p><a href="https://otexts.com/fpp3/accuracy.html">Hyndman &amp; Athanasopoulos (2021)</a> is a good reference for forecast errors <sup id="fnref:Hyndman2021"><a class="footnote-ref" href="#fn:Hyndman2021">1</a></sup>.</p>
+<p>To find implementations of metrics, <a href="https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html#">Darts</a> and <a href="https://ts.gluon.ai/stable/api/gluonts/gluonts.evaluation.metrics.html">GluonTS</a> both have a handful of metrics implemented.</p>
+</div>
+<h2 id="list-of-metrics">List of Metrics<a class="headerlink" href="#list-of-metrics" title="Permanent link">¶</a></h2>
+<details class="note">
+<summary>Code to Reproduce the Results</summary>
+<div class="highlight"><pre><span></span><code><span class="c1"># %%</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">FormatStrFormatter</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="nn">darts.utils.timeseries_generation</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">sine_timeseries</span><span class="p">,</span>
+    <span class="n">linear_timeseries</span><span class="p">,</span>
+    <span class="n">constant_timeseries</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">darts.metrics.metrics</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">mae</span><span class="p">,</span>
+    <span class="n">mape</span><span class="p">,</span>
+    <span class="n">marre</span><span class="p">,</span>
+    <span class="n">mse</span><span class="p">,</span>
+    <span class="n">ope</span><span class="p">,</span>
+    <span class="n">rho_risk</span><span class="p">,</span>
+    <span class="n">rmse</span><span class="p">,</span>
+    <span class="n">rmsle</span><span class="p">,</span>
+    <span class="n">smape</span><span class="p">,</span>
+    <span class="n">mase</span>
+<span class="p">)</span>
+
+<span class="c1"># %%</span>
+<span class="n">length</span> <span class="o">=</span> <span class="mi">600</span>
+<span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">ts_sin</span> <span class="o">=</span> <span class="n">sine_timeseries</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">value_frequency</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ts_lin</span> <span class="o">=</span> <span class="n">linear_timeseries</span><span class="p">(</span>
+    <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">start_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_value</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="p">(</span><span class="n">ts_sin</span> <span class="o">+</span> <span class="n">ts_lin</span><span class="p">)</span><span class="o">.</span><span class="n">with_columns_renamed</span><span class="p">(</span><span class="s2">&quot;sine&quot;</span><span class="p">,</span> <span class="s2">&quot;sin+linear&quot;</span><span class="p">)</span>
+
+<span class="n">split_at</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">ts_train</span><span class="p">,</span> <span class="n">ts_test</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">split_before</span><span class="p">(</span><span class="n">split_at</span><span class="p">)</span>
+<span class="n">ts_train</span> <span class="o">=</span> <span class="n">ts_train</span><span class="o">.</span><span class="n">with_columns_renamed</span><span class="p">(</span><span class="s2">&quot;sin+linear&quot;</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">)</span>
+<span class="n">ts_test</span> <span class="o">=</span> <span class="n">ts_test</span><span class="o">.</span><span class="n">with_columns_renamed</span><span class="p">(</span><span class="s2">&quot;sin+linear&quot;</span><span class="p">,</span> <span class="s2">&quot;actual&quot;</span><span class="p">)</span>
+
+
+<span class="n">_</span><span class="p">,</span> <span class="n">ts_pred_lin</span> <span class="o">=</span> <span class="n">ts_lin</span><span class="o">.</span><span class="n">split_before</span><span class="p">(</span><span class="n">split_at</span><span class="p">)</span>
+<span class="n">ts_pred_lin</span> <span class="o">=</span> <span class="n">ts_pred_lin</span><span class="o">.</span><span class="n">with_columns_renamed</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;linear_prediction&quot;</span><span class="p">)</span>
+
+
+<span class="n">_</span><span class="p">,</span> <span class="n">ts_pred_sin</span> <span class="o">=</span> <span class="n">ts_sin</span><span class="o">.</span><span class="n">split_before</span><span class="p">(</span><span class="n">split_at</span><span class="p">)</span>
+<span class="n">ts_pred_sin</span> <span class="o">=</span> <span class="n">ts_pred_sin</span><span class="o">.</span><span class="n">with_columns_renamed</span><span class="p">(</span><span class="s2">&quot;sine&quot;</span><span class="p">,</span> <span class="s2">&quot;sin_prediction&quot;</span><span class="p">)</span>
+
+<span class="n">ts_pred_const</span> <span class="o">=</span> <span class="n">constant_timeseries</span><span class="p">(</span>
+    <span class="n">value</span><span class="o">=</span><span class="n">ts_train</span><span class="o">.</span><span class="n">last_value</span><span class="p">(),</span>
+    <span class="n">start</span><span class="o">=</span><span class="n">ts_test</span><span class="o">.</span><span class="n">start_time</span><span class="p">(),</span>
+    <span class="n">end</span><span class="o">=</span><span class="n">ts_test</span><span class="o">.</span><span class="n">end_time</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">ts_pred_const</span> <span class="o">=</span> <span class="n">ts_pred_const</span><span class="o">.</span><span class="n">with_columns_renamed</span><span class="p">(</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span> <span class="s2">&quot;constant_prediction&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># %%</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<span class="c1"># ts_lin.plot(linestyle=&quot;dashed&quot;)</span>
+<span class="c1"># ts_sin.plot(linestyle=&quot;dashed&quot;)</span>
+
+<span class="n">ts_train</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">ts_test</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+
+<span class="n">ts_pred_lin</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">)</span>
+<span class="n">ts_pred_sin</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+<span class="n">ts_pred_const</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+
+<span class="c1"># %%</span>
+<span class="k">class</span> <span class="nc">MetricBench</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric_fn</span><span class="p">,</span> <span class="n">metric_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_fn</span> <span class="o">=</span> <span class="n">metric_fn</span>
+        <span class="k">if</span> <span class="n">metric_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">metric_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_fn</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span>
+
+    <span class="k">def</span> <span class="nf">_heatmap_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actual_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pred_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">actual_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">actual_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pred_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pred_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span>
+        <span class="n">hm_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_hat</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">actual_range</span><span class="p">,</span> <span class="n">pred_range</span><span class="p">):</span>
+            <span class="n">ts_y</span> <span class="o">=</span> <span class="n">constant_timeseries</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ts_y_hat</span> <span class="o">=</span> <span class="n">constant_timeseries</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">hm_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span>
+                        <span class="s2">&quot;y_hat&quot;</span><span class="p">:</span> <span class="n">y_hat</span><span class="p">,</span>
+                        <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">ts_y</span><span class="p">,</span> <span class="n">ts_y_hat</span><span class="p">)</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping due to </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">df_hm_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">hm_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">df_hm_data</span>
+
+    <span class="k">def</span> <span class="nf">heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis_r&quot;</span><span class="p">,</span> <span class="n">actual_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pred_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+        <span class="n">df_hm_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heatmap_data</span><span class="p">(</span><span class="n">actual_range</span><span class="o">=</span><span class="n">actual_range</span><span class="p">,</span> <span class="n">pred_range</span><span class="o">=</span><span class="n">pred_range</span><span class="p">)</span>
+
+        <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span>
+            <span class="n">df_hm_data</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s2">&quot;y_hat&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+            <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.2g&quot;</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_heatmap_fmt</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()]</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_heatmap_fmt</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()]</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Metric: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ax</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_heatmap_fmt</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">_ratio_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pred_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pred_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pred_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">41</span><span class="p">)</span>
+        <span class="n">ratio_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">y_hat</span> <span class="ow">in</span> <span class="n">pred_range</span><span class="p">:</span>
+            <span class="n">ts_y</span> <span class="o">=</span> <span class="n">constant_timeseries</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ts_y_hat</span> <span class="o">=</span> <span class="n">constant_timeseries</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ratio_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span>
+                        <span class="s2">&quot;y_hat&quot;</span><span class="p">:</span> <span class="n">y_hat</span><span class="p">,</span>
+                        <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">ts_y</span><span class="p">,</span> <span class="n">ts_y_hat</span><span class="p">)</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping due to </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">df_ratio_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">ratio_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">df_ratio_data</span>
+
+    <span class="k">def</span> <span class="nf">ratio_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">pred_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+        <span class="n">df_ratio_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ratio_data</span><span class="p">(</span><span class="n">pred_range</span><span class="o">=</span><span class="n">pred_range</span><span class="p">)</span>
+
+        <span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">df_ratio_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;y_hat&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Metric </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="si">}</span><span class="s2"> (y=1)&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ax</span>
+
+
+<span class="c1"># %% [markdown]</span>
+<span class="c1"># ## Norms (MAE, MSE)</span>
+
+<span class="c1"># %%</span>
+<span class="n">mse_bench</span> <span class="o">=</span> <span class="n">MetricBench</span><span class="p">(</span><span class="n">metric_fn</span><span class="o">=</span><span class="n">mse</span><span class="p">)</span>
+<span class="n">mse_bench</span><span class="o">.</span><span class="n">heatmap</span><span class="p">()</span>
+
+<span class="c1"># %%</span>
+<span class="n">mse_bench</span><span class="o">.</span><span class="n">ratio_plot</span><span class="p">()</span>
+
+<span class="c1"># %%</span>
+<span class="n">mae_bench</span> <span class="o">=</span> <span class="n">MetricBench</span><span class="p">(</span><span class="n">metric_fn</span><span class="o">=</span><span class="n">mae</span><span class="p">)</span>
+<span class="n">mae_bench</span><span class="o">.</span><span class="n">heatmap</span><span class="p">()</span>
+
+
+<span class="c1"># %%</span>
+<span class="n">mae_bench</span><span class="o">.</span><span class="n">ratio_plot</span><span class="p">()</span>
+
+<span class="c1"># %%</span>
+<span class="n">rmsle_bench</span> <span class="o">=</span> <span class="n">MetricBench</span><span class="p">(</span><span class="n">metric_fn</span><span class="o">=</span><span class="n">rmsle</span><span class="p">)</span>
+<span class="n">rmsle_bench</span><span class="o">.</span><span class="n">heatmap</span><span class="p">()</span>
+
+<span class="c1"># %%</span>
+<span class="n">rmsle_bench</span><span class="o">.</span><span class="n">ratio_plot</span><span class="p">()</span>
+
+<span class="c1"># %%</span>
+<span class="n">rmse_bench</span> <span class="o">=</span> <span class="n">MetricBench</span><span class="p">(</span><span class="n">metric_fn</span><span class="o">=</span><span class="n">rmse</span><span class="p">)</span>
+<span class="n">rmse_bench</span><span class="o">.</span><span class="n">heatmap</span><span class="p">()</span>
+
+<span class="c1"># %%</span>
+<span class="n">rmse_bench</span><span class="o">.</span><span class="n">ratio_plot</span><span class="p">()</span>
+
+<span class="c1"># %%</span>
+<span class="n">y_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">mape_bench</span> <span class="o">=</span> <span class="n">MetricBench</span><span class="p">(</span><span class="n">metric_fn</span><span class="o">=</span><span class="n">mape</span><span class="p">)</span>
+<span class="n">mape_bench</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">actual_range</span><span class="o">=</span><span class="n">y_pos</span><span class="p">)</span>
+
+<span class="c1"># %%</span>
+<span class="n">mape_bench</span><span class="o">.</span><span class="n">ratio_plot</span><span class="p">()</span>
+
+<span class="c1"># %%</span>
+<span class="n">smape_bench</span> <span class="o">=</span> <span class="n">MetricBench</span><span class="p">(</span><span class="n">metric_fn</span><span class="o">=</span><span class="n">smape</span><span class="p">)</span>
+<span class="n">smape_bench</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">actual_range</span><span class="o">=</span><span class="n">y_pos</span><span class="p">,</span> <span class="n">pred_range</span><span class="o">=</span><span class="n">y_pos</span><span class="p">)</span>
+
+<span class="c1"># %%</span>
+<span class="n">smape_bench</span><span class="o">.</span><span class="n">ratio_plot</span><span class="p">(</span><span class="n">pred_range</span><span class="o">=</span><span class="n">y_pos</span><span class="p">)</span>
+
+<span class="c1"># %% [markdown]</span>
+<span class="c1"># ## Naive MultiHorizon Forecasts</span>
+
+<span class="c1"># %%</span>
+<span class="n">two_args_metrics</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">mse</span><span class="p">,</span> <span class="n">mae</span><span class="p">,</span> <span class="n">rmse</span><span class="p">,</span> <span class="n">rmsle</span><span class="p">,</span> <span class="n">mape</span><span class="p">,</span> <span class="n">smape</span>
+<span class="p">]</span>
+
+<span class="n">insample_metrics</span> <span class="o">=</span> <span class="p">[</span><span class="n">mase</span><span class="p">]</span>
+
+
+<span class="n">metrics_tests</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">two_args_metrics</span><span class="p">:</span>
+    <span class="n">metrics_tests</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="s2">&quot;value_lin_pred&quot;</span><span class="p">:</span> <span class="n">m</span><span class="p">(</span><span class="n">ts_test</span><span class="p">,</span> <span class="n">ts_pred_lin</span><span class="p">),</span>
+            <span class="s2">&quot;value_sin_pred&quot;</span><span class="p">:</span> <span class="n">m</span><span class="p">(</span><span class="n">ts_test</span><span class="p">,</span> <span class="n">ts_pred_sin</span><span class="p">),</span>
+            <span class="s2">&quot;value_const_pred&quot;</span><span class="p">:</span> <span class="n">m</span><span class="p">(</span><span class="n">ts_test</span><span class="p">,</span> <span class="n">ts_pred_const</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">insample_metrics</span><span class="p">:</span>
+    <span class="n">metrics_tests</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="s2">&quot;value_lin_pred&quot;</span><span class="p">:</span> <span class="n">m</span><span class="p">(</span><span class="n">ts_test</span><span class="p">,</span> <span class="n">ts_pred_lin</span><span class="p">,</span> <span class="n">insample</span><span class="o">=</span><span class="n">ts_train</span><span class="p">),</span>
+            <span class="s2">&quot;value_sin_pred&quot;</span><span class="p">:</span> <span class="n">m</span><span class="p">(</span><span class="n">ts_test</span><span class="p">,</span> <span class="n">ts_pred_sin</span><span class="p">,</span> <span class="n">insample</span><span class="o">=</span><span class="n">ts_train</span><span class="p">),</span>
+            <span class="s2">&quot;value_const_pred&quot;</span><span class="p">:</span> <span class="n">m</span><span class="p">(</span><span class="n">ts_test</span><span class="p">,</span> <span class="n">ts_pred_const</span><span class="p">,</span> <span class="n">insample</span><span class="o">=</span><span class="n">ts_train</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+<span class="n">df_metrics_tests</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">metrics_tests</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;metric&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;value_const_pred&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;mape&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">df_metrics_tests</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;value_lin_pred&quot;</span><span class="p">:</span> <span class="s2">&quot;Linear Prediction&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;value_sin_pred&quot;</span><span class="p">:</span> <span class="s2">&quot;Sine Prediction&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;value_const_pred&quot;</span><span class="p">:</span> <span class="s2">&quot;Last Observed&quot;</span>
+    <span class="p">},</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="n">df_metrics_tests</span>
+
+<span class="c1"># %%</span>
+<span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">LogNorm</span>
+
+<span class="c1"># %%</span>
+<span class="n">metrics_tests_min_value</span> <span class="o">=</span> <span class="n">df_metrics_tests</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">metrics_tests_max_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">df_metrics_tests</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="n">metrics_tests_min_value</span><span class="p">,</span> <span class="n">metrics_tests_max_value</span>
+
+<span class="c1"># %%</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.18</span><span class="p">))</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span>
+    <span class="n">df_metrics_tests</span><span class="p">,</span>
+    <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">vmax</span><span class="o">=</span><span class="mi">100</span>
+    <span class="p">),</span>
+    <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ticks&quot;</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">1e2</span><span class="p">]},</span>
+    <span class="n">vmin</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;0.3f&quot;</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+</details>
+<h3 id="1-norm-mae">1-Norm: MAE<a class="headerlink" href="#1-norm-mae" title="Permanent link">¶</a></h3>
+<p>The Mean Absolute Error (MAE) is</p>
+<div class="arithmatex">\[
+\operatorname{MAE}(y, \hat y) = \frac{1}{H}\sum_{t=1}^{t=H}\lvert y(t) - \hat y(t)\rvert.
+\]</div>
+<p>We can check some special and extreme cases:</p>
+<ul>
+<li>
+<p>All forecasts are zeros: <span class="arithmatex">\(\hat y(t)=0\)</span>, the value of <span class="arithmatex">\(\operatorname{MAE}(y, \hat y)\)</span> is determined by the true value <span class="arithmatex">\(y\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">The Interpretation of MAE is Scale Dependent</p>
+<p>This also tells us that MAE depends on the scale of the true values: MAE value of <span class="arithmatex">\(100\)</span> for larger true values such as true value <span class="arithmatex">\(y=1000\)</span> with forecast <span class="arithmatex">\(\hat y=900\)</span> doesn't seem to be bad, but MAE value for smaller true values such as true value <span class="arithmatex">\(y=100\)</span> with forecast <span class="arithmatex">\(\hat y=0\)</span> seems to be quite off. Of course, the actual perception depends on the problem we are solving.</p>
+<p>This brings in a lot of trouble when we are dealing with forecasts on different scales, such as sales forecasts for all kinds of items on an e-commerce platform. Different types of items, e.g., expensive watches vs cheat T-shirts, have very different sales. In fact, in a paper from Amazon, the sales on Amazon are even scale-free<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">5</a></sup>.</p>
+</div>
+</li>
+<li>
+<p>All forecasts are infinite: <span class="arithmatex">\(\hat y=\infty\)</span>, the MAE value will also be <span class="arithmatex">\(\infty\)</span>. This means MAE is not bounded.</p>
+</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2H7m4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4v3Z"/></svg></span> Forecasts and Actuals</label><label for="__tabbed_1_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2H7m4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4v3Z"/></svg></span> Forecasts and Fixed Actuals</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><img alt="" src="../assets/timeseries-metrics.forecasting/metric_mae_heatmap.png" /></p>
+</div>
+<div class="tabbed-block">
+<p><img alt="" src="../assets/timeseries-metrics.forecasting/metric_mae_fixed_y_1.png" /></p>
+</div>
+</div>
+</div>
+<h3 id="2-norm-mse">2-Norm: MSE<a class="headerlink" href="#2-norm-mse" title="Permanent link">¶</a></h3>
+<p>The Mean Square Error (MSE) is</p>
+<div class="arithmatex">\[
+\operatorname{MSE}(y, \hat y) = \frac{1}{H}\sum_{t=1}^{t=H}(y(t) - \hat y(t))^2.
+\]</div>
+<p>Similar to MAE, the interpretation of MSE is also scale dependent and the value is unbounded. However, due to the <span class="arithmatex">\({}^2\)</span>, MSE can be really large or small. Obtaining insights from MSE is even harder than MAE in most situations unless MSE matches a meaningful quantity in the dynamical system we are forecasting. Nevertheless, we can know that large deviations (<span class="arithmatex">\(\lvert y(t) - \hat y(t)\rvert \gg 1\)</span>) dominates the metric even more than MAE.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2H7m4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4v3Z"/></svg></span> Forecasts and Actuals</label><label for="__tabbed_2_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2H7m4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4v3Z"/></svg></span> Forecasts and Fixed Actuals</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><img alt="" src="../assets/timeseries-metrics.forecasting/metric_mse_heatmap.png" /></p>
+</div>
+<div class="tabbed-block">
+<p><img alt="" src="../assets/timeseries-metrics.forecasting/metric_mse_fixed_y_1.png" /></p>
+</div>
+</div>
+</div>
+<details class="note">
+<summary>Other Norms</summary>
+<p>Other norms are not usually seen in literature but might provide insights into forecasts.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Maximum norm</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>The Max Norm error of a forecast can be defined as<sup id="fnref:max-norm-wiki"><a class="footnote-ref" href="#fn:max-norm-wiki">2</a></sup></p>
+<div class="arithmatex">\[\operatorname{MAE}(y, \hat y) = \operatorname{max}\left( \{y(t) - \hat y(t)\}\right).\]</div>
+</div>
+</div>
+</div>
+</details>
+<h3 id="rmse">RMSE<a class="headerlink" href="#rmse" title="Permanent link">¶</a></h3>
+<p>The Root Mean Square Error (RMSE) is</p>
+<div class="arithmatex">\[
+\operatorname{RMSE}(y, \hat y) = \sqrt{\operatorname{MSE}(y, \hat y)} = \sqrt{\frac{1}{H}\sum_{t=1}^{t=H}(y(t) - \hat y(t))^2}.
+\]</div>
+<p>RMSE essentially brings the scale of the metric from the MSE scale back to something similar to MAE. However, we have to be mindful that large deviations dominate the metric more than that in MAE.</p>
+<div class="admonition example">
+<p class="admonition-title">Domination by Large Deviations</p>
+<p>For example, in a horizon 2 forecasting problem, suppose we have the true values <span class="arithmatex">\([100, 1]\)</span> and we forecast <span class="arithmatex">\([0, 0]\)</span></p>
+<div class="arithmatex">\[
+\operatorname{RMSE} = \sqrt{ \frac{1}{2}\left((100-0)^2 + (1-0)^2 \right)} \sim 70.71
+\]</div>
+<p>If we assume the second step is forecasted perfectly, i.e., forecasts <span class="arithmatex">\([0, 1]\)</span>, we have almost the same RMSE</p>
+<div class="arithmatex">\[
+\sqrt{ \frac{1}{2}(100-0)^2 + (1-1)^2} \sim 70.71
+\]</div>
+<p>For MAE, assuming forecasts <span class="arithmatex">\([0,0]\)</span>, we get</p>
+<div class="arithmatex">\[
+\operatorname{MAE} = \frac{1}{2} \left( \lvert 1 - 0 \rvert + \lvert 100 - 0 \rvert \right) = 50.5.
+\]</div>
+<p>If we assume the forecast <span class="arithmatex">\([0,1]\)</span>, we get something slightly different</p>
+<div class="arithmatex">\[
+\frac{1}{2} \lvert 100 - 0 \rvert  = 50.
+\]</div>
+<p>To see the difference between RMSE and MAE visually,
+we compute the following quantities</p>
+<div class="arithmatex">\[
+MAE(y=[x, 1], \hat y=[0, 1]) / MAE(y=[x, 1], \hat y=[0, 0])
+\]</div>
+<p>as well as</p>
+<div class="arithmatex">\[
+RMSE(y=[x, 1], \hat y=[0, 1]) / RMSE(y=[x, 1], \hat y=[0, 0]).
+\]</div>
+<p>Using these ratios, we investigate the contributions from the large deviations for MAE and RMSE.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m16 11.78 4.24-7.33 1.73 1-5.23 9.05-6.51-3.75L5.46 19H22v2H2V3h2v14.54L9.5 8l6.5 3.78Z"/></svg></span> MAE vs RMSE</label><label for="__tabbed_4_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3h2v2H5v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5h2v2H5c-1.07-.27-2-.9-2-2v-4a2 2 0 0 0-2-2H0v-2h1a2 2 0 0 0 2-2V5a2 2 0 0 1 2-2m14 0a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h1v2h-1a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2h-2v-2h2v-5a2 2 0 0 1 2-2 2 2 0 0 1-2-2V5h-2V3h2m-7 12a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-4 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m8 0a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1Z"/></svg></span> Code for Chart</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><img alt="Contribute Investigation MAE vs RMSE" src="../assets/timeseries-metrics.forecasting/rmse_mae_contribution_investigation.png" /></p>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">darts.metrics.metrics</span> <span class="kn">import</span> <span class="n">mae</span><span class="p">,</span> <span class="n">rmse</span>
+<span class="kn">from</span> <span class="nn">darts</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+
+<span class="n">metric_contrib_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+
+<span class="n">mae_contrib_ratio</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">metric_contrib_x</span><span class="p">:</span>
+    <span class="n">mae_contrib_ratio</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">mae</span><span class="p">(</span>
+            <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">,])),</span>
+            <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,])),</span>
+        <span class="p">)</span><span class="o">/</span><span class="n">mae</span><span class="p">(</span>
+            <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">,])),</span>
+            <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,])),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="n">rmse_contrib_ratio</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">metric_contrib_x</span><span class="p">:</span>
+    <span class="n">rmse_contrib_ratio</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">rmse</span><span class="p">(</span>
+            <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">,])),</span>
+            <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,])),</span>
+        <span class="p">)</span><span class="o">/</span><span class="n">rmse</span><span class="p">(</span>
+            <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">,])),</span>
+            <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The above chart shows that RMSE is more dominated by large deviations.</p>
+</div>
+<h3 id="mase">MASE<a class="headerlink" href="#mase" title="Permanent link">¶</a></h3>
+<p>The Mean Absolute Scaled Error (MASE) is the MAE scaled by the one-step ahead naive forecast error on the training data (<span class="arithmatex">\(\{y(t_i)\}\)</span>, with <span class="arithmatex">\(i\in {1, \cdots, T}\)</span>)<sup id="fnref:mase-wiki"><a class="footnote-ref" href="#fn:mase-wiki">3</a></sup></p>
+<div class="arithmatex">\[
+\operatorname{MASE}(y(t), \hat y(t)) = \frac{\operatorname{MAE}(y(t), \hat y(t))}{ \frac{1}{H-1} \sum_{i=1}^H \lvert y(t_i) - y(t_{i-1})\rvert }.
+\]</div>
+<p>Due to the scaling by the one-step ahead naive forecast, MASE is easier to interpret. If MASE is large, the deviation in our forecasts is comparable to the rough scale of the time series. Naively, we expect a good MASE to be smaller than 1.</p>
+<h3 id="rmsle">RMSLE<a class="headerlink" href="#rmsle" title="Permanent link">¶</a></h3>
+<p>The Root Mean Squared Log Error (RMSLE) is</p>
+<div class="arithmatex">\[
+\begin{align}
+&amp;\operatorname{RMSLE(y(t), \hat y(t))} \\
+= &amp;\operatorname{MSE\left( \ln(y(t) + 1), \ln(\hat y(t) + 1) \right)} \\
+= &amp;\sqrt{ \frac{1}{H} \sum_{i=1}^T \left( \ln (y(t) + 1) - \ln (\hat y(t) +1 ) \right)^2 }.
+\end{align}
+\]</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2H7m4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4v3Z"/></svg></span> Forecasts and Actuals</label><label for="__tabbed_5_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2H7m4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4v3Z"/></svg></span> Forecasts and Fixed Actuals</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><img alt="" src="../assets/timeseries-metrics.forecasting/metric_rmsle_heatmap.png" /></p>
+</div>
+<div class="tabbed-block">
+<p><img alt="" src="../assets/timeseries-metrics.forecasting/metric_rmsle_fixed_y_1.png" /></p>
+</div>
+</div>
+</div>
+<h3 id="mape">MAPE<a class="headerlink" href="#mape" title="Permanent link">¶</a></h3>
+<p>The Mean Absolute Percent Error (MAPE) is a bounded metric defined as</p>
+<div class="arithmatex">\[
+\operatorname{MAPE(y(t), \hat y(t))} = \frac{1}{H} \sum_{i=1}^H \left\lvert \frac{y(t_i) - \hat y(t_i)}{y(t_i)} \right\rvert.
+\]</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2H7m4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4v3Z"/></svg></span> Forecasts and Actuals</label><label for="__tabbed_6_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2H7m4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4v3Z"/></svg></span> Forecasts and Fixed Actuals</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><img alt="" src="../assets/timeseries-metrics.forecasting/metric_mape_heatmap.png" /></p>
+</div>
+<div class="tabbed-block">
+<p><img alt="" src="../assets/timeseries-metrics.forecasting/metric_mape_fixed_y_1.png" /></p>
+</div>
+</div>
+</div>
+<h3 id="smape">sMAPE<a class="headerlink" href="#smape" title="Permanent link">¶</a></h3>
+<p>The <a href="https://en.wikipedia.org/wiki/Symmetric_mean_absolute_percentage_error">symmetric Mean Absolute Percent Error (sMAPE)</a> is a symmetrized version of MAPE</p>
+<div class="arithmatex">\[
+\operatorname{sMAPE}(y(t), \hat y(t)) = \frac{1}{H} \sum_{i=1}^H \frac{\lvert y(t_i) - \hat y(t_i) \rvert}{ \lvert y(t_i) + \hat y(t_i) \rvert/2 }.
+\]</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2H7m4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4v3Z"/></svg></span> Forecasts and Actuals</label><label for="__tabbed_7_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2H7m4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4v3Z"/></svg></span> Forecasts and Fixed Actuals</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><img alt="" src="../assets/timeseries-metrics.forecasting/metric_smape_heatmap.png" /></p>
+</div>
+<div class="tabbed-block">
+<p><img alt="" src="../assets/timeseries-metrics.forecasting/metric_smape_fixed_y_1.png" /></p>
+</div>
+</div>
+</div>
+<div class="admonition info">
+<p class="admonition-title">sMAPE is Bounded but Hard to Get a Feeling</p>
+<p>Even though sMAPE is bounded and it solves the blow-up problem in MAPE, it is dangerous to use sMAPE alone. For example, given true values <span class="arithmatex">\([1]\)</span>, forecasting <span class="arithmatex">\([10]\)</span> gives us sMAPE value <span class="arithmatex">\(1.636\)</span>; Forecasting <span class="arithmatex">\([100]\)</span> gives us sMAPE value <span class="arithmatex">\(1.960\)</span>; Forecasting <span class="arithmatex">\([1000]\)</span> gives us sMAPE value <span class="arithmatex">\(1.996\)</span>. The later are not too different judging by the sMAPE values.</p>
+<p>That being said, as the sMAPE value gets a bit larger, it is hard to get stable intuitions on how bad the forecast is.</p>
+</div>
+<h3 id="wmape">wMAPE<a class="headerlink" href="#wmape" title="Permanent link">¶</a></h3>
+<p>The <a href="https://en.wikipedia.org/wiki/Mean_absolute_percentage_error">weighted Mean Absolute Percent Error (wMAPE)</a> is</p>
+<div class="arithmatex">\[
+\operatorname{wMAPE}(y(t), \hat y(t)) = \frac{\sum_{i=1}^H w_i \lvert y(t_i) - \hat y(t_i) \rvert }{\sum_{i=1}^H w_i}.
+\]</div>
+<h3 id="quantile-loss">Quantile Loss<a class="headerlink" href="#quantile-loss" title="Permanent link">¶</a></h3>
+<p>The Quantile loss is defined as <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">6</a></sup><sup id="fnref:4"><a class="footnote-ref" href="#fn:4">7</a></sup><sup id="fnref:5"><a class="footnote-ref" href="#fn:5">8</a></sup></p>
+<div class="arithmatex">\[
+\operatorname{QL}(y(t), \hat y(t)) = \sum_{t=1}^H \sum_{q}\left(
+    q (y(t) - \hat y(t))_+ + (1-q) (\hat y(t) - y(t))_+
+\right),
+\]</div>
+<p>where <span class="arithmatex">\({}_{+}\)</span> indicates that we only take positive values.</p>
+<div class="admonition note">
+<p class="admonition-title">Quantile Loss has many names</p>
+<p>The quantile loss is also called quantile score, pinball loss, quantile risk or <span class="arithmatex">\(\rho\)</span>-risk.</p>
+</div>
+<h3 id="other-metrics">Other Metrics<a class="headerlink" href="#other-metrics" title="Permanent link">¶</a></h3>
+<p>We do not have a full collection of all metrics available. But we also explain some more complicated metrics, e.g., <a href="../timeseries-metrics.forecasting.crps/">CRPS</a>, as individual sections.</p>
+<h2 id="metrics-applied-on-a-toy-problem">Metrics Applied on a Toy Problem<a class="headerlink" href="#metrics-applied-on-a-toy-problem" title="Permanent link">¶</a></h2>
+<p>To feel the difference between each metric, we assume a simple forecasting problem with some artificial time series data.</p>
+<p>We construct the artificial data by summing a sine series and a linear series.</p>
+<p><img alt="artificial data" src="../assets/timeseries-metrics.forecasting/artificial_ts_for_metrics_demo.png" /></p>
+<p>We have prepared three naive forecasts,</p>
+<ol>
+<li>forecasting constant values using the last observation,</li>
+<li>forecasting the sin component of the actual data,</li>
+<li>forecasting the linear component of the actual data.</li>
+</ol>
+<p>We calculated the metrics for the three different scenarios.</p>
+<p><img alt="Metrics Demo" src="../assets/timeseries-metrics.forecasting/metrics-demo.png" /></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:Hyndman2021">
+<p>Hyndman, R.J., &amp; Athanasopoulos, G. (2021) Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 2022-11-27.&#160;<a class="footnote-backref" href="#fnref:Hyndman2021" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:max-norm-wiki">
+<p>Contributors to Wikimedia projects. Uniform norm. In: Wikipedia [Internet]. 23 Oct 2022 [cited 5 Mar 2023]. Available: <a href="https://en.wikipedia.org/wiki/Uniform_norm">https://en.wikipedia.org/wiki/Uniform_norm</a>&#160;<a class="footnote-backref" href="#fnref:max-norm-wiki" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:mase-wiki">
+<p>Contributors to Wikimedia projects. Mean absolute scaled error. In: Wikipedia [Internet]. 11 Jan 2023 [cited 5 Mar 2023]. Available: <a href="https://en.wikipedia.org/wiki/Mean_absolute_scaled_error">https://en.wikipedia.org/wiki/Mean_absolute_scaled_error</a>&#160;<a class="footnote-backref" href="#fnref:mase-wiki" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>Hyndman RJ, Koehler AB. <a href="https://doi.org/10.1016/j.ijforecast.2006.03.001">Another look at measures of forecast accuracy</a>. <em>International journal of forecasting</em> 2006; <strong>22</strong>: 679–688.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:1" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Salinas D, Flunkert V, Gasthaus J. DeepAR: Probabilistic forecasting with autoregressive recurrent networks. 2017.<a href="http://arxiv.org/abs/1704.04110">http://arxiv.org/abs/1704.04110</a>.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Gneiting T. <a href="https://doi.org/10.1016/j.ijforecast.2009.12.015">Quantiles as optimal point forecasts</a>. <em>International journal of forecasting</em> 2011; <strong>27</strong>: 197–207.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>Koenker R, Bassett G. <a href="https://doi.org/10.2307/1913643">Regression quantiles</a>. <em>Econometrica: journal of the Econometric Society</em> 1978; <strong>46</strong>: 33–50.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>Vargas Staudacher JMR de, Wu B, Struss C, Mettenleiter N. Uncertainty quantification and probabilistic forecasting of big data time series at amazon supply chain. TUM Data Innovation Lab, 2022<a href="https://www.mdsi.tum.de/fileadmin/w00cet/di-lab/pdf/Amazon_SS2022_Final_Report.pdf">https://www.mdsi.tum.de/fileadmin/w00cet/di-lab/pdf/Amazon\SS2022\Final\Report.pdf</a>.&#160;<a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+  
+
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 10.3 14 9.5 14.7 8 15.5 8s1.5.7 1.5 1.5m-5 7.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81Z"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10m-6.5-4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m2 4.5c1.75 0 3.29.72 4.19 1.81l-1.42 1.42C14.32 16.5 13.25 16 12 16s-2.32.5-2.77 1.23l-1.42-1.42C8.71 14.72 10.25 14 12 14Z"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1" hidden>
+              
+              
+                
+              
+              Thanks for your feedback!
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              Thanks for your feedback! Help us improve this page by using our <a href="https://github.com/emptymalei/deep-learning/issues" target="_blank" rel="noopener">GitHub Issues or Discussions</a>.
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+                
+
+  
+    <hr>
+    <div class="md-source-date">
+      <small>
+          Contributors: <span class='git-page-authors git-authors'><a href='mailto:hi@leima.is'>LM</a></span>
+      </small>
+    </div>
+  
+
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/emptymalei/deep-learning" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/leima137/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+  
+    
+  
+
+
+  
+    
+  
+
+
+
+  
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+      
+      
+        
+        
+      
+      <li class="task-list-item">
+        <label class="task-list-control">
+          <input type="checkbox" name="analytics" checked>
+          <span class="task-list-indicator"></span>
+          Google Analytics
+        </label>
+      </li>
+    
+      
+      
+        
+        
+      
+      <li class="task-list-item">
+        <label class="task-list-control">
+          <input type="checkbox" name="github" checked>
+          <span class="task-list-indicator"></span>
+          GitHub
+        </label>
+      </li>
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout(function(){document.querySelector("[data-md-component=consent]").hidden=!1},250);var action,form=document.forms.consent;for(action of["submit","reset"])form.addEventListener(action,function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map(function(e){return[e,!0]}))),location.hash="",location.reload()})</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.6c14ae12.min.js"></script>
+      
+        <script src="../../js/print-site.js"></script>
+      
+        <script src="../../assets/js/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
