@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.19.1
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: .venv
 #     language: python
@@ -174,6 +174,59 @@ fig.savefig(
     # transparent=True
 )
 # -
+# We need a version that is easier to read on print outs
+
+# +
+fig, ax = plt.subplots(figsize=(25, 25))
+
+
+node_size_calculator = lambda x: 10 + 30 * np.log(1 + x)
+
+nx.draw_networkx_edges(G, coordinates, edge_color="lightgray")
+
+# Draw the nodes with different markers
+effective_nodes = []
+for node in G.nodes:
+    try:
+        nx.draw_networkx_nodes(
+            G,
+            pos=coordinates,
+            nodelist=[node],
+            node_size=G.nodes.get(node).get("size"),
+            node_shape=G.nodes.get(node).get("marker"),
+            node_color=G.nodes.get(node).get("color"),
+        )
+        effective_nodes.append(node)
+    except IndexError as e:
+        print(f"{node}: {e}")
+
+for node in effective_nodes:
+    x, y = G.nodes.get(node).get("coordinate")
+    first_author_last = G.nodes.get(node).get("first_author_last")
+    year = G.nodes.get(node).get("year")
+    # plt.text(x, y + 0.1, f"{first_author_last} {year}", horizontalalignment="center")
+
+for node in effective_nodes:
+    node_citations = G.nodes.get(node).get("forwardEdgeCount")
+    if node_citations >= 1000:
+        node_title = G.nodes.get(node).get("title")
+        plt.text(
+            coordinates[node][0],
+            coordinates[node][1] - 0.3,
+            node_title,
+            horizontalalignment="center",
+            fontdict={"size": 30},
+        )
+
+plt.axis("off")
+fig.savefig(
+    "results/transformer_history/transformer_ts_papers_no_labels.png",
+    bbox_inches="tight",
+    pad_inches=-0.5,
+    # transparent=True
+)
+# -
+
 # ## Table
 
 # +
