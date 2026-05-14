@@ -605,4 +605,4 @@ tmp_x_start
 tmp_a = torch.Tensor([1, 2, 3, 4, 5])
 tmp_a
 
-extract(tmp_a, tmp_t, x_shape=tmp_x_start.shape)
+extract(tmp_a, tmp_a, x_shape=tmp_x_start.shape)
