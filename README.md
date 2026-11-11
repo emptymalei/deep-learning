@@ -37,7 +37,7 @@ poetry run mkdocs serve -s
 [Zensical](https://zensical.org) is the successor to Material for MkDocs. It reads `mkdocs.yml` but cannot run third-party MkDocs plugins yet, so `scripts/stage_site.py` first converts notebooks and citations into plain Markdown under `build/` (git-ignored):
 
 ```bash
-scripts/build_playgrounds.sh                 # optional: marimo playgrounds
+scripts/build_playgrounds.sh                 # marimo playgrounds (CI runs this before deploying)
 uv run --python 3.12 scripts/stage_site.py   # build/docs + build/mkdocs.yml
 uvx zensical serve -f build/mkdocs.yml       # or: uvx zensical build -f build/mkdocs.yml
 ```
@@ -76,6 +76,8 @@ To add a widget:
 3. Respect `prefers-reduced-motion` (no autoplay) and check the widget in light mode, dark mode and at phone width.
 
 To regenerate Altair charts, run `uv run --python 3.12 scripts/build_charts.py`.
+
+marimo playgrounds (`playgrounds/*.py`) are exported to WebAssembly by `scripts/build_playgrounds.sh` into the git-ignored `dl/assets/playgrounds/`. The deploy workflow runs it before building, with marimo pinned in the workflow. Locally, run it before `mkdocs serve` to see a playground; without it, the `embed` widget shows its Markdown fallback.
 
 ### Optional Requirements
 

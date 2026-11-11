@@ -33,5 +33,10 @@ jobs:
         run: python -m pip install "poetry==2.1.2"
       - name: Install docs dependencies
         run: poetry install --only main --no-root
+      - uses: astral-sh/setup-uv@v10.3.3
+      - name: Build marimo playgrounds
+        run: scripts/build_playgrounds.sh
+        env:
+          MARIMO_VERSION: "0.25.2"
       - uses: nikeee/setup-pandoc@v1
       - run: poetry run mkdocs build
