@@ -382,11 +382,24 @@ def main() -> None:
         f"notebooks: {len(notebooks)} converted, {total_outputs} outputs merged from local .ipynb files"
     )
 
-    # Tags index: the old Material marker -> the listing marker Zensical understands.
+    # Links to notebook sources now point at the converted pages, and the old
+    # Material tags marker becomes the listing marker Zensical understands.
+    nb_link = re.compile(r"(\]\((?:\.\./)*(?:notebooks/)?[\w.-]+)\.py(\)|#)")
     for md in docs.rglob("*.md"):
         text = md.read_text()
-        if "[TAGS]" in text:
-            md.write_text(text.replace("[TAGS]", "<!-- material/tags -->"))
+        new = text.replace("[TAGS]", "<!-- material/tags -->")
+        new = nb_link.sub(
+            lambda m: (
+                m.group(1) + ".md" + m.group(2)
+                if (md.parent / (m.group(1).split("](", 1)[1] + ".md"))
+                .resolve()
+                .exists()
+                else m.group(0)
+            ),
+            new,
+        )
+        if new != text:
+            md.write_text(new)
 
     # Citations -> footnotes
     bib_dir = ROOT / "dl" / "assets" / "references"
