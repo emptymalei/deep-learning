@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Export every marimo notebook in playgrounds/ to a static WebAssembly site
-# under dl/assets/playgrounds/<name>/, which MkDocs then copies as-is.
+# under dl/assets/playgrounds/<name>/, which the site build copies as-is.
 #
-# The output is generated (and gitignored), so run this before `mkdocs build`:
+# The output is generated (and gitignored); scripts/build_site.sh runs this
+# before building the site. To export the playgrounds alone:
 #
 #     scripts/build_playgrounds.sh
 #
@@ -31,7 +32,7 @@ for nb in "${notebooks[@]}"; do
     # so readers see the plots while Pyodide is still loading.
     uvx --from "${marimo}" marimo export html-wasm "${nb}" \
         -o "${out}" --mode run --no-show-code --execute
-    # MkDocs (with mkdocs-jupyter) would turn .md/.py/.ipynb files into pages.
+    # The site build would turn .md/.py/.ipynb files into pages.
     # The export only has marimo's AI-assistant prompt (CLAUDE.md), which the
     # page does not load.
     find "${out}" -type f \( -name '*.md' -o -name '*.py' -o -name '*.ipynb' \) \

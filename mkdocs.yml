@@ -88,58 +88,9 @@ extra_javascript:
 
 
 plugins:
-  - autorefs
-  - git-authors
   - search
-  - exclude-search:
-      exclude:
-        - notebooks/tree_darts
   - tags:
       tags_file: tags.md
-  - bibtex:
-      bib_dir: "dl/assets/references"
-      csl_file: "dl/assets/csl/nature-publishing-group-vancouver.csl" # https://github.com/citation-style-language/styles/blob/master/nature-publishing-group-vancouver.csl
-  - mkdocs-jupyter:
-      include: ["*.py"]
-      ignore: ["notebooks/.ipynb_checkpoints/*"]
-      include_source: true
-      execute: false
-  - print-site:
-      add_to_navigation: false
-      print_page_title: 'Time Series with Deep Learning'
-      add_print_site_banner: false
-      # Table of contents
-      add_table_of_contents: true
-      toc_title: 'Table of Contents'
-      toc_depth: 6
-      # Content-related
-      add_full_urls: false
-      enumerate_headings: true
-      enumerate_figures: true
-      include_css: true
-      enabled: true
-      exclude:
-  # - with-pdf:
-  #     author: "Lei Ma"
-  #     output_path: pdf/dl-lm.pdf
-  #     cover_logo: assets/logo_badge.svg
-  #     cover_subtitle: "Deep Learning Quick Bite"
-  #     two_columns_level: 3
-  #     enabled_if_env: ENABLE_PDF_EXPORT
-  #     render_js: true
-  #     headless_chrome_path: "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
-  #######
-  # For Linux
-  # - with-pdf:
-  #     author: "Lei Ma"
-  #     output_path: pdf/dl-lm.pdf
-  #     cover_logo: assets/logo_badge.svg
-  #     cover_subtitle: "Time Series with Deep Learning Quick Bite"
-  #     two_columns_level: 3
-  #     enabled_if_env: ENABLE_PDF_EXPORT
-  #     render_js: true
-  #     headless_chrome_path: "google-chrome"
-
 
 
 extra:

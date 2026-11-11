@@ -6,20 +6,11 @@ authors = ["LM <hi@leima.is>"]
 readme = "README.md"
 packages = [{include = "ts_dl_utils", from = "dl/notebooks/"}]
 
-# Main dependencies are only what the docs build needs, so CI can run
-# `poetry install --only main` without pulling PyTorch and friends.
-# Notebook dependencies live in the groups below (installed by default).
+# The site is built with Zensical through uv (scripts/build_site.sh) and needs
+# nothing from Poetry. Poetry manages the notebook dependencies in the groups
+# below.
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
-mkdocs-material = "^9.4.10"
-mkdocs-autorefs = "^0.5.0"
-mkdocstrings = "^0.23.0"
-mkdocs-with-pdf = "^0.9.3"
-mkdocs-git-authors-plugin = "^0.7.2"
-mkdocs-bibtex = "^2.11.0"
-mkdocs-jupyter = "<=0.24.2"
-mkdocs-exclude-search = "^0.6.5"
-mkdocs-print-site-plugin = "^2.3.6"
 
 
 [tool.poetry.group.ml.dependencies]
