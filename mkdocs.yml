@@ -80,6 +80,7 @@ extra_javascript:
   - assets/widgets/loader.js
   - assets/widgets/embed.js
   - assets/widgets/backtest-windows.js
+  - assets/widgets/vega.js
 
 
 
