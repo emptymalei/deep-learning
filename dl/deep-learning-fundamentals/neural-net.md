@@ -15,20 +15,20 @@ We start with some intuitions of neural networks before discussing the theoretic
 
 What an artificial neuron does is respond to stimulations. This response could be strong or weak depending on the strength of the stimulations. Here is an example.
 
-![Neuron response](../assets/neural-net/neuron-response.png)
+![Neuron response](assets/neural-net/neuron-response.png)
 
 Using one simple single neuron, we do not have much to build. It is just the function we observe above. However, by connecting multiple neurons in a network, we could compose complicated functions and generalize the scaler function to multi-dimensional functions.
 
 Before we connect this neuron to a network, we study a few transformations first. The response function can be shifted, scaled, or inverted. The following figure shows the effect of these transformations.
 
-![transformations](../assets/neural-net/transformation-activation.jpg)
+![transformations](assets/neural-net/transformation-activation.jpg)
 
 
 ### Artificial Neural Network
 
 A simple network is a collection of neurons that respond to stimulations, which could come from the responses of other neurons.
 
-![simple neural network](../assets/neural-net/neural-network-simple.png)
+![simple neural network](assets/neural-net/neural-network-simple.png)
 
 A given input signal is spread onto three different neurons. The neurons respond to this signal separately before being combined with different weights. In the language of math, given input $x$, output $y(x)$ is
 
@@ -46,7 +46,7 @@ To extend this naive and shallow network, we could
 * add interactions between neurons, or
 * include recurrent connections in the network.
 
-![multilayer](../assets/neural-net/multilayer.jpg)
+![multilayer](assets/neural-net/multilayer.jpg)
 
 
 ### Composition Effects
@@ -58,17 +58,17 @@ To build up intuitions of how multiple neurons work together, we take an example
 
 The first task can be solved using o single neuron. Suppose our input to the neuron is the temperature of the room. The output of the neuron is a binary value, 1 for hot and 0 for cold. The following figure shows the response of the neuron.
 
-![single neuron classification](../assets/neural-net/one-neuron-classification.png)
+![single neuron classification](assets/neural-net/one-neuron-classification.png)
 
 In the figure above, we use red for "hot" and blue for "cold". In this example, the temperature being $T_1$ means the room is cold, while that being $T_2$ and $T_3$ indicate hot rooms.
 
 However, moving on the the second problem, such monotonic functions won't work. It is only comfortable to stay in the hotel room if the temperature is neither too high nor too low. Now consider two neurons in a network. One neuron has a monotonic increasing response to the temperature, while the other has a monotonic decreasing response. The following figure shows the combined response of the two neurons. We observe that the combined response is high only when the temperature is in a certain range.
 
-![two neuron classification](../assets/neural-net/two-neuron-network.png)
+![two neuron classification](assets/neural-net/two-neuron-network.png)
 
 Suppose we have three rooms with temperatures $T_1$, $T_2$, $T_3$ respectively. Only $T_2$ falls into the region of large output value which corresponds to the habitable temperature.
 
-![two neuron classification](../assets/neural-net/two-neuron-classification-result.png)
+![two neuron classification](assets/neural-net/two-neuron-classification-result.png)
 
 !!! note "Mathematical Formulation"
 

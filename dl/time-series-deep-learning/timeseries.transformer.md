@@ -5,7 +5,7 @@ tags:
 # Transformers for Time Series Forecasting
 
 !!! info ":material-code-json: Jupyter Notebook Available"
-    We have a [:notebook: notebook](../../notebooks/transformer_timeseries_univariate) for this section which includes all the code used in this section.
+    We have a [:notebook: notebook](../notebooks/transformer_timeseries_univariate.py) for this section which includes all the code used in this section.
 
 
 !!! info ":simple-abstract: Introduction to Transformers"
@@ -55,7 +55,7 @@ encoder --> output_linear_layer
 
 ??? info "Training"
 
-    The details for model training can be found in this [:notebook: notebook](../../notebooks/transformer_timeseries_univariate). We will skip the details but show the loss curve here.
+    The details for model training can be found in this [:notebook: notebook](../notebooks/transformer_timeseries_univariate.py). We will skip the details but show the loss curve here.
 
     ![Training](assets/timeseries.transformer/vanilla_transformer_univariate_pendulum_training.png)
 

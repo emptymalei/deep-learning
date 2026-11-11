@@ -7,7 +7,7 @@ In the chapter [Deep Learning Fundamentals](../deep-learning-fundamentals), we d
 Deep learning models usually require batches of data to train. For time series data, we need to slice along the time axis to create batches. In section [The Time Delay Embedding Representation](../time-series/timeseries-data.time-delayed-embedding/), we discussed methods to represent time series data. In this section, we provide an example.
 
 
-In our [`ts_dl_utils` package](../../utilities/notebooks-and-utilities), we provide a class called `DataFrameDataset`. This class moves along the time axis and cuts the time series into multiple data points.
+In our [`ts_dl_utils` package](../utilities/notebooks-and-utilities.md), we provide a class called `DataFrameDataset`. This class moves along the time axis and cuts the time series into multiple data points.
 
 
 ```python

@@ -75,11 +75,11 @@ For data with two possible values $\{0,1\}$, the maximum Gini impurity is 0.25. 
 
 The following heatmap shows the Gini impurity for data with two possible values. The color indicates the Gini impurity.
 
-![Gini Two Values](../assets/gini-impurity/gini-2-values-heatmap.png)
+![Gini Two Values](assets/gini-impurity/gini-2-values-heatmap.png)
 
 
 For data with three possible values, the Gini impurity is also visualized using the same chart given the condition that $p_3 = 1 - p_1 - p_2$.
 
 The following chart shows the Gini impurity for data with three possible values. The color indicates the Gini impurity.
 
-![Gini 3 Values](../assets/gini-impurity/gini-3-values-heatmap.png)
+![Gini 3 Values](assets/gini-impurity/gini-3-values-heatmap.png)

@@ -9,7 +9,7 @@ In the section [Neural Networks](neural-net.md), we discussed the feedforward ne
 
 A recurrent neural network (RNN) can be achieved by including loops in the network, i.e., the output of a unit is fed back to itself. As an example, we show a single unit in the following figure.
 
-![Basic RNN](../assets/recurrent-neural-networks/rnn-simple.jpg)
+![Basic RNN](assets/recurrent-neural-networks/rnn-simple.jpg)
 
 On the left, we have the unfolded (unrolled) RNN, while the representation on the right is the compressed form. A simplified mathematical representation of the RNN is as follows:
 

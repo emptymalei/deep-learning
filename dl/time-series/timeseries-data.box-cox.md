@@ -11,9 +11,13 @@ The air passenger dataset is a monthly dataset. We can observe the trend and var
 
 ![Air Passenger Data](assets/timeseries-transformations/timeseries_data.box-cox.airpassenger_original.png)
 
-Applying Box-Cox transformations with different lambdas leads to different results shown below.
+Applying Box-Cox transformations with different lambdas leads to different results shown below. Drag the $\lambda$ slider to transform the series yourself: $\lambda = 1$ only shifts the data, $\lambda = 0$ is the log transform. The lower panel shows the rolling 12-month standard deviation of the transformed series divided by its average, so a flat line at 1 means the variance no longer grows with the level.
+
+<div class="dl-widget" data-widget="vega" data-spec="time-series/assets/timeseries-transformations/box-cox-lambda.vl.json" markdown>
 
 ![Box-Cox transformed Air Passenger data](assets/timeseries-transformations/timeseries_data.box-cox.airpassenger_transformed.png)
+
+</div>
 
 To check the variance, we plot out the variance rolling on a 12-month window.
 

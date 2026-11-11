@@ -5,11 +5,11 @@ tags:
 # Forecasting with Feedforward Neural Networks
 
 !!! info ":material-code-json: Jupyter Notebook Available"
-    We have a [:notebook: notebook](../../notebooks/feedforward_neural_netwroks_timeseries) for this section which includes all the code used in this section.
+    We have a [:notebook: notebook](../notebooks/feedforward_neural_netwroks_timeseries.py) for this section which includes all the code used in this section.
 
 
 !!! info ":simple-abstract: Introduction to Neural Networks"
-    We explain the theories of neural networks in [this section](../neural-net.md). Please read it first if you are not familiar with neural networks.
+    We explain the theories of neural networks in [this section](../deep-learning-fundamentals/neural-net.md). Please read it first if you are not familiar with neural networks.
 
 
 Feedforward neural networks are simple but powerful models for time series forecasting. In this section, we will build a simple feedforward neural network to forecast our [pendulum physics data](timeseries.dataset.pendulum.md).
@@ -121,7 +121,7 @@ Feedforward neural networks are simple but powerful models for time series forec
 
 We take 100 time steps as the input history and forecast 1 time step into the future, but with a gap of 10 time steps.
 
-![Task](../assets/timeseries.feedforward/forecast_task_gap.png)
+![Task](assets/timeseries.feedforward/forecast_task_gap.png)
 
 !!! info "Why the Gap"
 
@@ -130,7 +130,7 @@ We take 100 time steps as the input history and forecast 1 time step into the fu
 
 ??? info "Training"
 
-    The details for model training can be found in this [:notebook: notebook](../../notebooks/feedforward_neural_netwroks_timeseries). We will skip the details but show the loss curve here.
+    The details for model training can be found in this [:notebook: notebook](../notebooks/feedforward_neural_netwroks_timeseries.py). We will skip the details but show the loss curve here.
 
     ![Training](assets/timeseries.feedforward/feedforward_neural_net_training_univariate_loss.png)
 
@@ -154,11 +154,11 @@ Since the differences between each time step are small, the naive forecast perfo
 
 We perform a similar experiment but forecast 3 time steps into the future. We plot out some samples. In the plot, the orange shaded regions are the predictions. From these samples, we observe that the forecasts make sense.
 
-![multihorizon sample](../assets/timeseries.feedforward/feedforward_neural_net_multihorizon_sample.png)
+![multihorizon sample](assets/timeseries.feedforward/feedforward_neural_net_multihorizon_sample.png)
 
 To observe the quality of the whole time range, we plot out the first forecast step and the corresponding ground truth. The naive forecast plotted in blue has an obvious shift, while the feedforward neural network plotted in red is much closer to the ground truth.
 
-![multihorizon results](../assets/timeseries.feedforward/feedforward_neural_net_multihorizon_results.png)
+![multihorizon results](assets/timeseries.feedforward/feedforward_neural_net_multihorizon_results.png)
 
 
 | Metric | FFN | Naive |
@@ -166,3 +166,12 @@ To observe the quality of the whole time range, we plot out the first forecast s
 | Mean Absolute Error | **0.024640** | 0.109485 |
 | Mean Squared Error | **0.001116** | 0.014723 |
 | Symmetric Mean Absolute Percentage Error | **0.015637** | 0.059591 |
+
+
+## Try a Trained Model in Your Browser
+
+The demo below runs a small feedforward network like the one above, trained offline with PyTorch (`scripts/pendulum_onnx.py`) on pendulums of different lengths and starting angles, this time using the full nonlinear equation of motion instead of the small-angle formula. The model was exported to ONNX and runs in your browser with ONNX Runtime Web: it reads the first 24 angles and forecasts the next 24, or 72 if you switch to the autoregressive rollout, which feeds its own forecasts back in. Push $\theta_0$ towards 170° to see it struggle: near the top the pendulum hardly moves during the context window, so small errors decide when it falls.
+
+<div class="dl-widget" data-widget="pendulum-onnx" markdown>
+*Interactive demo: enable JavaScript to run the pendulum forecaster in your browser.*
+</div>

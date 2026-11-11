@@ -1,9 +1,9 @@
 # Forecasting with Trees Using Darts
 
-Darts provides wrappers for tree-based models. In this section, we benchmark random forest and gradient-boosting decison tree (GBDT) on the famous [air passenger dataset]((https://www.kaggle.com/datasets/rakannimer/air-passengers)). Through the benchmarks, we will see the key advantage and disadvantage of tree-based models in forecasting.
+Darts provides wrappers for tree-based models. In this section, we benchmark random forest and gradient-boosting decison tree (GBDT) on the famous [air passenger dataset](https://www.kaggle.com/datasets/rakannimer/air-passengers). Through the benchmarks, we will see the key advantage and disadvantage of tree-based models in forecasting.
 
 !!! note "Just Run It"
-    The notebooks created to produce the results in this section can be found [here for random forest :material-language-python:](../../notebooks/tree_darts_random_forest) and [here for gbdt :material-language-python:](../../notebooks/tree_darts_boosted_tree).
+    The notebooks created to produce the results in this section can be found [here for random forest :material-language-python:](../notebooks/tree_darts_random_forest.py) and [here for gbdt :material-language-python:](../notebooks/tree_darts_boosted_tree.py).
 
 
 ## The Simple Random Forest
@@ -14,17 +14,17 @@ We will build different models to demonstrate the strength and weakness of rando
 
 We choose the famous [air passenger data](https://www.kaggle.com/datasets/rakannimer/air-passengers). The dataset shows the number of air passengers in each month.
 
-![AP Data](../assets/tree.darts/tree-darts-ap-original-data.png)
+![AP Data](assets/tree.darts/tree-darts-ap-original-data.png)
 
 ### Baseline Model: "Simply Wrap the Model on the Data"
 
 A naive idea is to simply wrap a tree-based model on the data. Here is choose RandomForest from scikit-learn.
 
-![Simple RF](../assets/tree.darts/tree-darts-ap-rf-simple-outofsample.png)
+![Simple RF](assets/tree.darts/tree-darts-ap-rf-simple-outofsample.png)
 
 The predictions are quite off. However, if we look into the in-sample predictions, i.e., time range that the model has already seen during training, we would not have observed such bad predictions.
 
-![In sample Simple RF](../assets/tree.darts/tree-darts-ap-rf-simple.png)
+![In sample Simple RF](assets/tree.darts/tree-darts-ap-rf-simple.png)
 
 This indicates that there are some new patterns in the data to be forecasted. That is the distribution of the data is different, i.e., the level of the values is higher than before, and the variance is also higher. This is a typical case where trees are not good. However, trees can handle such cases if we preprocess the data to bring the data to the same level and also reduce the changes in variance.
 
@@ -33,51 +33,51 @@ This indicates that there are some new patterns in the data to be forecasted. Th
 To confirm that this is due to the mismatch of the in-sample distribution and the out-of-sample distribution, we plot out the histograms of the training series and the test series.
 
 
-![Distributions](../assets/tree.darts/tree-darts-ap-dist-train-test.png)
+![Distributions](assets/tree.darts/tree-darts-ap-dist-train-test.png)
 
 This hints that we should at least detrend the data. In this example, we use a simple moving average while assuming multiplicative components to detrend the data. The detrended data is shown below. Without even training the model, we immediately see that forecasting for such simple patterns is easier than the patterns in the raw data.
 
-![detrended](../assets/tree.darts/tree-darts-ap-detrended.png)
+![detrended](assets/tree.darts/tree-darts-ap-detrended.png)
 
 To illustrate that detrending helps, we will cheat a bit to detrend the whole series to confirm that the forecasts are better.
 
-![Detrended RF](../assets/tree.darts/tree-darts-ap-rf-detrend-cheating-outofsample.png)
+![Detrended RF](assets/tree.darts/tree-darts-ap-rf-detrend-cheating-outofsample.png)
 
 ??? note "Distribution of Detrended Data"
-    ![Distributions](../assets/tree.darts/tree-darts-ap-detrend-dist-train-test.png)
+    ![Distributions](assets/tree.darts/tree-darts-ap-detrend-dist-train-test.png)
 
 
 ### A Formal Model to Use Detrending and without Information Leak
 
 The above method leads to a great result, however, with information leakage during the detrending. Nevertheless, this indicates the performance of trees on out-of-sample predictions if we only predict on the cycle part of the series. In a real-world case, however, we have to predict the trend accurately for this to work. To better reconstruct the trend, we use [Box-Cox transformations](../time-series/timeseries-data.box-cox.md) to stablize the variance first. The following plot shows the transformed data.
 
-![Box Cox](../assets/tree.darts/tree-darts-ap-boxcox.png)
+![Box Cox](assets/tree.darts/tree-darts-ap-boxcox.png)
 
 With the transformed data, we build a simple linear trend using the training dataset and extrapolate the trend to the dates of the prediction.
 
-![Linear Trend](../assets/tree.darts/tree-darts-ap-rf-linear-trend-decomp.png)
+![Linear Trend](assets/tree.darts/tree-darts-ap-rf-linear-trend-decomp.png)
 
 Finally, we fit a random forest model on the detrended data, i.e., Box-Cox transformed data - linear trend, then reconstruct the predictions, i.e., predictions + linear trend + Inverse Box-Cox transformation. We observed a much better performance than the first RF we built.
 
-![box cox + linear trend](../assets/tree.darts/tree-darts-ap-rf-boxcox-linear-trend-outofsample.png)
+![box cox + linear trend](assets/tree.darts/tree-darts-ap-rf-boxcox-linear-trend-outofsample.png)
 
 
 ### Comparisons of the Three Random Forest Models
 
 Observations by eyes showed that cheating leads to the best result, followed by a simple linear detrend model.
 
-![Comparison](../assets/tree.darts/tree-darts-ap-rf-comparisons.png)
+![Comparison](assets/tree.darts/tree-darts-ap-rf-comparisons.png)
 
 To formally benchmark the results, we computed several metrics. For most of the metrics, the detrend (cheating) model is the best, which is expected since it is a clairvoyant model peeks into the future. The second best is the box-cox + linear trend model.
 
-![Metric comparison](../assets/tree.darts/tree-darts-ap-rf-metric-comparisons.png)
+![Metric comparison](assets/tree.darts/tree-darts-ap-rf-metric-comparisons.png)
 
 
 ## Gradient Boosted Trees
 
 Similar behavior is also observed for gradient-boosted decision trees (GBDT). We perform exactly the same steps as we did for random forest model. The results are shown below. For GBDT, we also tested the linear tree model too[^lgbm_linear_tree].
 
-![Comparison](../assets/tree.darts/tree-darts-ap-gbdt-comparisons.png)
+![Comparison](assets/tree.darts/tree-darts-ap-gbdt-comparisons.png)
 
 
 ??? note "Why Linear Tree"
@@ -90,7 +90,7 @@ Similar behavior is also observed for gradient-boosted decision trees (GBDT). We
 The benchmark metrics for the GBDT are shown below. As expected, linear tree and box-cox + linear trend models beat the baseline model.
 
 
-![Metric comparison](../assets/tree.darts/tree-darts-ap-gbdt-metric-comparisons.png)
+![Metric comparison](assets/tree.darts/tree-darts-ap-gbdt-metric-comparisons.png)
 
 ## Trees are Powerful
 
