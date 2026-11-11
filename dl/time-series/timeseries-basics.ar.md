@@ -210,7 +210,7 @@ By staring at this equation, we can build up our intuitions.
 The playground below adds one more lag, $s(t) = \phi_0 + \phi_1 s(t-1) + \phi_2 s(t-2) + \epsilon$, and plots the series, its sample ACF, and where $(\phi_1, \phi_2)$ sits relative to the stationarity triangle. Start from the *Damped* preset and push $\phi_1$ up until the dot leaves the triangle: at which value does the series stop returning to its mean, and what happens to the ACF? Then try *Oscillating* and find the edge where the cycles stop dying out.
 
 <div class="dl-widget" data-widget="embed" data-src="assets/playgrounds/ar/index.html" data-height="960" data-label="Start the AR(2) playground" data-note="Runs Python in your browser via WebAssembly; the first start downloads the Python runtime (~25 MB)." markdown>
-[Open the AR(2) playground](../assets/playgrounds/ar/index.html)
+The playground is a [marimo notebook](https://github.com/emptymalei/deep-learning/blob/main/playgrounds/ar.py). From a clone of the repository, run it with `uvx marimo run --sandbox playgrounds/ar.py`.
 </div>
 
 
