@@ -145,7 +145,9 @@ dlWidgets.register("backtest-windows", (el, api) => {
         const cur = fs[state.fold];
         const fill = { train: c.train, gap: c.gap, test: c.test, unused: c.fgLightest };
 
-        const W = 720, padL = 58, padR = 8;
+        // Draw at the container's real width so labels stay legible on phones.
+        const W = Math.max(320, Math.min(720, Math.round(el.clientWidth - 2) || 720));
+        const padL = W < 480 ? 44 : 58, padR = 8;
         const cell = (W - padL - padR) / N;
         const chartH = 120, rowH = Math.max(10, Math.min(16, 260 / fs.length));
         const rowsTop = chartH + 26;
@@ -269,10 +271,23 @@ dlWidgets.register("backtest-windows", (el, api) => {
         io.observe(el);
     }
 
+    // Redraw when the column width changes (rotation, sidebar toggles).
+    let lastWidth = el.clientWidth;
+    const ro = "ResizeObserver" in window
+        ? new ResizeObserver(() => {
+            if (Math.abs(el.clientWidth - lastWidth) > 8) {
+                lastWidth = el.clientWidth;
+                requestAnimationFrame(render);
+            }
+        })
+        : null;
+    if (ro) ro.observe(el);
+
     const offTheme = api.onThemeChange(render);
     return () => {
         clearInterval(timer);
         if (io) io.disconnect();
+        if (ro) ro.disconnect();
         offTheme();
     };
 });
