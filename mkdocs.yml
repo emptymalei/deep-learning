@@ -82,6 +82,7 @@ extra_javascript:
   - assets/widgets/backtest-windows.js
   - assets/widgets/vega.js
   - assets/widgets/plotly.js
+  - assets/widgets/pendulum-onnx.js
 
 
 

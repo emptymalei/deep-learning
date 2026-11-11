@@ -166,3 +166,12 @@ To observe the quality of the whole time range, we plot out the first forecast s
 | Mean Absolute Error | **0.024640** | 0.109485 |
 | Mean Squared Error | **0.001116** | 0.014723 |
 | Symmetric Mean Absolute Percentage Error | **0.015637** | 0.059591 |
+
+
+## Try a Trained Model in Your Browser
+
+The demo below runs a small feedforward network like the one above, trained offline with PyTorch (`scripts/pendulum_onnx.py`) on pendulums of different lengths and starting angles, this time using the full nonlinear equation of motion instead of the small-angle formula. The model was exported to ONNX and runs in your browser with ONNX Runtime Web: it reads the first 24 angles and forecasts the next 24, or 72 if you switch to the autoregressive rollout, which feeds its own forecasts back in. Push $\theta_0$ towards 170° to see it struggle: near the top the pendulum hardly moves during the context window, so small errors decide when it falls.
+
+<div class="dl-widget" data-widget="pendulum-onnx" markdown>
+*Interactive demo: enable JavaScript to run the pendulum forecaster in your browser.*
+</div>
