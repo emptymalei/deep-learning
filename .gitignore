@@ -240,3 +240,8 @@ dl/notebooks/tmp/*
 
 dl/notebooks/data/predictive_coding/
 dl/assets/playgrounds/
+
+# Staged docs and Zensical output (scripts/stage_site.py)
+/build/
+# marimo session cache
+__marimo__/
