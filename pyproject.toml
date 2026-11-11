@@ -6,8 +6,11 @@ authors = ["LM <hi@leima.is>"]
 readme = "README.md"
 packages = [{include = "ts_dl_utils", from = "dl/notebooks/"}]
 
+# Main dependencies are only what the docs build needs, so CI can run
+# `poetry install --only main` without pulling PyTorch and friends.
+# Notebook dependencies live in the groups below (installed by default).
 [tool.poetry.dependencies]
-python = "3.10.14"
+python = ">=3.12,<3.13"
 mkdocs-material = "^9.4.10"
 mkdocs-autorefs = "^0.5.0"
 mkdocstrings = "^0.23.0"
@@ -17,11 +20,18 @@ mkdocs-bibtex = "^2.11.0"
 mkdocs-jupyter = "<=0.24.2"
 mkdocs-exclude-search = "^0.6.5"
 mkdocs-print-site-plugin = "^2.3.6"
+
+
+[tool.poetry.group.ml.dependencies]
+# 1.26 is the first NumPy with Python 3.12 wheels; stay below 2.0 so older
+# notebook code (e.g. darts 0.26) keeps working.
+numpy = "^1.26.4"
+# 0.14.5+ has Python 3.12 wheels; stay on the 0.14 line used with darts 0.26.
+statsmodels = ">=0.14.5,<0.15"
 loguru = "^0.7.2"
 tabulate = "^0.9.0"
 dtaidistance = "^2.3.12"
 torchdr = "^0.3"
-faiss-gpu = "^1.7.2"
 
 
 [tool.poetry.group.darts.dependencies]
