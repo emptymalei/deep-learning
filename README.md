@@ -17,11 +17,14 @@ pre-commit install
 
 ### Preview Requires Python
 
-Install the requirements using
+The project uses Python 3.12 (see `.python-version`) and Poetry 2. Install the requirements using
 
 ```
+poetry env use 3.12
 poetry install
 ```
+
+`poetry install` also installs the notebook dependencies (PyTorch and friends). To only build the docs, `poetry install --only main --no-root` is enough, which is what CI does.
 
 Preview the docs:
 
