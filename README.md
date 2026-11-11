@@ -29,6 +29,18 @@ Preview the docs:
 poetry run mkdocs serve -s
 ```
 
+### Preview with Zensical (trial)
+
+[Zensical](https://zensical.org) is the successor to Material for MkDocs. It reads `mkdocs.yml` but cannot run third-party MkDocs plugins yet, so `scripts/stage_site.py` first converts notebooks and citations into plain Markdown under `build/` (git-ignored):
+
+```bash
+scripts/build_playgrounds.sh                 # optional: marimo playgrounds
+uv run --python 3.12 scripts/stage_site.py   # build/docs + build/mkdocs.yml
+uvx zensical serve -f build/mkdocs.yml       # or: uvx zensical build -f build/mkdocs.yml
+```
+
+Notebook outputs are taken from your local, git-ignored `.ipynb` files when they exist. Run `python3 scripts/fix_links.py` to check that every Markdown link resolves relative to its source file, which both MkDocs and Zensical need.
+
 ### Developing Notebooks
 
 We use jupytext to sync the `.py` files to `.ipynb` files. `.ipynb` files are ignore in git.
