@@ -18,7 +18,13 @@ We choose the specific time step to split the data, assuming the series used to 
 
 Keeping the length of the train and test unchanged, we can move forward in time, where we require the split time point to fall inside the window[@Cerqueira2019-vt]. In this way, we create multiple train test splits and perform multiple evaluations, or backtesting, on the model. The following illustration shows an example of this technique. The uppermost panel shows the original series, with each block indicating a time step.
 
+<div class="dl-widget" data-widget="backtest-windows" markdown>
+
 ![Sliding Blocks](../assets/timeseries-evaluation.forecasting/block-slide.png)
+
+</div>
+
+In the interactive version above, switch between a sliding and an expanding train window, add a gap between train and test, and click on any fold to inspect it.
 
 ??? note "Expanding the Length of the Training Set"
 

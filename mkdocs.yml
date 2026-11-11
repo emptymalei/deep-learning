@@ -70,9 +70,16 @@ markdown_extensions:
   - pymdownx.details
 
 
+extra_css:
+  - assets/widgets/widgets.css
+
 extra_javascript:
   - assets/js/mathjax.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  # Interactive explainers: the loader must come before the widgets.
+  - assets/widgets/loader.js
+  - assets/widgets/embed.js
+  - assets/widgets/backtest-windows.js
 
 
 
