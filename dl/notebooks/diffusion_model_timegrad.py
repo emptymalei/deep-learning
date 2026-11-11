@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.19.1
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: .venv
 #     language: python
@@ -605,4 +605,4 @@ tmp_x_start
 tmp_a = torch.Tensor([1, 2, 3, 4, 5])
 tmp_a
 
-extract(tmp_a, tmp_t, x_shape=tmp_x_start.shape)
+extract(tmp_a, tmp_a, x_shape=tmp_x_start.shape)
