@@ -2,7 +2,7 @@
 
 Information gain is a frequently used metric in calculating the gain during a split in tree-based methods.
 
-First of all, the [entropy](../entropy) of a dataset is defined as
+First of all, the [entropy](entropy.md) of a dataset is defined as
 
 $$
 S = - \sum_i p_i \log p_i - \sum_i (1-p_i)\log p_i,

@@ -14,13 +14,13 @@ We choose the specific time step to split the data, assuming the series used to 
 
 !!! info "Slicing the Training Data $Y_t$ for Training"
 
-    In many deep learning models, the input length and output length are fixed. To train the model using time series data, we usually apply the [time delayed embedding](../time-delayed-embedding) method to prepare the train data $Y_t$. Refer to [our deep learning forecasting examples](../../supplementary) for more details.
+    In many deep learning models, the input length and output length are fixed. To train the model using time series data, we usually apply the [time delayed embedding](timeseries-data.time-delayed-embedding.md) method to prepare the train data $Y_t$. Refer to [our deep learning forecasting examples](../supplementary.md) for more details.
 
 Keeping the length of the train and test unchanged, we can move forward in time, where we require the split time point to fall inside the window[@Cerqueira2019-vt]. In this way, we create multiple train test splits and perform multiple evaluations, or backtesting, on the model. The following illustration shows an example of this technique. The uppermost panel shows the original series, with each block indicating a time step.
 
 <div class="dl-widget" data-widget="backtest-windows" markdown>
 
-![Sliding Blocks](../assets/timeseries-evaluation.forecasting/block-slide.png)
+![Sliding Blocks](assets/timeseries-evaluation.forecasting/block-slide.png)
 
 </div>
 
@@ -32,19 +32,19 @@ In the interactive version above, switch between a sliding and an expanding trai
 
     In some other use cases, we would take in as much data as possible. In this case, we could also expand the train set when silidng the window.
 
-    ![with Growing Train](../assets/timeseries-evaluation.forecasting/block-grow.png)
+    ![with Growing Train](assets/timeseries-evaluation.forecasting/block-grow.png)
 
 
 In some use cases, we do not get to know the most recent data when we are performing inference. For example, if we are forecasting the demand for the next week, we might not know the demand for the last week as the data might be ready. In this case, we can also use a gap between the train and test sets to simulate this situation.
 
-![with Gap](../assets/timeseries-evaluation.forecasting/block-gap.png)
+![with Gap](assets/timeseries-evaluation.forecasting/block-gap.png)
 
 
 #### Using Multiple Time Windows
 
 When we move the split time point forward in time, we could constrain the split to fall inside a specific time window. In the following, we have assumed the sliding window size to be 4, where we move forward one time step for each test set.
 
-![Out-of-Sample with Sliding Window](../assets/timeseries-evaluation.forecasting/oos-sliding-window.png)
+![Out-of-Sample with Sliding Window](assets/timeseries-evaluation.forecasting/oos-sliding-window.png)
 
 For some large time series forecasting datasets, we might be interested in the performance of some specific types of periods. For example, if Amazon is evaluating its demand forecasting model, it may be more interested in the performance of the model during some normal days as well as the holiday seasons. In this case, we can use multiple sliding windows to evaluate the model.
 
@@ -57,8 +57,8 @@ For some large time series forecasting datasets, we might be interested in the p
 
 If our dataset is i.i.d. through time and we do not have information leakage if we randomly take a subsequence of the data, we could also use the cross-validation technique to evaluate the model. The following illustration shows an example of this technique. The uppermost panel shows the original series, with each block indicating a time step.
 
-![Cross-validation](../assets/timeseries-evaluation.forecasting/cv.png)
+![Cross-validation](assets/timeseries-evaluation.forecasting/cv.png)
 
 Similar to the gap technique in backtesting, we can also use a gap between the train and test sets.
 
-![Cross-validation with Neighbor removed](../assets/timeseries-evaluation.forecasting/cv-removed.png)
+![Cross-validation with Neighbor removed](assets/timeseries-evaluation.forecasting/cv-removed.png)

@@ -31,11 +31,11 @@ To illustrate the idea, we take our [pendulum dataset](../time-series-deep-learn
 
     We plot out the delayed embedding representation of the pendulum dataset. The x-axis is the value of the pendulum angle at time $t$, and the y-axis is the value of the pendulum angle at time $t+1$. The animation shows how the delayed embedding representation evolves over time and shows attractor behavior. If a model can capture this dynamics, it can make good predictions.
 
-    ![Delayed Embedding](../../notebooks/results/pendulum_dataset/delayed_embedding_animation.gif)
+    ![Delayed Embedding](../notebooks/results/pendulum_dataset/delayed_embedding_animation.gif)
 
 === ":material-code-json: Code"
 
-    The notebook for more about the dataset itself is [here](../../notebooks/pendulum_dataset).
+    The notebook for more about the dataset itself is [here](../notebooks/pendulum_dataset.py).
 
 
     ```python

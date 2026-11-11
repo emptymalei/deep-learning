@@ -12,14 +12,14 @@ Rasul et al., (2021) proposed a probabilistic forecasting model using denoising 
 
     Given an input sequence $\mathbf x_{t-K: t}$, we forecast $\mathbf x_{t+1:t+H}$.
 
-    See this section for more [Time Series Forecasting Tasks](../../time-series/timeseries-forecast.tasks/#forecasting-multivariate-time-series).
+    See this section for more [Time Series Forecasting Tasks](../time-series/timeseries-forecast.tasks.md#forecasting-multivariate-time-series).
 
 
 !!! info "Notation"
 
     We use $x^0$ to denote the actual time series. The super script ${}^{0}$ will be used to represent the non-diffused values.
 
-To apply the [denoising diffusion model](../../energy-based-models/ebm.diffusion) in a multivariate forecasting problem, we define our forecasting task as the following autoregressive problem,
+To apply the [denoising diffusion model](../energy-based-models/ebm.diffusion.md) in a multivariate forecasting problem, we define our forecasting task as the following autoregressive problem,
 
 $$
 q(\mathbf x^0_{t - K:t} \vert \mathbf x^0_{1:t_0 - 1}) = \Pi_{t=t_0}^T q(\mathbf x^0_t \vert \mathbf x^0_{1:t-1}).

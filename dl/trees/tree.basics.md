@@ -5,7 +5,7 @@ Trees are still powerful machine-learning models for time series forecasting. We
 ## Should I Work from Home?
 
 !!! info ""
-    We prepared a notebook for this section [here :material-language-python:](../../notebooks/tree_basics).
+    We prepared a notebook for this section [here :material-language-python:](../notebooks/tree_basics.py).
 
 To illustrate the idea of trees, we use a simple classification task: Deciding whether a person will go to the office or work from home based on an artificial dataset.
 
@@ -54,7 +54,7 @@ However, we are not always lucky enough to be able to forge trees using experien
 ??? note "Artificial Dataset"
 
     To fit a model, we generated some artificial data using
-    [this notebook](../../notebooks/tree_basics/#decision-tree-on-perfect-data).
+    [this notebook](../notebooks/tree_basics.py#decision-tree-on-perfect-data).
 
     When generating the data, we follow the rule that one only goes to the office, if and only if
 
@@ -76,9 +76,9 @@ The following table shows a small sample of the dataset.
 
 ### Build a Tree
 
-We use sklearn to build a decision tree, see [:material-language-python: code here](../../notebooks/tree_basics/#decision-tree-on-perfect-data). We observed that the decision tree we get from the data is exactly what we expected.
+We use sklearn to build a decision tree, see [:material-language-python: code here](../notebooks/tree_basics.py#decision-tree-on-perfect-data). We observed that the decision tree we get from the data is exactly what we expected.
 
-![A decision tree trained with the dataset](../assets/tree.basics/decision-tree-100-pure.png)
+![A decision tree trained with the dataset](assets/tree.basics/decision-tree-100-pure.png)
 
 
 ??? note "Reading the Decision Tree Chart"
@@ -87,7 +87,7 @@ We use sklearn to build a decision tree, see [:material-language-python: code he
 
     In the **root**, aka the first node on the top, the feature name and value range are denoted on the first row, i.e., **weather<= 0.5**, which means that we are making decisions based on whether the value of the weather feature is less or equal to 0.5. If the value is less or equal to 0.5, we go to the left branch, otherwise, we go to the right branch. The following rows in the node are assuming the condition is satisfied.
 
-    On the second row, we read the [**Gini** impurity value](../../concepts/gini-impurity). Gini impurity is a measure of the impurity of the data under the condition.
+    On the second row, we read the [**Gini** impurity value](../concepts/gini-impurity.md). Gini impurity is a measure of the impurity of the data under the condition.
 
     On the third row, the number of samples of the given condition (weather <= 0.5) is also given.
 
@@ -97,9 +97,9 @@ This is a perfect result as it is the same as our theoretical expectations. This
 
 In reality, our dataset is probabilistic or comes with noise. To see how the noise affects our decision tree, we can build a tree using a perturbed dataset. Here is an example.
 
-![Decision tree on data with noise](../assets/tree.basics/decision-tree-100-impure.png)
+![Decision tree on data with noise](assets/tree.basics/decision-tree-100-impure.png)
 
-A decision tree trained with a fake "impure dataset" with noise that doesn't always fit into our theoretical model. For example, on the **leaves**, aka, **the bottom level**, we see some with both going to the office and not going to the office, which corresponds to nonzero [Gini impurity value](../../concepts/gini-impurity). Though we take the majority target value when doing the predictions, we can already imagine that some of the data points will be misclassified.
+A decision tree trained with a fake "impure dataset" with noise that doesn't always fit into our theoretical model. For example, on the **leaves**, aka, **the bottom level**, we see some with both going to the office and not going to the office, which corresponds to nonzero [Gini impurity value](../concepts/gini-impurity.md). Though we take the majority target value when doing the predictions, we can already imagine that some of the data points will be misclassified.
 
 ### How was the Model Built?
 
@@ -140,7 +140,7 @@ graph TD
   end
 ```
 
-To "calculate the gain of the split", here we use [Gini impurity](../../concepts/gini-impurity). There are other "gains" such as [information gain](../../concepts/information-gain). For regression tasks, we can also have gains such as a MSE loss.
+To "calculate the gain of the split", here we use [Gini impurity](../concepts/gini-impurity.md). There are other "gains" such as [information gain](../concepts/information-gain.md). For regression tasks, we can also have gains such as a MSE loss.
 
 
 

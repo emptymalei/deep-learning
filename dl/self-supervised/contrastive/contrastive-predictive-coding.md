@@ -19,8 +19,8 @@ There are two key ideas in CPC:
 
 For the series of segments, $\{x_t\}$, we apply an encoder on each segment, and calculate the latent space, $\{{\color{blue}\hat x_t}\}$. The latent space $\{{\color{blue}\hat x_t}\}$ is then modeled using an autoregressive model to calculate the coding, $\{{\color{red}c_t}\}$.
 
-<figure>
-  <img src="../assets/contrastive-predictive-coding/cpc-overview.png">
+<figure markdown>
+  ![CPC overview](assets/contrastive-predictive-coding/cpc-overview.png)
   <figcaption>van den Oord et al</figcaption>
 </figure>
 

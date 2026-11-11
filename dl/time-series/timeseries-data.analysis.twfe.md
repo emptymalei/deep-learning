@@ -1,6 +1,6 @@
 # Two-Way Fixed Effects
 
-Two-way fixed effects on [panel [data](../timeseries-data.analysis.md) is a handy method for establishing linear models from time series data. To keep our notations consistent, we will use the term multivariate time series to refer to panel data in the following content.
+Two-way fixed effects on [panel [data](timeseries-data.analysis.md) is a handy method for establishing linear models from time series data. To keep our notations consistent, we will use the term multivariate time series to refer to panel data in the following content.
 
 ## Two-way Fixed Effects Model
 

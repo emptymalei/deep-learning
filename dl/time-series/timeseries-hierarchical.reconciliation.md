@@ -10,7 +10,7 @@ $$
 
 !!! note "$P$ and $S$"
 
-    In the [previous section](../timeseries-hierarchical.data), we discussed the summing matrix $\color{blue}S$. The summing matrix maps the bottom-level forecasts $\color{red}{\mathbf b}(t)$ to all forecasts on all levels $\color{green}\mathbf y(t)$. The example we provided was
+    In the [previous section](timeseries-hierarchical.data.md), we discussed the summing matrix $\color{blue}S$. The summing matrix maps the bottom-level forecasts $\color{red}{\mathbf b}(t)$ to all forecasts on all levels $\color{green}\mathbf y(t)$. The example we provided was
 
     $${\color{green}\begin{pmatrix}
     s(t) \\
@@ -365,7 +365,7 @@ In the following examples, we observe that the lower variance of the reconciled 
 ### Real-world Data
 
 !!! info "Code"
-    The code for this subsection can be found in [this notebook](../../notebooks/hierarchical_forecasting_mint/) (also available on [Google Colab](https://colab.research.google.com/drive/1lsEahYaaXyn-3pD8wK2msCDZpFi0uRgT?usp=sharing)).
+    The code for this subsection can be found in [this notebook](../notebooks/hierarchical_forecasting_mint.py) (also available on [Google Colab](https://colab.research.google.com/drive/1lsEahYaaXyn-3pD8wK2msCDZpFi0uRgT?usp=sharing)).
 
 We use a [small subset of the M5 competition data](https://github.com/datumorphism/dataset-m5-simplified) to show that MinT works by shifting the values on different hierarchies.
 
@@ -379,15 +379,15 @@ We use a [small subset of the M5 competition data](https://github.com/datumorphi
 
 We apply a simple LightGBM model using Darts. The forecasts are not coherent.
 
-![forecasts not coherent](../assets/timeseries-hierarchical.reconciliation/m5_sample_forecasts_not_coherent_total.png)
+![forecasts not coherent](assets/timeseries-hierarchical.reconciliation/m5_sample_forecasts_not_coherent_total.png)
 
 Applying [MinT method](https://unit8co.github.io/darts/generated_api/darts.dataprocessing.transformers.reconciliation.html), we reached coherent forecasts for all levels. The following charts shows the example for the top two levels.
 
-![MinT -> coherent](../assets/timeseries-hierarchical.reconciliation/m5_sample_reconciled_forecasts_coherent_total.png)
+![MinT -> coherent](assets/timeseries-hierarchical.reconciliation/m5_sample_reconciled_forecasts_coherent_total.png)
 
 Each step was adjusted differently since the forecasted values are different. To see how exactly the forecasted are adjusted to reach coherency, we plot out the difference between the reconciled results and the original forecasts, $\tilde{\mathbf y} - \hat{\mathbf y}$.
 
-![adjustments from MinT](../assets/timeseries-hierarchical.reconciliation/m5_sample_reconciled_forecasts_shift_total.png)
+![adjustments from MinT](assets/timeseries-hierarchical.reconciliation/m5_sample_reconciled_forecasts_shift_total.png)
 
 
 ## Tools and Packages

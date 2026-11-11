@@ -5,7 +5,7 @@ tags:
 # Forecasting with RNN
 
 !!! info ":material-code-json: Jupyter Notebook Available"
-    We have a [:notebook: notebook](../../notebooks/rnn_timeseries) for this section which includes all the code used in this section.
+    We have a [:notebook: notebook](../notebooks/rnn_timeseries.py) for this section which includes all the code used in this section.
 
 
 !!! info ":simple-abstract: Introduction to Neural Networks"
@@ -95,7 +95,7 @@ Similar to [Forecasting with Feedforward Neural Networks](timeseries.feedforward
 
 ??? info "Training"
 
-    The details for model training can be found in this [:notebook: notebook](../../notebooks/rnn_timeseries_univariate). We will skip the details but show the loss curve here.
+    The details for model training can be found in this [:notebook: notebook](../notebooks/rnn_timeseries.py). We will skip the details but show the loss curve here.
 
     ![Training](assets/timeseries.rnn/rnn_univariate_pendulum_training.png)
 
@@ -119,7 +119,7 @@ We also trained the same model to forecast 3 steps into the future and also with
 
 ??? info "Training"
 
-    The details for model training can be found in this [:notebook: notebook](../../notebooks/rnn_timeseries_univariate). We will skip the details but show the loss curve here.
+    The details for model training can be found in this [:notebook: notebook](../notebooks/rnn_timeseries.py). We will skip the details but show the loss curve here.
 
     ![Training](assets/timeseries.rnn/rnn_univariate_pendulum_m_step_training.png)
 

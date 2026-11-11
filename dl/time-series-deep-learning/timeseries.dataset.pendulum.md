@@ -108,5 +108,5 @@ We take this time series and ask our model to forecast the next step (**forecast
 !!! info "PyTorch Dataset and Lightning DataModule"
 
     In our tutorials, we will use Pytorch lightning excessively.
-    We defined some useful modules in our [:material-language-python: `ts_dl_utils` package](../../utilities/notebooks-and-utilities)
-    and [:notebook: this notebook](../../notebooks/pendulum_dataset).
+    We defined some useful modules in our [:material-language-python: `ts_dl_utils` package](../utilities/notebooks-and-utilities.md)
+    and [:notebook: this notebook](../notebooks/pendulum_dataset.py).

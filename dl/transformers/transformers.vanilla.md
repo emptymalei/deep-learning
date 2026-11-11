@@ -7,7 +7,7 @@ In the seminal paper *Attention is All You Need*, the legendary transformer arch
 
 Transformer has evolved a lot in the past few years and there are a galaxy of variants[@Amatriain2023-of].
 
-![Amatriain2023-of](../assets/transformers.vanilla/transformer-family-tree.png)
+![Amatriain2023-of](assets/transformers.vanilla/transformer-family-tree.png)
 
 In this section, we will focus on the vanilla transformer. Jay Alammar wrote an excellent post, named [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/)[^illustrated_transformer]. We recommend the reader read the post. We won't cover everything in this section. However, for completeness, we will summarize some of the key ideas of transformers.
 
@@ -24,7 +24,7 @@ In the **vanilla transformer**, we can find three key components: Encoder-Decode
 
 It has an encoder-decoder architecture.
 
-![Transformer encoder decoder high level](../assets/transformers.vanilla/transfomer-encoder-decoder-highlevel.jpg)
+![Transformer encoder decoder high level](assets/transformers.vanilla/transfomer-encoder-decoder-highlevel.jpg)
 
 We assume that the input $\mathbf X$ is already embedded and converted to tensors.
 

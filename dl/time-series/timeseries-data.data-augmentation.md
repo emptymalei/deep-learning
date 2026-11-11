@@ -113,7 +113,7 @@ Both the time scale and magnitude can be warped. For example,
 
 ??? note "DTW Barycenter Averaging"
 
-    [DTW](timeseries-data.dtw.md) Barycenter Averaging (**DBA**) constructs a series $\bar{\mathcal S}$ out of a set of series $\{\mathcal S^{(\alpha)}\}$ so that $\bar{\mathcal S}$ is the barycenter of $\{\mathcal S^{(\alpha)}\}$ measured by Dynamic Time Warping (**DTW**) distance [@Petitjean2011-sj].
+    [DTW](../concepts/timeseries-data.dtw.md) Barycenter Averaging (**DBA**) constructs a series $\bar{\mathcal S}$ out of a set of series $\{\mathcal S^{(\alpha)}\}$ so that $\bar{\mathcal S}$ is the barycenter of $\{\mathcal S^{(\alpha)}\}$ measured by Dynamic Time Warping (**DTW**) distance [@Petitjean2011-sj].
 
     ## Barycenter Averaging Based on DTW Distance
 
