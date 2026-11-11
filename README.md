@@ -15,34 +15,29 @@ This repository contains mostly markdown files. To make sure we have the same co
 pre-commit install
 ```
 
-### Preview Requires Python
+### Build and Preview the Site
 
-The project uses Python 3.12 (see `.python-version`) and Poetry 2. Install the requirements using
+dl.leima.is is built with [Zensical](https://zensical.org), the successor to Material for MkDocs, by `scripts/build_site.sh`. The deploy workflow runs the same script. It only needs [uv](https://docs.astral.sh/uv/):
+
+```bash
+scripts/build_site.sh                           # builds build/site/
+uvx zensical==0.1.1 serve -f build/mkdocs.yml   # live preview
+```
+
+Zensical reads `mkdocs.yml` but cannot run third-party MkDocs plugins yet. So the script first exports the marimo playgrounds, then runs `scripts/stage_site.py`, which converts notebooks and citations into plain Markdown under `build/` (git-ignored). `zensical serve` watches `build/docs/`, so after editing a page under `dl/`, rerun `uv run --python 3.12 scripts/stage_site.py`.
+
+Notebook outputs are taken from your local, git-ignored `.ipynb` files when they exist. CI has none, so the published notebook pages show code only. Run `python3 scripts/fix_links.py` to check that every Markdown link resolves relative to its source file.
+
+### Python Environment
+
+The project uses Python 3.12 (see `.python-version`) and Poetry 2 for the notebooks. Install the requirements using
 
 ```
 poetry env use 3.12
 poetry install
 ```
 
-`poetry install` also installs the notebook dependencies (PyTorch and friends). To only build the docs, `poetry install --only main --no-root` is enough, which is what CI does.
-
-Preview the docs:
-
-```python
-poetry run mkdocs serve -s
-```
-
-### Preview with Zensical (trial)
-
-[Zensical](https://zensical.org) is the successor to Material for MkDocs. It reads `mkdocs.yml` but cannot run third-party MkDocs plugins yet, so `scripts/stage_site.py` first converts notebooks and citations into plain Markdown under `build/` (git-ignored):
-
-```bash
-scripts/build_playgrounds.sh                 # marimo playgrounds (CI runs this before deploying)
-uv run --python 3.12 scripts/stage_site.py   # build/docs + build/mkdocs.yml
-uvx zensical serve -f build/mkdocs.yml       # or: uvx zensical build -f build/mkdocs.yml
-```
-
-Notebook outputs are taken from your local, git-ignored `.ipynb` files when they exist. Run `python3 scripts/fix_links.py` to check that every Markdown link resolves relative to its source file, which both MkDocs and Zensical need.
+MkDocs still builds the site straight from `mkdocs.yml`, with its plugins rendering the notebooks, but it is no longer what gets deployed. To use it, install only the docs dependencies with `poetry install --only main --no-root`, then run `poetry run mkdocs serve -s`.
 
 ### Developing Notebooks
 
@@ -77,7 +72,7 @@ To add a widget:
 
 To regenerate Altair charts, run `uv run --python 3.12 scripts/build_charts.py`.
 
-marimo playgrounds (`playgrounds/*.py`) are exported to WebAssembly by `scripts/build_playgrounds.sh` into the git-ignored `dl/assets/playgrounds/`. The deploy workflow runs it before building, with marimo pinned in the workflow. Locally, run it before `mkdocs serve` to see a playground; without it, the `embed` widget shows its Markdown fallback.
+marimo playgrounds (`playgrounds/*.py`) are exported to WebAssembly by `scripts/build_playgrounds.sh` into the git-ignored `dl/assets/playgrounds/`. `scripts/build_site.sh` runs it, with marimo pinned there, so every deploy includes them. With MkDocs, run it before `mkdocs serve` to see a playground; without it, the `embed` widget shows its Markdown fallback.
 
 ### Optional Requirements
 
