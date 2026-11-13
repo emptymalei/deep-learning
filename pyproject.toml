@@ -19,6 +19,9 @@ python = ">=3.12,<3.13"
 numpy = "^1.26.4"
 # 0.14.5+ has Python 3.12 wheels; stay on the 0.14 line used with darts 0.26.
 statsmodels = ">=0.14.5,<0.15"
+# Not used directly: statsforecast pulls it in (via fugue/triad). pyarrow 26
+# requires NumPy 2, so stay on 25.x while NumPy is pinned below 2.0.
+pyarrow = ">=14,<26"
 loguru = "^0.7.2"
 tabulate = "^0.9.0"
 dtaidistance = "^2.3.12"
