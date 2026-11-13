@@ -31,8 +31,8 @@ changes: we integrate the full nonlinear equation instead of using the
 small-angle solution, and we vary the length and the initial angle so the
 model has to read them off the context window.
 
-This script lives outside ``dl/`` on purpose: mkdocs-jupyter renders every
-``.py`` file under ``dl/`` as a notebook.
+This script lives outside ``dl/`` on purpose: the site build turns the ``.py``
+notebooks under ``dl/`` into pages.
 """
 
 from __future__ import annotations

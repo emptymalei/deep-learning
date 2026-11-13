@@ -37,7 +37,7 @@ poetry env use 3.12
 poetry install
 ```
 
-MkDocs still builds the site straight from `mkdocs.yml`, with its plugins rendering the notebooks, but it is no longer what gets deployed. To use it, install only the docs dependencies with `poetry install --only main --no-root`, then run `poetry run mkdocs serve -s`.
+The site build does not need this environment; it only uses uv.
 
 ### Developing Notebooks
 
@@ -46,7 +46,7 @@ Please pair the `.py` file with the `.ipynb` using jupytext in jupyterlab first.
 
 ### Interactive Widgets
 
-Interactive explainers run entirely in the reader's browser and need no MkDocs plugin, so they also work with Zensical. Put a `dl-widget` block in a page; whatever is inside it is the fallback for readers without JavaScript, for print, and for text exports.
+Interactive explainers run entirely in the reader's browser and need no build plugin. Put a `dl-widget` block in a page; whatever is inside it is the fallback for readers without JavaScript, for print, and for text exports.
 
 ```html
 <div class="dl-widget" data-widget="backtest-windows" markdown>
@@ -72,19 +72,4 @@ To add a widget:
 
 To regenerate Altair charts, run `uv run --python 3.12 scripts/build_charts.py`.
 
-marimo playgrounds (`playgrounds/*.py`) are exported to WebAssembly by `scripts/build_playgrounds.sh` into the git-ignored `dl/assets/playgrounds/`. `scripts/build_site.sh` runs it, with marimo pinned there, so every deploy includes them. With MkDocs, run it before `mkdocs serve` to see a playground; without it, the `embed` widget shows its Markdown fallback.
-
-### Optional Requirements
-
-> The pdf generation is done by the [mkdocs-with-pdf](https://github.com/orzih/mkdocs-with-pdf) plugin.
-
-To generate PDF locally, please install [cairo, Pango and GDK-PixBuf ](https://doc.courtbouillon.org/weasyprint/latest/first_steps.html#macos).
-
-
-#### Install pango on Mac
-
-When installing pango on Mac using homebrew, the path for `DYLD_LIBRARY_PATH` are not automatically updated. So we need to add the correct path for pango, harfbuzz, and fontconfig. For example,
-
-```
-export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/itsme/homebrew/Cellar/pango/1.48.8/lib:/Users/itsme/homebrew/Cellar/harfbuzz/2.8.2/lib:/Users/itsme/homebrew/Cellar/fontconfig/2.13.1/lib
-```
+marimo playgrounds (`playgrounds/*.py`) are exported to WebAssembly by `scripts/build_playgrounds.sh` into the git-ignored `dl/assets/playgrounds/`. `scripts/build_site.sh` runs it, with marimo pinned there, so every build and deploy includes them. When the export is missing, the `embed` widget shows its Markdown fallback.
