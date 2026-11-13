@@ -1,0 +1,133 @@
+/* Shared styles for interactive explainers (see assets/widgets/loader.js). */
+
+.dl-widget--live {
+    margin: 1.5em 0;
+    padding: 0.8rem 0.9rem 0.6rem;
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 0.3rem;
+    background: var(--md-default-bg-color);
+}
+
+.dl-widget--error {
+    outline: 1px dashed var(--md-accent-fg-color);
+}
+
+.dl-widget svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.dl-widget__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    margin-bottom: 0.6rem;
+    font-size: 0.7rem;
+}
+
+.dl-widget__controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+}
+
+.dl-widget__controls input[type="range"] {
+    width: 7rem;
+    accent-color: var(--md-accent-fg-color);
+}
+
+.dl-widget__seg {
+    display: inline-flex;
+    border: 1px solid var(--md-default-fg-color--lighter);
+    border-radius: 0.2rem;
+    overflow: hidden;
+}
+
+.dl-widget__seg button,
+.dl-widget__btn {
+    font: inherit;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border: 0;
+    background: transparent;
+    color: var(--md-default-fg-color);
+    cursor: pointer;
+}
+
+.dl-widget__btn {
+    border: 1px solid var(--md-default-fg-color--lighter);
+    border-radius: 0.2rem;
+}
+
+.dl-widget__seg button[aria-pressed="true"] {
+    background: var(--md-accent-fg-color);
+    color: var(--md-accent-bg-color, #fff);
+}
+
+.dl-widget__seg button:focus-visible,
+.dl-widget__btn:focus-visible {
+    outline: 2px solid var(--md-accent-fg-color);
+    outline-offset: 1px;
+}
+
+.dl-widget__caption {
+    margin: 0.4rem 0 0;
+    font-size: 0.65rem;
+    color: var(--md-default-fg-color--light);
+}
+
+.dl-widget__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    font-size: 0.65rem;
+    color: var(--md-default-fg-color--light);
+    margin-top: 0.3rem;
+}
+
+.dl-widget__legend span::before {
+    content: "";
+    display: inline-block;
+    width: 0.7em;
+    height: 0.7em;
+    margin-right: 0.35em;
+    border-radius: 0.15em;
+    background: var(--swatch);
+    vertical-align: -0.05em;
+}
+
+/* Vega-Lite charts exported from Altair (vega.js). */
+.dl-widget .vega-bindings {
+    margin-top: 0.4rem;
+    font-size: 0.7rem;
+    color: var(--md-default-fg-color--light);
+}
+
+.dl-widget .vega-bindings input[type="range"] {
+    vertical-align: middle;
+    accent-color: var(--md-accent-fg-color);
+}
+
+/* Click-to-load embeds (e.g. marimo playgrounds that download a Python runtime). */
+.dl-embed__start {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 12rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--md-default-fg-color--light);
+}
+
+.dl-embed iframe {
+    width: 100%;
+    border: 0;
+    border-radius: 0.2rem;
+    background: var(--md-default-bg-color);
+}
