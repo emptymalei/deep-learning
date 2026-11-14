@@ -22,5 +22,5 @@ export MARIMO_VERSION
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 scripts/build_playgrounds.sh
-uv run --python 3.12 scripts/stage_site.py
+uv run --python 3.14 scripts/stage_site.py
 uvx --from "zensical==${ZENSICAL_VERSION}" zensical build -f build/mkdocs.yml

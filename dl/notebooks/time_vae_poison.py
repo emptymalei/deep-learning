@@ -735,7 +735,7 @@ class VAEModel(L.LightningModule):
     def reconstruction_loss(
         self, x: torch.Tensor, x_reconstructed: torch.Tensor
     ) -> torch.Tensor:
-        """Reconstruction loss for VAE.
+        r"""Reconstruction loss for VAE.
 
         $$
         \sum_{i=1}^{N} (x_i - x_{reconstructed_i})^2

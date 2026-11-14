@@ -24,16 +24,16 @@ scripts/build_site.sh                           # builds build/site/
 uvx zensical==0.1.1 serve -f build/mkdocs.yml   # live preview
 ```
 
-Zensical reads `mkdocs.yml` but cannot run third-party MkDocs plugins yet. So the script first exports the marimo playgrounds, then runs `scripts/stage_site.py`, which converts notebooks and citations into plain Markdown under `build/` (git-ignored). `zensical serve` watches `build/docs/`, so after editing a page under `dl/`, rerun `uv run --python 3.12 scripts/stage_site.py`.
+Zensical reads `mkdocs.yml` but cannot run third-party MkDocs plugins yet. So the script first exports the marimo playgrounds, then runs `scripts/stage_site.py`, which converts notebooks and citations into plain Markdown under `build/` (git-ignored). `zensical serve` watches `build/docs/`, so after editing a page under `dl/`, rerun `uv run --python 3.14 scripts/stage_site.py`.
 
 Notebook outputs are taken from your local, git-ignored `.ipynb` files when they exist. CI has none, so the published notebook pages show code only. Run `python3 scripts/fix_links.py` to check that every Markdown link resolves relative to its source file.
 
 ### Python Environment
 
-The project uses Python 3.12 (see `.python-version`) and Poetry 2 for the notebooks. Install the requirements using
+The project uses Python 3.14 (see `.python-version`) and Poetry 2 for the notebooks. If you have no Python 3.14 yet, `uv python install 3.14` or `pyenv install 3.14` provides one. Install the requirements using
 
 ```
-poetry env use 3.12
+poetry env use 3.14
 poetry install
 ```
 
@@ -70,6 +70,6 @@ To add a widget:
 2. Add the file to `extra_javascript` in `mkdocs.yml` after `assets/widgets/loader.js`.
 3. Respect `prefers-reduced-motion` (no autoplay) and check the widget in light mode, dark mode and at phone width.
 
-To regenerate Altair charts, run `uv run --python 3.12 scripts/build_charts.py`.
+To regenerate Altair charts, run `uv run --python 3.14 scripts/build_charts.py`.
 
 marimo playgrounds (`playgrounds/*.py`) are exported to WebAssembly by `scripts/build_playgrounds.sh` into the git-ignored `dl/assets/playgrounds/`. `scripts/build_site.sh` runs it, with marimo pinned there, so every build and deploy includes them. When the export is missing, the `embed` widget shows its Markdown fallback.
