@@ -43,7 +43,7 @@ px.line(df, x="t", y="y")
 
 # Data
 
-from ts_bolt.datamodules.pandas import DataFrameDataModule
+from ts_dl_utils.datasets.dataset import DataFrameDataModule
 
 # Modules
 

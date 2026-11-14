@@ -367,18 +367,18 @@ ts_pred_recon_shift[ca_columns + ["Total"]].plot(ax=ax)
 # To see how the predictions are shifted during reconciliation, we plot out the changes from reconciliation as box plots.
 
 # + id="9qZu3nPTCgPc" colab={"base_uri": "https://localhost:8080/", "height": 553} outputId="390f2562-c7f3-4622-ec6f-b91a779f4a89"
-ts_pred_recon_shift[ca_columns + ["Total"]].pd_dataframe().plot.box()
+ts_pred_recon_shift[ca_columns + ["Total"]].to_dataframe().plot.box()
 
 # + id="y5J4t0BPvbiT" colab={"base_uri": "https://localhost:8080/", "height": 553} outputId="4fe335a3-2e70-4837-e943-0151298faf1e"
-ts_pred_recon_shift["CA"].pd_dataframe().plot.box()
+ts_pred_recon_shift["CA"].to_dataframe().plot.box()
 
 # + id="RNQ9p8NaysI0" colab={"base_uri": "https://localhost:8080/", "height": 557} outputId="1c0a855b-01d5-4660-e22d-0a77c946bcab"
-ts_pred_recon_shift[["Total", "CA", "TX", "WI"]].pd_dataframe().plot.box(
+ts_pred_recon_shift[["Total", "CA", "TX", "WI"]].to_dataframe().plot.box(
     title="Box Plot for Reconciled - Original Prediction"
 )
 
 # + id="X85NA0qd6z6d" colab={"base_uri": "https://localhost:8080/", "height": 1000} outputId="1067bbe8-58fa-4ad4-ca17-acac7482d192"
-ts_pred_recon_shift[["Total", "CA", "TX", "WI"]].pd_dataframe()
+ts_pred_recon_shift[["Total", "CA", "TX", "WI"]].to_dataframe()
 
 # + id="X5Lljug99WKu" colab={"base_uri": "https://localhost:8080/"} outputId="63135bfd-bb69-40f4-9dc6-f5d712c993c9"
 max(ts_pred.values().max(), ts_pred_recon.values().max())
@@ -429,7 +429,7 @@ ax.plot(np.linspace(chart_min, chart_max), np.linspace(chart_min, chart_max))
 reconciliator_pred_bias = MinTReconciliator(method="wls_val")
 
 # + id="V3nuY0EyQJIk" colab={"base_uri": "https://localhost:8080/", "height": 587} outputId="fb633541-26a6-4793-fd22-54c8d6094bcc"
-df_pred_biased = ts_pred.pd_dataframe().copy()
+df_pred_biased = ts_pred.to_dataframe().copy()
 df_pred_biased["CA_1"] = df_pred_biased["CA_1"] * 0.5
 ts_pred_biased = TimeSeries.from_dataframe(df_pred_biased, hierarchy=ts_pred.hierarchy)
 

@@ -26,9 +26,9 @@ import pandas as pd
 import torch
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 from torch import nn
-from ts_bolt.datamodules.pandas import DataFrameDataModule
-from ts_bolt.evaluation.evaluator import Evaluator
-from ts_bolt.naive_forecasters.last_observation import LastObservationForecaster
+from ts_dl_utils.datasets.dataset import DataFrameDataModule
+from ts_dl_utils.evaluation.evaluator import Evaluator
+from ts_dl_utils.naive_forecasters.last_observation import LastObservationForecaster
 
 # ## Data
 #

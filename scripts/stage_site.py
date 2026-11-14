@@ -22,7 +22,7 @@ them:
 
 Usage, from the repository root:
 
-    uv run --python 3.12 scripts/stage_site.py          # stage into build/
+    uv run --python 3.14 scripts/stage_site.py          # stage into build/
     uvx zensical build -f build/mkdocs.yml              # build into build/site
 """
 
