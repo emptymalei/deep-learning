@@ -95,6 +95,7 @@ extra_javascript:
   - assets/widgets/metrics-playground.js
   - assets/widgets/metrics-shift.js
   - assets/widgets/crps-explorer.js
+  - assets/widgets/kl-explorer.js
   - assets/widgets/window-explorer.js
   - assets/widgets/positional-encoding.js
 

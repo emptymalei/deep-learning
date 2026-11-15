@@ -91,6 +91,7 @@ Available widgets live in `dl/assets/widgets/`:
 | `metrics-playground` | Four scenarios (error size, one big miss, bias, near zero), each with a slider; MAE, MSE, RMSE, MAPE and sMAPE with their curves over the slider's range; forecast points can be dragged | `metrics-playground.js` |
 | `metrics-shift` | Shift truth and forecast by the same constant and see which metrics stay the same (MAE, MSE, RMSE) and which change with the level (MAPE, sMAPE, RMSLE) | `metrics-shift.js` |
 | `crps-explorer` | A normal forecast's CDF against the observed value, with the exact CRPS | `crps-explorer.js` |
+| `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
 | `window-explorer` | Time delay embedding: slide input and target windows along a series and see the rows it produces. `data-gap` adds a gap slider and `data-labels="dataset"` shows the same thing as `DataFrameDataset` data points | `window-explorer.js` |
 | `positional-encoding` | The transformer's sinusoidal positional encodings as a heatmap, with the similarity between positions | `positional-encoding.js` |
 
