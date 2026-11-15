@@ -26,7 +26,7 @@ uvx zensical==0.1.1 serve -f build/mkdocs.yml   # live preview
 
 Zensical reads `mkdocs.yml` but cannot run third-party MkDocs plugins yet. So the script first exports the marimo playgrounds, then runs `scripts/stage_site.py`, which converts notebooks and citations into plain Markdown under `build/` (git-ignored). `zensical serve` watches `build/docs/`, so after editing a page under `dl/`, rerun `uv run --python 3.14 scripts/stage_site.py`.
 
-Notebook outputs are taken from your local, git-ignored `.ipynb` files when they exist. CI has none, so the published notebook pages show code only. Run `python3 scripts/fix_links.py` to check that every Markdown link resolves relative to its source file.
+Notebook outputs come from your local, git-ignored `.ipynb` files when they exist, otherwise from the outputs saved in `notebook-outputs/` (see below). Neither the build nor CI executes notebooks. Run `python3 scripts/fix_links.py` to check that every Markdown link resolves relative to its source file.
 
 ### Python Environment
 
@@ -43,6 +43,14 @@ The site build does not need this environment; it only uses uv.
 
 We use jupytext to sync the `.py` files to `.ipynb` files. `.ipynb` files are ignore in git.
 Please pair the `.py` file with the `.ipynb` using jupytext in jupyterlab first.
+
+To publish a notebook's outputs, run it locally, then save the outputs of your local runs and commit `notebook-outputs/`:
+
+```bash
+uv run --python 3.14 scripts/stage_site.py --save-outputs
+```
+
+This writes a cleaned, gzipped copy of each run notebook to `notebook-outputs/<name>.ipynb.gz`: progress-bar widgets and error tracebacks are dropped, long logs are trimmed and images wider than 1600 px are scaled down. The site build matches outputs to cells by their code, so a cell you changed after the run shows no output until you run and save again.
 
 ### Interactive Widgets
 

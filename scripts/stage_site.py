@@ -3,6 +3,7 @@
 # dependencies = [
 #     "jupytext>=1.16",
 #     "nbformat>=5.10",
+#     "pillow>=10",
 #     "pybtex>=0.24",
 #     "pyyaml>=6.0",
 # ]
@@ -31,7 +32,9 @@ from __future__ import annotations
 
 import argparse
 import base64
+import gzip
 import hashlib
+import io
 import json
 import re
 import shutil
@@ -56,6 +59,10 @@ DROP_PLUGINS = {
     "exclude-search",
     "autorefs",
 }
+
+# Outputs saved from local notebook runs (`--save-outputs`), used when there is
+# no local .ipynb, as in CI. Notebooks are never executed by the build.
+OUTPUTS_DIR = ROOT / "notebook-outputs"
 
 # Git-ignored folders that are generated on purpose and must be published.
 GENERATED = ("assets/playgrounds",)
@@ -169,16 +176,119 @@ def resolve_citations(
 # --------------------------------------------------------------------------
 # Notebooks
 # --------------------------------------------------------------------------
+def load_outputs(py_path: Path):
+    """The notebook with outputs for a .py: the local .ipynb, else the saved one."""
+    local = py_path.with_suffix(".ipynb")
+    if local.exists():
+        return nbformat.read(local, as_version=4)
+    saved = OUTPUTS_DIR / f"{py_path.stem}.ipynb.gz"
+    if saved.exists():
+        return nbformat.reads(
+            gzip.decompress(saved.read_bytes()).decode(), as_version=4
+        )
+    return None
+
+
+DROP_MIMES = (
+    "application/vnd.jupyter.widget-view+json",  # live widgets, e.g. tqdm bars
+    "application/vnd.jupyter.widget-state+json",
+)
+STRIP_MIMES = ("application/vnd.microsoft.datawrangler.viewer.v0+json",)
+MAX_IMAGE_WIDTH = 1600
+MAX_STREAM_LINES = 120
+
+
+def _downscale(b64: str, fmt: str) -> str:
+    from PIL import Image
+
+    img = Image.open(io.BytesIO(base64.b64decode(b64)))
+    if img.width <= MAX_IMAGE_WIDTH:
+        return b64
+    height = round(img.height * MAX_IMAGE_WIDTH / img.width)
+    img = img.resize((MAX_IMAGE_WIDTH, height), Image.LANCZOS)
+    buf = io.BytesIO()
+    img.save(buf, format=fmt, optimize=True)
+    return base64.b64encode(buf.getvalue()).decode()
+
+
+def clean_outputs(nb) -> int:
+    """Keep what a reader of the page needs; return the outputs kept."""
+    nb.metadata.pop("widgets", None)
+    kept = 0
+    for cell in nb.cells:
+        if cell.cell_type != "code":
+            continue
+        cell.metadata = {}
+        new, stream = [], []
+        for out in cell.get("outputs", []):
+            kind = out.get("output_type")
+            if kind == "error":
+                continue
+            if kind == "stream":
+                stream.extend("".join(out.get("text", "")).splitlines(keepends=True))
+                continue
+            data = out.get("data", {})
+            if any(m in data for m in DROP_MIMES):
+                continue
+            for m in STRIP_MIMES:
+                data.pop(m, None)
+            for mime, fmt in (("image/png", "PNG"), ("image/jpeg", "JPEG")):
+                if mime in data:
+                    data[mime] = _downscale("".join(data[mime]), fmt)
+            new.append(out)
+        if stream:
+            text = stream[-MAX_STREAM_LINES:]
+            if len(stream) > MAX_STREAM_LINES:
+                text.insert(
+                    0, f"... ({len(stream) - MAX_STREAM_LINES} earlier lines)\n"
+                )
+            new.insert(
+                0, nbformat.v4.new_output("stream", name="stdout", text="".join(text))
+            )
+        cell.outputs = new
+        kept += len(new)
+    return kept
+
+
+def save_outputs(src_docs: Path) -> None:
+    """Save the outputs of local notebook runs into notebook-outputs/."""
+    OUTPUTS_DIR.mkdir(exist_ok=True)
+    for py in sorted((src_docs / "notebooks").glob("*.py")):
+        local = py.with_suffix(".ipynb")
+        if not local.exists():
+            continue
+        nb = nbformat.read(local, as_version=4)
+        if not any(c.get("outputs") for c in nb.cells if c.cell_type == "code"):
+            continue
+        kept = clean_outputs(nb)
+        if not kept:
+            continue
+        # nbformat 4.5: every cell has an id (some editors add ids to older
+        # notebooks without bumping the minor version).
+        nb.nbformat_minor = max(nb.get("nbformat_minor", 0), 5)
+        for i, cell in enumerate(nb.cells):
+            if not cell.get("id"):
+                cell["id"] = hashlib.sha1(f"{i}{cell.source}".encode()).hexdigest()[:8]
+        nbformat.validate(nb)
+        target = OUTPUTS_DIR / f"{py.stem}.ipynb.gz"
+        target.write_bytes(gzip.compress(nbformat.writes(nb).encode(), mtime=0))
+        print(
+            f"saved {kept:4d} outputs  {target.relative_to(ROOT)} ({target.stat().st_size / 1e6:.2f} MB)"
+        )
+
+
 def notebook_to_markdown(py_path: Path, out_md: Path) -> int:
     nb = jupytext.read(py_path)
-    ipynb = py_path.with_suffix(".ipynb")
-    if ipynb.exists():
+    outputs_nb = load_outputs(py_path)
+    if outputs_nb is not None:
         try:
             from jupytext.combine import combine_inputs_with_outputs
 
-            nb = combine_inputs_with_outputs(nb, nbformat.read(ipynb, as_version=4))
+            # Cells are matched by their code: a cell that changed since the
+            # run gets no (stale) output.
+            nb = combine_inputs_with_outputs(nb, outputs_nb)
         except Exception as err:
-            print(f"  ! could not merge outputs from {ipynb.name}: {err}")
+            print(f"  ! could not merge outputs into {py_path.name}: {err}")
 
     asset_dir = out_md.parent / "assets" / out_md.stem
     lines: list[str] = []
@@ -466,6 +576,11 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", default="build", help="output folder (default: build)")
     ap.add_argument(
+        "--save-outputs",
+        action="store_true",
+        help="save the outputs of your local notebook runs into notebook-outputs/",
+    )
+    ap.add_argument(
         "--post-build",
         action="store_true",
         help="after `zensical build`: fix the edit/view links of notebook pages",
@@ -476,6 +591,10 @@ def main() -> None:
     cfg = yaml.load(SRC_CONFIG.read_text(), Loader=Loader)
     src_docs = ROOT / cfg.get("docs_dir", "docs")
     docs = out / "docs"
+
+    if args.save_outputs:
+        save_outputs(src_docs)
+        return
 
     if args.post_build:
         n = link_notebook_sources(out / "site", src_docs)
@@ -501,7 +620,7 @@ def main() -> None:
         total_outputs += notebook_to_markdown(py, md)
         (docs / "notebooks" / py.name).unlink(missing_ok=True)
     print(
-        f"notebooks: {len(notebooks)} converted, {total_outputs} outputs merged from local .ipynb files"
+        f"notebooks: {len(notebooks)} converted, {total_outputs} outputs merged from local or saved runs"
     )
 
     # Links to notebook sources now point at the converted pages, and the old
