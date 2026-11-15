@@ -1,8 +1,9 @@
 /*
  * "Ask an AI assistant about this page": one small icon next to the page's
- * edit / view / copy icons, opening a menu with Claude and ChatGPT. Each
- * opens with a prompt that points at the page's Markdown copy (written by
- * the llmstxt plugin as <page>/index.md). Copying the page as Markdown is
+ * edit / view / copy icons, opening a menu with Claude, ChatGPT and Gemini.
+ * Each opens in a new tab with a prompt that points at the page's Markdown
+ * copy (written by the llmstxt plugin as <page>/index.md); the assistant
+ * reads that URL with its own web access. Copying the page as Markdown is
  * Zensical's own `content.action.copy` button.
  *
  * Nothing is sent anywhere until the reader picks an assistant. The styles
@@ -27,6 +28,7 @@
 .dl-ai__menu[hidden] { display: none; }
 .md-typeset .dl-ai__menu a { display: block; padding: .35rem .8rem; color: var(--md-default-fg-color); text-decoration: none; }
 .md-typeset .dl-ai__menu a:hover, .md-typeset .dl-ai__menu a:focus-visible { background: var(--md-default-fg-color--lightest); }
+.md-typeset .dl-ai__menu .dl-ai__note { margin: .25rem .8rem .2rem; max-width: 10rem; font-size: .6rem; line-height: 1.35; color: var(--md-default-fg-color--light); }
 @media print { .dl-ai { display: none; } }`;
 
     function markdownUrl() {
@@ -76,18 +78,30 @@
         const menu = document.createElement("div");
         menu.className = "dl-ai__menu";
         menu.hidden = true;
+        const text = prompt(url);
+        // The ?q= prefill only works when the reader is signed in, and Gemini
+        // has no documented prefill at all, so every link also copies the
+        // prompt: if the box comes up empty, the reader pastes it.
         for (const [label, base] of [
             ["Ask Claude", "https://claude.ai/new?q="],
             ["Ask ChatGPT", "https://chatgpt.com/?q="],
+            ["Ask Gemini", "https://gemini.google.com/app?q="],
         ]) {
             const a = document.createElement("a");
             a.textContent = label;
-            a.href = base + encodeURIComponent(prompt(url));
+            a.href = base + encodeURIComponent(text);
             a.target = "_blank";
             a.rel = "noopener";
-            a.addEventListener("click", () => close());
+            a.addEventListener("click", () => {
+                if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
+                close();
+            });
             menu.appendChild(a);
         }
+        const note = document.createElement("p");
+        note.className = "dl-ai__note";
+        note.textContent = "The prompt is also copied, so you can paste it if the box is empty.";
+        menu.appendChild(note);
 
         function close() {
             menu.hidden = true;
