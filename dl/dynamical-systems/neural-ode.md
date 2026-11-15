@@ -1,3 +1,16 @@
+---
+summary: >-
+  A neural ODE combines neural networks with differential equations: a network
+  models the rate of change of a system's state. Examples of differential
+  equations build the intuition, and the finite difference form shows how such
+  an equation is stepped forward in time.
+prerequisites:
+  - dynamical-systems/index.md
+related:
+  - deep-learning-fundamentals/recurrent-neural-networks.md
+  - time-series-deep-learning/timeseries.neural-ode.md
+---
+
 # Neural ODE
 
 Neural ODE is an elegant idea of combining neural networks and differential equations[@Chen2018-mp]. In this section, we will first show some examples of differential equations and then discuss how to combine neural networks and differential equations.

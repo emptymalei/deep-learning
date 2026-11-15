@@ -1,3 +1,16 @@
+---
+summary: >-
+  A random forest is an ensemble of decision trees, each built on a random
+  subset of the features, whose predictions are combined. Its predicting power
+  is explained through the margin, the strength of the individual trees and
+  the correlation between them; the page ends with the random forest
+  regressor.
+prerequisites:
+  - trees/tree.basics.md
+related:
+  - trees/tree.gbdt.md
+---
+
 # Random Forest
 
 !!! quote "From Ho TK. Random decision forests"

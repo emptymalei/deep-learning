@@ -1,3 +1,15 @@
+---
+summary: >-
+  Diffusion models connect the data space and a latent space through a
+  diffusion process that is assumed to be invertible, which keeps the
+  otherwise intractable computations manageable. The page works through the
+  objective, an example with five steps, the reverse process for a Gaussian
+  and the optimization.
+related:
+  - time-series-deep-learning/timeseries.deep-learning.timegrad.md
+  - self-supervised/generative/vae.md
+---
+
 # Denoising Diffusion Probabilistic Models
 
 Many philosophically beautiful deep learning ideas face the tractability problem.

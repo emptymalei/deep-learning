@@ -1,6 +1,12 @@
 ---
 tags:
   - WIP
+summary: >-
+  An autoencoder encodes its input into a compact latent space and decodes it
+  back. The simplest version is two small neural networks, an encoder and a
+  decoder, trained with a loss such as cross entropy for binary data.
+related:
+  - self-supervised/generative/vae.md
 ---
 # Autoencoders
 

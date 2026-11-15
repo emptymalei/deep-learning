@@ -1,3 +1,16 @@
+---
+summary: >-
+  A recurrent neural network feeds the output of a unit back into itself, so
+  its state at each time step depends on the current input and its previous
+  state. Unrolled over time it is a chain of copies of the same unit, and it
+  is closely related to a first-order differential equation.
+prerequisites:
+  - deep-learning-fundamentals/neural-net.md
+related:
+  - time-series-deep-learning/timeseries.rnn.md
+  - dynamical-systems/neural-ode.md
+---
+
 # Recurrent Neural Networks
 
 In the section [Neural Networks](neural-net.md), we discussed the feedforward neural network.

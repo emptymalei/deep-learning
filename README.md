@@ -74,6 +74,7 @@ Available widgets live in `dl/assets/widgets/`:
 | `metrics-playground` | Drag forecast points and watch MAE, MSE, RMSE, MAPE and sMAPE react | `metrics-playground.js` |
 | `crps-explorer` | A normal forecast's CDF against the observed value, with the exact CRPS | `crps-explorer.js` |
 | `window-explorer` | Time delay embedding: slide input and target windows along a series and see the rows it produces | `window-explorer.js` |
+| `positional-encoding` | The transformer's sinusoidal positional encodings as a heatmap, with the similarity between positions | `positional-encoding.js` |
 
 To add a widget:
 

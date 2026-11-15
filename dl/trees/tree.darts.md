@@ -1,3 +1,17 @@
+---
+summary: >-
+  Random forest and gradient boosted trees benchmarked on the air passenger
+  data with Darts. Trees are poor at extrapolating beyond the data they were
+  trained on, so the trend has to be removed first, without leaking
+  information from the future; with that care, trees are simple, robust and
+  strong forecasters.
+prerequisites:
+  - trees/tree.random-forest.md
+  - trees/tree.gbdt.md
+related:
+  - time-series/timeseries-evaluation.forecasting.md
+---
+
 # Forecasting with Trees Using Darts
 
 Darts provides wrappers for tree-based models. In this section, we benchmark random forest and gradient-boosting decison tree (GBDT) on the famous [air passenger dataset](https://www.kaggle.com/datasets/rakannimer/air-passengers). Through the benchmarks, we will see the key advantage and disadvantage of tree-based models in forecasting.
