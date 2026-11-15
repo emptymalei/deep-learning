@@ -94,3 +94,14 @@ For data with three possible values, the Gini impurity is also visualized using 
 The following chart shows the Gini impurity for data with three possible values. The color indicates the Gini impurity.
 
 ![Gini 3 Values](assets/gini-impurity/gini-3-values-heatmap.png)
+
+
+## Try It: Gini Impurity of a Two-class Dataset
+
+Change how many of the 20 records are class 1 and see the Gini impurity move along its curve.
+
+<div class="dl-widget" data-widget="gini-explorer" markdown>
+
+An interactive chart of a two-class dataset of 20 records, with a slider for the number of records of class 1. It shows the Gini impurity and its curve over all mixes. It needs JavaScript. In short: the impurity is 0 for a pure dataset and largest, 0.5, for an even mix.
+
+</div>

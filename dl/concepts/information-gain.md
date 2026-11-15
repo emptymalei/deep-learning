@@ -44,3 +44,14 @@ The information gain is the difference between $S_m$ and $S'_m$,
 $$
 \mathrm{Gain} = S_m - S'_m.
 $$
+
+
+## Try It: The Gain of a Split
+
+A node of 40 records is split into a left and a right group. Set how many records are class 1, how many go left, and how many of those are class 1. Entropies are in nats.
+
+<div class="dl-widget" data-widget="split-gain" markdown>
+
+An interactive diagram of a node of 40 records split into two groups, with sliders for the class mix and the split. It shows the entropy of the node, of both groups, and the information gain. It needs JavaScript. In short: the gain is the entropy of the node minus the size-weighted entropy of the two groups; it is largest when both groups are pure and 0 when both have the same mix as the node.
+
+</div>
