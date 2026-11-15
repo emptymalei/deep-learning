@@ -31,9 +31,9 @@ where
 !!! note "Heaviside Step Function"
 
     $$
-    H(x) = \begin{cases}
-    1, &\qquad x\geq 0\\
-    0, &\qquad x< 0\\
+    H(x - x_a) = \begin{cases}
+    1, &\qquad x\geq x_a\\
+    0, &\qquad x< x_a\\
     \end{cases}
     $$
 
