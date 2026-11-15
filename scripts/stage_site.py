@@ -292,6 +292,65 @@ def rewrite_nav(node):
     return node
 
 
+def _nav_pages(item):
+    if isinstance(item, str):
+        yield item
+    elif isinstance(item, dict):
+        for value in item.values():
+            yield from _nav_pages(value)
+    elif isinstance(item, list):
+        for value in item:
+            yield from _nav_pages(value)
+
+
+def _summary(md: Path) -> str | None:
+    """The `summary` front matter field of a staged page, if any."""
+    text = md.read_text()
+    end = text.find("\n---", 4) if text.startswith("---\n") else -1
+    if end < 0:
+        return None
+    meta = yaml.safe_load(text[4:end]) or {}
+    summary = meta.get("summary") if isinstance(meta, dict) else None
+    return " ".join(str(summary).split()) if summary else None
+
+
+def llms_sections(nav: list, docs: Path) -> dict:
+    """llms.txt sections: one per top-level nav entry, in nav order, then the
+    pages that are not in the nav. A page's `summary` becomes its description."""
+
+    def entry(path: str):
+        summary = _summary(docs / path)
+        return {path: summary} if summary else path
+
+    sections: dict = {}
+    seen: set = set()
+    for item in nav:
+        title, value = (
+            next(iter(item.items())) if isinstance(item, dict) else ("Pages", item)
+        )
+        files = [
+            p
+            for p in _nav_pages(value)
+            if p.endswith(".md")
+            and p != "tags.md"
+            and p not in seen
+            and (docs / p).exists()
+        ]
+        seen.update(files)
+        if files:
+            sections.setdefault(title, []).extend(entry(p) for p in files)
+    rest = sorted(
+        str(p.relative_to(docs))
+        for p in docs.rglob("*.md")
+        if not str(p.relative_to(docs)).startswith("assets/")
+        and p.name != "tags.md"
+        and str(p.relative_to(docs)) not in seen
+    )
+    if rest:
+        sections["Other pages"] = [entry(p) for p in rest]
+    return sections
+
+
 def stage_config(cfg: dict, out_dir: Path) -> dict:
     cfg = dict(cfg)
     cfg["docs_dir"] = "docs"
@@ -309,6 +368,11 @@ def stage_config(cfg: dict, out_dir: Path) -> dict:
             plugins.append(p)
     cfg["plugins"] = plugins
     cfg["nav"] = rewrite_nav(cfg["nav"])
+    for i, p in enumerate(cfg["plugins"]):
+        if isinstance(p, dict) and "llmstxt" in p:
+            conf = dict(p["llmstxt"] or {})
+            conf.setdefault("sections", llms_sections(cfg["nav"], out_dir / "docs"))
+            cfg["plugins"][i] = {"llmstxt": conf}
     return cfg
 
 

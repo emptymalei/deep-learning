@@ -73,3 +73,9 @@ To add a widget:
 To regenerate Altair charts, run `uv run --python 3.12 scripts/build_charts.py`.
 
 marimo playgrounds (`playgrounds/*.py`) are exported to WebAssembly by `scripts/build_playgrounds.sh` into the git-ignored `dl/assets/playgrounds/`. `scripts/build_site.sh` runs it, with marimo pinned there, so every build and deploy includes them. When the export is missing, the `embed` widget shows its Markdown fallback.
+
+### Reading with AI Assistants
+
+The build publishes [`llms.txt`](https://dl.leima.is/llms.txt), [`llms-full.txt`](https://dl.leima.is/llms-full.txt) and a Markdown copy of every page (`<page URL>index.md`), configured by the `llmstxt` plugin in `mkdocs.yml`. Each page also has buttons to copy it as Markdown or to ask Claude or ChatGPT about it (`dl/assets/js/page-actions.js`); nothing is sent until the reader clicks.
+
+Conventions for AI coding agents (and people) are in [AGENTS.md](AGENTS.md), including the front matter fields. A design for an MCP server is in [design/mcp-server.md](design/mcp-server.md).
