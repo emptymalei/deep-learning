@@ -79,6 +79,17 @@ An interactive chart where you drag forecast points and see MAE, MSE, RMSE, MAPE
 </div>
 
 
+## Try It: Shift the Level of the Values
+
+Add the same constant $c$ to every true value and every forecast. The errors $y(t) - \hat y(t)$ do not change, so a metric built only from the errors stays the same at every level, while a metric that divides by the values or takes their logarithm does not.
+
+<div class="dl-widget" data-widget="metrics-shift" markdown>
+
+An interactive chart where a slider shifts the truth and the forecast by the same amount, and MAE, MSE, RMSE, MAPE, sMAPE and RMSLE update. It needs JavaScript. In short: MAE, MSE and RMSE are the same at every shift; MAPE, sMAPE and RMSLE get smaller as the level grows, and MAPE blows up when the true values come close to zero.
+
+</div>
+
+
 ## List of Metrics
 
 
