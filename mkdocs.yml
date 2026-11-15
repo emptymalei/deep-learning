@@ -209,6 +209,7 @@ nav:
       - "Generate Time Series Using Statistics": notebooks/time-series-data-generation.py
       - "Generate Time Series Using VAE": notebooks/time_vae.py
       - "Comparing Time Series": notebooks/timeseries-comparison.py
+      - "Pretrained Models: TabPFN": notebooks/tabpfn.py
       - "Diffusion Models": notebooks/diffusion_model.py
       - "Time Series Data Embedding Classical Methods": notebooks/time_series_data_and_embedding.py
     - "Small Yet Powerful Concepts":

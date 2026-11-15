@@ -63,6 +63,11 @@ datasetsforecast = "^1.1.0"
 utilsforecast = "^0.2.17"
 
 
+[tool.poetry.group.pretrained.dependencies]
+# Used by dl/notebooks/tabpfn.py.
+tabpfn = "^10.0.0"
+
+
 [tool.poetry.group.huggingface.dependencies]
 transformers = "^5.22.2"
 
