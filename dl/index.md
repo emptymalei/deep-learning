@@ -25,6 +25,16 @@ However, deep learning models are picking up speed. In the [M5 competition](http
 In [Coding Tips](engineering/index.md), we provide coding tips to help some readers set up the development environment. In [Deep Learning Fundamentals](deep-learning-fundamentals/index.md), we introduce the fundamentals of deep neural networks and their practices. For completeness, we also provide code and derivations for the models. With these two parts, we introduce time series data and statistical forecasting models in [Time Series Forecasting Fundamentals](time-series/index.md), where we discuss methods to analyze time series data, several universal data generating processes of time series data, and some statistical forecasting methods. Finally, we fulfill our promise in the title in [Time Series Forecasting with Deep Learning](time-series-deep-learning/index.md).
 
 
+## Where to Start
+
+Pick the path that fits what you came for.
+
+- **I want to forecast with deep learning.** [Time Series Forecasting with Deep Learning](time-series-deep-learning/index.md) → [Forecasting with MLP](time-series-deep-learning/timeseries.feedforward.md) → [Forecasting with RNN](time-series-deep-learning/timeseries.rnn.md) → [Forecasting with Transformers](time-series-deep-learning/timeseries.transformer.md)
+- **I am new to time series.** [Terminologies of Time Series Data](time-series/timeseries-data.analysis.md) → [Time Series Forecasting Tasks](time-series/timeseries-forecast.tasks.md) → [Naive Forecasts](time-series/timeseries-forecast.naive.md) → [Statistical Models](time-series/timeseries-basics.statistical-models.md)
+- **I need to judge a forecast.** [Time Series Forecasting Evaluation](time-series/timeseries-evaluation.forecasting.md) → [Time Series Forecasting Metrics](time-series/timeseries-metrics.forecasting.md) → [CRPS](time-series/timeseries-metrics.forecasting.crps.md)
+- **I want the theory behind the models.** [Neural Networks](deep-learning-fundamentals/neural-net.md) → [Recurrent Neural Networks](deep-learning-fundamentals/recurrent-neural-networks.md) → [Vanilla Transformers](transformers/transformers.vanilla.md) → [Diffusion Models](energy-based-models/ebm.diffusion.md)
+
+
 ## :material-floor-plan: Blueprint
 
 The following is my first version of the blueprint.
@@ -110,3 +120,14 @@ The following is my first version of the blueprint.
     - [ ] ...
 
 [^nixtla-m3-ensemble]: Nixtla. statsforecast/experiments/m3 at main · Nixtla/statsforecast. In: GitHub [Internet]. [cited 12 Dec 2022]. Available: https://github.com/Nixtla/statsforecast/tree/main/experiments/m3
+
+
+## Map of the Book
+
+Every page of the book, grouped by chapter. Select a page to see which pages it links to and which pages link to it.
+
+<div class="dl-widget" data-widget="book-map" markdown>
+
+An interactive map of the pages of this book and the links between them. It needs JavaScript; the navigation and the blueprint above list the same pages.
+
+</div>

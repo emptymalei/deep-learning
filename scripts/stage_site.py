@@ -664,7 +664,49 @@ def _link_list(items: list[tuple[str, str]]) -> str:
     return out
 
 
-def add_sidebar_sections(site: Path) -> tuple[int, int, int]:
+def _chapters(nav: list) -> tuple[list[str], dict[str, int]]:
+    """Top-level navigation titles, and the chapter index of every page URL."""
+    names, of = [], {}
+    for item in nav:
+        if not isinstance(item, dict):
+            continue
+        ((name, value),) = item.items()
+        names.append(name)
+        for md in _nav_pages(value):
+            rel = re.sub(r"(^|/)index\.md$", "", md)
+            rel = re.sub(r"\.(md|py)$", "", rel).rstrip("/")
+            of[rel] = len(names) - 1
+    return names, of
+
+
+def write_book_map(site: Path, nav: list, title: dict, outgoing: dict) -> int:
+    """Write assets/book-map.json for the book-map widget: every page with
+    its chapter and the pages it links to."""
+    names, of = _chapters(nav)
+    rels = [r for r in title if r not in INDEX_PAGES and r in of]
+    index = {r: i for i, r in enumerate(rels)}
+    pages = [
+        {
+            "u": rel,
+            "t": title[rel],
+            "c": of[rel],
+            "o": [index[t] for t in outgoing[rel] if t in index],
+        }
+        for rel in rels
+    ]
+    out = site / "assets" / "book-map.json"
+    out.write_text(
+        json.dumps(
+            {"chapters": names, "pages": pages},
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ),
+        encoding="utf-8",
+    )
+    return len(pages)
+
+
+def add_sidebar_sections(site: Path, nav: list | None = None) -> tuple[int, int, int]:
     """Add "Glossary" and "Links" sections under each page's table of contents.
 
     Everything is read from the built pages, so nothing has to be maintained
@@ -709,6 +751,9 @@ def add_sidebar_sections(site: Path) -> tuple[int, int, int]:
             if target != rel and target not in targets:
                 targets.append(target)
         outgoing[rel] = [] if rel in INDEX_PAGES else targets
+
+    if nav is not None:
+        write_book_map(site, nav, title, outgoing)
 
     incoming = {rel: [] for rel in pages}
     for rel, targets in outgoing.items():
@@ -833,7 +878,7 @@ def main() -> None:
         print(
             f"post-build: edit/view links of {n} notebook pages point at the .py source"
         )
-        n, n_terms, n_links = add_sidebar_sections(out / "site")
+        n, n_terms, n_links = add_sidebar_sections(out / "site", cfg.get("nav"))
         print(
             f"post-build: sidebar sections on {n} pages "
             f"({n_terms} glossary entries, {n_links} links between pages)"
