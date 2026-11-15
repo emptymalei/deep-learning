@@ -461,7 +461,7 @@ $$
 
 RMSE essentially brings the scale of the metric from the MSE scale back to something similar to MAE. However, we have to be mindful that large deviations dominate the metric more than that in MAE.
 
-??? example "Domination by Large Deviations"
+!!! example "Domination by Large Deviations"
 
     For example, in a horizon 2 forecasting problem, suppose we have the true values $[100, 1]$ and we forecast $[0, 0]$
 
