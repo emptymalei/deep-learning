@@ -36,6 +36,7 @@ import gzip
 import hashlib
 import io
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -275,6 +276,75 @@ def save_outputs(src_docs: Path) -> None:
         print(
             f"saved {kept:4d} outputs  {target.relative_to(ROOT)} ({target.stat().st_size / 1e6:.2f} MB)"
         )
+
+
+def _front_matter(text: str) -> tuple[dict, int]:
+    """Parsed front matter and the offset where the page body starts."""
+    if not text.startswith("---\n"):
+        return {}, 0
+    end = text.find("\n---", 4)
+    if end < 0:
+        return {}, 0
+    meta = yaml.safe_load(text[4:end]) or {}
+    body = text.find("\n", end + 4)
+    return (meta if isinstance(meta, dict) else {}), (
+        body + 1 if body >= 0 else len(text)
+    )
+
+
+def _page_title(md: Path) -> str:
+    for line in md.read_text().splitlines():
+        if line.startswith("# "):
+            return line[2:].strip()
+    return md.stem
+
+
+def apply_page_template(md: Path, docs: Path) -> bool:
+    """Render a page's `summary`, `prerequisites` and `related` front matter.
+
+    `summary` becomes an "In one minute" box under the title, with "Read
+    first" links from `prerequisites`; `related` becomes "Related" links at
+    the end. Paths in the front matter are relative to dl/.
+    """
+    text = md.read_text()
+    meta, start = _front_matter(text)
+    summary = meta.get("summary")
+    prereq = [p for p in meta.get("prerequisites") or [] if (docs / p).exists()]
+    related = [p for p in meta.get("related") or [] if (docs / p).exists()]
+    if not (summary or prereq or related):
+        return False
+
+    def links(paths):
+        return " · ".join(
+            f"[{_page_title(docs / p)}]({os.path.relpath(docs / p, md.parent)})"
+            for p in paths
+        )
+
+    box = []
+    if summary or prereq:
+        box.append(
+            '!!! abstract "In one minute"' if summary else '!!! abstract "Read first"'
+        )
+        box.append("")
+        if summary:
+            box.append("    " + " ".join(str(summary).split()))
+            box.append("")
+        if prereq:
+            box.append(("    **Read first:** " if summary else "    ") + links(prereq))
+            box.append("")
+    body = text[start:]
+    lines = body.split("\n")
+    for i, line in enumerate(lines):
+        if line.startswith("# "):
+            lines[i + 1 : i + 1] = [""] + box
+            break
+    else:
+        lines[0:0] = box
+    body = "\n".join(lines)
+    if related:
+        body = body.rstrip("\n") + "\n\n---\n\n**Related:** " + links(related) + "\n"
+    md.write_text(text[:start] + body)
+    return True
 
 
 def notebook_to_markdown(py_path: Path, out_md: Path) -> int:
@@ -660,6 +730,11 @@ def main() -> None:
     )
     for page, key in sorted(missing):
         print(f"  ! missing bib key {key!r} on {page}")
+
+    templated = sum(apply_page_template(md, docs) for md in docs.rglob("*.md"))
+    print(
+        f"page template: {templated} pages with a summary, read-first or related links"
+    )
 
     staged = stage_config(cfg, out)
     dumped = yaml.dump(staged, Dumper=Dumper, sort_keys=False, allow_unicode=True)

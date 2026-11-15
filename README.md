@@ -71,6 +71,8 @@ Available widgets live in `dl/assets/widgets/`:
 | `backtest-windows` | Sliding vs expanding backtest folds, with a gap | `backtest-windows.js` |
 | `vega` | A Vega-Lite chart exported from Python with Altair (`data-spec="path/from/docs/root.vl.json"`) | `scripts/build_charts.py` |
 | `embed` | A click-to-load iframe, e.g. a marimo WebAssembly playground (`data-src`, `data-height`) | `playgrounds/*.py` |
+| `metrics-playground` | Drag forecast points and watch MAE, MSE, RMSE, MAPE and sMAPE react | `metrics-playground.js` |
+| `crps-explorer` | A normal forecast's CDF against the observed value, with the exact CRPS | `crps-explorer.js` |
 
 To add a widget:
 

@@ -1,3 +1,13 @@
+---
+summary: >-
+  CRPS scores a probabilistic forecast against the one value that actually
+  happened. It compares the forecast's cumulative distribution with a step at
+  the observed value: the closer and sharper the distribution around the truth,
+  the lower the score. For a point forecast it reduces to the absolute error.
+prerequisites:
+  - time-series/timeseries-metrics.forecasting.md
+---
+
 # Continuous Ranked Probability Score (CRPS)
 
 The Continuous Ranked Probability Score, aka CRPS, is a score to measure how a proposed distribution approximates the data, without knowledge about the true distributions of the data.
@@ -8,7 +18,7 @@ The Continuous Ranked Probability Score, aka CRPS, is a score to measure how a p
 CRPS is defined as[^Hersbach2000]
 
 $$
-\operatorname{CRPS}(P, x_a) = \int_{-\infty}^\infty  \lVert P(x) - H(x - x_a) \rVert_2 dx,
+\operatorname{CRPS}(P, x_a) = \int_{-\infty}^\infty  \lVert P(x) - H(x - x_a) \rVert_2^2 dx,
 $$
 
 where
@@ -21,9 +31,9 @@ where
 !!! note "Heaviside Step Function"
 
     $$
-    H(x) = \begin{cases}
-    1, &\qquad x=0\\
-    0, &\qquad x\leq 0\\
+    H(x - x_a) = \begin{cases}
+    1, &\qquad x\geq x_a\\
+    0, &\qquad x< x_a\\
     \end{cases}
     $$
 
@@ -36,7 +46,15 @@ The formula looks abstract on first sight, but it becomes crystal clear once we 
 
 Note that the distribution that corresponds to a Heaviside CDF is the delta function $\delta(x-x_a)$. What this score is calculating is the difference between our distribution and a delta function. If we have a model that minimizes CRPS, then we are looking for a distribution that is close to the delta function $\delta(x-x_a)$. In other words, we want our distribution to be large around $x_a$.
 
-To illustrate what the integrand $\lVert P(x) - H(x - x_a) \rVert_2$ means, we apply some shades to the integrand of the integral in CRPS. We visualize four difference scenarios.
+Try it: move the forecast distribution and watch the shaded gap between its CDF and the step at the observed value. The score below is the exact CRPS of a normal forecast, $\int (F(x) - H(x - x_a))^2 dx$.
+
+<div class="dl-widget" data-widget="crps-explorer" markdown>
+
+An interactive chart of a normal forecast's CDF against the step at the observed value, with the CRPS computed live. It needs JavaScript; the scenarios below show the same idea in figures.
+
+</div>
+
+To illustrate what the integrand $\lVert P(x) - H(x - x_a) \rVert_2^2$ means, we apply some shades to the integrand of the integral in CRPS. We visualize four difference scenarios.
 
 !!! example "Scenario 1: The predicted CDF $P(x)$ is reaching 1 very fast."
 

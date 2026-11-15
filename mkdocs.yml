@@ -20,6 +20,8 @@ theme:
     - content.action.edit
     - content.action.view
     - content.action.copy
+    # Nicer tooltips, e.g. for glossary terms (includes/glossary.md).
+    - content.tooltips
     # - navigation.instant
     - navigation.sections
     - navigation.tabs
@@ -55,6 +57,9 @@ markdown_extensions:
   - pymdownx.magiclink
   - pymdownx.snippets:
       check_paths: true
+      # Glossary terms become tooltips on every page.
+      auto_append:
+        - includes/glossary.md
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -85,6 +90,8 @@ extra_javascript:
   - assets/widgets/vega.js
   - assets/widgets/plotly.js
   - assets/widgets/pendulum-onnx.js
+  - assets/widgets/metrics-playground.js
+  - assets/widgets/crps-explorer.js
 
 
 
