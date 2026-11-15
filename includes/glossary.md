@@ -28,3 +28,6 @@ mkdocs.yml). Each term becomes a tooltip wherever it appears as a word. -->
 *[ACF]: Autocorrelation function: the correlation of a series with a lagged copy of itself, as a function of the lag.
 *[FFN]: Feedforward network: layers applied one after another, with no recurrence or attention.
 *[TFT]: Temporal Fusion Transformer: a transformer-based model for multi-horizon forecasting with covariates.
+*[CPC]: Contrastive predictive coding: an autoregressive model in latent space trained with the InfoNCE loss.
+*[NCE]: Noise contrastive estimation: learning a distribution by telling data apart from noise samples.
+*[DBA]: DTW barycenter averaging: the average of a set of series under the dynamic time warping distance.

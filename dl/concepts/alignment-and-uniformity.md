@@ -1,3 +1,13 @@
+---
+summary: >-
+  A good representation keeps similar instances close together and separates
+  different ones. Wang and Isola (2020) call these two properties alignment
+  and uniformity and describe both on a hypersphere.
+related:
+  - self-supervised/contrastive/contrastive-predictive-coding.md
+  - self-supervised/contrastive/deep-infomax.md
+---
+
 # Alignment and Uniformity
 
 

@@ -1,3 +1,15 @@
+---
+summary: >-
+  The Kullback-Leibler divergence compares two probability distributions. It
+  is not symmetric, so it is not a proper distance; the page shows this with a
+  Gaussian and a bimodal Gaussian mixture. It is a special case of the
+  f-divergence.
+related:
+  - concepts/f-divergence.md
+  - concepts/entropy.md
+  - concepts/mutual-information.md
+---
+
 # KL Divergence
 
 The Kullback–Leibler (KL) divergence is defined as

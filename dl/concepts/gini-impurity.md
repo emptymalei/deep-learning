@@ -1,3 +1,14 @@
+---
+summary: >-
+  Gini impurity measures how mixed the classes in a dataset are: it is 0 when
+  every record has the same class and largest when the classes are evenly
+  mixed. The page defines it, works through two small examples and shows its
+  values for two and for three classes.
+related:
+  - concepts/information-gain.md
+  - trees/tree.basics.md
+---
+
 # Gini Impurity
 
 Suppose we have a dataset $\{0,1\}^{10}$, which has 10 records and 2 possible classes of objects $\{0,1\}$ in each record.

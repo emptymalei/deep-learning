@@ -1,6 +1,17 @@
 ---
 tags:
   - WIP
+summary: >-
+  Deep InfoMax trains an encoder by maximizing an estimate of the mutual
+  information between the input and its encoding. Doing this for the whole
+  input is often not enough, so it is also done between local patches of the
+  feature maps and the encoding, which pushes the encoding to use information
+  that is shared across the input.
+prerequisites:
+  - concepts/mutual-information.md
+related:
+  - self-supervised/contrastive/contrastive-predictive-coding.md
+  - concepts/alignment-and-uniformity.md
 ---
 # Deep Infomax
 

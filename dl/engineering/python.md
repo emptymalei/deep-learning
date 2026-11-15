@@ -1,3 +1,14 @@
+---
+summary: >-
+  How to set up a Python project: pyenv for Python versions, poetry for
+  dependencies and environments (with conda as the all-in-one alternative),
+  pyproject.toml for the dependency list, pre-commit hooks such as black,
+  isort and mypy for a consistent style, and docstrings and tests.
+related:
+  - engineering/index.md
+  - utilities/notebooks-and-utilities.md
+---
+
 # Python
 
 We assume the readers have a good understanding of the Python programming language, as Python will be the primary programming language for demos and tutorials in this book. For engineering tips, we will cover a few topics here, including

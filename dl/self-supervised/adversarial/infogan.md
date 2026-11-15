@@ -1,6 +1,16 @@
 ---
 tags:
   - WIP
+summary: >-
+  InfoGAN makes the latent space of a GAN more interpretable. Next to the
+  random noise it feeds the generator a latent code, and it adds the mutual
+  information between that code and the generated data to the GAN objective,
+  so the generator is penalized when it loses the information in the code.
+prerequisites:
+  - self-supervised/adversarial/gan.md
+  - concepts/mutual-information.md
+related:
+  - self-supervised/adversarial/f-gan.md
 ---
 # InfoGAN
 

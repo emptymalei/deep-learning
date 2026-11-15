@@ -1,3 +1,18 @@
+---
+summary: >-
+  The evidence lower bound (ELBO) is a lower bound on the log probability of
+  the data in a latent variable model. The page derives it twice: with
+  Jensen's inequality, and from the KL divergence between an approximate
+  posterior and the true posterior, where that KL divergence is the gap
+  between the bound and the log probability.
+prerequisites:
+  - concepts/entropy.md
+  - concepts/kl-divergence.md
+related:
+  - self-supervised/generative/vae.md
+  - energy-based-models/ebm.diffusion.md
+---
+
 # ELBO
 
 Given a probability distribution density $p(x)$ and a latent variable $z$, the marginalization of the joint probability is

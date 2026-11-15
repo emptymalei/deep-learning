@@ -1,6 +1,17 @@
 ---
 tags:
   - WIP
+summary: >-
+  Contrastive predictive coding (CPC) encodes each segment of a sequence,
+  models the encodings with an autoregressive model, and trains with the
+  InfoNCE loss, which estimates a lower bound of mutual information. The
+  encoders can then be used for downstream tasks such as classification.
+prerequisites:
+  - concepts/mutual-information.md
+  - self-supervised/generative/autoregressive.md
+related:
+  - self-supervised/contrastive/deep-infomax.md
+  - concepts/alignment-and-uniformity.md
 ---
 # Contrastive Predictive Coding
 

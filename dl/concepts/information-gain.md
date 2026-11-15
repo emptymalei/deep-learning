@@ -1,3 +1,16 @@
+---
+summary: >-
+  Information gain is the change in entropy when a dataset is split, and tree-
+  based methods use it to judge a split. The page works through a decision
+  tree node: its entropy before the split, the entropy of the two groups after
+  it, and the gain as their difference.
+prerequisites:
+  - concepts/entropy.md
+related:
+  - concepts/gini-impurity.md
+  - trees/tree.basics.md
+---
+
 # Information Gain
 
 Information gain is a frequently used metric in calculating the gain during a split in tree-based methods.

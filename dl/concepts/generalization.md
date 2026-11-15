@@ -1,3 +1,12 @@
+---
+summary: >-
+  The generalization error is the difference between a model's loss on the
+  whole population and its loss on the data it was fitted to. The population
+  loss is unknown, so in practice it is approximated with a held-out test set.
+related:
+  - time-series/timeseries-evaluation.forecasting.md
+---
+
 # Generalization
 
 To measure the generalization, we define a generalization error[@Roelofs2019-dm],

@@ -1,3 +1,14 @@
+---
+summary: >-
+  Dynamic time warping (DTW) finds the best way to align two sequences and
+  measures their misalignment with a distance defined recursively, much like
+  the Levenshtein distance between two words. It is useful for comparing
+  series of different lengths, for example a forecast and an actual series.
+related:
+  - concepts/timeseries-data.dtw-barycenter-averaging.md
+  - time-series/timeseries-metrics.forecasting.md
+---
+
 # Dynamic Time Warping (**DTW**)
 
 Given two sequences, $S^{(1)}$ and $S^{(2)}$, the Dynamic Time Warping (**DTW**) algorithm finds the best way to align two sequences. During this alignment process, we quantify the misalignment using a distance similar to the Levenshtein distance, where the distance between two series $S^{(1)}_{1:i}$ (with $i$ elements) and $S^{(2)}_{1:j}$ (with $j$ elements) is[@Petitjean2011-sj]

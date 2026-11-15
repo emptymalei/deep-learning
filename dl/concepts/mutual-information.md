@@ -1,3 +1,16 @@
+---
+summary: >-
+  Mutual information of two random variables is the expected log ratio of
+  their joint distribution to the product of their marginals. That makes it
+  the KL divergence between the joint distribution and the product of the
+  marginals.
+prerequisites:
+  - concepts/kl-divergence.md
+related:
+  - self-supervised/adversarial/infogan.md
+  - self-supervised/contrastive/deep-infomax.md
+---
+
 # Mutual Information
 
 Mutual information is
