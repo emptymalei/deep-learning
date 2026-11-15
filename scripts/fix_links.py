@@ -13,7 +13,8 @@ resolves links relative to the source file (as MkDocs does for valid ones).
     python3 scripts/fix_links.py --write    # rewrite in place
     python3 scripts/fix_links.py --write dl/time-series/foo.md   # some files
 
-Exit code 1 if any link is broken either way, so it can run in CI.
+Exit code 1 if any link is broken either way; with --check, also when a
+link only works relative to the rendered URL (pre-commit runs it that way).
 """
 
 from __future__ import annotations
@@ -97,6 +98,11 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--write", action="store_true", help="rewrite files in place")
     ap.add_argument(
+        "--check",
+        action="store_true",
+        help="exit 1 also when links need rewriting (for pre-commit and CI)",
+    )
+    ap.add_argument(
         "files", nargs="*", type=Path, help="Markdown files (default: all under dl/)"
     )
     args = ap.parse_args()
@@ -134,7 +140,7 @@ def main() -> int:
     print(
         f"\n{total} links {'rewritten' if args.write else 'to rewrite'}, {broken} broken"
     )
-    return 1 if broken else 0
+    return 1 if broken or (args.check and total and not args.write) else 0
 
 
 if __name__ == "__main__":
