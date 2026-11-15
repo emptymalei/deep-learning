@@ -11,7 +11,7 @@ related:
 
 This dataset is provided [as the "ElectricityLoadDiagrams20112014 Data Set" on the UCI website](https://archive.ics.uci.edu/ml/datasets/ElectricityLoadDiagrams20112014). It is the time series of electricity consumption of 370 points/clients.
 
-We download the time series data in zip format using [this link](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip).
+We download the time series data in zip format using [this link](https://archive.ics.uci.edu/ml/machine-learning-databases/00321/LD2011_2014.txt.zip).
 
 We [find](https://deepnote.com/workspace/lm-3917ee58-3e0d-43ba-a6c8-13241298300c/project/time-series-notebooks-deae214e-e319-4268-ac24-de1038ff0b94) that
 

@@ -8,7 +8,7 @@ related:
   - time-series/timeseries-data.analysis.md
 ---
 
-# Time Series Data and Statistical Forecasting Mothods
+# Time Series Data and Statistical Forecasting Methods
 
 
 ## Time Series Data
