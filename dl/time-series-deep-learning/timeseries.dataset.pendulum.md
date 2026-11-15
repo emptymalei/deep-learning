@@ -1,6 +1,14 @@
 ---
 tags:
   - WIP
+summary: >-
+  A synthetic dataset from a damped pendulum: the angle follows a cosine whose
+  amplitude decays exponentially, with the period set by the length of the
+  pendulum. The models in this chapter are trained to forecast this series,
+  and the page gives the code that generates it.
+related:
+  - time-series-deep-learning/index.md
+  - time-series-deep-learning/timeseries.feedforward.md
 ---
 # Pendulum Dataset
 
@@ -14,7 +22,7 @@ where $\theta(t)$ is the angle of the pendulum at time $t$.
 The period $p$ is calculated using
 
 $$
-p = 2 \pi \sqrt(L / g),
+p = 2 \pi \sqrt{L / g},
 $$
 
 with $L$ being the length of the pendulum and $g$ being the surface gravity.
@@ -45,7 +53,7 @@ with $L$ being the length of the pendulum and $g$ being the surface gravity.
         The period $p$ is calculated using
 
         $$
-        p = 2 \pi \sqrt(L / g),
+        p = 2 \pi \sqrt{L / g},
         $$
 
         with $L$ being the length of the pendulum

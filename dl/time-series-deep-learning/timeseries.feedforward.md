@@ -1,6 +1,17 @@
 ---
 tags:
   - WIP
+summary: >-
+  A feedforward network with five hidden layers forecasts the pendulum series
+  from 100 past steps: first one step ahead across a gap of 10 steps, then
+  three steps ahead. It beats the naive forecast on all three metrics, and a
+  small trained model runs in the browser at the end of the page.
+prerequisites:
+  - deep-learning-fundamentals/neural-net.md
+  - time-series-deep-learning/timeseries.dataset.pendulum.md
+related:
+  - time-series-deep-learning/timeseries.rnn.md
+  - time-series/timeseries-metrics.forecasting.md
 ---
 # Forecasting with Feedforward Neural Networks
 
@@ -148,6 +159,10 @@ The feedforward neural network learned the damped sine wave pattern of the pendu
 | Symmetric Mean Absolute Percentage Error | **0.010806** |  0.050442    |
 
 Since the differences between each time step are small, the naive forecast performs quite well.
+
+!!! note "sMAPE on This Page"
+
+    The notebook for this page adds 2 to $\theta$, so the series oscillates around 2 instead of 0. The shift leaves MAE and MSE unchanged but makes sMAPE smaller. The sMAPE values on this page are therefore not comparable with those on the [RNN](timeseries.rnn.md), [transformer](timeseries.transformer.md) and [neural ODE](timeseries.neural-ode.md) pages, where the series is not shifted.
 
 
 ## Multi-horizon Forecasting

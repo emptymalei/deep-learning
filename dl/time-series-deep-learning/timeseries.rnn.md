@@ -1,6 +1,17 @@
 ---
 tags:
   - WIP
+summary: >-
+  An RNN with a single recurrent block and a hidden size of 64 forecasts the
+  pendulum series, one step and three steps ahead, each across a gap of 10
+  steps. After a few seconds of training it follows the oscillation and scores
+  much better than the naive forecast.
+prerequisites:
+  - deep-learning-fundamentals/recurrent-neural-networks.md
+  - time-series-deep-learning/timeseries.dataset.pendulum.md
+related:
+  - time-series-deep-learning/timeseries.feedforward.md
+  - time-series-deep-learning/timeseries.transformer.md
 ---
 # Forecasting with RNN
 

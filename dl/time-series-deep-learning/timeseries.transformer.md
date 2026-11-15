@@ -1,6 +1,18 @@
 ---
 tags:
   - WIP
+summary: >-
+  An encoder-only transformer forecasts the univariate pendulum series: a
+  linear layer shapes the input, the encoder processes it and a second linear
+  layer produces the forecast. It beats the naive forecast one step and three
+  steps ahead, and the page closes with the transformer variants designed for
+  forecasting and the packages that implement them.
+prerequisites:
+  - transformers/transformers.vanilla.md
+  - time-series-deep-learning/timeseries.dataset.pendulum.md
+related:
+  - time-series/timeseries-forecast.tasks.md
+  - time-series-deep-learning/timeseries.rnn.md
 ---
 # Transformers for Time Series Forecasting
 
@@ -21,7 +33,7 @@ We take a simple [Univariate time series forecasting](../time-series/timeseries-
 
 ### Dataset
 
-In this example, we use the [pendulumn physics dataset](timeseries.dataset.pendulum.md).
+In this example, we use the [pendulum physics dataset](timeseries.dataset.pendulum.md).
 
 
 ### Model
