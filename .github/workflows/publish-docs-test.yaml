@@ -1,27 +1,12 @@
 name: Publish Docs Test
 
+# Builds the site on pull requests, so a broken build fails before it reaches
+# main. pre-commit runs in its own workflow (pre-commit.yaml).
 on:
   pull_request:
-  push:
-    branches:
-      - "!master"
-      - "!main"
   workflow_dispatch:
-    inputs:
-      directory:
-        description: 'Test it'
-        default: 'gogogo'
-        required: false
 
 jobs:
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v7
-      with:
-        python-version-file: .python-version
-    - uses: pre-commit/action@v3.0.1
   build:
     runs-on: ubuntu-latest
     steps:

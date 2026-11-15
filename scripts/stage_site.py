@@ -24,6 +24,7 @@ Usage, from the repository root:
 
     uv run --python 3.12 scripts/stage_site.py          # stage into build/
     uvx zensical build -f build/mkdocs.yml              # build into build/site
+    uv run --python 3.12 scripts/stage_site.py --post-build   # fix notebook edit links
 """
 
 from __future__ import annotations
@@ -295,16 +296,11 @@ def stage_config(cfg: dict, out_dir: Path) -> dict:
     cfg = dict(cfg)
     cfg["docs_dir"] = "docs"
     cfg["site_dir"] = "site"
-    cfg["site_url"] = "https://dl.leima.is/"
-    cfg["repo_name"] = "emptymalei/deep-learning"
-    cfg["edit_uri"] = "edit/main/dl/"
     theme = dict(cfg["theme"])
     if "custom_dir" in theme:
         theme["custom_dir"] = str(
             (ROOT / theme["custom_dir"]).relative_to(out_dir, walk_up=True)
         )
-    for key in ("include_search_page", "search_index_only"):
-        theme.pop(key, None)
     cfg["theme"] = theme
     plugins = []
     for p in cfg.get("plugins", []):
@@ -354,15 +350,46 @@ def copy_docs(src_docs: Path, docs: Path) -> int:
     return n
 
 
+def link_notebook_sources(site: Path, src_docs: Path) -> int:
+    """Point the edit/view buttons of converted notebooks at their .py source.
+
+    Zensical derives those links from the page's source file, which for a
+    notebook is the generated .md that does not exist in the repository.
+    """
+    changed = 0
+    for py in sorted((src_docs / "notebooks").glob("*.py")):
+        page = site / "notebooks" / py.stem / "index.html"
+        if not page.exists():
+            continue
+        html = page.read_text()
+        new = html.replace(f'/dl/notebooks/{py.stem}.md"', f'/dl/notebooks/{py.name}"')
+        if new != html:
+            page.write_text(new)
+            changed += 1
+    return changed
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", default="build", help="output folder (default: build)")
+    ap.add_argument(
+        "--post-build",
+        action="store_true",
+        help="after `zensical build`: fix the edit/view links of notebook pages",
+    )
     args = ap.parse_args()
 
     out = (ROOT / args.out).resolve()
     cfg = yaml.load(SRC_CONFIG.read_text(), Loader=Loader)
     src_docs = ROOT / cfg.get("docs_dir", "docs")
     docs = out / "docs"
+
+    if args.post_build:
+        n = link_notebook_sources(out / "site", src_docs)
+        print(
+            f"post-build: edit/view links of {n} notebook pages point at the .py source"
+        )
+        return
 
     if docs.exists():
         shutil.rmtree(docs)
