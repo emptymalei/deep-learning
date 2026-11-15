@@ -1,3 +1,12 @@
+---
+summary: >-
+  The Langevin equation describes Brownian motion: a velocity that decays
+  exponentially while a random force keeps kicking it. Discretizing the
+  equation gives a simple recipe for simulating a stochastic time series.
+prerequisites:
+  - time-series/timeseries-datasets.dgp.md
+---
+
 # Time Series Data Generating Process: Langevin Equation
 
 Among the many data generating processes (DGP), the Langevin equation is one of the most interesting DGP.

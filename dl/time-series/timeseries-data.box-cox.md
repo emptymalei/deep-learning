@@ -1,3 +1,13 @@
+---
+summary: >-
+  Real series are often non-stationary, with a variance that changes with the
+  level. The Box-Cox transformation, a family of transforms indexed by λ (λ =
+  0 is the log), reduces this; the air passenger data shows it in action. It
+  doesn't always produce perfectly stationary data.
+prerequisites:
+  - time-series/timeseries-data.analysis.md
+---
+
 # Box-Cox Transformation
 
 Many time series models require [stationary data](timeseries-data.analysis.md). However, real-world time series data may be non-stationary and [heteroscedastic](https://en.wikipedia.org/wiki/Homoscedasticity_and_heteroscedasticity)[^scedasticity]. Box-cox transformation is useful when reducing the non-stationarity and heteroscedasticity.

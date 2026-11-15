@@ -1,3 +1,12 @@
+---
+summary: >-
+  Electricity consumption of 370 clients from the UCI repository, in 15-minute
+  steps from 2011 to the start of 2015 with no missing values, plus code to
+  load and clean it.
+related:
+  - time-series/timeseries-datasets.md
+---
+
 # Time Series Dataset: Electricity
 
 This dataset is provided [as the "ElectricityLoadDiagrams20112014 Data Set" on the UCI website](https://archive.ics.uci.edu/ml/datasets/ElectricityLoadDiagrams20112014). It is the time series of electricity consumption of 370 points/clients.

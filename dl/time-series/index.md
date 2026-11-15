@@ -1,3 +1,13 @@
+---
+summary: >-
+  This chapter sets up the forecasting problem: use the last K steps of the
+  targets and covariates, plus features known in advance, to predict the next
+  H steps. It also shows how forecasting methods can be categorized.
+related:
+  - time-series/timeseries-forecast.tasks.md
+  - time-series/timeseries-data.analysis.md
+---
+
 # Time Series Data and Statistical Forecasting Mothods
 
 

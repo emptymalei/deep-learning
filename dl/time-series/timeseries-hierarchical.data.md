@@ -1,3 +1,13 @@
+---
+summary: >-
+  Many datasets have structure: store sales add up to state sales, which add
+  up to the total. A summing matrix S encodes these relations by mapping the
+  bottom-level series to every level, and forecasts that respect it are called
+  coherent. The M5 store sales serve as the example.
+related:
+  - time-series/timeseries-hierarchical.reconciliation.md
+---
+
 # Hierarchical Time Series Data
 
 Many real-world time series data assert some internal structure among the series. For example, the dataset used in the [M5 competition](https://mofc.unic.ac.cy/m5-competition/) is the sales data of different items but with the store and category information provided[^Makridakis2022]. For simplicity, we simplified the dataset to only include the hierarchy of stores.

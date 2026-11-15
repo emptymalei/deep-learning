@@ -1,3 +1,12 @@
+---
+summary: >-
+  Synthetic solar power data from NREL for the United States in 2006, one file
+  per plant in 5-minute steps. Nearly half of the records in the example file
+  are zero, since there is no power at night.
+related:
+  - time-series/timeseries-datasets.md
+---
+
 # Time Series Dataset: Solar Energy
 
 

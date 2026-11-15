@@ -1,3 +1,16 @@
+---
+summary: >-
+  An autoregressive model predicts the next value from a weighted sum of
+  previous values plus noise. Depending on its coefficients, an AR(1) process
+  hovers around a constant, decays or grows exponentially; the AR(2)
+  playground shows when a process stays stationary.
+prerequisites:
+  - time-series/timeseries-data.analysis.md
+related:
+  - time-series/timeseries-basics.var.md
+  - time-series/timeseries-datasets.dgp.md
+---
+
 # AR
 
 Autoregressive (AR) models are simple models to model time series. A general AR(p) model is described by the following process:

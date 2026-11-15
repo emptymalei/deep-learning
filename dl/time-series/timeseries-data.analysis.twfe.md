@@ -1,3 +1,13 @@
+---
+summary: >-
+  A two-way fixed effects model is a linear model for multivariate time series
+  (panel data) with one effect per series and one per time step. A small
+  constructed example with the prices and demand of three articles shows how
+  it recovers their shared linear relation.
+prerequisites:
+  - time-series/timeseries-data.analysis.md
+---
+
 # Two-Way Fixed Effects
 
 Two-way fixed effects on [panel [data](timeseries-data.analysis.md) is a handy method for establishing linear models from time series data. To keep our notations consistent, we will use the term multivariate time series to refer to panel data in the following content.

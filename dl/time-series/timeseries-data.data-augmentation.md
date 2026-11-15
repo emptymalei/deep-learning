@@ -1,3 +1,15 @@
+---
+summary: >-
+  Real datasets are often too small or too imbalanced to train deep models
+  well. Augmentation creates extra training series by random transformations
+  such as jittering, by mixing patterns from several series (for example DBA),
+  or with generative models from AR to GANs. The page then covers how to use
+  the synthetic data in training.
+related:
+  - time-series/timeseries-synthetic.md
+  - time-series/timeseries-datasets.dgp.md
+---
+
 # Data Augmentation for Time Series
 
 
