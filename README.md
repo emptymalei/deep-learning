@@ -52,6 +52,23 @@ uv run --python 3.14 scripts/stage_site.py --save-outputs
 
 This writes a cleaned, gzipped copy of each run notebook to `notebook-outputs/<name>.ipynb.gz`: progress-bar widgets and error tracebacks are dropped, long logs are trimmed and images wider than 1600 px are scaled down. The site build matches outputs to cells by their code, so a cell you changed after the run shows no output until you run and save again.
 
+### Pull Request Previews
+
+Every pull request from a branch of this repository is built and published as a preview:
+
+```text
+https://dl.leima.is/pr-preview/pr-<number>/
+```
+
+The "Publish Docs Test" workflow comments on the pull request with the link and updates the preview on every push. Each page of a preview carries a `noindex` tag and a badge in the bottom left corner with the pull request and the commit it was built from. After a push it can take a minute or two before the page updates.
+
+How it works:
+
+- Previews live in `pr-preview/pr-<number>/` on the `gh-pages` branch, next to the published site (`scripts/pr_preview.sh`). The site uses relative links, so it runs from a subfolder as built.
+- The deploy from `main` replaces the branch but carries the previews of open pull requests over (`scripts/deploy_site.sh`).
+- The "PR Preview Cleanup" workflow removes a preview when its pull request is merged or closed.
+- Pull requests from forks are built but not previewed, because their token cannot write to the repository.
+
 ### Interactive Widgets
 
 Interactive explainers run entirely in the reader's browser and need no build plugin. Put a `dl-widget` block in a page; whatever is inside it is the fallback for readers without JavaScript, for print, and for text exports.
