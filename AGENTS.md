@@ -71,6 +71,8 @@ New and reworked pages follow one shape: the "In one minute" box (from front mat
 
 A tap or click on a term opens its definition in a panel that stays until it is closed (`dl/assets/js/glossary-panel.js`): a sheet at the bottom of the screen on phones, a card on the right on wider screens. Keep definitions to a sentence or two of plain text; they are read from the `title` attribute.
 
+The right sidebar of every page lists, under the table of contents, the glossary terms that occur on the page and the page's links to and from other pages of the book. Both are generated from the built pages by `scripts/stage_site.py --post-build` (`add_sidebar_sections`); there is nothing to maintain by hand.
+
 ## For AI Assistants Reading the Book
 
 - `https://dl.leima.is/llms.txt` lists every page, by nav section, with a link to its Markdown version.

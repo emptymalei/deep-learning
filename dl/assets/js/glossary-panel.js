@@ -14,7 +14,8 @@
  * so a definition never shows twice. On touch devices the theme's tooltip is
  * what flashes on a tap, so there the terms are detached from it.
  *
- * Terms inside links keep working as links. The styles live here rather than
+ * The glossary list in the sidebar (built by scripts/stage_site.py) opens the
+ * same panel. Terms inside links keep working as links. The styles live here rather than
  * in a stylesheet, so a cached older stylesheet can never leave the panel
  * unstyled.
  */
@@ -145,7 +146,8 @@
         });
     }
 
-    const termOf = (target) => (target instanceof Element ? target.closest("abbr[data-dl-term]") : null);
+    // Terms in the text (<abbr>) and in the sidebar's glossary list (<button>).
+    const termOf = (target) => (target instanceof Element ? target.closest("[data-dl-term]") : null);
 
     document.addEventListener("click", (event) => {
         const abbr = termOf(event.target);
@@ -160,7 +162,8 @@
         }
         if (event.key !== "Enter" && event.key !== " ") return;
         const abbr = termOf(event.target);
-        if (!abbr || event.target !== abbr) return;
+        // Buttons already turn Enter and Space into a click.
+        if (!abbr || event.target !== abbr || abbr.tagName !== "ABBR") return;
         event.preventDefault();
         toggle(abbr);
     });

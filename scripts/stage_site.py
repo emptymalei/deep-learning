@@ -25,7 +25,8 @@ Usage, from the repository root:
 
     uv run --python 3.14 scripts/stage_site.py          # stage into build/
     uvx zensical build -f build/mkdocs.yml              # build into build/site
-    uv run --python 3.14 scripts/stage_site.py --post-build   # fix notebook edit links
+    uv run --python 3.14 scripts/stage_site.py --post-build   # notebook edit links,
+                                                              # sidebar sections, asset versions
 """
 
 from __future__ import annotations
@@ -34,9 +35,11 @@ import argparse
 import base64
 import gzip
 import hashlib
+import html as html_lib
 import io
 import json
 import os
+import posixpath
 import re
 import shutil
 import subprocess
@@ -614,6 +617,165 @@ def link_notebook_sources(site: Path, src_docs: Path) -> int:
     return changed
 
 
+# --------------------------------------------------------------------------
+# Sidebar sections: glossary terms and links between pages
+# --------------------------------------------------------------------------
+ARTICLE = re.compile(r'<article class="md-content__inner[^>]*>(.*?)</article>', re.S)
+ABBR = re.compile(r'<abbr title="([^"]*)">([^<]+)</abbr>')
+HREF = re.compile(r'<a\s[^>]*?href="([^"]+)"')
+H1 = re.compile(r"<h1[^>]*>(.*?)</h1>", re.S)
+TOC_SIDEBAR = '<div class="md-sidebar md-sidebar--secondary"'
+TOC_NAV = '<nav class="md-nav md-nav--secondary"'
+SIDE_MARK = "<!-- dl-side -->"
+# Pages whose only job is to list other pages: left out of the link sections.
+INDEX_PAGES = {"tags"}
+LINKS_SHOWN = 6
+
+
+def _site_pages(site: Path) -> dict[str, Path]:
+    """Book pages by their URL path relative to the site root ('' is home)."""
+    pages = {}
+    for page in sorted(site.rglob("index.html")):
+        rel = page.parent.relative_to(site).as_posix()
+        rel = "" if rel == "." else rel
+        if rel.startswith(("assets/", "pr-preview/")):
+            continue
+        pages[rel] = page
+    return pages
+
+
+def _link_list(items: list[tuple[str, str]]) -> str:
+    """A list of (href, title) links; the tail folds away when it is long."""
+
+    def rows(part):
+        return "".join(
+            f'<li class="md-nav__item"><a class="md-nav__link" href="{href}">'
+            f"{html_lib.escape(title)}</a></li>"
+            for href, title in part
+        )
+
+    out = f'<ul class="md-nav__list">{rows(items[:LINKS_SHOWN])}</ul>'
+    rest = items[LINKS_SHOWN:]
+    if rest:
+        out += (
+            f'<details class="dl-side__more"><summary>{len(rest)} more</summary>'
+            f'<ul class="md-nav__list">{rows(rest)}</ul></details>'
+        )
+    return out
+
+
+def add_sidebar_sections(site: Path) -> tuple[int, int, int]:
+    """Add "Glossary" and "Links" sections under each page's table of contents.
+
+    Everything is read from the built pages, so nothing has to be maintained
+    by hand:
+
+    * Glossary: the terms of includes/glossary.md that occur on the page (its
+      <abbr> elements). A click opens the definition in the glossary panel
+      (assets/js/glossary-panel.js).
+    * Links: the other pages of the book this page links to, in reading
+      order, and the pages that link to it. Only links in the page content
+      count, not the navigation.
+
+    Returns the number of pages changed, of glossary entries and of links.
+    """
+    pages = _site_pages(site)
+    text, title, terms, outgoing = {}, {}, {}, {}
+    for rel, page in pages.items():
+        html = page.read_text(encoding="utf-8")
+        text[rel] = html
+        article = ARTICLE.search(html)
+        body = article.group(1) if article else ""
+        h1 = H1.search(body)
+        name = re.sub(r"<a class=\"headerlink\".*?</a>", "", h1.group(1)) if h1 else ""
+        title[rel] = html_lib.unescape(re.sub(r"<[^>]+>", "", name)).strip() or rel
+
+        found = {}
+        for definition, term in ABBR.findall(body):
+            found.setdefault(term, definition)
+        terms[rel] = sorted(found.items(), key=lambda kv: kv[0].lower())
+
+        targets = []
+        for href in HREF.findall(body):
+            href = html_lib.unescape(href).split("#")[0].split("?")[0]
+            if not href or "://" in href or href.startswith(("mailto:", "/")):
+                continue
+            target = posixpath.normpath(posixpath.join(rel, href))
+            target = "" if target == "." else target
+            if target.endswith("/index.html"):
+                target = target[: -len("/index.html")]
+            if target in INDEX_PAGES or target not in pages:
+                continue
+            if target != rel and target not in targets:
+                targets.append(target)
+        outgoing[rel] = [] if rel in INDEX_PAGES else targets
+
+    incoming = {rel: [] for rel in pages}
+    for rel, targets in outgoing.items():
+        for target in targets:
+            incoming[target].append(rel)
+
+    changed = n_terms = n_links = 0
+    for rel, page in pages.items():
+        html = text[rel]
+        # The table of contents in the right sidebar; the theme repeats it
+        # inside the navigation drawer, which is left alone.
+        sidebar = html.find(TOC_SIDEBAR)
+        start = html.find(TOC_NAV, sidebar) if sidebar >= 0 else -1
+        if start < 0 or SIDE_MARK in html:
+            continue
+        # The end of the table of contents: its <nav> closes after any nested ones.
+        depth, end = 0, -1
+        for m in re.finditer(r"<nav\b|</nav>", html[start:]):
+            depth += 1 if m.group() != "</nav>" else -1
+            if depth == 0:
+                end = start + m.end()
+                break
+        if end < 0:
+            continue
+
+        def href_to(target: str) -> str:
+            url = posixpath.relpath(target or ".", rel or ".")
+            return html_lib.escape("./" if url == "." else url + "/")
+
+        sections = []
+        if terms[rel]:
+            chips = "".join(
+                '<li><button type="button" class="dl-side__term" aria-controls="dl-glossary" '
+                f'aria-expanded="false" data-dl-term="{definition}">{term}</button></li>'
+                for term, definition in terms[rel]
+            )
+            sections.append(
+                '<nav class="md-nav dl-side" aria-label="Glossary">'
+                '<p class="dl-side__title">Glossary</p>'
+                f'<ul class="dl-side__terms">{chips}</ul></nav>'
+            )
+            n_terms += len(terms[rel])
+        out_links = [(href_to(t), title[t]) for t in outgoing[rel]]
+        in_links = sorted(
+            ((href_to(t), title[t]) for t in incoming[rel]), key=lambda x: x[1].lower()
+        )
+        if out_links or in_links:
+            parts = ['<nav class="md-nav dl-side" aria-label="Links">']
+            parts.append('<p class="dl-side__title">Links</p>')
+            if out_links:
+                parts.append('<p class="dl-side__sub">This page links to</p>')
+                parts.append(_link_list(out_links))
+            if in_links:
+                parts.append('<p class="dl-side__sub">Linked from</p>')
+                parts.append(_link_list(in_links))
+            parts.append("</nav>")
+            sections.append("".join(parts))
+            n_links += len(out_links) + len(in_links)
+        if not sections:
+            continue
+        page.write_text(
+            html[:end] + SIDE_MARK + "".join(sections) + html[end:], encoding="utf-8"
+        )
+        changed += 1
+    return changed, n_terms, n_links
+
+
 def fingerprint_assets(site: Path, cfg: dict) -> int:
     """Append a content hash to the site's own CSS and JS links.
 
@@ -670,6 +832,11 @@ def main() -> None:
         n = link_notebook_sources(out / "site", src_docs)
         print(
             f"post-build: edit/view links of {n} notebook pages point at the .py source"
+        )
+        n, n_terms, n_links = add_sidebar_sections(out / "site")
+        print(
+            f"post-build: sidebar sections on {n} pages "
+            f"({n_terms} glossary entries, {n_links} links between pages)"
         )
         n = fingerprint_assets(out / "site", cfg)
         print(f"post-build: versioned CSS/JS links on {n} pages")
