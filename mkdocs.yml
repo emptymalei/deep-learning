@@ -2,23 +2,22 @@
 site_name: "Time Series with Deep Learning Quick Bite"
 site_author: "Lei Ma"
 site_description: "Time Series with Deep Learning Quick Bite"
-site_url: "https://emptymalei.github.io/deep-learning"
+site_url: "https://dl.leima.is/"
 repo_url: "https://github.com/emptymalei/deep-learning"
-edit_uri: "blob/main/deep-learning/"
-repo_name: "emptymalei/machine-learning"
+edit_uri: "edit/main/dl/"
+repo_name: "emptymalei/deep-learning"
 docs_dir: "dl"
 
 
 theme:
   name: "material"
-  custom_dir: theme/overrides
-  # Don't include MkDocs' JavaScript
-  include_search_page: false
-  search_index_only: true
 
   # Default values, taken from mkdocs_theme.yml
   language: en
   features:
+    # Edit and view-source buttons (edit_uri); notebook pages link to the .py.
+    - content.action.edit
+    - content.action.view
     # - navigation.instant
     - navigation.sections
     - navigation.tabs
