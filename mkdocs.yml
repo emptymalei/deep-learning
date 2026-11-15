@@ -15,9 +15,11 @@ theme:
   # Default values, taken from mkdocs_theme.yml
   language: en
   features:
-    # Edit and view-source buttons (edit_uri); notebook pages link to the .py.
+    # Edit, view-source and copy-as-Markdown buttons; notebook pages link to
+    # the .py, and the copy button uses the llmstxt plugin's <page>/index.md.
     - content.action.edit
     - content.action.view
+    - content.action.copy
     # - navigation.instant
     - navigation.sections
     - navigation.tabs

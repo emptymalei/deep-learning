@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import json
 import re
 import shutil
@@ -433,6 +434,34 @@ def link_notebook_sources(site: Path, src_docs: Path) -> int:
     return changed
 
 
+def fingerprint_assets(site: Path, cfg: dict) -> int:
+    """Append a content hash to the site's own CSS and JS links.
+
+    The files keep their names (`assets/widgets/widgets.css`), and the host
+    lets browsers cache them for hours, so without this a reader could get a
+    new page with an old stylesheet or script after a deploy.
+    """
+    assets = {}
+    for path in cfg.get("extra_css", []) + cfg.get("extra_javascript", []):
+        path = path if isinstance(path, str) else path.get("path", "")
+        if "://" in path or not (site / path).is_file():
+            continue
+        digest = hashlib.sha256((site / path).read_bytes()).hexdigest()[:8]
+        assets[f'{path}"'] = f'{path}?v={digest}"'
+    pages = 0
+    for html in site.rglob("*.html"):
+        if "assets/playgrounds" in str(html):
+            continue
+        text = html.read_text()
+        new = text
+        for old, versioned in assets.items():
+            new = new.replace(old, versioned)
+        if new != text:
+            html.write_text(new)
+            pages += 1
+    return pages
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", default="build", help="output folder (default: build)")
@@ -453,6 +482,8 @@ def main() -> None:
         print(
             f"post-build: edit/view links of {n} notebook pages point at the .py source"
         )
+        n = fingerprint_assets(out / "site", cfg)
+        print(f"post-build: versioned CSS/JS links on {n} pages")
         return
 
     if docs.exists():

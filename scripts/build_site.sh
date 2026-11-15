@@ -11,7 +11,7 @@
 #      work of the MkDocs plugins Zensical cannot run (notebooks, citations)
 #   3. zensical build -> build/site/
 #   4. scripts/stage_site.py --post-build: point the edit/view buttons of
-#      notebook pages at their .py source
+#      notebook pages at their .py source, and version the CSS/JS links
 #
 # Requires uv (https://docs.astral.sh/uv/). Tool versions are pinned below and
 # can be overridden through the environment.
