@@ -1,6 +1,14 @@
 ---
 tags:
   - WIP
+summary: >-
+  A synthetic dataset from a damped pendulum: the angle follows a cosine whose
+  amplitude decays exponentially, with the period set by the length of the
+  pendulum. The models in this chapter are trained to forecast this series,
+  and the page gives the code that generates it.
+related:
+  - time-series-deep-learning/index.md
+  - time-series-deep-learning/timeseries.feedforward.md
 ---
 # Pendulum Dataset
 

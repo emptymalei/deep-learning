@@ -1,6 +1,17 @@
 ---
 tags:
   - WIP
+summary: >-
+  A feedforward network with five hidden layers forecasts the pendulum series
+  from 100 past steps: first one step ahead across a gap of 10 steps, then
+  three steps ahead. It beats the naive forecast on all three metrics, and a
+  small trained model runs in the browser at the end of the page.
+prerequisites:
+  - deep-learning-fundamentals/neural-net.md
+  - time-series-deep-learning/timeseries.dataset.pendulum.md
+related:
+  - time-series-deep-learning/timeseries.rnn.md
+  - time-series/timeseries-metrics.forecasting.md
 ---
 # Forecasting with Feedforward Neural Networks
 

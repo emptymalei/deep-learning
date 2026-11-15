@@ -1,6 +1,18 @@
 ---
 tags:
   - WIP
+summary: >-
+  TimeGrad (Rasul et al., 2021) turns the denoising diffusion model into a
+  probabilistic forecaster for multivariate series. The forecast is factorized
+  autoregressively over time, an RNN state carries the time dynamics into the
+  denoising network, and repeating the reverse process many times gives the
+  quantiles.
+prerequisites:
+  - energy-based-models/ebm.diffusion.md
+  - deep-learning-fundamentals/recurrent-neural-networks.md
+related:
+  - time-series/timeseries-forecast.tasks.md
+  - self-supervised/generative/autoregressive.md
 ---
 # TimeGrad Using Diffusion Model
 

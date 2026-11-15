@@ -26,3 +26,5 @@ mkdocs.yml). Each term becomes a tooltip wherever it appears as a word. -->
 *[DGP]: Data generating process: the mechanism, real or simulated, that produces a time series.
 *[SES]: Simple exponential smoothing: a forecast that averages the latest observation with the previous forecast.
 *[ACF]: Autocorrelation function: the correlation of a series with a lagged copy of itself, as a function of the lag.
+*[FFN]: Feedforward network: layers applied one after another, with no recurrence or attention.
+*[TFT]: Temporal Fusion Transformer: a transformer-based model for multi-horizon forecasting with covariates.

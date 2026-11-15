@@ -1,3 +1,17 @@
+---
+summary: >-
+  Deep learning models train on batches, so a time series first has to be cut
+  into fixed-length inputs and targets. The page shows the DataFrameDataset
+  class of the ts_dl_utils package, which slides along the time axis with a
+  history length, a horizon and an optional gap, and what its first data point
+  looks like.
+prerequisites:
+  - time-series/timeseries-data.time-delayed-embedding.md
+related:
+  - time-series-deep-learning/timeseries.dataset.pendulum.md
+  - utilities/notebooks-and-utilities.md
+---
+
 # Time Series Forecasting with Deep Learning
 
 In the chapter [Deep Learning Fundamentals](../deep-learning-fundamentals), we discussed some deep learning models. In this chapter, we will discuss how to apply deep learning models to time series forecasting problems.
@@ -148,3 +162,11 @@ The first data point of `DataFrameDataset(dataframe=df, history_length=10, horiz
          [9]]),
   array([[10]]))
 ```
+
+## Try It: Slicing a Series into Data Points
+
+The widget uses the same 15-row dataframe as the example above. Change `history_length`, `horizon` and `gap` to see which rows become the input `x` and the target `y` of each data point, and how many data points the dataset has.
+
+<div class="dl-widget" data-widget="window-explorer" data-labels="dataset" data-steps="15" data-history="10" data-horizon="1" data-gap="0" data-max-history="10" data-max-horizon="3" data-max-gap="2" markdown>
+*Interactive demo: enable JavaScript to slice the example dataframe into data points.*
+</div>
