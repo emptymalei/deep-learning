@@ -92,6 +92,7 @@ extra_javascript:
   - assets/widgets/pendulum-onnx.js
   - assets/widgets/metrics-playground.js
   - assets/widgets/crps-explorer.js
+  - assets/widgets/window-explorer.js
 
 
 

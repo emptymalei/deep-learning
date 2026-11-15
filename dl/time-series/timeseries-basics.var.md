@@ -1,3 +1,13 @@
+---
+summary: >-
+  A vector autoregressive model extends AR to several series that influence
+  each other: the next value of each series depends on the previous values of
+  all of them. A VAR(1) blows up when the largest eigenvalue of its
+  coefficient matrix exceeds 1 and stays stable otherwise.
+prerequisites:
+  - time-series/timeseries-basics.ar.md
+---
+
 # VAR
 
 

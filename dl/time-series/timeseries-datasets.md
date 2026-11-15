@@ -1,3 +1,10 @@
+---
+summary: >-
+  A list of real-world datasets used for forecasting (ECB exchange rates, NREL
+  solar power, UCI electricity load, PeMS traffic) and of synthetic sources
+  such as chaotic systems.
+---
+
 # Time Series Datasets
 
 We list a few useful real-world time series datasets here.

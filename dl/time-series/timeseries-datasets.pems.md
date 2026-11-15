@@ -1,3 +1,11 @@
+---
+summary: >-
+  Traffic data from the California PeMS system and how to download it
+  (registration required). No examples are shown yet.
+related:
+  - time-series/timeseries-datasets.md
+---
+
 # Time Series Dataset: PEMS
 
 California Department of Transportation (Caltrans) Performance

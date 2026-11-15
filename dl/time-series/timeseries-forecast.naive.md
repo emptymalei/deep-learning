@@ -1,3 +1,14 @@
+---
+summary: >-
+  Simple baselines that every model should beat: repeat the last observation,
+  forecast the mean of the past, or use simple exponential smoothing, which
+  weights recent values more. Truncating the smoothing sum biases the
+  forecast.
+related:
+  - time-series/timeseries-metrics.forecasting.md
+  - time-series/timeseries-basics.statistical-models.md
+---
+
 # Naive Forecasts
 
 In some sense, time series forecasting is easy, if we have low expectations. From a dynamical system point of view, our future is usually not too different from our current state.

@@ -1,3 +1,15 @@
+---
+summary: >-
+  A short tour of classical statistical forecasting models: ARIMA and how its
+  components relate, simple exponential smoothing, which averages the latest
+  observation with the previous forecast so that older history fades
+  exponentially, and state space models.
+related:
+  - time-series/timeseries-basics.ar.md
+  - time-series/timeseries-basics.var.md
+  - time-series/timeseries-forecast.naive.md
+---
+
 # Statistical Models of Time Series
 
 Though statistical models are not our focus, it is always beneficial to understand how those famous statistical models work. To best understand how the models work, we will build some data generating process using these models and explore their behavior.

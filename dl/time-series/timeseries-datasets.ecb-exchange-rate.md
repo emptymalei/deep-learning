@@ -1,3 +1,11 @@
+---
+summary: >-
+  Euro foreign exchange reference rates from the ECB: 41 currencies starting
+  on 1999-01-04, with example plots and a look at missing values.
+related:
+  - time-series/timeseries-datasets.md
+---
+
 # Time Series Dataset: ECB Exchange Rate
 
 

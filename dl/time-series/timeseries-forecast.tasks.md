@@ -1,3 +1,16 @@
+---
+summary: >-
+  Forecasting tasks differ by how many series are involved. Univariate
+  forecasting predicts the next H steps of one series from its last K steps;
+  multivariate forecasting handles several series and their covariates, which
+  may not be aligned at every time step.
+prerequisites:
+  - time-series/index.md
+related:
+  - time-series/timeseries-data.time-delayed-embedding.md
+  - time-series/timeseries-forecast.naive.md
+---
+
 # Time Series Forecasting Tasks
 
 There are many different types of time series forecasting tasks. Forecasting tasks can be categorized by different criteria. For example, we can categorize them by the number of variables in the series and their relations to each other.

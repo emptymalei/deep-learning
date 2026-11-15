@@ -1,3 +1,15 @@
+---
+summary: >-
+  Time delay embedding, also called rolling, rewrites a series as a table of
+  fixed-length windows: each row holds p consecutive past values and the value
+  to predict next. Neural networks need such fixed-length inputs, and Takens'
+  theorem explains why the representation preserves the dynamics of the
+  original series; the pendulum data illustrates it.
+related:
+  - time-series/timeseries-forecast.tasks.md
+  - time-series/timeseries-evaluation.forecasting.md
+---
+
 # The Time Delay Embedding Representation
 
 The time delay embedding representation of time series data is widely used in deep learning forecasting models[@Hewamalage2022-sc]. This is also called rolling in many time series analyses [@Zivot2006-es].
@@ -18,6 +30,17 @@ y_{t-p+1} & y_{t-p+2} & \cdots & y_{t} &\Big| &  {\color{red}y_{t+1}} \\
 $$
 
 which indicates that we will use everything on the left, a matrix of shape $(t-p+1,p)$, to predict the vector on the right (in red). This is a useful representation when building deep learning models as many of the neural networks require fixed-length inputs.
+
+
+## Try It: Rolling a Window over a Series
+
+Choose the history length $p$ and the forecast horizon $H$, then step through the rows of the table. Each row is one training example: the blue values are the inputs and the orange values are the targets.
+
+<div class="dl-widget" data-widget="window-explorer" markdown>
+
+An interactive chart that slides an input window and a target window along a series and shows the resulting rows of the table. It needs JavaScript; the matrix above shows the same construction.
+
+</div>
 
 
 ## Taken's Theorem

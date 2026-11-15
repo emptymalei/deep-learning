@@ -73,6 +73,7 @@ Available widgets live in `dl/assets/widgets/`:
 | `embed` | A click-to-load iframe, e.g. a marimo WebAssembly playground (`data-src`, `data-height`) | `playgrounds/*.py` |
 | `metrics-playground` | Drag forecast points and watch MAE, MSE, RMSE, MAPE and sMAPE react | `metrics-playground.js` |
 | `crps-explorer` | A normal forecast's CDF against the observed value, with the exact CRPS | `crps-explorer.js` |
+| `window-explorer` | Time delay embedding: slide input and target windows along a series and see the rows it produces | `window-explorer.js` |
 
 To add a widget:
 

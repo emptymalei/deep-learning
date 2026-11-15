@@ -1,3 +1,16 @@
+---
+summary: >-
+  Synthetic time series serve three purposes: benchmarking models on data
+  whose dynamics are known, improving models through augmentation or transfer
+  learning, and sharing data without exposing private or business information.
+  Generating realistic series is hard, though generic generators such as GANs
+  exist.
+related:
+  - time-series/timeseries-datasets.dgp.md
+  - time-series/timeseries-data.data-augmentation.md
+  - time-series/timeseries-datasets.synthetic.md
+---
+
 # Synthetic Time Series
 
 Synthetic time series data is useful in time series modeling, such as forecasting.

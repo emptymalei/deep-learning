@@ -1,3 +1,15 @@
+---
+summary: >-
+  Two ideas from time series analysis that the rest of the book leans on:
+  stationarity (the distribution of the series doesn't change over time, with
+  a weaker form that only looks at the mean and autocorrelation) and serial
+  dependence, measured by autocorrelation. It also notes how terminology
+  differs between fields, such as panel data versus multivariate time series.
+related:
+  - time-series/timeseries-data.box-cox.md
+  - time-series/timeseries-basics.ar.md
+---
+
 # Time Series Analysis
 
 Time series analysis is not our focus here. However, it is beneficial to grasp some basic ideas of time series.

@@ -1,3 +1,15 @@
+---
+summary: >-
+  Time series come from many kinds of data generating processes: simple
+  deterministic ones such as exponential growth and circular motion, pure
+  noise, linear processes such as AR, and processes where several series
+  interact. Simulating them builds intuition for modeling real data.
+related:
+  - time-series/timeseries-basics.ar.md
+  - time-series/timeseries-basics.var.md
+  - time-series/timeseries-datasets.dgp.langevin.md
+---
+
 # Generating Processes for Time Series
 
 The data generating processes (DGP) for time series are diverse. For example, in physics, we have all sort of dynamical systems that generates time series data and many dynamics models are formulated based on the time series data. In industries, time series data are often coming from stochastic processes.

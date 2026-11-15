@@ -1,6 +1,11 @@
 ---
 tags:
   - WIP
+summary: >-
+  How to generate synthetic series in code with the recipe-based generator in
+  GluonTS, from random Gaussian noise to multivariate recipes.
+prerequisites:
+  - time-series/timeseries-datasets.dgp.md
 ---
 # Synthetic Time Series
 

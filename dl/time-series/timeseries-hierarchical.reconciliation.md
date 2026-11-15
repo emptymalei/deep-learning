@@ -1,3 +1,14 @@
+---
+summary: >-
+  Forecasting each level of a hierarchy separately gives numbers that don't
+  add up. Reconciliation is a post-processing step: a matrix P maps the base
+  forecasts to bottom-level forecasts, and the summing matrix S maps those
+  back to all levels, which makes them coherent. MinT, one way to choose P, is
+  worked through with examples, theory and real data.
+prerequisites:
+  - time-series/timeseries-hierarchical.data.md
+---
+
 # Hierarchical Time Series Reconciliation
 
 Reconciliation is a post-processing method to adjust the forecasts to be coherent. Given **base forecasts** $\hat{\mathbf y}(t)$ (forecasts for all levels but each level forecasted independently), we use $\mathbf P$ to map them to the bottom-level forecasts
