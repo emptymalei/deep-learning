@@ -1,3 +1,13 @@
+---
+summary: >-
+  Learning from data means extracting compressed knowledge about the world
+  from data. Predictions can come from induction followed by deduction (first
+  find a model, then apply it) or from transduction (predict directly from the
+  data).
+related:
+  - deep-learning-fundamentals/neural-net.md
+---
+
 # Learning from Data
 
 Learning from data is a practice of extracting compressed knowledge about the world from data. There are many frameworks of learning. For example, the induction, deduction, and transduction schema shows different possible paths to produce predictions.

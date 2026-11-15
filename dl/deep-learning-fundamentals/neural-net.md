@@ -1,3 +1,15 @@
+---
+summary: >-
+  An artificial neuron responds to its inputs more or less strongly, and a
+  network composes many neurons into complicated functions. The page builds
+  this intuition first, then explains why neural networks are universal
+  approximators.
+prerequisites:
+  - deep-learning-fundamentals/learning.md
+related:
+  - deep-learning-fundamentals/recurrent-neural-networks.md
+---
+
 # Neural Networks
 
 Neural networks have been a buzzword for machine learning in recent years. As indicated in the name, artificial neural networks are artificial neurons connected in a network. In this section, we discuss some intuitions and theories of neural networks.

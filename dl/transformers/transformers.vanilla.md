@@ -1,3 +1,15 @@
+---
+summary: >-
+  The transformer drops recurrence and relies on attention, which lets every
+  position draw directly on every other position. The page summarizes the
+  encoder-decoder structure, the attention mechanism and how positional
+  encodings tell the model about order.
+prerequisites:
+  - deep-learning-fundamentals/neural-net.md
+related:
+  - time-series-deep-learning/timeseries.transformer.md
+---
+
 # Vanilla Transformers
 
 In the seminal paper *Attention is All You Need*, the legendary transformer architecture was born[@Vaswani2017-yg].
@@ -71,6 +83,16 @@ We will provide a detailed example when discussing [the applications to time ser
 ### Knowledge of Positions
 
 Positional information, or time order information for time series input, is encoded by a positional encoder that shifts the embeddings. The simplest positional encoder uses the cyclic nature of trig functions[@Vaswani2017-yg]. By adding such positional information directly to the values before the data flows into the attention mechanism, we can encode the positional information into the attention mechanism[^Kazemnejad2019].
+
+#### Try It: Sinusoidal Positional Encodings
+
+The chart shows the trigonometric encoding of *Attention Is All You Need*, $\operatorname{PE}(pos, 2i) = \sin(pos / 10000^{2i/d})$ and $\operatorname{PE}(pos, 2i+1) = \cos(pos / 10000^{2i/d})$: one column per position, one row per dimension. Pick a position to see how similar the encodings of the other positions are to it.
+
+<div class="dl-widget" data-widget="positional-encoding" markdown>
+
+An interactive heatmap of the sinusoidal positional encodings, with the similarity between a chosen position and all others. It needs JavaScript.
+
+</div>
 
 
 [^illustrated_transformer]: Alammar J. The Illustrated Transformer. In: Jay Alammar [Internet]. 27 Jun 2018 [cited 14 Jun 2023]. Available: http://jalammar.github.io/illustrated-transformer/

@@ -1,6 +1,16 @@
 ---
 tags:
   - WIP
+summary: >-
+  A variational autoencoder introduces a variational distribution q to handle
+  the integral over the latent variable. Neural networks only have to model
+  the parameters of simple Gaussian distributions, and the loss is explained
+  term by term.
+prerequisites:
+  - self-supervised/generative/ae.md
+related:
+  - concepts/elbo.md
+  - time-series-deep-learning/timeseries.vae.md
 ---
 # Variational AutoEncoder
 

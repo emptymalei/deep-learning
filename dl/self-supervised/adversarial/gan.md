@@ -1,6 +1,13 @@
 ---
 tags:
   - WIP
+summary: >-
+  A GAN trains a generator to fool a discriminator, a minimax game whose
+  optimum is reached only when the generated distribution equals the data
+  distribution, compared through the Jensen-Shannon divergence. The page
+  covers the vanilla GAN, f-GAN and InfoGAN, with code.
+related:
+  - time-series-deep-learning/timeseries.gan.md
 ---
 # GAN
 

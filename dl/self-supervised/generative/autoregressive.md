@@ -1,6 +1,10 @@
 ---
 tags:
   - WIP
+summary: >-
+  An autoregressive model describes each variable conditioned on the ones
+  before it. The page also sorts out the different notations the literature
+  uses for those preceding variables.
 ---
 
 # Autoregressive Model

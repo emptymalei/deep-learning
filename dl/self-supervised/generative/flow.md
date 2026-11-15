@@ -1,6 +1,13 @@
 ---
 tags:
   - WIP
+summary: >-
+  A flow model transforms a simple distribution into a complex one through a
+  chain of coordinate transformations, tracking the density with the Jacobian.
+  It runs in a generative direction (sample, then transform) or a normalizing
+  direction (simplify the data distribution).
+related:
+  - time-series-deep-learning/timeseries.flow.md
 ---
 
 # Flow

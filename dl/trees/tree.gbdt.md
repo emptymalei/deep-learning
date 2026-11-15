@@ -1,3 +1,15 @@
+---
+summary: >-
+  Boosted trees are also an ensemble, but an additive one: the prediction is
+  the sum of the trees' predictions, and training adds one tree at a time,
+  each chosen to reduce the remaining loss. LightGBM and XGBoost are the
+  popular implementations.
+prerequisites:
+  - trees/tree.random-forest.md
+related:
+  - trees/tree.darts.md
+---
+
 # Gradient Boosted Trees
 
 Boosted trees is another ensemble method of trees. Similar to [random forest](tree.random-forest.md), boosted trees makes prediction by combining the predictions from each tree. However, instead of performing average, boosted trees are additive models where the prediction $f(\mathbf X)$ is the additions of each predictions[@Hastie2013-tt],

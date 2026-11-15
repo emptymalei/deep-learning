@@ -1,3 +1,13 @@
+---
+summary: >-
+  Energy-based models give every configuration of the variables an energy, a
+  scalar from which a probability density follows through a partition
+  function, as in statistical physics. Compatible configurations get low
+  energy, that is, high probability density.
+related:
+  - energy-based-models/ebm.diffusion.md
+---
+
 # Energy-based Models
 
 Energy-based models (EBM) establish relations between different possible values of variables using "energy functions"[@Le_Cun2006-ta].

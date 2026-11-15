@@ -1,3 +1,13 @@
+---
+summary: >-
+  An overview of the deep learning part: why a plain feedforward network is
+  rarely enough, how self-supervised learning helps models generalize, and the
+  notation used in the following chapters.
+related:
+  - deep-learning-fundamentals/learning.md
+  - deep-learning-fundamentals/neural-net.md
+---
+
 # Deep Learning Fundamentals
 
 Deep learning, as the rising method for time series forecasting, requires the knowledge of some fundamental principles.

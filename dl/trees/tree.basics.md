@@ -1,3 +1,13 @@
+---
+summary: >-
+  A decision tree predicts by asking a sequence of questions about the
+  features. A toy example, deciding whether to work from home given health,
+  weather and holidays, shows how a tree is described, how it is built from
+  data and how easily it overfits.
+related:
+  - trees/tree.random-forest.md
+---
+
 # Tree-Based Models
 
 Trees are still powerful machine-learning models for time series forecasting. We explain the basic ideas of trees in the following sections.
