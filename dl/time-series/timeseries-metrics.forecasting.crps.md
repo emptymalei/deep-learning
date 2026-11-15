@@ -32,8 +32,8 @@ where
 
     $$
     H(x) = \begin{cases}
-    1, &\qquad x=0\\
-    0, &\qquad x\leq 0\\
+    1, &\qquad x\geq 0\\
+    0, &\qquad x< 0\\
     \end{cases}
     $$
 
