@@ -80,6 +80,17 @@ which determines how the elements in the value tensor are mixed, $A_{ij}V_{jk}$.
 
 We will provide a detailed example when discussing [the applications to time series](../time-series-deep-learning/timeseries.transformer.md).
 
+#### Step by Step: Attention
+
+The formula above, one operation at a time.
+
+<div class="dl-widget" data-widget="step-diagram" data-diagram="attention" markdown>
+
+A step-by-step diagram of scaled dot-product attention. It needs JavaScript. In short: linear layers give the query, key and value; $\mathbf Q \mathbf K^T$ scores every pair of positions; a softmax turns each row of scores into weights; the weights mix the rows of $\mathbf V$.
+
+</div>
+
+
 ### Knowledge of Positions
 
 Positional information, or time order information for time series input, is encoded by a positional encoder that shifts the embeddings. The simplest positional encoder uses the cyclic nature of trig functions[@Vaswani2017-yg]. By adding such positional information directly to the values before the data flows into the attention mechanism, we can encode the positional information into the attention mechanism[^Kazemnejad2019].

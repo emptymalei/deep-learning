@@ -98,6 +98,7 @@ Available widgets live in `dl/assets/widgets/`:
 | `dtw-explorer` | Two series aligned by dynamic time warping: the aligned pairs, the accumulated cost matrix and its cheapest path | `dtw-explorer.js` |
 | `window-explorer` | Time delay embedding: slide input and target windows along a series and see the rows it produces. `data-gap` adds a gap slider and `data-labels="dataset"` shows the same thing as `DataFrameDataset` data points | `window-explorer.js` |
 | `positional-encoding` | The transformer's sinusoidal positional encodings as a heatmap, with the similarity between positions | `positional-encoding.js` |
+| `step-diagram` | A box-and-arrow diagram that builds up step by step, with a sentence per step (`data-diagram`: `rnn`, `attention`, `diffusion`, `vae`). Diagrams are data in the script: nodes, edges and steps | `step-diagram.js` |
 
 To add a widget:
 

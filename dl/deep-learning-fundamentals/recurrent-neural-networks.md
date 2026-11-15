@@ -73,6 +73,17 @@ In the basic example of RNN shown above, the output of the hidden state is fed t
 
 
 
+## Step by Step: Unrolling an RNN
+
+The same unit is applied at every time step. Step through four time steps to see the state $h(t)$ being passed along.
+
+<div class="dl-widget" data-widget="step-diagram" data-diagram="rnn" markdown>
+
+A step-by-step diagram of a recurrent unit unrolled over four time steps. It needs JavaScript. In short: $h(t) = f(W_h h(t-1) + W_x x(t) + b)$ is applied at each step with the same weights, so $h(4)$ depends on all four inputs.
+
+</div>
+
+
 [^Amidi&Amidi]: Amidi A, Amidi S. CS 230. In: Recurrent Neural Networks Cheatsheet [Internet]. [cited 22 Nov 2023]. Available: https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-recurrent-neural-networks
 
 [^Karpathy2015]: Karpathy A. The Unreasonable Effectiveness of Recurrent Neural Networks. In: Andrej Karpathy blog [Internet]. 2015 [cited 22 Nov 2023]. Available: https://karpathy.github.io/2015/05/21/rnn-effectiveness/
