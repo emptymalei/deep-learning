@@ -70,11 +70,22 @@ Apart from the above categories, there are some other properties of metrics. Som
 
 ## Try It: How Metrics React
 
-Drag the orange forecast points, or pick a scenario, and watch how each metric responds. The small print under each value compares it with the scenario as loaded.
+Pick a scenario and move its slider, or drag the orange forecast points, and watch how each metric responds. The small chart under each value shows that metric over the whole range of the slider, and the small print compares the value with the scenario as loaded.
 
 <div class="dl-widget" data-widget="metrics-playground" markdown>
 
-An interactive chart where you drag forecast points and see MAE, MSE, RMSE, MAPE and sMAPE update. It needs JavaScript; the sections below cover the same ground.
+An interactive chart with four scenarios (error size, one big miss, bias, a true value near zero). Each has a slider, and MAE, MSE, RMSE, MAPE and sMAPE are shown together with their curves over the slider's range. It needs JavaScript; the sections below cover the same ground.
+
+</div>
+
+
+## Try It: Shift the Level of the Values
+
+Add the same constant $c$ to every true value and every forecast. The errors $y(t) - \hat y(t)$ do not change, so a metric built only from the errors stays the same at every level, while a metric that divides by the values or takes their logarithm does not.
+
+<div class="dl-widget" data-widget="metrics-shift" markdown>
+
+An interactive chart where a slider shifts the truth and the forecast by the same amount, and MAE, MSE, RMSE, MAPE, sMAPE and RMSLE update. It needs JavaScript. In short: MAE, MSE and RMSE are the same at every shift; MAPE, sMAPE and RMSLE get smaller as the level grows, and MAPE blows up when the true values come close to zero.
 
 </div>
 
