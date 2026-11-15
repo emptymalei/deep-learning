@@ -5,7 +5,8 @@
  *   Error size    every error is scaled by a factor
  *   One big miss  one forecast misses by a chosen amount
  *   Bias          every forecast is shifted by the same amount
- *   Near zero     one true value moves towards zero, errors stay the same
+ *   Near zero     the smallest true value moves towards zero, errors stay
+ *                 the same
  *
  * Under each metric's value, a small chart shows that metric over the whole
  * range of the slider, with a marker at the current setting. The forecast
@@ -20,10 +21,12 @@ dlWidgets.register("metrics-playground", (el, api) => {
     const NS = "http://www.w3.org/2000/svg";
     const KEYS = ["MAE", "MSE", "RMSE", "MAPE", "sMAPE"];
     const BASE_TRUTH = [12, 14, 13, 17, 16, 19, 18, 21, 20, 23];
-    const NEAR_ZERO = [0.4, 1.2, 0.06, 2.0, 0.6, 1.8, 0.3, 2.4, 1.0, 2.6];
+    // The value at ZERO_AT is set by the slider (0.02 to 2). Every other value
+    // is above 2, so the slider's value is the smallest one at every setting.
+    const NEAR_ZERO = [2.4, 3.2, 0.06, 4.0, 2.6, 3.8, 2.2, 4.4, 3.0, 4.6];
     const WIGGLE = [0.8, -0.6, 1.0, -0.9, 0.5, -0.7, 0.9, -0.5, 0.7, -0.8];
     const MISS_AT = 6; // which step carries the big miss
-    const ZERO_AT = 2; // which true value moves towards zero
+    const ZERO_AT = 2; // which true value the Near zero slider moves
     const GRID = 80; // points per small curve
 
     const signed = (v, d = 1) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(d);
@@ -225,6 +228,11 @@ dlWidgets.register("metrics-playground", (el, api) => {
         });
         node("polyline", { points: truth.map((y, i) => `${xOf(i)},${yOf(y)}`).join(" "), fill: "none", stroke: c.fg, "stroke-width": 1.5 }, svg);
         truth.forEach((y, i) => node("circle", { cx: xOf(i), cy: yOf(y), r: 3.5, fill: c.fg }, svg));
+        if (name === "zero") {
+            // The true value the slider moves.
+            node("circle", { cx: xOf(ZERO_AT), cy: yOf(truth[ZERO_AT]), r: 8, fill: "none", stroke: c.fg, "stroke-width": 1.2, "stroke-dasharray": "2 2" }, svg);
+            node("text", { x: xOf(ZERO_AT) + 12, y: yOf(truth[ZERO_AT]) + 13, "font-size": 10, fill: c.fgLight }, svg).textContent = "smallest";
+        }
 
         forecast.forEach((v, i) => {
             const g = node("g", { tabindex: 0, role: "slider", "aria-label": `Forecast at step ${i + 1}`, "aria-valuenow": v.toFixed(2), style: "cursor: ns-resize; outline: none" }, svg);
@@ -323,7 +331,7 @@ dlWidgets.register("metrics-playground", (el, api) => {
         if (name === "size") {
             if (param === 0) return "With no error at all, every metric is 0." + extra;
             if (param === preset.start) {
-                return "Every error is under one unit, so all metrics are small. Move the slider to scale all errors at once: MAE, RMSE, MAPE and sMAPE follow straight lines, while MSE bends upwards because it squares the errors." + extra;
+                return "Every error is one unit or less, so all metrics are small. Move the slider to scale all errors at once: MAE, RMSE, MAPE and sMAPE follow straight lines, while MSE bends upwards because it squares the errors." + extra;
             }
             return `Every error is ${param.toFixed(1)} times its starting size. MAE, RMSE, MAPE and sMAPE grow in step with it, so their curves are straight lines; MSE grows with its square (${(param * param).toFixed(2)}×), so its curve bends upwards.` + extra;
         }
@@ -332,10 +340,10 @@ dlWidgets.register("metrics-playground", (el, api) => {
             const sumSq = e.reduce((s, v) => s + v * v, 0);
             const a = sumAbs ? (100 * Math.abs(e[MISS_AT])) / sumAbs : 0;
             const b = sumSq ? (100 * e[MISS_AT] * e[MISS_AT]) / sumSq : 0;
-            if (Math.abs(e[MISS_AT]) < 1) {
-                return "Without the big miss every error is under 1, and no single point stands out. Move the slider up to see how differently MAE and MSE react to one large miss." + extra;
+            if (Math.abs(e[MISS_AT]) <= 1) {
+                return "Without the big miss every error is 1 or less, and no single point stands out. Move the slider up to see how differently MAE and MSE react to one large miss." + extra;
             }
-            return `One forecast misses by ${Math.abs(e[MISS_AT]).toFixed(1)}; the others by less than 1. That single point makes up ${a.toFixed(0)}% of MAE but ${b.toFixed(0)}% of MSE: squaring lets one large miss dominate, and RMSE inherits it.` + extra;
+            return `One forecast misses by ${Math.abs(e[MISS_AT]).toFixed(1)}; the others by 1 or less. That single point makes up ${a.toFixed(0)}% of MAE but ${b.toFixed(0)}% of MSE: squaring lets one large miss dominate, and RMSE inherits it.` + extra;
         }
         if (name === "bias") {
             if (param === 0) return "No bias: every forecast is exactly right and every metric is 0." + extra;
@@ -344,7 +352,7 @@ dlWidgets.register("metrics-playground", (el, api) => {
             return `Every forecast is ${Math.abs(param).toFixed(1)} too ${dir[0]}. MAE and RMSE both equal the size of the bias, and MAPE is the same in either direction. sMAPE is not: ${val("sMAPE", m)} here, ${val("sMAPE", mirror)} if the forecasts were ${Math.abs(param).toFixed(1)} too ${dir[1]}. Its curve is lopsided around 0.` + extra;
         }
         const share = (100 * Math.abs(e[ZERO_AT] / truth[ZERO_AT])) / truth.length;
-        return `Every forecast is off by 0.5, so MAE, MSE and RMSE do not change. The smallest true value is ${truth[ZERO_AT].toFixed(2)}, where that error is ${fmt(Math.abs((100 * e[ZERO_AT]) / truth[ZERO_AT]))}% of the truth: this one point contributes ${fmt(share)} percentage points of MAPE's ${val("MAPE", m)}. sMAPE cannot exceed 200%.` + extra;
+        return `Every forecast is off by 0.5, so MAE, MSE and RMSE do not change. The smallest true value (circled) is ${truth[ZERO_AT].toFixed(2)}, where that error is ${fmt(Math.abs((100 * e[ZERO_AT]) / truth[ZERO_AT]))}% of the truth: this one point contributes ${fmt(share)} percentage points of MAPE's ${val("MAPE", m)}. sMAPE cannot exceed 200%.` + extra;
     }
 
     function render() {
