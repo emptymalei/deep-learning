@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 NOINDEX = '<meta name="robots" content="noindex, nofollow">'
-BADGE = """<a class="dl-preview-badge" href="{url}" style="position:fixed;left:.6rem;bottom:.6rem;z-index:10;\
+BADGE = """<a class="dl-preview-badge" href="{url}" style="position:fixed;left:.6rem;bottom:.6rem;z-index:3;\
 padding:.25rem .6rem;border-radius:1rem;font:600 12px/1.4 system-ui,sans-serif;text-decoration:none;\
 background:#ff6e42;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3)">Preview: PR #{pr} at {sha}</a>\
 <style>@media print{{.dl-preview-badge{{display:none}}}}</style>"""
