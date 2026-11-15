@@ -18,6 +18,10 @@
 #
 # In this notebook, we explore some basic ideas of how to forecast using trees with the help of the package called [Darts](https://github.com/unit8co/darts).
 
+# On macOS, LightGBM crashes when it starts OpenMP after PyTorch has (darts
+# imports PyTorch), so import it first.
+import lightgbm  # noqa: F401  # isort: skip
+
 # + id="IyjC2kJDwYGn"
 from typing import Callable, Dict, List
 
@@ -132,7 +136,7 @@ darts_air_passenger_seasonal_test.plot(label="Seasonal Component Test")
 fig, ax = plt.subplots(figsize=(10, 6.18))
 
 sns.histplot(
-    darts_air_passenger_seasonal_train.pd_dataframe(),
+    darts_air_passenger_seasonal_train.to_dataframe(),
     x="0",
     kde=True,
     binwidth=0.1,
@@ -143,7 +147,7 @@ sns.histplot(
     ax=ax,
 )
 sns.histplot(
-    darts_air_passenger_seasonal_test.pd_dataframe(),
+    darts_air_passenger_seasonal_test.to_dataframe(),
     x="0",
     kde=True,
     binwidth=0.1,

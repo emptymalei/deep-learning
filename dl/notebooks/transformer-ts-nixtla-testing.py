@@ -210,20 +210,25 @@ ax.legend(prop={"size": 15})
 ax.grid()
 # -
 
-from datasetsforecast.evaluation import accuracy
-from datasetsforecast.losses import mae, mse, rmse
+from utilsforecast.evaluation import evaluate
+from utilsforecast.losses import mae, mse, rmse
 
 df_y_hat.loc[df_y_hat.step == 0]
 
 df_test
 
 # +
-evaluation_df = accuracy(
-    Y_hat_df=df_y_hat.loc[df_y_hat.step == 0],
-    Y_test_df=df_test,
-    Y_df=df_train,
+df_eval_input = df_y_hat.loc[df_y_hat.step == 0].merge(
+    df_test, on=["unique_id", "ds"], how="left"
+)
+evaluation_df = evaluate(
+    df_eval_input,
     metrics=[mse, mae, rmse],
-    agg_by=["unique_id"],
+    models=[
+        c
+        for c in df_eval_input.columns
+        if c not in ("unique_id", "ds", "y", "step", "index")
+    ],
 )
 
 evaluation_df.head()

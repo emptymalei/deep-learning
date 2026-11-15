@@ -612,7 +612,7 @@ df.plot(x="t", y="y", ax=ax)
 
 # ## Traning
 
-from ts_bolt.datamodules.pandas import DataFrameDataModule
+from ts_dl_utils.datasets.dataset import DataFrameDataModule
 
 # +
 history_length_1_step = 100
@@ -703,8 +703,8 @@ from torchmetrics.regression import (
     MeanSquaredError,
     SymmetricMeanAbsolutePercentageError,
 )
-from ts_bolt.evaluation.evaluator import Evaluator
-from ts_bolt.naive_forecasters.last_observation import LastObservationForecaster
+from ts_dl_utils.evaluation.evaluator import Evaluator
+from ts_dl_utils.naive_forecasters.last_observation import LastObservationForecaster
 
 
 class Evaluator:

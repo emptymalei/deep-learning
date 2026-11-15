@@ -38,7 +38,7 @@ _, ax = plt.subplots(figsize=(10, 6.18))
 boxcox_opt = BoxCox()
 ap_boxcox_opt_transformed = boxcox_opt.fit_transform(ap_series)
 ap_boxcox_opt_transformed.plot(
-    label=f"$\lambda={boxcox_opt._fitted_params[0].item():0.3f}$", ax=ax
+    label=rf"$\lambda={boxcox_opt._fitted_params[0].item():0.3f}$", ax=ax
 )
 # -
 
@@ -67,7 +67,7 @@ for lmbda in [0.01, 0.1, 0.2]:
 # +
 def var_series(series: TimeSeries, window: int = 36) -> TimeSeries:
     series_rolling_var = TimeSeries.from_dataframe(
-        series.pd_dataframe().rolling(window=window).var().dropna()
+        series.to_dataframe().rolling(window=window).var().dropna()
     )
 
     return series_rolling_var

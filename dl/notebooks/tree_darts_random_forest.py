@@ -95,7 +95,7 @@ pred_rf_ap.plot(label="Prediction", linestyle="--")
 fig, ax = plt.subplots(figsize=(10, 6.18))
 
 sns.histplot(
-    darts_air_passenger_train.pd_dataframe(),
+    darts_air_passenger_train.to_dataframe(),
     x="#Passengers",
     kde=True,
     binwidth=50,
@@ -105,7 +105,7 @@ sns.histplot(
     ax=ax,
 )
 sns.histplot(
-    darts_air_passenger_test.pd_dataframe(),
+    darts_air_passenger_test.to_dataframe(),
     x="#Passengers",
     kde=True,
     binwidth=50,
@@ -142,13 +142,13 @@ darts_air_passenger_trend.plot()
 darts_air_passenger_seasonal_train.plot(label="Seasonal Component Train")
 darts_air_passenger_seasonal_test.plot(label="Seasonal Component Test")
 
-darts_air_passenger_seasonal_test.pd_dataframe()
+darts_air_passenger_seasonal_test.to_dataframe()
 
 # +
 fig, ax = plt.subplots(figsize=(10, 6.18))
 
 sns.histplot(
-    darts_air_passenger_seasonal_train.pd_dataframe(),
+    darts_air_passenger_seasonal_train.to_dataframe(),
     x="0",
     kde=True,
     binwidth=0.1,
@@ -159,7 +159,7 @@ sns.histplot(
     ax=ax,
 )
 sns.histplot(
-    darts_air_passenger_seasonal_test.pd_dataframe(),
+    darts_air_passenger_seasonal_test.to_dataframe(),
     x="0",
     kde=True,
     binwidth=0.1,

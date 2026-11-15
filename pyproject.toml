@@ -10,58 +10,61 @@ packages = [{include = "ts_dl_utils", from = "dl/notebooks/"}]
 # nothing from Poetry. Poetry manages the notebook dependencies in the groups
 # below.
 [tool.poetry.dependencies]
-python = ">=3.12,<3.13"
+# torchvision (pulled in by torchdyn) declares Python 3.14.1 unsupported, so
+# start the range after it.
+python = ">=3.14.2,<3.15"
 
 
 [tool.poetry.group.ml.dependencies]
-# 1.26 is the first NumPy with Python 3.12 wheels; stay below 2.0 so older
-# notebook code (e.g. darts 0.26) keeps working.
-numpy = "^1.26.4"
-# 0.14.5+ has Python 3.12 wheels; stay on the 0.14 line used with darts 0.26.
-statsmodels = ">=0.14.5,<0.15"
-loguru = "^0.7.2"
-tabulate = "^0.9.0"
-dtaidistance = "^2.3.12"
-torchdr = "^0.3"
+numpy = "^2.5.4"
+statsmodels = "^0.15.0"
+loguru = "^0.8.0"
+tabulate = "^0.10.0"
+dtaidistance = "^2.5.1"
+torchdr = "^0.5"
 
 
 [tool.poetry.group.darts.dependencies]
-darts = "^0.26.0"
+darts = "^0.48.1"
+# darts only wraps LightGBM; tree_darts_boosted_tree.py uses LightGBMModel.
+lightgbm = "^4.7.0"
 
 [tool.poetry.group.notebook.dependencies]
-ipykernel = "^6.21.1"
-jupytext = "^1.15.2"
+ipykernel = "^7.4.0"
+jupytext = "^1.19.6"
 
 
 [tool.poetry.group.visualization.dependencies]
 seaborn = "^0.13.2"
-opentsne = "^1.0.2"
-plotly = "^6.1.1"
+opentsne = "^1.0.4"
+plotly = "^7.1.0"
 
 
 [tool.poetry.group.data.dependencies]
 eerily = "^0.2.1"
-ts-bolt = "0.0.7"
 
 
 [tool.poetry.group.torch.dependencies]
-lightning = "^2.1.2"
-tensorboard = "^2.15.1"
-torchmetrics = "^1.2.0"
+lightning = "^2.6.6"
+tensorboard = "^2.21.0"
+torchmetrics = "^1.9.0"
 torchdyn = "^1.0.6"
 torch-tb-profiler = "^0.4.3"
-torch = "^2.5.1"
+torch = "^2.15.0"
 
 
 [tool.poetry.group.nixtla.dependencies]
-neuralforecast = "^1.7.4"
-mlforecast = "^0.13.4"
-statsforecast = "^1.7.6"
-datasetsforecast = "^0.0.8"
+neuralforecast = "^3.3.1"
+mlforecast = "^1.1.0"
+statsforecast = "^2.1.1"
+datasetsforecast = "^1.1.0"
+# The notebooks evaluate forecasts with utilsforecast (datasetsforecast 1.x
+# dropped its evaluation module).
+utilsforecast = "^0.2.17"
 
 
 [tool.poetry.group.huggingface.dependencies]
-transformers = "^4.44.2"
+transformers = "^5.22.2"
 
 [build-system]
 requires = ["poetry-core"]

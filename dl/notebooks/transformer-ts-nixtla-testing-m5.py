@@ -313,8 +313,18 @@ visualize_predictions(
 
 # ## Evaluations
 
-from datasetsforecast.evaluation import accuracy
-from datasetsforecast.losses import mae, mape, mse, rmse, smape
+from utilsforecast.evaluation import evaluate
+from utilsforecast.losses import mae, mse, rmse
+
+
+def evaluate_step(df_pred: pd.DataFrame, df_true: pd.DataFrame) -> pd.DataFrame:
+    """Metrics averaged over all series, one column per model."""
+    df = df_pred.merge(df_true, on=["unique_id", "ds"], how="left")
+    models = [
+        c for c in df.columns if c not in ("unique_id", "ds", "y", "step", "index")
+    ]
+    return evaluate(df, metrics=[mse, mae, rmse], models=models, agg_fn="mean")
+
 
 df_y_hat_transformer.loc[df_y_hat_transformer.step == 0]
 
@@ -326,12 +336,8 @@ df_y_hat_transformer.loc[df_y_hat_transformer.step == 0]
 transformer_evals = []
 
 for s in df_y_hat_transformer.step.unique():
-    df_transformer_eval_s = accuracy(
-        Y_hat_df=df_y_hat_transformer.loc[df_y_hat_transformer.step == s],
-        Y_test_df=df_test,
-        Y_df=df_train,
-        metrics=[mse, mae, rmse],
-        # agg_by=['unique_id']
+    df_transformer_eval_s = evaluate_step(
+        df_y_hat_transformer.loc[df_y_hat_transformer.step == s], df_test
     )
     df_transformer_eval_s["step"] = s
     transformer_evals.append(df_transformer_eval_s)
@@ -344,12 +350,8 @@ df_transformer_eval.head()
 baseline_evals = []
 
 for s in df_y_hat_arima.step.unique():
-    df_baseline_eval_s = accuracy(
-        Y_hat_df=df_y_hat_arima.loc[df_y_hat_arima.step == s],
-        Y_test_df=df_test,
-        Y_df=df_train,
-        metrics=[mse, mae, rmse],
-        # agg_by=['unique_id']
+    df_baseline_eval_s = evaluate_step(
+        df_y_hat_arima.loc[df_y_hat_arima.step == s], df_test
     )
     df_baseline_eval_s["step"] = s
     baseline_evals.append(df_baseline_eval_s)
