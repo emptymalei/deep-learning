@@ -82,6 +82,7 @@ extra_css:
 extra_javascript:
   - assets/js/mathjax.js
   - assets/js/page-actions.js
+  - assets/js/glossary-panel.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   # Interactive explainers: the loader must come before the widgets.
   - assets/widgets/loader.js

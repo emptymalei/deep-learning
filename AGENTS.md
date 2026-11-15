@@ -69,6 +69,8 @@ New and reworked pages follow one shape: the "In one minute" box (from front mat
 
 `includes/glossary.md` holds abbreviation definitions (`*[MAE]: Mean absolute error…`). It is appended to every page, so each term shows a tooltip wherever it appears as a word. Add a term there once instead of defining it on every page.
 
+A tap or click on a term opens its definition in a panel that stays until it is closed (`dl/assets/js/glossary-panel.js`): a sheet at the bottom of the screen on phones, a card on the right on wider screens. Keep definitions to a sentence or two of plain text; they are read from the `title` attribute.
+
 ## For AI Assistants Reading the Book
 
 - `https://dl.leima.is/llms.txt` lists every page, by nav section, with a link to its Markdown version.
