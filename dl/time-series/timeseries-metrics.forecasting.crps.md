@@ -54,7 +54,7 @@ An interactive chart of a normal forecast's CDF against the step at the observed
 
 </div>
 
-To illustrate what the integrand $\lVert P(x) - H(x - x_a) \rVert_2^2$ means, we apply some shades to the integrand of the integral in CRPS. We visualize four difference scenarios.
+To illustrate what the integrand $\lVert P(x) - H(x - x_a) \rVert_2^2$ means, we apply some shades to the integrand of the integral in CRPS. We visualize four different scenarios.
 
 !!! example "Scenario 1: The predicted CDF $P(x)$ is reaching 1 very fast."
 
@@ -86,5 +86,5 @@ CRPS is also very useful in time series forecasting. For example, the integrand 
 
 
 [^Hersbach2000]: [Hersbach H. Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems. Weather Forecast. 2000;15: 559–570. doi:10.1175/1520-0434(2000)015<0559:DOTCRP>2.0.CO;2](http://dx.doi.org/10.1175/1520-0434(2000)015%3C0559:DOTCRP%3E2.0.CO;2)
-[^Gouttes2021]: [Gouttes A, Rasul K, Koren M, Stephan J, Naghibi T. Probabilistic Time Series Forecasting with Implicit Quantile Networks. arXiv [cs.LG]. 2021. doi:10.1109/icdmw.2017.19](https://arxiv.org/abs/2107.03743)
+[^Gouttes2021]: [Gouttes A, Rasul K, Koren M, Stephan J, Naghibi T. Probabilistic Time Series Forecasting with Implicit Quantile Networks. arXiv [cs.LG]. 2021. doi:10.48550/arXiv.2107.03743](https://arxiv.org/abs/2107.03743)
 [^Gebetsberger2018]: [Gebetsberger M, Messner JW, Mayr GJ, Zeileis A. Estimation Methods for Nonhomogeneous Regression Models: Minimum Continuous Ranked Probability Score versus Maximum Likelihood. Mon Weather Rev. 2018;146: 4323–4338. doi:10.1175/MWR-D-17-0364.1](https://journals.ametsoc.org/view/journals/mwre/146/12/mwr-d-17-0364.1.xml)
