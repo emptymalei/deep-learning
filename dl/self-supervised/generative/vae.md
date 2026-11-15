@@ -125,6 +125,15 @@ Doersch wrote a very nice tutorial on VAE[^Doersch2016]. We can find the detaile
 Another key component of VAE is the **reparametrization trick**. The variational approximation $q_\phi$ is usually a Gaussian distribution. Once we get the parameters for the Gaussian distribution, we will have to sample from the Gaussian distribution based on the parameters. However, this sampling process prohibits us from propagating errors. The reparametrization trick solves this problem.
 
 
+### Step by Step: One Pass through a VAE
+
+<div class="dl-widget" data-widget="step-diagram" data-diagram="vae" markdown>
+
+A step-by-step diagram of one pass through a variational autoencoder. It needs JavaScript. In short: the encoder outputs the mean and variance of $q_\phi(z\mid x)$, a latent $z$ is sampled from it, the decoder $p_\theta(x\mid z)$ reconstructs the data, and the loss combines the reconstruction term with the KL divergence to the prior $p(z)$.
+
+</div>
+
+
 ## Loss Explanation
 
 ![VAE Loss](assets/vae/vae-loss-explained.png)
