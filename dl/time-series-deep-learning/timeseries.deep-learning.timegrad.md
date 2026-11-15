@@ -34,7 +34,7 @@ Rasul et al., (2021) proposed a probabilistic forecasting model using denoising 
 To apply the [denoising diffusion model](../energy-based-models/ebm.diffusion.md) in a multivariate forecasting problem, we define our forecasting task as the following autoregressive problem,
 
 $$
-q(\mathbf x^0_{t - K:t} \vert \mathbf x^0_{1:t_0 - 1}) = \Pi_{t=t_0}^T q(\mathbf x^0_t \vert \mathbf x^0_{1:t-1}).
+q(\mathbf x^0_{t_0:T} \vert \mathbf x^0_{1:t_0 - 1}) = \Pi_{t=t_0}^T q(\mathbf x^0_t \vert \mathbf x^0_{1:t-1}).
 $$
 
 ![AR](assets/timeseries.deep-learning.timegrad/ar-denoising-diffusion-model-problem.jpg)
@@ -86,7 +86,7 @@ The input data is sliced into fixed length time series $\mathbf x_t^0$. Since Eq
 After training, we obtain the time dynamics encoding $\mathbf h_T$, with which the denoising steps can be calculated using the reverse process
 
 $$
-\mathbf x^{n-1}_{T+1} = \frac{1}{\alpha_n} \left( \mathbf x^n_{T+1} - \frac{\beta_n}{1 - \bar\alpha_n} \epsilon_\theta( \mathbf x^n_{T+1}, \mathbf h_{T}, n ) \right) + \sqrt{\Sigma_\theta} \mathbf z,
+\mathbf x^{n-1}_{T+1} = \frac{1}{\sqrt{\alpha_n}} \left( \mathbf x^n_{T+1} - \frac{\beta_n}{\sqrt{1 - \bar\alpha_n}} \epsilon_\theta( \mathbf x^n_{T+1}, \mathbf h_{T}, n ) \right) + \sqrt{\Sigma_\theta} \mathbf z,
 $$
 
 where $\mathbf z \sim \mathcal N(\mathbf 0, \mathbf I)$.
@@ -94,7 +94,7 @@ where $\mathbf z \sim \mathcal N(\mathbf 0, \mathbf I)$.
 For example,
 
 $$
-\mathbf x^{0}_{T+1} = \frac{1}{\alpha_1} \left( \mathbf x^1_{T+1} - \frac{\beta_1}{1 - \bar\alpha_1} \epsilon_\theta( \mathbf x^1_{T+1}, \mathbf h_{T}, 1 ) \right) + \sqrt{\Sigma_\theta} \mathbf z.
+\mathbf x^{0}_{T+1} = \frac{1}{\sqrt{\alpha_1}} \left( \mathbf x^1_{T+1} - \frac{\beta_1}{\sqrt{1 - \bar\alpha_1}} \epsilon_\theta( \mathbf x^1_{T+1}, \mathbf h_{T}, 1 ) \right) + \sqrt{\Sigma_\theta} \mathbf z.
 $$
 
 

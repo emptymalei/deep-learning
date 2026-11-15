@@ -55,7 +55,7 @@ The model is built using the package called [torchdyn](https://github.com/DiffEq
 
 ## Single Step Forecasts
 
-We trained the model using a history length of 100 and only forecast one step (with a gap of 3 between the input and target). The result is shown below.
+We trained the model using a history length of 100 and only forecast one step (with a gap of 10 between the input and target). The result is shown below.
 
 ![Results](assets/timeseries.neural-ode/neuralode_univariate_results.png)
 

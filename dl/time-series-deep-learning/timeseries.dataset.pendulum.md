@@ -22,7 +22,7 @@ where $\theta(t)$ is the angle of the pendulum at time $t$.
 The period $p$ is calculated using
 
 $$
-p = 2 \pi \sqrt(L / g),
+p = 2 \pi \sqrt{L / g},
 $$
 
 with $L$ being the length of the pendulum and $g$ being the surface gravity.
@@ -53,7 +53,7 @@ with $L$ being the length of the pendulum and $g$ being the surface gravity.
         The period $p$ is calculated using
 
         $$
-        p = 2 \pi \sqrt(L / g),
+        p = 2 \pi \sqrt{L / g},
         $$
 
         with $L$ being the length of the pendulum

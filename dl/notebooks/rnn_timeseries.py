@@ -50,7 +50,7 @@ from ts_dl_utils.naive_forecasters.last_observation import LastObservationForeca
 # The period $p$ is calculated using
 #
 # $$
-# p = 2 \pi \sqrt(L / g),
+# p = 2 \pi \sqrt{L / g},
 # $$
 #
 # with $L$ being the length of the pendulum

@@ -33,7 +33,7 @@ We take a simple [Univariate time series forecasting](../time-series/timeseries-
 
 ### Dataset
 
-In this example, we use the [pendulumn physics dataset](timeseries.dataset.pendulum.md).
+In this example, we use the [pendulum physics dataset](timeseries.dataset.pendulum.md).
 
 
 ### Model
