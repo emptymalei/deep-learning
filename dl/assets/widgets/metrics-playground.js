@@ -7,6 +7,7 @@
  *   Bias          every forecast is shifted by the same amount
  *   Near zero     the smallest true value moves towards zero, errors stay
  *                 the same
+ *   Scale         truth and forecast are multiplied by the same factor
  *
  * Under each metric's value, a small chart shows that metric over the whole
  * range of the slider, with a marker at the current setting. The forecast
@@ -62,6 +63,14 @@ dlWidgets.register("metrics-playground", (el, api) => {
             show: (p) => p.toFixed(2),
             truth: (p) => NEAR_ZERO.map((y, i) => (i === ZERO_AT ? p : y)),
             forecast: (p) => NEAR_ZERO.map((y, i) => (i === ZERO_AT ? p : y) + 0.5),
+        },
+        scale: {
+            label: "Scale",
+            slider: "Scale of the values",
+            min: 0.2, max: 3, step: 0.1, start: 1,
+            show: (p) => `${p.toFixed(1)}×`,
+            truth: (p) => BASE_TRUTH.map((y) => y * p),
+            forecast: (p) => BASE_TRUTH.map((y, i) => (y + 3 * WIGGLE[i]) * p),
         },
     };
 
@@ -131,10 +140,11 @@ dlWidgets.register("metrics-playground", (el, api) => {
 .dl-metrics small.up { color: var(--md-accent-fg-color); }
 .dl-metrics svg { margin: .15rem 0; overflow: hidden; }
 .dl-widget__controls .dl-metrics__slider input[type="range"] { width: 11rem; max-width: 42vw; }
-.dl-metrics__slider output { min-width: 3em; font-variant-numeric: tabular-nums; }`;
+.dl-metrics__slider output { min-width: 3em; font-variant-numeric: tabular-nums; }
+.dl-metrics__tabs .dl-widget__seg { flex-wrap: wrap; }`;
 
     const tabs = document.createElement("div");
-    tabs.className = "dl-widget__controls";
+    tabs.className = "dl-widget__controls dl-metrics__tabs";
     const seg = document.createElement("div");
     seg.className = "dl-widget__seg";
     seg.setAttribute("role", "group");
@@ -350,6 +360,9 @@ dlWidgets.register("metrics-playground", (el, api) => {
             const mirror = metrics(truth, preset.forecast(-param).map((v, i) => v + deltas[i]));
             const dir = param > 0 ? ["high", "low"] : ["low", "high"];
             return `Every forecast is ${Math.abs(param).toFixed(1)} too ${dir[0]}. MAE and RMSE both equal the size of the bias, and MAPE is the same in either direction. sMAPE is not: ${val("sMAPE", m)} here, ${val("sMAPE", mirror)} if the forecasts were ${Math.abs(param).toFixed(1)} too ${dir[1]}. Its curve is lopsided around 0.` + extra;
+        }
+        if (name === "scale") {
+            return `Truth and forecast are both multiplied by ${param.toFixed(1)}, as if the unit changed. Every error grows by that factor, so MAE and RMSE follow it and MSE follows its square (${(param * param).toFixed(2)}×). MAPE and sMAPE divide by the values and do not move: they do not depend on the scale.` + extra;
         }
         const share = (100 * Math.abs(e[ZERO_AT] / truth[ZERO_AT])) / truth.length;
         return `Every forecast is off by 0.5, so MAE, MSE and RMSE do not change. The smallest true value (circled) is ${truth[ZERO_AT].toFixed(2)}, where that error is ${fmt(Math.abs((100 * e[ZERO_AT]) / truth[ZERO_AT]))}% of the truth: this one point contributes ${fmt(share)} percentage points of MAPE's ${val("MAPE", m)}. sMAPE cannot exceed 200%.` + extra;

@@ -88,10 +88,14 @@ Available widgets live in `dl/assets/widgets/`:
 | `backtest-windows` | Sliding vs expanding backtest folds, with a gap | `backtest-windows.js` |
 | `vega` | A Vega-Lite chart exported from Python with Altair (`data-spec="path/from/docs/root.vl.json"`) | `scripts/build_charts.py` |
 | `embed` | A click-to-load iframe, e.g. a marimo WebAssembly playground (`data-src`, `data-height`) | `playgrounds/*.py` |
-| `metrics-playground` | Four scenarios (error size, one big miss, bias, near zero), each with a slider; MAE, MSE, RMSE, MAPE and sMAPE with their curves over the slider's range; forecast points can be dragged | `metrics-playground.js` |
+| `metrics-playground` | Five scenarios (error size, one big miss, bias, near zero, scale), each with a slider; MAE, MSE, RMSE, MAPE and sMAPE with their curves over the slider's range; forecast points can be dragged | `metrics-playground.js` |
 | `metrics-shift` | Shift truth and forecast by the same constant and see which metrics stay the same (MAE, MSE, RMSE) and which change with the level (MAPE, sMAPE, RMSLE) | `metrics-shift.js` |
 | `crps-explorer` | A normal forecast's CDF against the observed value, with the exact CRPS | `crps-explorer.js` |
 | `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
+| `entropy-explorer` | Two distributions over six classes, and the cross entropy split into the entropy plus the KL divergence | `entropy-explorer.js` |
+| `gini-explorer` | The Gini impurity of a two-class dataset as its mix changes | `impurity-explorer.js` |
+| `split-gain` | A node split into two groups, with the entropies and the information gain | `impurity-explorer.js` |
+| `dtw-explorer` | Two series aligned by dynamic time warping: the aligned pairs, the accumulated cost matrix and its cheapest path | `dtw-explorer.js` |
 | `window-explorer` | Time delay embedding: slide input and target windows along a series and see the rows it produces. `data-gap` adds a gap slider and `data-labels="dataset"` shows the same thing as `DataFrameDataset` data points | `window-explorer.js` |
 | `positional-encoding` | The transformer's sinusoidal positional encodings as a heatmap, with the similarity between positions | `positional-encoding.js` |
 

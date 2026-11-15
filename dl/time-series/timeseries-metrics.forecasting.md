@@ -74,7 +74,7 @@ Pick a scenario and move its slider, or drag the orange forecast points, and wat
 
 <div class="dl-widget" data-widget="metrics-playground" markdown>
 
-An interactive chart with four scenarios (error size, one big miss, bias, a true value near zero). Each has a slider, and MAE, MSE, RMSE, MAPE and sMAPE are shown together with their curves over the slider's range. It needs JavaScript; the sections below cover the same ground.
+An interactive chart with five scenarios (error size, one big miss, bias, a true value near zero, scale). Each has a slider, and MAE, MSE, RMSE, MAPE and sMAPE are shown together with their curves over the slider's range. It needs JavaScript; the sections below cover the same ground.
 
 </div>
 

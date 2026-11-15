@@ -61,6 +61,17 @@ where $S^{(1)}_i$ is the $i$th element of the series $S^{(1)}$, $d(x,y)$ is a pr
 DTW is very useful when comparing series with different lengths. For example, most error metrics require the actual time series and predicted series to have the same length. In the case of different lengths, we can perform DTW when calculating these metrics[^darts-dtw-metric].
 
 
+## Try It: Aligning Two Series
+
+The second series has the same shape as the first, shifted and stretched in time. The lines show which points DTW aligns, and the grid shows the accumulated cost $D$ from the definition above with the cheapest path through it. The local distance is $d(x, y) = \lvert x - y \rvert$.
+
+<div class="dl-widget" data-widget="dtw-explorer" markdown>
+
+An interactive chart of two series of 18 points, with sliders that shift and stretch the second one in time. It shows which points dynamic time warping aligns, the accumulated cost matrix with the cheapest path, and the DTW distance next to the point-by-point distance. It needs JavaScript. In short: for the same shape at a different pace, the DTW distance stays small while the point-by-point distance grows.
+
+</div>
+
+
 ## Examples
 
 The forecasting package darts provides a [demo of DTW](https://unit8co.github.io/darts/examples/12-Dynamic-Time-Warping-example.html).
