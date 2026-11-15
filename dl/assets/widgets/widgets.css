@@ -131,39 +131,3 @@
     border-radius: 0.2rem;
     background: var(--md-default-bg-color);
 }
-
-/* Page actions for AI assistants (assets/js/page-actions.js). */
-.dl-page-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin: -0.4rem 0 1.2rem;
-    font-size: 0.62rem;
-}
-
-.dl-page-actions a,
-.dl-page-actions button {
-    padding: 0.1rem 0.5rem;
-    border: 1px solid var(--md-default-fg-color--lightest);
-    border-radius: 1rem;
-    background: none;
-    color: var(--md-default-fg-color--light);
-    font: inherit;
-    line-height: 1.6;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.dl-page-actions a:hover,
-.dl-page-actions button:hover,
-.dl-page-actions a:focus-visible,
-.dl-page-actions button:focus-visible {
-    border-color: var(--md-accent-fg-color);
-    color: var(--md-accent-fg-color);
-}
-
-@media print {
-    .dl-page-actions {
-        display: none;
-    }
-}

@@ -84,6 +84,6 @@ marimo playgrounds (`playgrounds/*.py`) are exported to WebAssembly by `scripts/
 
 ### Reading with AI Assistants
 
-The build publishes [`llms.txt`](https://dl.leima.is/llms.txt), [`llms-full.txt`](https://dl.leima.is/llms-full.txt) and a Markdown copy of every page (`<page URL>index.md`), configured by the `llmstxt` plugin in `mkdocs.yml`. Each page also has buttons to copy it as Markdown or to ask Claude or ChatGPT about it (`dl/assets/js/page-actions.js`); nothing is sent until the reader clicks.
+The build publishes [`llms.txt`](https://dl.leima.is/llms.txt), [`llms-full.txt`](https://dl.leima.is/llms-full.txt) and a Markdown copy of every page (`<page URL>index.md`), configured by the `llmstxt` plugin in `mkdocs.yml`. Each page also has a copy-as-Markdown icon (Zensical's `content.action.copy`) and an icon with a small menu to ask Claude, ChatGPT or Gemini about the page (`dl/assets/js/page-actions.js`); nothing is sent until the reader picks one.
 
 Conventions for AI coding agents (and people) are in [AGENTS.md](AGENTS.md), including the front matter fields. A design for an MCP server is in [design/mcp-server.md](design/mcp-server.md).

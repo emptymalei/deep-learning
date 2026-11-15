@@ -1,13 +1,35 @@
 /*
- * Page actions for reading with an AI assistant: copy the page as Markdown,
- * or open Claude / ChatGPT with a prompt that points at the page's Markdown.
+ * "Ask an AI assistant about this page": one small icon next to the page's
+ * edit / view / copy icons, opening a menu with Claude, ChatGPT and Gemini.
+ * Each opens in a new tab with a prompt that points at the page's Markdown
+ * copy (written by the llmstxt plugin as <page>/index.md); the assistant
+ * reads that URL with its own web access. Copying the page as Markdown is
+ * Zensical's own `content.action.copy` button.
  *
- * The Markdown comes from the llms.txt build (the llmstxt plugin in
- * mkdocs.yml writes <page>/index.md next to every page's index.html).
- * Nothing is sent anywhere until the reader clicks.
+ * Nothing is sent anywhere until the reader picks an assistant. The styles
+ * live here rather than in a stylesheet, so a cached older stylesheet can
+ * never leave the menu unstyled.
  */
 (function () {
     const SITE = "Time Series with Deep Learning Quick Bite";
+    const ICON =
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M10 2.5l1.6 4.9 4.9 1.6-4.9 1.6L10 15.5l-1.6-4.9L3.5 9l4.9-1.6zM18 13l.9 2.6 2.6.9-2.6.9L18 20l-.9-2.6-2.6-.9 2.6-.9z"/></svg>';
+    const CSS = `
+.dl-ai { position: relative; }
+[dir=ltr] .dl-ai { float: right; margin-left: .4rem; }
+[dir=rtl] .dl-ai { float: left; margin-right: .4rem; }
+.md-typeset .dl-ai > .md-content__button.dl-ai__toggle { float: none; margin: .2rem 0 0; border: 0; cursor: pointer; }
+.dl-ai__menu { position: absolute; top: calc(100% + .3rem); z-index: 3; min-width: 8.5rem; padding: .25rem 0;
+  background: var(--md-default-bg-color); border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: .4rem; box-shadow: var(--md-shadow-z2); font-size: .7rem; line-height: 1.4; }
+[dir=ltr] .dl-ai__menu { right: 0; }
+[dir=rtl] .dl-ai__menu { left: 0; }
+.dl-ai__menu[hidden] { display: none; }
+.md-typeset .dl-ai__menu a { display: block; padding: .35rem .8rem; color: var(--md-default-fg-color); text-decoration: none; }
+.md-typeset .dl-ai__menu a:hover, .md-typeset .dl-ai__menu a:focus-visible { background: var(--md-default-fg-color--lightest); }
+.md-typeset .dl-ai__menu .dl-ai__note { margin: .25rem .8rem .2rem; max-width: 10rem; font-size: .6rem; line-height: 1.35; color: var(--md-default-fg-color--light); }
+@media print { .dl-ai { display: none; } }`;
 
     function markdownUrl() {
         const u = new URL(location.href);
@@ -24,69 +46,87 @@
         );
     }
 
-    function flash(el, text) {
-        const old = el.textContent;
-        el.textContent = text;
-        setTimeout(() => (el.textContent = old), 1600);
-    }
-
-    async function copyMarkdown(url, button) {
-        let missing = false;
-        const text = () =>
-            fetch(url).then((res) => {
-                if (!res.ok) {
-                    missing = true;
-                    throw new Error(String(res.status));
-                }
-                return res.text();
-            });
-        try {
-            if (window.ClipboardItem && navigator.clipboard.write) {
-                // Passing a promise keeps the click's user activation (Safari).
-                const blob = text().then((t) => new Blob([t], { type: "text/plain" }));
-                await navigator.clipboard.write([new ClipboardItem({ "text/plain": blob })]);
-            } else {
-                await navigator.clipboard.writeText(await text());
-            }
-            flash(button, "Copied");
-        } catch (err) {
-            flash(button, missing ? "Not available" : "Copy failed");
-        }
-    }
-
-    function link(label, href, title) {
-        const a = document.createElement("a");
-        a.textContent = label;
-        a.href = href;
-        a.title = title;
-        a.target = "_blank";
-        a.rel = "noopener";
-        return a;
+    function addStyles() {
+        if (document.getElementById("dl-ai-style")) return;
+        const style = document.createElement("style");
+        style.id = "dl-ai-style";
+        style.textContent = CSS;
+        document.head.appendChild(style);
     }
 
     function mount() {
-        const h1 = document.querySelector(".md-content__inner h1");
+        const inner = document.querySelector(".md-content__inner");
+        const h1 = inner && inner.querySelector("h1");
         // Only on real pages: the 404 page has no canonical URL.
         if (!h1 || !document.querySelector('link[rel="canonical"]')) return;
-        if (h1.nextElementSibling && h1.nextElementSibling.classList.contains("dl-page-actions")) return;
+        if (inner.querySelector(".dl-ai")) return;
+        addStyles();
 
         const url = markdownUrl();
-        const bar = document.createElement("div");
-        bar.className = "dl-page-actions";
+        const wrap = document.createElement("div");
+        wrap.className = "dl-ai";
 
-        const copy = document.createElement("button");
-        copy.type = "button";
-        copy.textContent = "Copy as Markdown";
-        copy.title = "Copy this page as Markdown, e.g. to paste into an AI assistant";
-        copy.addEventListener("click", () => copyMarkdown(url, copy));
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "md-content__button md-icon dl-ai__toggle";
+        toggle.title = "Ask an AI assistant about this page";
+        toggle.setAttribute("aria-label", toggle.title);
+        toggle.setAttribute("aria-haspopup", "true");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.innerHTML = ICON;
 
-        bar.append(
-            copy,
-            link("Ask Claude", "https://claude.ai/new?q=" + encodeURIComponent(prompt(url)), "Open Claude with a prompt about this page"),
-            link("Ask ChatGPT", "https://chatgpt.com/?q=" + encodeURIComponent(prompt(url)), "Open ChatGPT with a prompt about this page"),
-            link("Markdown", url, "This page as Markdown")
-        );
-        h1.insertAdjacentElement("afterend", bar);
+        const menu = document.createElement("div");
+        menu.className = "dl-ai__menu";
+        menu.hidden = true;
+        const text = prompt(url);
+        // The ?q= prefill only works when the reader is signed in, and Gemini
+        // has no documented prefill at all, so every link also copies the
+        // prompt: if the box comes up empty, the reader pastes it.
+        for (const [label, base] of [
+            ["Ask Claude", "https://claude.ai/new?q="],
+            ["Ask ChatGPT", "https://chatgpt.com/?q="],
+            ["Ask Gemini", "https://gemini.google.com/app?q="],
+        ]) {
+            const a = document.createElement("a");
+            a.textContent = label;
+            a.href = base + encodeURIComponent(text);
+            a.target = "_blank";
+            a.rel = "noopener";
+            a.addEventListener("click", () => {
+                if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
+                close();
+            });
+            menu.appendChild(a);
+        }
+        const note = document.createElement("p");
+        note.className = "dl-ai__note";
+        note.textContent = "The prompt is also copied, so you can paste it if the box is empty.";
+        menu.appendChild(note);
+
+        function close() {
+            menu.hidden = true;
+            toggle.setAttribute("aria-expanded", "false");
+        }
+        toggle.addEventListener("click", (event) => {
+            event.stopPropagation();
+            menu.hidden = !menu.hidden;
+            toggle.setAttribute("aria-expanded", String(!menu.hidden));
+        });
+        document.addEventListener("click", (event) => {
+            if (!wrap.contains(event.target)) close();
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") close();
+        });
+
+        wrap.append(toggle, menu);
+        // Sit with the theme's icons (edit, view, copy), to their left.
+        const buttons = inner.querySelectorAll(":scope > .md-content__button");
+        if (buttons.length) {
+            buttons[buttons.length - 1].insertAdjacentElement("afterend", wrap);
+        } else {
+            h1.insertAdjacentElement("beforebegin", wrap);
+        }
     }
 
     if (window.document$ && typeof window.document$.subscribe === "function") {
