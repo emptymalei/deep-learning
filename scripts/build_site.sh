@@ -10,6 +10,8 @@
 #   2. scripts/stage_site.py: dl/ -> build/docs/ + build/mkdocs.yml, doing the
 #      work of the MkDocs plugins Zensical cannot run (notebooks, citations)
 #   3. zensical build -> build/site/
+#   4. scripts/stage_site.py --post-build: point the edit/view buttons of
+#      notebook pages at their .py source
 #
 # Requires uv (https://docs.astral.sh/uv/). Tool versions are pinned below and
 # can be overridden through the environment.
@@ -24,3 +26,4 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 scripts/build_playgrounds.sh
 uv run --python 3.14 scripts/stage_site.py
 uvx --from "zensical==${ZENSICAL_VERSION}" zensical build -f build/mkdocs.yml
+uv run --python 3.12 scripts/stage_site.py --post-build

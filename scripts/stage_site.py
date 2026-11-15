@@ -24,6 +24,7 @@ Usage, from the repository root:
 
     uv run --python 3.14 scripts/stage_site.py          # stage into build/
     uvx zensical build -f build/mkdocs.yml              # build into build/site
+    uv run --python 3.12 scripts/stage_site.py --post-build   # fix notebook edit links
 """
 
 from __future__ import annotations
@@ -291,20 +292,74 @@ def rewrite_nav(node):
     return node
 
 
+def _nav_pages(item):
+    if isinstance(item, str):
+        yield item
+    elif isinstance(item, dict):
+        for value in item.values():
+            yield from _nav_pages(value)
+    elif isinstance(item, list):
+        for value in item:
+            yield from _nav_pages(value)
+
+
+def _summary(md: Path) -> str | None:
+    """The `summary` front matter field of a staged page, if any."""
+    text = md.read_text()
+    end = text.find("\n---", 4) if text.startswith("---\n") else -1
+    if end < 0:
+        return None
+    meta = yaml.safe_load(text[4:end]) or {}
+    summary = meta.get("summary") if isinstance(meta, dict) else None
+    return " ".join(str(summary).split()) if summary else None
+
+
+def llms_sections(nav: list, docs: Path) -> dict:
+    """llms.txt sections: one per top-level nav entry, in nav order, then the
+    pages that are not in the nav. A page's `summary` becomes its description."""
+
+    def entry(path: str):
+        summary = _summary(docs / path)
+        return {path: summary} if summary else path
+
+    sections: dict = {}
+    seen: set = set()
+    for item in nav:
+        title, value = (
+            next(iter(item.items())) if isinstance(item, dict) else ("Pages", item)
+        )
+        files = [
+            p
+            for p in _nav_pages(value)
+            if p.endswith(".md")
+            and p != "tags.md"
+            and p not in seen
+            and (docs / p).exists()
+        ]
+        seen.update(files)
+        if files:
+            sections.setdefault(title, []).extend(entry(p) for p in files)
+    rest = sorted(
+        str(p.relative_to(docs))
+        for p in docs.rglob("*.md")
+        if not str(p.relative_to(docs)).startswith("assets/")
+        and p.name != "tags.md"
+        and str(p.relative_to(docs)) not in seen
+    )
+    if rest:
+        sections["Other pages"] = [entry(p) for p in rest]
+    return sections
+
+
 def stage_config(cfg: dict, out_dir: Path) -> dict:
     cfg = dict(cfg)
     cfg["docs_dir"] = "docs"
     cfg["site_dir"] = "site"
-    cfg["site_url"] = "https://dl.leima.is/"
-    cfg["repo_name"] = "emptymalei/deep-learning"
-    cfg["edit_uri"] = "edit/main/dl/"
     theme = dict(cfg["theme"])
     if "custom_dir" in theme:
         theme["custom_dir"] = str(
             (ROOT / theme["custom_dir"]).relative_to(out_dir, walk_up=True)
         )
-    for key in ("include_search_page", "search_index_only"):
-        theme.pop(key, None)
     cfg["theme"] = theme
     plugins = []
     for p in cfg.get("plugins", []):
@@ -313,6 +368,11 @@ def stage_config(cfg: dict, out_dir: Path) -> dict:
             plugins.append(p)
     cfg["plugins"] = plugins
     cfg["nav"] = rewrite_nav(cfg["nav"])
+    for i, p in enumerate(cfg["plugins"]):
+        if isinstance(p, dict) and "llmstxt" in p:
+            conf = dict(p["llmstxt"] or {})
+            conf.setdefault("sections", llms_sections(cfg["nav"], out_dir / "docs"))
+            cfg["plugins"][i] = {"llmstxt": conf}
     return cfg
 
 
@@ -354,15 +414,46 @@ def copy_docs(src_docs: Path, docs: Path) -> int:
     return n
 
 
+def link_notebook_sources(site: Path, src_docs: Path) -> int:
+    """Point the edit/view buttons of converted notebooks at their .py source.
+
+    Zensical derives those links from the page's source file, which for a
+    notebook is the generated .md that does not exist in the repository.
+    """
+    changed = 0
+    for py in sorted((src_docs / "notebooks").glob("*.py")):
+        page = site / "notebooks" / py.stem / "index.html"
+        if not page.exists():
+            continue
+        html = page.read_text()
+        new = html.replace(f'/dl/notebooks/{py.stem}.md"', f'/dl/notebooks/{py.name}"')
+        if new != html:
+            page.write_text(new)
+            changed += 1
+    return changed
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", default="build", help="output folder (default: build)")
+    ap.add_argument(
+        "--post-build",
+        action="store_true",
+        help="after `zensical build`: fix the edit/view links of notebook pages",
+    )
     args = ap.parse_args()
 
     out = (ROOT / args.out).resolve()
     cfg = yaml.load(SRC_CONFIG.read_text(), Loader=Loader)
     src_docs = ROOT / cfg.get("docs_dir", "docs")
     docs = out / "docs"
+
+    if args.post_build:
+        n = link_notebook_sources(out / "site", src_docs)
+        print(
+            f"post-build: edit/view links of {n} notebook pages point at the .py source"
+        )
+        return
 
     if docs.exists():
         shutil.rmtree(docs)
