@@ -8,6 +8,7 @@ The source of the book [Time Series with Deep Learning Quick Bite](https://dl.le
 
 - `dl/`: the book. Markdown pages, with the navigation in `mkdocs.yml` (`nav`).
 - `dl/notebooks/*.py`: notebooks as [jupytext](https://jupytext.readthedocs.io) Python files. The paired `.ipynb` files are git-ignored.
+- `notebook-outputs/*.ipynb.gz`: outputs saved from local notebook runs (`scripts/stage_site.py --save-outputs`), shown on the notebook pages. The build never executes notebooks.
 - `dl/notebooks/ts_dl_utils/`: small helpers the notebooks import (data modules, evaluator, naive forecasters).
 - `dl/assets/references/*.bib`: the bibliography for `[@key]` citations.
 - `dl/assets/widgets/`: interactive widgets (plain JavaScript, no build plugin).
