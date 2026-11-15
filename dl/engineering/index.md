@@ -1,3 +1,14 @@
+---
+summary: >-
+  The engineering practices this book assumes, kept out of the main chapters:
+  two references on writing good research code, and a checklist of tools for a
+  Python deep learning project, covering the coding environment, code quality
+  and the main packages.
+related:
+  - engineering/python.md
+  - utilities/notebooks-and-utilities.md
+---
+
 # Coding Tips
 
 In this book, we use Python as our programming language. In the main chapters, we will focus on the theories and actual code and skip the basic concepts. To make sure we are on the same page, we shove all the tech stack related topics into this chapter for future reference. It is not necessary to read this chapter before reading the main chapters. However, we recommend the readers go through this chapter at some point to make sure they are not missing some basic engineering concepts.

@@ -1,3 +1,13 @@
+---
+summary: >-
+  The f-divergence compares two densities through a generating function f that
+  is convex and satisfies f(1) = 0. Choosing f(x) = x log x gives the KL
+  divergence.
+related:
+  - concepts/kl-divergence.md
+  - self-supervised/adversarial/f-gan.md
+---
+
 # f-Divergence
 
 The f-divergence is defined as[^f-divergence_wiki]

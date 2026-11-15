@@ -1,3 +1,14 @@
+---
+summary: >-
+  How to set up a Python project: pyenv for Python versions, poetry for
+  dependencies and environments (with conda as the all-in-one alternative),
+  pyproject.toml for the dependency list, pre-commit hooks such as black,
+  isort and mypy for a consistent style, and docstrings and tests.
+related:
+  - engineering/index.md
+  - utilities/notebooks-and-utilities.md
+---
+
 # Python
 
 We assume the readers have a good understanding of the Python programming language, as Python will be the primary programming language for demos and tutorials in this book. For engineering tips, we will cover a few topics here, including
@@ -10,7 +21,7 @@ We assume the readers have a good understanding of the Python programming langua
 
     1. Use [pyenv](https://github.com/pyenv/pyenv) to manage Python versions;
     2. Use [poetry](https://github.com/python-poetry/poetry) to manage dependencies;
-    3. Always set up [`pre-commit``](https://pre-commit.com/) for your git repository.
+    3. Always set up [`pre-commit`](https://pre-commit.com/) for your git repository.
 
 
 ## Python Environment Management
@@ -153,7 +164,7 @@ Adding tests to our code can save us time. We will not list all these benefits o
 
 ??? info "Use `pytest`"
 
-    Use [pytest](https://pytest.org). RealPython provides a [good short introduction](https://realpython.com/pytest-python-testing/#what-makes-pytest-so-useful). The Alan Turing Institue provides [some lectures on testing and pytest](https://alan-turing-institute.github.io/rse-course/html/module05_testing_your_code/index.html).
+    Use [pytest](https://pytest.org). RealPython provides a [good short introduction](https://realpython.com/pytest-python-testing/#what-makes-pytest-so-useful). The Alan Turing Institute provides [some lectures on testing and pytest](https://alan-turing-institute.github.io/rse-course/html/module05_testing_your_code/index.html).
 
 
 [^isort]: Pre Commit. In: isort [Internet]. [cited 22 Jul 2022]. Available: https://pycqa.github.io/isort/docs/configuration/pre-commit.html

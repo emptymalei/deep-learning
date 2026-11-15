@@ -1,3 +1,13 @@
+---
+summary: >-
+  How to run the notebooks of this book: install the Python environment with
+  poetry, create a Jupyter kernel named deep-learning, and use the ts_dl_utils
+  package, which holds the helpers shared by the tutorials.
+related:
+  - engineering/python.md
+  - time-series-deep-learning/index.md
+---
+
 # Notebooks and Utilities for Tutorials
 
 All the notebooks are located in the folder `dl/notebooks`. To run these notebooks, we need to set up our Python environment first. We use [poetry](https://python-poetry.org/) to manage our Python environment. For the argument of this choice, please refer to [Engineering Tips](../engineering/python.md#python-environment-management).

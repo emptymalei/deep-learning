@@ -1,3 +1,14 @@
+---
+summary: >-
+  Shannon entropy is the expected information content of a distribution. Cross
+  entropy measures one distribution against another and splits into the
+  entropy plus the KL divergence; it is widely used as the loss in
+  classification.
+related:
+  - concepts/kl-divergence.md
+  - concepts/information-gain.md
+---
+
 # Entropy
 
 

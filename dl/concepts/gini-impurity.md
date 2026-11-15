@@ -1,6 +1,17 @@
+---
+summary: >-
+  Gini impurity measures how mixed the classes in a dataset are: it is 0 when
+  every record has the same class and largest when the classes are evenly
+  mixed. The page defines it, works through two small examples and shows its
+  values for two and for three classes.
+related:
+  - concepts/information-gain.md
+  - trees/tree.basics.md
+---
+
 # Gini Impurity
 
-Suppose we have a dataset $\{0,1\}^{10}$, which has 10 records and 2 possible classes of objects $\{0,1\}$ in each record.
+Suppose we have a dataset $\{0,1\}^{12}$, which has 12 records and 2 possible classes of objects $\{0,1\}$ in each record.
 
 The first example we investigate is a pure 0 dataset.
 
@@ -48,7 +59,7 @@ $$
 
 ## Examples
 
-Suppose we have another dataset with 50% of the values being 50%.
+Suppose we have another dataset with 50% of the values being 1.
 
 | object |
 |:---:|
@@ -62,7 +73,7 @@ Suppose we have another dataset with 50% of the values being 50%.
 | 1 |
 | 0 |
 | 0 |
-| 0 |
+| 1 |
 | 1 |
 
 The Gini impurity is
@@ -71,7 +82,7 @@ $$
 G = p(0)(1-p(0)) + p(1)(1-p(1)) = 0.5 * 0.5+ 0.5*0.5 = 0.5.
 $$
 
-For data with two possible values $\{0,1\}$, the maximum Gini impurity is 0.25. The following chart shows all the possible values of the Gini impurity for a two-value dataset.
+For data with two possible values $\{0,1\}$, the maximum Gini impurity is 0.5. The following chart shows all the possible values of the Gini impurity for a two-value dataset.
 
 The following heatmap shows the Gini impurity for data with two possible values. The color indicates the Gini impurity.
 

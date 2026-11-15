@@ -1,6 +1,17 @@
 ---
 tags:
   - WIP
+summary: >-
+  f-GAN generalizes the GAN: instead of the Jensen-Shannon divergence, it
+  estimates an f-divergence between the data distribution and the generated
+  distribution. Training searches for the saddle point of a variational
+  objective, and a particular choice of functions recovers the loss of the
+  original GAN.
+prerequisites:
+  - self-supervised/adversarial/gan.md
+  - concepts/f-divergence.md
+related:
+  - self-supervised/adversarial/infogan.md
 ---
 # f-GAN
 

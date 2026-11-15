@@ -1,6 +1,17 @@
 ---
 tags:
   - WIP
+summary: >-
+  Contrastive predictive coding (CPC) encodes each segment of a sequence,
+  models the encodings with an autoregressive model, and trains with the
+  InfoNCE loss, which estimates a lower bound of mutual information. The
+  encoders can then be used for downstream tasks such as classification.
+prerequisites:
+  - concepts/mutual-information.md
+  - self-supervised/generative/autoregressive.md
+related:
+  - self-supervised/contrastive/deep-infomax.md
+  - concepts/alignment-and-uniformity.md
 ---
 # Contrastive Predictive Coding
 
@@ -30,7 +41,7 @@ $$
 \mathcal L = -\mathbb E_X \left[ \log \frac{f_k(x_{t+k}, c_t)}{\sum_{j} f_k(x_{j}, c_t) } \right],
 $$
 
-where $f_k(x_{x+i}, c_t)$ is estimated using a log-bilinear model, $f_k(x_{x+i}, c_t) = \exp\left( z_{t+i} W_i c_t \right)$. This is also a cross entropy loss.
+where $f_k(x_{t+i}, c_t)$ is estimated using a log-bilinear model, $f_k(x_{t+i}, c_t) = \exp\left( z_{t+i} W_i c_t \right)$. This is also a cross entropy loss.
 
 Minimizing $\mathcal L$ leads to a $f_k$ that estimates the ratio[^Oord2018]
 
@@ -49,5 +60,7 @@ We can perform downstream tasks such as classifications using the encoders.
 
 [rschwarz15/CPCV2-PyTorch](https://github.com/rschwarz15/CPCV2-PyTorch)
 
+
+[^Newell2020]: Newell A, Deng J. How Useful is Self-Supervised Pretraining for Visual Tasks? arXiv [cs.CV]. 2020. Available: http://arxiv.org/abs/2003.14323
 
 [^Oord2018]: van den Oord A, Li Y, Vinyals O. Representation learning with Contrastive Predictive Coding. arXiv [cs.LG]. 2018. Available: http://arxiv.org/abs/1807.03748

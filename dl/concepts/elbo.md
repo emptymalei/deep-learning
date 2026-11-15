@@ -1,3 +1,18 @@
+---
+summary: >-
+  The evidence lower bound (ELBO) is a lower bound on the log probability of
+  the data in a latent variable model. The page derives it twice: with
+  Jensen's inequality, and from the KL divergence between an approximate
+  posterior and the true posterior, where that KL divergence is the gap
+  between the bound and the log probability.
+prerequisites:
+  - concepts/entropy.md
+  - concepts/kl-divergence.md
+related:
+  - self-supervised/generative/vae.md
+  - energy-based-models/ebm.diffusion.md
+---
+
 # ELBO
 
 Given a probability distribution density $p(x)$ and a latent variable $z$, the marginalization of the joint probability is
@@ -15,7 +30,7 @@ $$
 \begin{align}
 \log p(x) =& \log \int \mathrm d z p(x, z) \\
 =& \log \int \mathrm d z p(x, z) \frac{q(z)}{q(z)} \\
-=& \log \int \mathrm d z q(x) \frac{p(x, z)}{q(z)} \\
+=& \log \int \mathrm d z q(z) \frac{p(x, z)}{q(z)} \\
 =& \log \mathbb E_q \left[ \frac{p(x, z)}{q(z)} \right].
 \end{align}
 $$
@@ -71,7 +86,7 @@ $$
 
 ## Using KL Divergence
 
-In a latent variable model, we need the posterior $p(z|x)$. When this is intractable, we find an approximation $q(z|\theta)$ where $\theta$ is the parametrization, e.g., neural network parameters. To make sure we have a good approximation of the posterior, we require the [KL divergence](kl-divergence.md) of $q(z|\theta)$ and $p(z|z)$ to be small. The KL divergence in this situation is[^Yang2017]
+In a latent variable model, we need the posterior $p(z|x)$. When this is intractable, we find an approximation $q(z|\theta)$ where $\theta$ is the parametrization, e.g., neural network parameters. To make sure we have a good approximation of the posterior, we require the [KL divergence](kl-divergence.md) of $q(z|\theta)$ and $p(z|x)$ to be small. The KL divergence in this situation is[^Yang2017]
 
 $$
 \begin{align}

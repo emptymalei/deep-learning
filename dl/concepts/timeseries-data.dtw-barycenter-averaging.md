@@ -1,3 +1,14 @@
+---
+summary: >-
+  DTW barycenter averaging (DBA), proposed by Petitjean et al., averages a set
+  of time series: it constructs the series that is their barycenter under the
+  dynamic time warping distance.
+prerequisites:
+  - concepts/timeseries-data.dtw.md
+related:
+  - time-series/timeseries-data.data-augmentation.md
+---
+
 # DTW Barycenter Averaging
 
 [DTW](timeseries-data.dtw.md) Barycenter Averaging (**DBA**) constructs a series $\bar{\mathcal S}$ out of a set of series $\{\mathcal S^{(\alpha)}\}$ so that $\bar{\mathcal S}$ is the barycenter of $\{\mathcal S^{(\alpha)}\}$ measured by Dynamic Time Warping (**DTW**) distance [@Petitjean2011-sj].
