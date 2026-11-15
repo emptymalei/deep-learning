@@ -1,3 +1,17 @@
+---
+summary: >-
+  Time series can't be split at random: the test data has to come after the
+  training data, or information leaks from the future. Backtesting moves the
+  split point forward in time, sliding or growing the training window, and
+  evaluates on the block that follows, which gives several scores instead of
+  one; a gap between train and test adds a safety margin. Shuffled
+  cross-validation is rarely appropriate.
+prerequisites:
+  - time-series/timeseries-data.time-delayed-embedding.md
+related:
+  - time-series/timeseries-metrics.forecasting.md
+---
+
 # Time Series Forecasting Evaluation
 
 Evaluating time series forecasting models is very important yet sometimes difficult. For example, it is very easy to bring in information leakage when evaluating time series forecasting models. In this section, we will discuss some of the common pitfalls and best practices when evaluating time series forecasting models.

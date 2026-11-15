@@ -59,7 +59,15 @@ Pages may start with YAML front matter. The fields:
 | `related` | list of paths | Pages on neighbouring topics, relative to `dl/`. |
 | `notebook` | path | The notebook behind the page, relative to `dl/` (e.g. `notebooks/rnn_timeseries.py`). |
 
-Only `tags` and `summary` are used by the build so far; the other fields are metadata for readers and tools, such as the planned MCP server (`design/mcp-server.md`).
+`scripts/stage_site.py` renders them: `summary` becomes an "In one minute" box under the title, `prerequisites` become "Read first" links in that box, and `related` become "Related" links at the end of the page. `summary` is also the page's description in `llms.txt`.
+
+### Page Shape
+
+New and reworked pages follow one shape: the "In one minute" box (from front matter), intuition with a figure or diagram, the math (long derivations folded with `??? note "Show the math"`), code, a "Try it" widget where one helps, then pitfalls. See the Evaluation and Metrics chapter for the reference.
+
+### Glossary
+
+`includes/glossary.md` holds abbreviation definitions (`*[MAE]: Mean absolute error…`). It is appended to every page, so each term shows a tooltip wherever it appears as a word. Add a term there once instead of defining it on every page.
 
 ## For AI Assistants Reading the Book
 

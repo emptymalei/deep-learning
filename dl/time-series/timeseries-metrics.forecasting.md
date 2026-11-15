@@ -1,3 +1,18 @@
+---
+summary: >-
+  A metric turns forecast errors into one number, and the choice decides which
+  model looks best. Scale-dependent errors (MAE, MSE, RMSE) are in the data's
+  units, and the squared ones punish large misses most; percentage errors
+  (MAPE, sMAPE) compare across series but blow up when the truth is near zero;
+  scaled errors such as MASE compare against a naive forecast; probabilistic
+  forecasts need scores such as the quantile loss or CRPS.
+prerequisites:
+  - time-series/timeseries-evaluation.forecasting.md
+related:
+  - time-series/timeseries-metrics.forecasting.crps.md
+  - time-series/timeseries-forecast.naive.md
+---
+
 # Time Series Forecasting Metrics
 
 Measuring the goodness of a forecaster is nontrivial. Tons of metrics are devised to measure forecasting results, applying the wrong metric may lead to "consequences" in decisions.
@@ -51,6 +66,17 @@ Apart from the above categories, there are some other properties of metrics. Som
     [Hyndman & Athanasopoulos (2021)](https://otexts.com/fpp3/accuracy.html) is a good reference for forecast errors [^Hyndman2021].
 
     To find implementations of metrics, [Darts](https://unit8co.github.io/darts/generated_api/darts.metrics.metrics.html#) and [GluonTS](https://ts.gluon.ai/stable/api/gluonts/gluonts.evaluation.metrics.html) both have a handful of metrics implemented.
+
+
+## Try It: How Metrics React
+
+Drag the orange forecast points, or pick a scenario, and watch how each metric responds. The small print under each value compares it with the scenario as loaded.
+
+<div class="dl-widget" data-widget="metrics-playground" markdown>
+
+An interactive chart where you drag forecast points and see MAE, MSE, RMSE, MAPE and sMAPE update. It needs JavaScript; the sections below cover the same ground.
+
+</div>
 
 
 ## List of Metrics
@@ -435,7 +461,7 @@ $$
 
 RMSE essentially brings the scale of the metric from the MSE scale back to something similar to MAE. However, we have to be mindful that large deviations dominate the metric more than that in MAE.
 
-!!! example "Domination by Large Deviations"
+??? example "Domination by Large Deviations"
 
     For example, in a horizon 2 forecasting problem, suppose we have the true values $[100, 1]$ and we forecast $[0, 0]$
 
