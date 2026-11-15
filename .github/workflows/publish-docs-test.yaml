@@ -1,10 +1,26 @@
 name: Publish Docs Test
 
 # Builds the site on pull requests, so a broken build fails before it reaches
-# main. pre-commit runs in its own workflow (pre-commit.yaml).
+# main, and publishes the result as a preview at
+#
+#     https://dl.leima.is/pr-preview/pr-<number>/
+#
+# with a comment on the pull request that links to it. Pull requests from
+# forks are built but not previewed: their token cannot write to the
+# repository. pr-preview-cleanup.yaml removes the preview when the pull
+# request closes. pre-commit runs in its own workflow (pre-commit.yaml).
 on:
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: write # push the preview to the gh-pages branch
+  pull-requests: write # comment with the link
+
+# A newer push to the same pull request replaces a run still in progress.
+concurrency:
+  group: publish-docs-test-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -17,3 +33,18 @@ jobs:
       - uses: astral-sh/setup-uv@v10.3.3
       - name: Build the site with Zensical
         run: scripts/build_site.sh
+      - name: Publish the preview
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        # A problem with the preview should not fail the build check.
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python3 scripts/mark_preview.py build/site "$PR" "$SHA"
+          scripts/pr_preview.sh publish "$PR" build/site
+          scripts/pr_preview.sh comment "$PR" "$SHA"
+          echo "Preview: https://dl.leima.is/pr-preview/pr-$PR/ (commit ${SHA::7})" >> "$GITHUB_STEP_SUMMARY"

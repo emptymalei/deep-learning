@@ -1,0 +1,26 @@
+name: PR Preview Cleanup
+
+# Removes the site preview of a pull request (pr-preview/pr-<number>/ on the
+# gh-pages branch) when it is merged or closed. The deploy from main also
+# drops previews of pull requests that are no longer open, so a missed run
+# here is cleaned up by the next deploy.
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  remove:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      # The pull request's own branch may be gone by now: use the default branch.
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Remove the preview
+        env:
+          PR: ${{ github.event.pull_request.number }}
+        run: scripts/pr_preview.sh remove "$PR"

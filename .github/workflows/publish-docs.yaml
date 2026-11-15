@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: read # to know which previews belong to open pull requests
 
 # One deploy at a time, in push order.
 concurrency:
@@ -27,9 +28,7 @@ jobs:
       - name: Build the site with Zensical
         run: scripts/build_site.sh
       - name: Publish build/site to the gh-pages branch
-        # --no-jekyll adds .nojekyll; --cname keeps the custom domain.
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          uvx ghp-import==2.1.0 --no-jekyll --cname dl.leima.is --push --force \
-            --message "Deploy ${GITHUB_SHA::7} (Zensical)" build/site
+        # Keeps the previews of open pull requests (pr-preview/), see the script.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/deploy_site.sh build/site
