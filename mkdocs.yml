@@ -78,6 +78,7 @@ markdown_extensions:
 
 extra_css:
   - assets/widgets/widgets.css
+  - assets/widgets/sidebar.css
 
 extra_javascript:
   - assets/js/mathjax.js
