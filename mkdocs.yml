@@ -75,6 +75,7 @@ extra_css:
 
 extra_javascript:
   - assets/js/mathjax.js
+  - assets/js/page-actions.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   # Interactive explainers: the loader must come before the widgets.
   - assets/widgets/loader.js
@@ -91,6 +92,17 @@ plugins:
   - search
   - tags:
       tags_file: tags.md
+  # llms.txt, llms-full.txt and a Markdown copy of every page (<page>/index.md)
+  # for AI assistants. scripts/stage_site.py fills in `sections` from the nav.
+  - llmstxt:
+      markdown_description: >-
+        A book on forecasting time series with deep learning, from the
+        fundamentals of time series and neural networks to RNN, transformer,
+        VAE, GAN, neural ODE and diffusion forecasters. Many pages come with a
+        notebook; the notebooks are jupytext Python files under dl/notebooks/
+        in https://github.com/emptymalei/deep-learning. Every page below links
+        to its Markdown version.
+      full_output: llms-full.txt
 
 
 extra:
