@@ -102,6 +102,7 @@ extra_javascript:
   - assets/widgets/window-explorer.js
   - assets/widgets/positional-encoding.js
   - assets/widgets/step-diagram.js
+  - assets/widgets/book-map.js
 
 
 

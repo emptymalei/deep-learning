@@ -6,6 +6,9 @@
  * reads that URL with its own web access. Copying the page as Markdown is
  * Zensical's own `content.action.copy` button.
  *
+ * Selecting text on a page brings up the same three assistants in a small
+ * bar at the bottom of the screen, with a prompt that quotes the selection.
+ *
  * Nothing is sent anywhere until the reader picks an assistant. The styles
  * live here rather than in a stylesheet, so a cached older stylesheet can
  * never leave the menu unstyled.
@@ -29,7 +32,16 @@
 .md-typeset .dl-ai__menu a { display: block; padding: .35rem .8rem; color: var(--md-default-fg-color); text-decoration: none; }
 .md-typeset .dl-ai__menu a:hover, .md-typeset .dl-ai__menu a:focus-visible { background: var(--md-default-fg-color--lightest); }
 .md-typeset .dl-ai__menu .dl-ai__note { margin: .25rem .8rem .2rem; max-width: 10rem; font-size: .6rem; line-height: 1.35; color: var(--md-default-fg-color--light); }
-@media print { .dl-ai { display: none; } }`;
+.dl-ask { position: fixed; left: 50%; bottom: .8rem; z-index: 5; transform: translateX(-50%); display: flex; align-items: center; gap: .1rem;
+  max-width: calc(100vw - 1.2rem); padding: .25rem .4rem .25rem .8rem; border-radius: 2rem; white-space: nowrap;
+  background: var(--md-default-bg-color); color: var(--md-default-fg-color); border: 1px solid var(--md-default-fg-color--lighter);
+  box-shadow: 0 .2rem .8rem rgba(0, 0, 0, .25); font-size: .7rem; }
+.dl-ask[hidden] { display: none; }
+.dl-ask span { color: var(--md-default-fg-color--light); margin-right: .2rem; }
+.dl-ask a { padding: .2rem .5rem; border-radius: 1rem; color: var(--md-accent-fg-color); text-decoration: none; font-weight: 600; }
+.dl-ask a:hover, .dl-ask a:focus-visible { background: var(--md-default-fg-color--lightest); }
+.dl-ask button { width: 1.7rem; height: 1.7rem; border: 0; border-radius: 50%; background: transparent; color: var(--md-default-fg-color--light); font: inherit; font-size: 1rem; cursor: pointer; }
+@media print { .dl-ai, .dl-ask { display: none; } }`;
 
     function markdownUrl() {
         const u = new URL(location.href);
@@ -128,6 +140,89 @@
             h1.insertAdjacentElement("beforebegin", wrap);
         }
     }
+
+    // ---- Ask about the selected text ------------------------------------------
+    const ASSISTANTS = [
+        ["Claude", "https://claude.ai/new?q="],
+        ["ChatGPT", "https://chatgpt.com/?q="],
+        ["Gemini", "https://gemini.google.com/app?q="],
+    ];
+    const MAX_QUOTE = 1200;
+    let bar = null;
+    let dismissed = "";
+
+    function selectedText() {
+        const sel = window.getSelection();
+        if (!sel || sel.isCollapsed || !sel.rangeCount) return "";
+        const article = document.querySelector(".md-content__inner");
+        const inside = (n) => n && article && article.contains(n.nodeType === 1 ? n : n.parentNode);
+        if (!inside(sel.anchorNode) || !inside(sel.focusNode)) return "";
+        // Not while the reader is working inside a widget or a form field.
+        const host = (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement);
+        if (host && host.closest(".dl-widget, input, textarea")) return "";
+        return sel.toString().replace(/\s+/g, " ").trim();
+    }
+
+    function selectionPrompt(quote) {
+        const cut = quote.length > MAX_QUOTE ? quote.slice(0, MAX_QUOTE) + "…" : quote;
+        return (
+            `I am reading ${markdownUrl()}, a page from the book "${SITE}". ` +
+            `Read the page, then explain this passage from it:\n\n"${cut}"`
+        );
+    }
+
+    function updateBar() {
+        const quote = selectedText();
+        if (quote.length < 3 || quote === dismissed) {
+            if (bar) bar.hidden = true;
+            if (quote.length < 3) dismissed = "";
+            return;
+        }
+        addStyles();
+        if (!bar) {
+            bar = document.createElement("div");
+            bar.className = "dl-ask";
+            bar.setAttribute("role", "group");
+            bar.setAttribute("aria-label", "Ask an AI assistant about the selected text");
+            const label = document.createElement("span");
+            label.textContent = "Ask AI:";
+            bar.appendChild(label);
+            for (const [name] of ASSISTANTS) {
+                const a = document.createElement("a");
+                a.textContent = name;
+                a.target = "_blank";
+                a.rel = "noopener";
+                a.addEventListener("click", () => {
+                    if (navigator.clipboard) navigator.clipboard.writeText(a.dataset.prompt).catch(() => {});
+                });
+                bar.appendChild(a);
+            }
+            const close = document.createElement("button");
+            close.type = "button";
+            close.textContent = "×";
+            close.setAttribute("aria-label", "Hide");
+            close.addEventListener("click", () => {
+                dismissed = selectedText();
+                bar.hidden = true;
+            });
+            // Keep the selection when the bar itself is pressed.
+            bar.addEventListener("mousedown", (event) => event.preventDefault());
+            bar.appendChild(close);
+            document.body.appendChild(bar);
+        }
+        const text = selectionPrompt(quote);
+        [...bar.querySelectorAll("a")].forEach((a, i) => {
+            a.href = ASSISTANTS[i][1] + encodeURIComponent(text);
+            a.dataset.prompt = text;
+        });
+        bar.hidden = false;
+    }
+
+    let timer = 0;
+    document.addEventListener("selectionchange", () => {
+        clearTimeout(timer);
+        timer = setTimeout(updateBar, 250);
+    });
 
     if (window.document$ && typeof window.document$.subscribe === "function") {
         window.document$.subscribe(mount);
