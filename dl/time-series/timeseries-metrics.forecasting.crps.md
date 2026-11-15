@@ -18,7 +18,7 @@ The Continuous Ranked Probability Score, aka CRPS, is a score to measure how a p
 CRPS is defined as[^Hersbach2000]
 
 $$
-\operatorname{CRPS}(P, x_a) = \int_{-\infty}^\infty  \lVert P(x) - H(x - x_a) \rVert_2 dx,
+\operatorname{CRPS}(P, x_a) = \int_{-\infty}^\infty  \lVert P(x) - H(x - x_a) \rVert_2^2 dx,
 $$
 
 where
@@ -54,7 +54,7 @@ An interactive chart of a normal forecast's CDF against the step at the observed
 
 </div>
 
-To illustrate what the integrand $\lVert P(x) - H(x - x_a) \rVert_2$ means, we apply some shades to the integrand of the integral in CRPS. We visualize four difference scenarios.
+To illustrate what the integrand $\lVert P(x) - H(x - x_a) \rVert_2^2$ means, we apply some shades to the integrand of the integral in CRPS. We visualize four difference scenarios.
 
 !!! example "Scenario 1: The predicted CDF $P(x)$ is reaching 1 very fast."
 
