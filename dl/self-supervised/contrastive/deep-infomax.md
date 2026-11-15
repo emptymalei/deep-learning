@@ -20,9 +20,9 @@ related:
 
     Why not just use the global mutual information of the input and encoder output as the objective?
 
-    > ... maximizing MI between the complete input and the encoder output (i.e.,globalMI) is ofteninsufficient for learning useful representations.
+    > ... maximizing MI between the complete input and the encoder output (i.e., global MI) is often insufficient for learning useful representations.
     >
-    > -- Devon et al[^Devon2018]
+    > -- Hjelm et al[^Devon2018]
 
 
 Mutual information maximization is performed on the input of the encoder $X$ and the encoded feature $\hat X=E_\theta (X)$,
@@ -63,7 +63,7 @@ $$
 ![Deep InfoMAX Local](assets/deep-infomax/deep-infomax-local-mi-architecture.jpg)
 
 !!! tip "Why does local mutual information help"
-    Devon et al explained the idea behind choosing local mutual information[^Devon2018].
+    Hjelm et al explained the idea behind choosing local mutual information[^Devon2018].
 
     Global mutual information doesn't specify what is the meaningful information. Some very local noise can also be treated as meaningful information too.
 

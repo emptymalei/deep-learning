@@ -20,7 +20,7 @@ D(S^{(1)}_{1:i}, S^{(2)}_{1:j}) =& d(S^{(1)}_i, S^{(2)}_j)\\
 \end{align}
 $$
 
-where $S^{(1)}_i$ is the $i$the element of the series $S^{(1)}$, $d(x,y)$ is a predetermined distance, e.g., Euclidean distance. This definition reveals the recursive nature of the DTW distance.
+where $S^{(1)}_i$ is the $i$th element of the series $S^{(1)}$, $d(x,y)$ is a predetermined distance, e.g., Euclidean distance. This definition reveals the recursive nature of the DTW distance.
 
 
 ??? note "Notations in the Definition: $S_{1:i}$ and $S_{i}$"

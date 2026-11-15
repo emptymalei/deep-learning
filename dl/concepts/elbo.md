@@ -30,7 +30,7 @@ $$
 \begin{align}
 \log p(x) =& \log \int \mathrm d z p(x, z) \\
 =& \log \int \mathrm d z p(x, z) \frac{q(z)}{q(z)} \\
-=& \log \int \mathrm d z q(x) \frac{p(x, z)}{q(z)} \\
+=& \log \int \mathrm d z q(z) \frac{p(x, z)}{q(z)} \\
 =& \log \mathbb E_q \left[ \frac{p(x, z)}{q(z)} \right].
 \end{align}
 $$
@@ -86,7 +86,7 @@ $$
 
 ## Using KL Divergence
 
-In a latent variable model, we need the posterior $p(z|x)$. When this is intractable, we find an approximation $q(z|\theta)$ where $\theta$ is the parametrization, e.g., neural network parameters. To make sure we have a good approximation of the posterior, we require the [KL divergence](kl-divergence.md) of $q(z|\theta)$ and $p(z|z)$ to be small. The KL divergence in this situation is[^Yang2017]
+In a latent variable model, we need the posterior $p(z|x)$. When this is intractable, we find an approximation $q(z|\theta)$ where $\theta$ is the parametrization, e.g., neural network parameters. To make sure we have a good approximation of the posterior, we require the [KL divergence](kl-divergence.md) of $q(z|\theta)$ and $p(z|x)$ to be small. The KL divergence in this situation is[^Yang2017]
 
 $$
 \begin{align}
