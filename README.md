@@ -112,6 +112,9 @@ Available widgets live in `dl/assets/widgets/`:
 | `metric-target` | One distribution of future demand and the expected squared, absolute and percentage error of every point forecast, each with its own minimum; a second mode for intermittent demand | `baselines.js` |
 | `aggregate-ratios` | Relative errors on eight series with their arithmetic and geometric means, and a button that swaps model and benchmark | `baselines.js` |
 | `skill-bias` | The MSE skill score of two equally good forecasters over repeated experiments, against the test set size (after Wheatcroft 2019) | `baselines.js` |
+| `crps-family` | Twice the pinball loss of a normal forecast at every quantile level, whose mean is the CRPS, against the average over a grid of K levels | `prob-eval.js` |
+| `multi-score` | Two correlated series and a forecast with correct margins and another correlation: expected marginal CRPS, CRPS of the sum and energy score | `prob-eval.js` |
+| `aci-coverage` | Conformal interval width and rolling coverage at a fixed level and with the adaptive level of Gibbs and Candès (2021), when the errors triple for a period | `prob-eval.js` |
 | `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
 | `entropy-explorer` | Two distributions over six classes, and the cross entropy split into the entropy plus the KL divergence | `entropy-explorer.js` |
 | `gini-explorer` | The Gini impurity of a two-class dataset as its mix changes | `impurity-explorer.js` |
