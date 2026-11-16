@@ -96,6 +96,10 @@ Available widgets live in `dl/assets/widgets/`:
 | `proper-score` | Expected log score, CRPS and linear score of a reported normal forecast when the truth is N(0, 1), over the reported spread | `prob-eval.js` |
 | `quantile-loss` | The pinball loss of a quoted quantile on 15 observations, and the average loss over every quoted value | `prob-eval.js` |
 | `interval-score` | A quoted prediction interval against N(0, 1) observations: the expected interval score split into width and penalties | `prob-eval.js` |
+| `run-noise` | Two models whose scores vary from run to run: the runs of one experiment and how often the worse model has the better average | `significance.js` |
+| `dm-test` | A simulated loss differential at horizon h with the Diebold-Mariano statistic and a z statistic that ignores serial correlation; repeats the experiment to show each test's rejection rate | `significance.js` |
+| `signed-rank` | The Wilcoxon signed-ranks test on the 14 data sets of Demšar (2006), next to the paired t statistic; rows flip sign on click | `significance.js` |
+| `multiple-tests` | Many p-values at once: false discoveries with no correction, Bonferroni and Holm over repeated experiments | `significance.js` |
 | `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
 | `entropy-explorer` | Two distributions over six classes, and the cross entropy split into the entropy plus the KL divergence | `entropy-explorer.js` |
 | `gini-explorer` | The Gini impurity of a two-class dataset as its mix changes | `impurity-explorer.js` |
