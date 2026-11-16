@@ -80,6 +80,10 @@ window.dlWidgetKit = (function () {
     }
     function slider(parent, label, min, max, step, value, digits, onInput) {
         const wrap = html("label", "", parent);
+        // Long labels wrap onto their own line on narrow screens instead of widening the widget.
+        wrap.style.flexWrap = "wrap";
+        wrap.style.whiteSpace = "normal";
+        wrap.style.maxWidth = "100%";
         html("span", "", wrap, label);
         const input = html("input", "", wrap);
         const out = html("output", "", wrap);
