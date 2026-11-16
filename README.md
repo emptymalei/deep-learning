@@ -100,6 +100,10 @@ Available widgets live in `dl/assets/widgets/`:
 | `dm-test` | A simulated loss differential at horizon h with the Diebold-Mariano statistic and a z statistic that ignores serial correlation; repeats the experiment to show each test's rejection rate | `significance.js` |
 | `signed-rank` | The Wilcoxon signed-ranks test on the 14 data sets of Demšar (2006), next to the paired t statistic; rows flip sign on click | `significance.js` |
 | `multiple-tests` | Many p-values at once: false discoveries with no correction, Bonferroni and Holm over repeated experiments | `significance.js` |
+| `feature-timeline` | Candidate features on a timeline: the day each value refers to, the day it becomes known, and whether it is known at the forecast origin | `leakage.js` |
+| `split-leak` | An autocorrelated series with random test points, predicted from both neighbours and from the past only | `leakage.js` |
+| `selection-leak` | The best of many noise features, selected on all the data or on the training half, scored on the test half | `leakage.js` |
+| `pretrain-overlap` | A memorizing model scored on a benchmark that partly overlaps with its pretraining data, next to a rival that saw none of it | `leakage.js` |
 | `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
 | `entropy-explorer` | Two distributions over six classes, and the cross entropy split into the entropy plus the KL divergence | `entropy-explorer.js` |
 | `gini-explorer` | The Gini impurity of a two-class dataset as its mix changes | `impurity-explorer.js` |
