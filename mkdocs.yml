@@ -95,7 +95,9 @@ extra_javascript:
   - assets/widgets/metrics-playground.js
   - assets/widgets/metrics-shift.js
   - assets/widgets/crps-explorer.js
+  - assets/widgets/kit.js
   - assets/widgets/prob-eval.js
+  - assets/widgets/significance.js
   - assets/widgets/baseline-skill.js
   - assets/widgets/kl-explorer.js
   - assets/widgets/entropy-explorer.js
@@ -166,6 +168,7 @@ nav:
       - "Time Series Forecasting Metrics": time-series/timeseries-metrics.forecasting.md
       - "CRPS": time-series/timeseries-metrics.forecasting.crps.md
       - "Evaluating Probabilistic Forecasts": time-series/timeseries-evaluation.probabilistic.md
+      - "Is the Difference Real?": time-series/timeseries-evaluation.significance.md
       - "Baselines and Skill Scores": time-series/timeseries-evaluation.baselines.md
     - "Hierarchical Time Series":
       - "Hierarchical Time Series Data": time-series/timeseries-hierarchical.data.md
