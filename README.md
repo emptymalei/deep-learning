@@ -109,6 +109,9 @@ Available widgets live in `dl/assets/widgets/`:
 | `leaderboard-climb` | Random submissions kept by their leaderboard score and combined: holdout accuracy climbs while true accuracy stays at 50%; a switch applies the Ladder of Blum and Hardt (2015) | `leakage.js` |
 | `common-shock` | Indirect leakage: a never-seen series forecast by a memorizing model that has seen a correlated series through the test period | `leakage.js` |
 | `cutoff-step` | Forecast error by month around a model's knowledge cutoff, with a backtest period that starts at the stated cutoff | `leakage.js` |
+| `metric-target` | One distribution of future demand and the expected squared, absolute and percentage error of every point forecast, each with its own minimum; a second mode for intermittent demand | `baselines.js` |
+| `aggregate-ratios` | Relative errors on eight series with their arithmetic and geometric means, and a button that swaps model and benchmark | `baselines.js` |
+| `skill-bias` | The MSE skill score of two equally good forecasters over repeated experiments, against the test set size (after Wheatcroft 2019) | `baselines.js` |
 | `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
 | `entropy-explorer` | Two distributions over six classes, and the cross entropy split into the entropy plus the KL divergence | `entropy-explorer.js` |
 | `gini-explorer` | The Gini impurity of a two-class dataset as its mix changes | `impurity-explorer.js` |
