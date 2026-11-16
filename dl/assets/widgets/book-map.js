@@ -7,6 +7,10 @@
  *   List   every page is a chip, grouped by chapter. This view is also the
  *          keyboard-friendly one.
  *
+ * The graph can be zoomed and panned: the + and − buttons, a pinch, or the
+ * wheel with Ctrl or ⌘ zoom; dragging pans once it is zoomed in. Dots and
+ * labels keep their size, so zooming spreads a crowded area out.
+ *
  * Selecting a page, in either view, highlights the pages it links to and
  * the pages that link to it, and lists them with links.
  *
@@ -111,7 +115,9 @@ dlWidgets.register("book-map", (el, api) => {
         const href = (p) => base + (p.u ? p.u + "/" : "");
         const color = (c) => PALETTE[c % PALETTE.length];
         const { pos, edges } = layout(pages, chapters);
-        let picked = -1, view = "graph", W = 640;
+        let picked = -1, view = "graph", W = 640, H = 460;
+        const zoom = { k: 1, tx: 0, ty: 0 };
+        const K_MAX = 6;
 
         // View switch.
         const controls = document.createElement("div");
@@ -132,13 +138,94 @@ dlWidgets.register("book-map", (el, api) => {
             return [v, b];
         });
         controls.appendChild(seg);
+        const zoomButtons = document.createElement("span");
+        const zb = (text, label, fn) => {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "dl-widget__btn";
+            b.textContent = text;
+            b.setAttribute("aria-label", label);
+            b.addEventListener("click", fn);
+            zoomButtons.appendChild(b);
+            return b;
+        };
+        zoomButtons.style.cssText = "display: inline-flex; gap: .3rem;";
+        const zoomIn = zb("+", "Zoom in", () => zoomAt(W / 2, H / 2, zoom.k * 1.5));
+        const zoomOut = zb("−", "Zoom out", () => zoomAt(W / 2, H / 2, zoom.k / 1.5));
+        const zoomReset = zb("Reset", "Reset the zoom", () => zoomAt(W / 2, H / 2, 1));
+        controls.appendChild(zoomButtons);
+
+        // Zoom towards a point (in viewBox units) and keep the graph inside the frame.
+        function zoomAt(px, py, k) {
+            k = Math.max(1, Math.min(K_MAX, k));
+            zoom.tx = px - ((px - zoom.tx) * k) / zoom.k;
+            zoom.ty = py - ((py - zoom.ty) * k) / zoom.k;
+            zoom.k = k;
+            clampPan();
+            drawGraph();
+        }
+        function clampPan() {
+            zoom.tx = Math.min(0, Math.max(W - W * zoom.k, zoom.tx));
+            zoom.ty = Math.min(0, Math.max(H - H * zoom.k, zoom.ty));
+        }
 
         const legend = document.createElement("div");
         legend.className = "dl-widget__legend";
         const svg = document.createElementNS(NS, "svg");
         svg.setAttribute("role", "img");
         svg.setAttribute("class", "dl-map__graph");
+        // Pointer position in viewBox units.
+        const local = (event) => {
+            const r = svg.getBoundingClientRect();
+            return [((event.clientX - r.left) * W) / r.width, ((event.clientY - r.top) * H) / r.height];
+        };
+        const pointers = new Map();
+        let dragged = false, pinch = null;
+        svg.addEventListener("pointerdown", (event) => {
+            pointers.set(event.pointerId, local(event));
+            dragged = false;
+            if (pointers.size === 2) {
+                const [a, b] = [...pointers.values()];
+                pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, k: zoom.k };
+            }
+        });
+        svg.addEventListener("pointermove", (event) => {
+            if (!pointers.has(event.pointerId)) return;
+            const before = pointers.get(event.pointerId), now = local(event);
+            pointers.set(event.pointerId, now);
+            if (pointers.size === 2 && pinch) {
+                const [a, b] = [...pointers.values()];
+                dragged = true;
+                zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (pinch.k * Math.hypot(a[0] - b[0], a[1] - b[1])) / pinch.d);
+            } else if (pointers.size === 1 && zoom.k > 1) {
+                const dx = now[0] - before[0], dy = now[1] - before[1];
+                if (!dragged && Math.hypot(dx, dy) < 2) return;
+                if (!dragged) svg.setPointerCapture(event.pointerId);
+                dragged = true;
+                zoom.tx += dx;
+                zoom.ty += dy;
+                clampPan();
+                drawGraph();
+            }
+        });
+        const release = (event) => {
+            pointers.delete(event.pointerId);
+            if (pointers.size < 2) pinch = null;
+        };
+        svg.addEventListener("pointerup", release);
+        svg.addEventListener("pointercancel", release);
+        // The wheel zooms only with Ctrl or ⌘ (a trackpad pinch sends that), so the page still scrolls.
+        svg.addEventListener("wheel", (event) => {
+            if (!event.ctrlKey && !event.metaKey) return;
+            event.preventDefault();
+            const [px, py] = local(event);
+            zoomAt(px, py, zoom.k * Math.exp(-event.deltaY * 0.01));
+        }, { passive: false });
         svg.addEventListener("click", (event) => {
+            if (dragged) {
+                dragged = false;
+                return;
+            }
             const i = event.target.dataset ? event.target.dataset.i : undefined;
             pick(i === undefined ? -1 : +i === picked ? -1 : +i);
         });
@@ -188,8 +275,19 @@ dlWidgets.register("book-map", (el, api) => {
         function drawGraph() {
             const c = api.colors();
             W = Math.max(280, Math.min(1000, Math.round(el.clientWidth - 2) || 640));
-            const H = Math.round(W < 480 ? W * 1.15 : W * 0.66), pad = 16;
-            const x = (i) => pad + pos[i][0] * (W - 2 * pad), y = (i) => pad + pos[i][1] * (H - 2 * pad);
+            const newH = Math.round(W < 480 ? W * 1.15 : W * 0.66), pad = 16;
+            if (newH !== H) {
+                H = newH;
+                clampPan();
+            }
+            const x = (i) => zoom.tx + zoom.k * (pad + pos[i][0] * (W - 2 * pad));
+            const y = (i) => zoom.ty + zoom.k * (pad + pos[i][1] * (H - 2 * pad));
+            // One finger scrolls the page until the graph is zoomed in; then it pans.
+            svg.style.touchAction = zoom.k > 1 ? "none" : "pan-y";
+            svg.style.overflow = "hidden";
+            svg.style.cursor = zoom.k > 1 ? "grab" : "";
+            zoomOut.disabled = zoomReset.disabled = zoom.k <= 1;
+            zoomIn.disabled = zoom.k >= K_MAX;
             svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
             svg.setAttribute("aria-label", `A graph of ${pages.length} pages and ${edges.length} links between them. The List view shows the same pages as buttons.`);
             svg.innerHTML = "";
@@ -275,6 +373,7 @@ dlWidgets.register("book-map", (el, api) => {
         function render() {
             for (const [v, b] of viewButtons) b.setAttribute("aria-pressed", String(v === view));
             svg.style.display = view === "graph" ? "" : "none";
+            zoomButtons.style.display = view === "graph" ? "inline-flex" : "none";
             list.style.display = view === "list" ? "" : "none";
             list.classList.toggle("dl-map--picked", picked >= 0);
             chips.forEach((b, k) => {
@@ -290,6 +389,17 @@ dlWidgets.register("book-map", (el, api) => {
         }
         function pick(i) {
             picked = i;
+            // When zoomed in, bring a page picked off-screen into the middle.
+            if (i >= 0 && zoom.k > 1) {
+                const pad = 16;
+                const px = zoom.tx + zoom.k * (pad + pos[i][0] * (W - 2 * pad));
+                const py = zoom.ty + zoom.k * (pad + pos[i][1] * (H - 2 * pad));
+                if (px < 20 || px > W - 20 || py < 20 || py > H - 20) {
+                    zoom.tx += W / 2 - px;
+                    zoom.ty += H / 2 - py;
+                    clampPan();
+                }
+            }
             render();
         }
 

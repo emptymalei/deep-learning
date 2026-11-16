@@ -34,7 +34,7 @@ Pick the path that fits what you came for.
 - **I need to judge a forecast.** [Time Series Forecasting Evaluation](time-series/timeseries-evaluation.forecasting.md) → [Time Series Forecasting Metrics](time-series/timeseries-metrics.forecasting.md) → [CRPS](time-series/timeseries-metrics.forecasting.crps.md)
 - **I want the theory behind the models.** [Neural Networks](deep-learning-fundamentals/neural-net.md) → [Recurrent Neural Networks](deep-learning-fundamentals/recurrent-neural-networks.md) → [Vanilla Transformers](transformers/transformers.vanilla.md) → [Diffusion Models](energy-based-models/ebm.diffusion.md)
 
-Or look at the whole book at once in the [map of the book](map.md): every page and the links between them.
+Or see the whole book at once: the **[Map of the Book](map.md)** shows every page as a dot and every link between two pages as a line.
 
 
 ## :material-floor-plan: Blueprint
