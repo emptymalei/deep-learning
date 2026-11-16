@@ -1,0 +1,5741 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head><meta name="robots" content="noindex, nofollow">
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Time Series with Deep Learning Quick Bite">
+      
+      
+        <meta name="author" content="Lei Ma">
+      
+      
+        <link rel="canonical" href="https://dl.leima.is/time-series/timeseries-evaluation.leakage/">
+      
+      
+        <link rel="describedby" href="../../llms.txt">
+        
+          <link rel="alternate" type="text/markdown" href="./index.md">
+        
+      
+      
+        <link rel="prev" href="../timeseries-evaluation.probabilistic/">
+      
+      
+        <link rel="next" href="../timeseries-evaluation.significance/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/logo_badge.svg">
+      <meta name="generator" content="zensical-0.1.1">
+    
+    
+      
+        <title>Leakage and Contamination - Time Series with Deep Learning Quick Bite</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.ebb7f775.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.b60ce83d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/widgets/widgets.css?v=8c31d725">
+    
+      <link rel="stylesheet" href="../../assets/widgets/sidebar.css?v=33796648">
+    
+    <script>__md_scope=new URL("../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        Skip to content
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Time Series with Deep Learning Quick Bite" class="md-header__button md-logo" aria-label="Time Series with Deep Learning Quick Bite" data-md-component="logo">
+      
+  <img src="../../assets/logo_badge.svg" alt="Time Series with Deep Learning Quick Bite">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      <span class="md-visually-hidden">Navigation</span>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Time Series with Deep Learning Quick Bite
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Leakage and Contamination
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="md-visually-hidden">Search</span>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/emptymalei/deep-learning" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    emptymalei/deep-learning
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../engineering/" class="md-tabs__link">
+          
+  
+  Engineering Tips
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  Fundamentals of Time Series Forecasting
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../trees/tree.basics/" class="md-tabs__link">
+          
+  
+  Trees
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deep-learning-fundamentals/" class="md-tabs__link">
+          
+  
+  Fundamentals of Deep Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../time-series-deep-learning/" class="md-tabs__link">
+          
+  
+  Time Series Forecasting with Deep Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../supplementary/" class="md-tabs__link">
+          
+  
+  Supplementary
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../map/" class="md-tabs__link">
+          
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Time Series with Deep Learning Quick Bite" class="md-nav__button md-logo" aria-label="Time Series with Deep Learning Quick Bite" data-md-component="logo">
+      
+  <img src="../../assets/logo_badge.svg" alt="Time Series with Deep Learning Quick Bite">
+
+    </a>
+    Time Series with Deep Learning Quick Bite
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/emptymalei/deep-learning" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    emptymalei/deep-learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Home
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Engineering Tips
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Engineering Tips
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Coding Tips
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Python
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Fundamentals of Time Series Forecasting
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Fundamentals of Time Series Forecasting
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Data and Statistical Forecasting Methods
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Data
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Time Series Data
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Terminologies of Time Series Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.box-cox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Box-Cox Transformation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.analysis.twfe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Two-way Fixed Effects
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.time-delayed-embedding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Delayed Embedding
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Data Generating Process
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Data Generating Process
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.dgp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DGP
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.dgp.langevin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DGP: Langevin Equation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Kindergarten Models
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Kindergarten Models
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.statistical-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Statistical Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.ar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  AR
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.var/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  VAR
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Synthetic Datasets
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Synthetic Datasets
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-synthetic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Synthetic Time Series
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.synthetic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Creating Synthetic Dataset
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.data-augmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Augmentation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Forecasting
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-forecast.tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting Tasks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-forecast.naive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Naive Forecasts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Evaluation and Metrics
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_3_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Evaluation and Metrics
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-evaluation.forecasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting Evaluation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-metrics.forecasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting Metrics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-metrics.forecasting.crps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  CRPS
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-evaluation.probabilistic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Evaluating Probabilistic Forecasts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Leakage and Contamination
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Leakage and Contamination
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#one-table-for-all-leaks" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        One Table for All Leaks
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features-the-knowledge-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Features: The Knowledge Date
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-split-dependence-between-training-and-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        The Split: Dependence between Training and Test
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choices-everything-fitted-belongs-inside-the-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Choices: Everything Fitted Belongs inside the Loop
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reuse-the-test-set-wears-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Reuse: The Test Set Wears Out
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pretraining-three-meanings-of-zero-shot" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Pretraining: Three Meanings of Zero-Shot
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#language-models-a-feature-with-an-unknown-knowledge-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Language Models: A Feature with an Unknown Knowledge Date
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-the-literature-disagrees" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Where the Literature Disagrees
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        In Practice
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-evaluation.significance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Is the Difference Real?
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-evaluation.baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Baselines and Skill Scores
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Time Series
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Hierarchical Time Series
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-hierarchical.data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Time Series Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-hierarchical.reconciliation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Time Series Reconciliation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Useful Datasets
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_9">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Useful Datasets
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Datasets
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.ecb-exchange-rate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Exchange Rate
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.nrel-solar-energy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  NREL Solar Power Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.uci-electricity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Electricity
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.pems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  PeMS Traffic Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Trees
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Trees
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Tree-based Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.random-forest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Random Forest
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.gbdt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Gradient Boosted Trees
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.darts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Trees
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Fundamentals of Deep Learning
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Fundamentals of Deep Learning
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Deep Learning Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Learning from Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/neural-net/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/recurrent-neural-networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Recurrent Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/convolutional-neural-networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Convolutional Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Transformers
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Transformers
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../transformers/transformers.vanilla/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Vanilla Transformers
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Dynamical Systems
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Dynamical Systems
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dynamical-systems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Why Dynamical Systems
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dynamical-systems/neural-ode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Neural ODE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Energy-based Models
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Energy-based Models
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energy-based-models/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energy-based-models/ebm.diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Diffusion Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_9" id="__nav_5_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generative Models
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_9_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_9">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Generative Models
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/autoregressive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Autoregressive
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/ae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  AE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  VAE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Flow
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/gan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  GAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting with Deep Learning
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Time Series Forecasting with Deep Learning
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.dataset.pendulum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Pendulum Dataset
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.feedforward/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with MLP
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.rnn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with RNN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.transformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Transformers
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.cnn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with CNN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with VAE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Flow
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.gan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with GAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.neural-ode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Neural ODE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.deep-learning.timegrad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Diffusion Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Supplementary
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Supplementary
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../supplementary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  About Supplementary Materials
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utilities/notebooks-and-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  How to Run Our Notebooks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Notebooks
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Notebooks
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/timeseries_data_box-cox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Box-Cox Transformation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/pendulum_dataset/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Pendulum Dataset
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/hierarchical_forecasting_mint/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Forecasting Using MinT
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Tree Basics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_random_forest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Random Forest Basics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_darts_random_forest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Random Forest using Darts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_darts_boosted_tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with GBDT using Darts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/creating_time_series_datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Creating Time Series Dataset (PyTorch)
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/feedforward_neural_netwroks_timeseries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Feedforward Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/rnn_timeseries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with RNN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/transformer_timeseries_univariate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Transformer
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/neuralode_timeseries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with NeuralODE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time-series-data-generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generate Time Series Using Statistics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time_vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generate Time Series Using VAE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/timeseries-comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Comparing Time Series
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tabpfn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Pretrained Models: TabPFN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/diffusion_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Diffusion Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time_series_data_and_embedding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Data Embedding Classical Methods
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_4" id="__nav_7_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Small Yet Powerful Concepts
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Small Yet Powerful Concepts
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Appendices
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/entropy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Entropy
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/mutual-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Mutual Information
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/kl-divergence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  KL Divergence
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/f-divergence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  f-divergence
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/elbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  ELBO
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/alignment-and-uniformity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Alignment and Uniformity
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/gini-impurity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Gini Impurity
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/information-gain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Information Gain
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/generalization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generalization
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/timeseries-data.dtw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DTW
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/timeseries-data.dtw-barycenter-averaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DBA
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5" id="__nav_7_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Other Deep Learning Topics
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Other Deep Learning Topics
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5_1" id="__nav_7_5_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Contrastive
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_7_5_1_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_5_1">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Contrastive
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/deep-infomax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Deep Infomax
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/contrastive-predictive-coding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Contrastive Predictive Coding
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/made/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  MADE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/maf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  MAF
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/f-gan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  f-GAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/infogan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  InfoGAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  About
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  About
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Map of the Book
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meta/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Roadmap
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meta/changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Changelog
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#one-table-for-all-leaks" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        One Table for All Leaks
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features-the-knowledge-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Features: The Knowledge Date
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-split-dependence-between-training-and-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        The Split: Dependence between Training and Test
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choices-everything-fitted-belongs-inside-the-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Choices: Everything Fitted Belongs inside the Loop
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reuse-the-test-set-wears-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Reuse: The Test Set Wears Out
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pretraining-three-meanings-of-zero-shot" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Pretraining: Three Meanings of Zero-Shot
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#language-models-a-feature-with-an-unknown-knowledge-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Language Models: A Feature with an Unknown Knowledge Date
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-the-literature-disagrees" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Where the Literature Disagrees
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        In Practice
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav><!-- dl-side --><nav class="md-nav dl-side" aria-label="Links"><p class="dl-side__title">Links</p><p class="dl-side__sub">This page links to</p><ul class="md-nav__list"><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.forecasting/">Time Series Forecasting Evaluation</a></li><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-forecast.tasks/">Time Series Forecasting Tasks</a></li><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.significance/">Is the Difference Real?</a></li><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.baselines/">Baselines and Skill Scores</a></li><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.probabilistic/">Evaluating Probabilistic Forecasts</a></li></ul><p class="dl-side__sub">Linked from</p><ul class="md-nav__list"><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.baselines/">Baselines and Skill Scores</a></li><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.significance/">Is the Difference Real?</a></li></ul></nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+  <button type="button" title="Copy as Markdown" aria-label="Copy as Markdown" class="md-content__button md-icon" data-md-copy-url="./index.md">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z"/></svg>
+  </button>
+
+
+  
+    <a href="https://github.com/emptymalei/deep-learning/edit/main/dl/time-series/timeseries-evaluation.leakage.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-pen" viewBox="0 0 24 24"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/emptymalei/deep-learning/raw/main/dl/time-series/timeseries-evaluation.leakage.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-code-2" viewBox="0 0 24 24"><path d="M4 12.15V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5M5 16l-3 3 3 3M9 22l3-3-3-3"/></svg>
+    </a>
+  
+
+
+<h1 id="leakage-and-contamination">Leakage and Contamination<a class="headerlink" href="#leakage-and-contamination" title="Permanent link">¶</a></h1>
+<div class="admonition abstract">
+<p class="admonition-title">In one minute</p>
+<p>An evaluation is only worth something if the model could not have known the answers. Drawing on more than forty papers, the page sorts the ways information about the test data reaches a model into one table and treats six routes: features known only later, dependent splits, choices fitted outside the loop, reuse of the test set, pretraining corpora that contain the benchmark, and language models that have read about the outcome.</p>
+<p><strong>Read first:</strong> <a href="../timeseries-evaluation.forecasting/">Time Series Forecasting Evaluation</a> · <a href="../timeseries-forecast.tasks/">Time Series Forecasting Tasks</a></p>
+</div>
+<p>A forecast is made at one point in time, about a later one. An evaluation simulates that situation with historical data, where the later point has already happened and its value sits in the same table as everything else. Nothing in the data stops a model, or the person building it, from using that value. When it happens, the measured accuracy is higher than anything the model will deliver in use. This is leakage.</p>
+<p>Kaufman, Rosset and Perlich define leakage as the introduction of information about the target that should not be legitimately available to learn from. They note that it is usually unintentional, enters through the collection and preparation of the data, and tends to be subtle and indirect<sup id="fnref:bib-Kaufman2011-leak"><a class="footnote-ref" href="#fn:bib-Kaufman2011-leak">1</a></sup>. Hewamalage, Ackermann and Bergmeir give the forecaster's version: the inadvertent use, while training a model, of data from the test set or of any data that is not available at inference time. They add that it happens more easily in forecasting than in classification or regression, and is harder to avoid<sup id="fnref:bib-Hewamalage2022-sc"><a class="footnote-ref" href="#fn:bib-Hewamalage2022-sc">2</a></sup>.</p>
+<p>The problem is common. Kapoor and Narayanan found leakage errors documented in 17 scientific fields, affecting 329 papers that use machine learning<sup id="fnref:bib-Kapoor2022-leak"><a class="footnote-ref" href="#fn:bib-Kapoor2022-leak">3</a></sup>. Arp and coauthors checked 30 papers from the top security conferences against ten pitfalls and found data snooping at least partly present in 73% of them<sup id="fnref:bib-Arp2020-dos"><a class="footnote-ref" href="#fn:bib-Arp2020-dos">4</a></sup>.</p>
+<h2 id="one-table-for-all-leaks">One Table for All Leaks<a class="headerlink" href="#one-table-for-all-leaks" title="Permanent link">¶</a></h2>
+<p>The papers behind this page come from statistics, bioinformatics, ecology, economics, computer security, natural language processing and forecasting, and each field has its own vocabulary: selection bias, data snooping, look-ahead bias, adaptive overfitting, contamination. Read side by side, they describe one event. <strong>The reported number was computed on data that was not independent of something that shaped the model.</strong> They differ in what carried the information and in how it reached the model.</p>
+<table>
+<thead>
+<tr>
+<th>What carries the information</th>
+<th>It reaches the model through its training data</th>
+<th>It reaches the model through decisions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The test targets themselves</td>
+<td>the test split is in the pretraining corpus<sup id="fnref2:bib-Sainz2023-contam"><a class="footnote-ref" href="#fn:bib-Sainz2023-contam">5</a></sup><sup id="fnref6:bib-Shchur2025-fevbench"><a class="footnote-ref" href="#fn:bib-Shchur2025-fevbench">6</a></sup><sup id="fnref6:bib-Meyer2025-leak"><a class="footnote-ref" href="#fn:bib-Meyer2025-leak">7</a></sup></td>
+<td>tuning or selecting on the test set<sup id="fnref3:bib-Varma2006-cv"><a class="footnote-ref" href="#fn:bib-Varma2006-cv">8</a></sup><sup id="fnref3:bib-Cawley2010-oms"><a class="footnote-ref" href="#fn:bib-Cawley2010-oms">9</a></sup><sup id="fnref3:bib-Arp2020-dos"><a class="footnote-ref" href="#fn:bib-Arp2020-dos">4</a></sup><sup id="fnref2:bib-Recht2019-imagenet"><a class="footnote-ref" href="#fn:bib-Recht2019-imagenet">10</a></sup></td>
+</tr>
+<tr>
+<td>Something statistically tied to the test targets</td>
+<td>neighbours in time, space or group<sup id="fnref2:bib-Roberts2017-blockcv"><a class="footnote-ref" href="#fn:bib-Roberts2017-blockcv">11</a></sup><sup id="fnref2:bib-Bergmeir2018-cv"><a class="footnote-ref" href="#fn:bib-Bergmeir2018-cv">12</a></sup>; correlated series over the same period<sup id="fnref7:bib-Meyer2025-leak"><a class="footnote-ref" href="#fn:bib-Meyer2025-leak">7</a></sup><sup id="fnref6:bib-Hewamalage2022-sc"><a class="footnote-ref" href="#fn:bib-Hewamalage2022-sc">2</a></sup>; the training split of the same series<sup id="fnref:bib-Goswami2024-moment"><a class="footnote-ref" href="#fn:bib-Goswami2024-moment">13</a></sup></td>
+<td>preprocessing fitted on the whole series: scaling, smoothing, decomposition, feature extraction<sup id="fnref7:bib-Hewamalage2022-sc"><a class="footnote-ref" href="#fn:bib-Hewamalage2022-sc">2</a></sup><sup id="fnref4:bib-Lones2021-pitfalls"><a class="footnote-ref" href="#fn:bib-Lones2021-pitfalls">14</a></sup></td>
+</tr>
+<tr>
+<td>Knowledge that did not exist at forecast time</td>
+<td>revised data in place of the first release<sup id="fnref3:bib-Croushore1999-rtds"><a class="footnote-ref" href="#fn:bib-Croushore1999-rtds">15</a></sup>; a language model that has read about the outcome<sup id="fnref5:bib-Sarkar2024-lookahead"><a class="footnote-ref" href="#fn:bib-Sarkar2024-lookahead">16</a></sup><sup id="fnref4:bib-LopezLira2025-memo"><a class="footnote-ref" href="#fn:bib-LopezLira2025-memo">17</a></sup></td>
+<td>benchmark questions or series selected with hindsight<sup id="fnref3:bib-Paleka2025-pitfalls"><a class="footnote-ref" href="#fn:bib-Paleka2025-pitfalls">18</a></sup><sup id="fnref6:bib-Sarkar2024-lookahead"><a class="footnote-ref" href="#fn:bib-Sarkar2024-lookahead">16</a></sup></td>
+</tr>
+</tbody>
+</table>
+<p>The table is this page's own arrangement of the literature, not taken from one paper. A second observation comes from putting the papers in order of time. The unit that has to be kept clean has grown with the models:</p>
+<table>
+<thead>
+<tr>
+<th>Period</th>
+<th>The unit to keep clean</th>
+<th>Representative work</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>around 2000 to 2010</td>
+<td>a row inside a cross-validation fold</td>
+<td>selection bias from tuning outside the loop<sup id="fnref4:bib-Varma2006-cv"><a class="footnote-ref" href="#fn:bib-Varma2006-cv">8</a></sup><sup id="fnref4:bib-Cawley2010-oms"><a class="footnote-ref" href="#fn:bib-Cawley2010-oms">9</a></sup>; data vintages<sup id="fnref4:bib-Croushore1999-rtds"><a class="footnote-ref" href="#fn:bib-Croushore1999-rtds">15</a></sup></td>
+</tr>
+<tr>
+<td>2011 to 2012</td>
+<td>a feature</td>
+<td>leakage named and formalized<sup id="fnref6:bib-Kaufman2011-leak"><a class="footnote-ref" href="#fn:bib-Kaufman2011-leak">1</a></sup></td>
+</tr>
+<tr>
+<td>2015 to 2019</td>
+<td>the test set, as a resource that is used up</td>
+<td>theory<sup id="fnref2:bib-Dwork2015-holdout"><a class="footnote-ref" href="#fn:bib-Dwork2015-holdout">19</a></sup><sup id="fnref3:bib-Blum2015-ladder"><a class="footnote-ref" href="#fn:bib-Blum2015-ladder">20</a></sup>, then audits<sup id="fnref3:bib-Recht2019-imagenet"><a class="footnote-ref" href="#fn:bib-Recht2019-imagenet">10</a></sup><sup id="fnref2:bib-Roelofs2019-meta"><a class="footnote-ref" href="#fn:bib-Roelofs2019-meta">21</a></sup></td>
+</tr>
+<tr>
+<td>2017 to 2023</td>
+<td>a block of dependent data</td>
+<td>block cross-validation<sup id="fnref3:bib-Roberts2017-blockcv"><a class="footnote-ref" href="#fn:bib-Roberts2017-blockcv">11</a></sup><sup id="fnref3:bib-Bergmeir2018-cv"><a class="footnote-ref" href="#fn:bib-Bergmeir2018-cv">12</a></sup><sup id="fnref:bib-Cerqueira2019-vt"><a class="footnote-ref" href="#fn:bib-Cerqueira2019-vt">22</a></sup>; field-wide pitfall lists<sup id="fnref5:bib-Lones2021-pitfalls"><a class="footnote-ref" href="#fn:bib-Lones2021-pitfalls">14</a></sup><sup id="fnref4:bib-Arp2020-dos"><a class="footnote-ref" href="#fn:bib-Arp2020-dos">4</a></sup><sup id="fnref7:bib-Kapoor2022-leak"><a class="footnote-ref" href="#fn:bib-Kapoor2022-leak">3</a></sup><sup id="fnref8:bib-Hewamalage2022-sc"><a class="footnote-ref" href="#fn:bib-Hewamalage2022-sc">2</a></sup></td>
+</tr>
+<tr>
+<td>2021 to 2024</td>
+<td>a dataset, against a pretraining corpus</td>
+<td>memorization and contamination of language models<sup id="fnref:bib-Carlini2020-extract"><a class="footnote-ref" href="#fn:bib-Carlini2020-extract">23</a></sup><sup id="fnref2:bib-Magar2022-contam"><a class="footnote-ref" href="#fn:bib-Magar2022-contam">24</a></sup><sup id="fnref3:bib-Sainz2023-contam"><a class="footnote-ref" href="#fn:bib-Sainz2023-contam">5</a></sup></td>
+</tr>
+<tr>
+<td>since 2023</td>
+<td>a period of calendar time</td>
+<td>pretrained time series models<sup id="fnref3:bib-Woo2024-moirai"><a class="footnote-ref" href="#fn:bib-Woo2024-moirai">25</a></sup><sup id="fnref2:bib-Das2024-timesfm"><a class="footnote-ref" href="#fn:bib-Das2024-timesfm">26</a></sup><sup id="fnref2:bib-Ansari2024-chronos"><a class="footnote-ref" href="#fn:bib-Ansari2024-chronos">27</a></sup><sup id="fnref7:bib-Shchur2025-fevbench"><a class="footnote-ref" href="#fn:bib-Shchur2025-fevbench">6</a></sup><sup id="fnref8:bib-Meyer2025-leak"><a class="footnote-ref" href="#fn:bib-Meyer2025-leak">7</a></sup>; language models used as forecasters<sup id="fnref7:bib-Sarkar2024-lookahead"><a class="footnote-ref" href="#fn:bib-Sarkar2024-lookahead">16</a></sup><sup id="fnref4:bib-Paleka2025-pitfalls"><a class="footnote-ref" href="#fn:bib-Paleka2025-pitfalls">18</a></sup></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">How This Page Is Organized</p>
+<p>Six routes, each in the same five steps as the other evaluation pages: <strong>the idea</strong>, <strong>the math</strong>, <strong>the picture</strong>, <strong>try it</strong>, <strong>watch out</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Question to ask</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Features</td>
+<td>Was this value known when the forecast was made?</td>
+</tr>
+<tr>
+<td>The split</td>
+<td>Is anything in the training data tied to the test data?</td>
+</tr>
+<tr>
+<td>Choices</td>
+<td>Was everything that was fitted, fitted inside the loop?</td>
+</tr>
+<tr>
+<td>Reuse</td>
+<td>How many times has this test set been looked at?</td>
+</tr>
+<tr>
+<td>Pretraining</td>
+<td>Has the model seen the benchmark, or something correlated with it?</td>
+</tr>
+<tr>
+<td>Language models</td>
+<td>Has the model read about the outcome?</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Scores are errors: lower is better.</p>
+<h2 id="features-the-knowledge-date">Features: The Knowledge Date<a class="headerlink" href="#features-the-knowledge-date" title="Permanent link">¶</a></h2>
+<p><strong>The idea.</strong> Every value in a dataset has two dates: the date it refers to and the date it became known. Only the second one matters for leakage. A model that forecasts Friday's demand on Tuesday may use whatever was known on Tuesday. Thursday's sales refer to a day before the target, and they are still off limits, because on Tuesday they did not exist.</p>
+<p><strong>The math.</strong> Kaufman, Rosset and Perlich call this the no-time-machine requirement: a legitimate model builds only on features with information from a time earlier than that of the target, or, when the problem demands it, a sufficient period earlier<sup id="fnref2:bib-Kaufman2011-leak"><a class="footnote-ref" href="#fn:bib-Kaufman2011-leak">1</a></sup>. For forecasting, the reference point is the forecast origin. With a forecast made at time <span class="arithmatex">\(t\)</span> for the target <span class="arithmatex">\(y_{t+h}\)</span>, and a feature whose value becomes known at time <span class="arithmatex">\(a\)</span>, the condition is</p>
+<div class="arithmatex">\[
+a \le t,
+\]</div>
+<p>for every feature and for every training example, each with its own <span class="arithmatex">\(t\)</span>.</p>
+<p>To make this checkable, the authors propose a two-stage method. First, tag every observation with what is needed to decide whether it is legitimate for a given target, in practice the time it became known. Second, observe a learn-predict separation: for each target, only inputs that are legitimate for it become features, and only inputs that are legitimate with respect to all evaluation targets are used as training examples<sup id="fnref3:bib-Kaufman2011-leak"><a class="footnote-ref" href="#fn:bib-Kaufman2011-leak">1</a></sup>.</p>
+<p>Economists met the same problem with official statistics, which are revised for years after their first release. Croushore and Stark call the data as it existed on one date a vintage and the collection of vintages a real-time data set, built so that a forecast made at any date uses the data available at that date for all past dates<sup id="fnref:bib-Croushore1999-rtds"><a class="footnote-ref" href="#fn:bib-Croushore1999-rtds">15</a></sup>. In that vocabulary a value is indexed twice, <span class="arithmatex">\(y_{s \mid v}\)</span>, the value for period <span class="arithmatex">\(s\)</span> as published in vintage <span class="arithmatex">\(v\)</span>, and a forecast made at <span class="arithmatex">\(t\)</span> may use <span class="arithmatex">\(y_{s \mid v}\)</span> only for <span class="arithmatex">\(v \le t\)</span>.</p>
+<p><strong>The picture.</strong> The widget lists seven candidate features for forecasting the demand of one day. Each has an open circle on the day it refers to and a square on the day it becomes known. Everything with its square left of the forecast origin is legitimate. The features are made up for this illustration.</p>
+<p><strong>Try it.</strong> Press Play to lengthen the horizon from 1 to 10 days and watch features turn from legitimate to leaking. Then change the publication delay of the price index.</p>
+<div class="dl-widget" data-widget="feature-timeline">
+<p>An interactive timeline with seven candidate features for a demand forecast. For each feature it shows the day the value refers to and the day it becomes known, and marks the feature as legitimate when it is known on the day the forecast is made. Sliders set the forecast horizon and the publication delay of one feature. It needs JavaScript. In short: the sales of the day before the target are a legitimate feature for a one-day horizon and a leak for longer horizons, and a statistic about a past period is a leak when it is published after the forecast is made.</p>
+</div>
+<p><strong>Watch out.</strong></p>
+<ul>
+<li>The wrong-horizon leak. Hewamalage and coauthors give the example of a one-day-ahead model that uses summary statistics of the whole current day: it can not run before midnight and is in effect a same-day model<sup id="fnref2:bib-Hewamalage2022-sc"><a class="footnote-ref" href="#fn:bib-Hewamalage2022-sc">2</a></sup>.</li>
+<li>Revised data is a leak in principle, and its size has to be measured. Croushore and Stark found that the root-mean-square errors of their forecasts were about the same with real-time and with revised data, while the forecasts themselves could differ considerably. They conclude with a warning about studies that claim a new method beats others when only the latest vintage is shown<sup id="fnref2:bib-Croushore1999-rtds"><a class="footnote-ref" href="#fn:bib-Croushore1999-rtds">15</a></sup>.</li>
+<li>Whether a feature is legitimate is a judgement about the problem and needs domain knowledge. Kapoor and Narayanan give no sub-categories for this kind of leakage for that reason, and ask researchers to justify the features they use<sup id="fnref3:bib-Kapoor2022-leak"><a class="footnote-ref" href="#fn:bib-Kapoor2022-leak">3</a></sup>.</li>
+<li>A result that is too good to be true is the classic symptom. Kaufman and coauthors report this as a long-standing rule of thumb in the data mining literature<sup id="fnref4:bib-Kaufman2011-leak"><a class="footnote-ref" href="#fn:bib-Kaufman2011-leak">1</a></sup>.</li>
+</ul>
+<h2 id="the-split-dependence-between-training-and-test">The Split: Dependence between Training and Test<a class="headerlink" href="#the-split-dependence-between-training-and-test" title="Permanent link">¶</a></h2>
+<p><strong>The idea.</strong> In most of machine learning the test set is a random sample of the data. For a time series this puts test points between training points. The model is then asked to fill a gap whose both ends it has seen, which is interpolation. A forecast in use has only one end. Since neighbouring values of a time series are similar, interpolation is far easier. The general statement is about dependence: a test point tells us about new data only to the extent that it is independent of what the model was trained on.</p>
+<p><strong>The math.</strong> Kapoor and Narayanan state the rule for models that predict a future outcome: the test set should not contain any data from a date before the training set<sup id="fnref2:bib-Kapoor2022-leak"><a class="footnote-ref" href="#fn:bib-Kapoor2022-leak">3</a></sup>. With training times <span class="arithmatex">\(\mathcal T_{\text{train}}\)</span> and test times <span class="arithmatex">\(\mathcal T_{\text{test}}\)</span>,</p>
+<div class="arithmatex">\[
+\max \mathcal T_{\text{train}} &lt; \min \mathcal T_{\text{test}}.
+\]</div>
+<p>How much a violation matters depends on the autocorrelation. Take a stationary series with variance 1 and lag-1 autocorrelation <span class="arithmatex">\(\rho\)</span>, such as the AR(1) process <span class="arithmatex">\(x_t = \rho\, x_{t-1} + \varepsilon_t\)</span>. Predicting <span class="arithmatex">\(x_t\)</span> from the previous value alone, with the best linear predictor, leaves an error variance of <span class="arithmatex">\(1 - \rho^2\)</span>. Predicting it from both neighbours leaves</p>
+<div class="arithmatex">\[
+\frac{1 - \rho^2}{1 + \rho^2}.
+\]</div>
+<p>Both follow from the standard formula for the best linear predictor of an AR(1) process. For <span class="arithmatex">\(\rho\)</span> close to 1, seeing the next value halves the error variance, with no forecasting skill involved.</p>
+<p>Three studies map out when a random split is harmful, and they agree once the goal of the prediction is fixed.</p>
+<table>
+<thead>
+<tr>
+<th>Study</th>
+<th>Setting</th>
+<th>Finding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Roberts and coauthors<sup id="fnref4:bib-Roberts2017-blockcv"><a class="footnote-ref" href="#fn:bib-Roberts2017-blockcv">11</a></sup></td>
+<td>data with temporal, spatial, group or phylogenetic structure</td>
+<td>random cross-validation seriously underestimates the error; split in blocks, even when the residuals show no correlation</td>
+</tr>
+<tr>
+<td>Bergmeir, Hyndman and Koo<sup id="fnref4:bib-Bergmeir2018-cv"><a class="footnote-ref" href="#fn:bib-Bergmeir2018-cv">12</a></sup></td>
+<td>one-step autoregression, one stationary series</td>
+<td>ordinary K-fold cross-validation is valid as long as the model's errors are uncorrelated</td>
+</tr>
+<tr>
+<td>Cerqueira, Torgo and Mozetič<sup id="fnref2:bib-Cerqueira2019-vt"><a class="footnote-ref" href="#fn:bib-Cerqueira2019-vt">22</a></sup></td>
+<td>62 real series and three synthetic stationary ones</td>
+<td>cross-validation works for stationary series; for real ones the most accurate estimates come from out-of-sample methods that keep the time order</td>
+</tr>
+</tbody>
+</table>
+<p>Roberts and coauthors care about transfer to new blocks, new places or new periods. Bergmeir and coauthors care about the next step inside one stationary process, where the rows of lagged values behave like regression data if the model is flexible enough. Real series are rarely stationary, which is where Cerqueira and coauthors land. The split strategies that respect the order of time are covered in <a href="../timeseries-evaluation.forecasting/">Time Series Forecasting Evaluation</a>.</p>
+<p><strong>The picture.</strong> The widget draws an autocorrelated series with a quarter of its points picked at random as test points. Each test point gets two predictions from the same simple kind of model: the average of the nearest training points on both sides, and the previous value alone.</p>
+<p><strong>Try it.</strong> Press Play to repeat the experiment on new series and watch the two averages settle. Then lower the autocorrelation to 0.</p>
+<div class="dl-widget" data-widget="split-leak">
+<p>An interactive chart of an autocorrelated time series in which a quarter of the points are chosen at random as test points. Each test point is predicted twice: from its neighbours on both sides, and from the previous value only. The mean absolute error of both is shown, for one series and averaged over repeated series. A slider sets the autocorrelation. It needs JavaScript. In short: at an autocorrelation of 0.95 the error with access to both neighbours is clearly smaller than the error when only the past is used, and the gap disappears when the autocorrelation is 0.</p>
+</div>
+<p><strong>Watch out.</strong></p>
+<ul>
+<li>Standard cross-validation trains on points later than the test points in all but one of its iterations, which Lones calls look-ahead bias; he adds that whether blocked variants are needed depends on whether the series is stationary<sup id="fnref:bib-Lones2021-pitfalls"><a class="footnote-ref" href="#fn:bib-Lones2021-pitfalls">14</a></sup>. Kapoor and Narayanan list k-fold cross-validation on temporal data among the errors found in published studies<sup id="fnref4:bib-Kapoor2022-leak"><a class="footnote-ref" href="#fn:bib-Kapoor2022-leak">3</a></sup>. The result of Bergmeir and coauthors is the exception, and it covers one-step autoregression with uncorrelated errors, not multi-step targets or non-stationary series<sup id="fnref:bib-Bergmeir2018-cv"><a class="footnote-ref" href="#fn:bib-Bergmeir2018-cv">12</a></sup>.</li>
+<li>Blocking has a cost. It can force the model to extrapolate beyond the range of the predictors it saw, which overestimates the error of interpolation; which of the two is wanted depends on the goal<sup id="fnref:bib-Roberts2017-blockcv"><a class="footnote-ref" href="#fn:bib-Roberts2017-blockcv">11</a></sup>.</li>
+<li>Series in one collection leak into each other. If the series of a global model are not aligned in time, one series can contain the future of another, and a shock that hits all of them is already in the training set. Hewamalage and coauthors consider this likely in competition datasets whose series are not aligned<sup id="fnref3:bib-Hewamalage2022-sc"><a class="footnote-ref" href="#fn:bib-Hewamalage2022-sc">2</a></sup>.</li>
+<li>Rolling-origin evaluation moves data from the test set into the training set by design, each time the model is retrained, which makes the implementation easy to get wrong and hard to check from outside<sup id="fnref4:bib-Hewamalage2022-sc"><a class="footnote-ref" href="#fn:bib-Hewamalage2022-sc">2</a></sup>.</li>
+</ul>
+<h2 id="choices-everything-fitted-belongs-inside-the-loop">Choices: Everything Fitted Belongs inside the Loop<a class="headerlink" href="#choices-everything-fitted-belongs-inside-the-loop" title="Permanent link">¶</a></h2>
+<p><strong>The idea.</strong> A model is more than its weights. The features that were kept, the scaling constants, the hyperparameters, the architecture and the stopping point were all chosen with data. Whatever data took part in those choices has been trained on, even if no gradient ever touched it. If that data includes the test set, the test is no longer a test.</p>
+<p><strong>The math.</strong> Varma and Simon state the condition: cross-validation is only proven unbiased if every part of training, including feature selection, the choice of classifier and the tuning of parameters, takes place inside each loop, on the data that was not left out<sup id="fnref:bib-Varma2006-cv"><a class="footnote-ref" href="#fn:bib-Varma2006-cv">8</a></sup>. Choosing the hyperparameters that minimize the cross-validation error and then reporting that minimum breaks the condition, because the choosing is itself training. The remedy is to treat "tune, then fit" as the procedure under evaluation and to wrap it in a second loop, called nested cross-validation:</p>
+<div class="arithmatex">\[
+\widehat{\operatorname{Err}} = \frac{1}{K} \sum_{k=1}^{K} L\left( \mathcal D_k, \; \operatorname{fit}\left( \mathcal D_{-k}, \; \hat\lambda(\mathcal D_{-k}) \right) \right),
+\]</div>
+<p>where <span class="arithmatex">\(\mathcal D_k\)</span> is the outer test fold, <span class="arithmatex">\(\mathcal D_{-k}\)</span> the rest, and the hyperparameters <span class="arithmatex">\(\hat\lambda\)</span> are tuned by an inner cross-validation that only sees <span class="arithmatex">\(\mathcal D_{-k}\)</span>.</p>
+<p>The size of the effect, from three sources:</p>
+<ul>
+<li>Varma and Simon simulated data with no difference between the classes, so that the true error is 50%. The cross-validation error of the tuned classifier was below 30% on 18.5% of the simulated datasets for one classifier and on 38% for another. Nested cross-validation gave estimates close to the true error<sup id="fnref2:bib-Varma2006-cv"><a class="footnote-ref" href="#fn:bib-Varma2006-cv">8</a></sup>.</li>
+<li>Cawley and Talbot showed that the bias from tuning outside the evaluation loop is often as large as the differences between learning algorithms. In their experiments, switching one of three classifiers to the biased protocol moved its average rank from about 2 to 1.23 and made it statistically superior, a difference they call entirely spurious<sup id="fnref:bib-Cawley2010-oms"><a class="footnote-ref" href="#fn:bib-Cawley2010-oms">9</a></sup>.</li>
+<li>Kapoor and Narayanan list the usual violations: preprocessing on the whole dataset, such as imputation or oversampling before the split, feature selection on the whole dataset, and duplicates on both sides of the split<sup id="fnref5:bib-Kapoor2022-leak"><a class="footnote-ref" href="#fn:bib-Kapoor2022-leak">3</a></sup>.</li>
+</ul>
+<p>Feature selection shows the mechanism in a case that can be computed. Take <span class="arithmatex">\(p\)</span> candidate features that are pure noise and <span class="arithmatex">\(n\)</span> samples. The sample correlation <span class="arithmatex">\(r\)</span> between one such feature and the target is approximately normal with mean 0 and standard deviation <span class="arithmatex">\(1/\sqrt{n}\)</span>. The largest <span class="arithmatex">\(\lvert r \rvert\)</span> among all <span class="arithmatex">\(p\)</span> grows roughly like</p>
+<div class="arithmatex">\[
+\sqrt{\frac{2 \ln p}{n}},
+\]</div>
+<p>which for <span class="arithmatex">\(p = 200\)</span> and <span class="arithmatex">\(n = 100\)</span> is about 0.33. These are standard approximations for independent normal variables, meant as orders of magnitude; the widget computes the real thing.</p>
+<p><strong>The picture.</strong> Each dot in the widget is one experiment: many noise features, one target, half of the samples held out for testing. The upper row picks the best-looking feature using all the samples, the lower row using the training half only. Both rows show how well the chosen feature correlates with the target on the test half.</p>
+<p><strong>Try it.</strong> Press Play to accumulate experiments. Then raise the number of features and lower the number of samples.</p>
+<div class="dl-widget" data-widget="selection-leak">
+<p>An interactive chart of repeated experiments with noise features that have no relation to the target. In each experiment the feature with the highest correlation is selected, once using all the data and once using only the training half, and its correlation with the target on the test half is shown. Sliders set the number of samples and the number of features. It needs JavaScript. In short: a feature selected with the test data in view looks predictive on the test data although it is noise, and the effect grows with the number of candidate features and shrinks with the number of samples.</p>
+</div>
+<p><strong>Watch out.</strong></p>
+<ul>
+<li>Preprocessing counts. For time series, Hewamalage and coauthors name smoothing, decomposition and normalization applied to the whole series before the split, and features computed over the whole series, which have to be computed from training data only and recomputed as time moves on<sup id="fnref5:bib-Hewamalage2022-sc"><a class="footnote-ref" href="#fn:bib-Hewamalage2022-sc">2</a></sup>. Lones adds data augmentation done before splitting<sup id="fnref2:bib-Lones2021-pitfalls"><a class="footnote-ref" href="#fn:bib-Lones2021-pitfalls">14</a></sup>, and Arp and coauthors add cleaning, such as removing outliers with statistics of the complete dataset<sup id="fnref2:bib-Arp2020-dos"><a class="footnote-ref" href="#fn:bib-Arp2020-dos">4</a></sup>.</li>
+<li>A biased protocol does not shift every method by the same amount. Methods with more hyperparameters gain more from it, so comparisons made under such a protocol are not consistent with each other<sup id="fnref2:bib-Cawley2010-oms"><a class="footnote-ref" href="#fn:bib-Cawley2010-oms">9</a></sup>.</li>
+<li>The leak can run through the modeler. Kaufman and coauthors point out that choices of features, algorithms and settings made with knowledge of the evaluation data leak in a way an evaluator may not be able to detect, and that in time series prediction, where usually only one history exists, this form is endemic<sup id="fnref5:bib-Kaufman2011-leak"><a class="footnote-ref" href="#fn:bib-Kaufman2011-leak">1</a></sup>.</li>
+<li>To make the separation checkable by others, Kapoor and Narayanan propose model info sheets, in which authors argue for the separation of training and test data, the legitimacy of every feature, and the match between the test set and the claim<sup id="fnref6:bib-Kapoor2022-leak"><a class="footnote-ref" href="#fn:bib-Kapoor2022-leak">3</a></sup>.</li>
+</ul>
+<h2 id="reuse-the-test-set-wears-out">Reuse: The Test Set Wears Out<a class="headerlink" href="#reuse-the-test-set-wears-out" title="Permanent link">¶</a></h2>
+<p><strong>The idea.</strong> Suppose every single experiment is clean: the model is trained without the test set and scored on it once. Now repeat this fifty times, each time keeping the changes that raised the test score. No experiment leaked, and the sequence did, because each score that was looked at carried a little information about the test set into the next decision. A whole research community working on one benchmark for years does the same thing on a larger scale. The papers on this question fall into two groups: theory that shows how bad it can get, and audits that measure how bad it has been.</p>
+<p><strong>The math.</strong> Blum and Hardt model a leaderboard as a sequence of adaptively chosen classifiers <span class="arithmatex">\(f_1, \cdots, f_k\)</span> and released scores <span class="arithmatex">\(R_1, \cdots, R_k\)</span>, and measure it by how far the best released score is from the truth<sup id="fnref:bib-Blum2015-ladder"><a class="footnote-ref" href="#fn:bib-Blum2015-ladder">20</a></sup>,</p>
+<div class="arithmatex">\[
+\operatorname{lberr}(R_1, \cdots, R_k) = \max_{1 \le t \le k} \left\lvert \min_{1 \le i \le t} R_D(f_i) - R_t \right\rvert ,
+\]</div>
+<p>where <span class="arithmatex">\(R_D\)</span> is the true loss. For a leaderboard that simply reports the holdout loss on <span class="arithmatex">\(n\)</span> examples, they construct a sequence of submissions that drives this error to the order of</p>
+<div class="arithmatex">\[
+\sqrt{\frac{k}{n}} .
+\]</div>
+<p>Their remedy, the Ladder, releases a new score only when a submission improves on the best so far by more than a step <span class="arithmatex">\(\eta\)</span>, and repeats the previous best otherwise. Its error grows only with the logarithm of the number of submissions<sup id="fnref2:bib-Blum2015-ladder"><a class="footnote-ref" href="#fn:bib-Blum2015-ladder">20</a></sup>. Dwork and coauthors give a related mechanism, the reusable holdout, which answers a query from the training set whenever training and holdout agree and reveals a noisy holdout value only when they do not. In their demonstration on data with random labels, an analyst who reuses a standard holdout for variable selection reports an accuracy above 63% where 50% is the truth<sup id="fnref:bib-Dwork2015-holdout"><a class="footnote-ref" href="#fn:bib-Dwork2015-holdout">19</a></sup>.</p>
+<p>Recht and coauthors supply the accounting for what a drop on fresh data means. With the original test set <span class="arithmatex">\(S\)</span> from distribution <span class="arithmatex">\(D\)</span> and a new test set <span class="arithmatex">\(S'\)</span> from <span class="arithmatex">\(D'\)</span><sup id="fnref:bib-Recht2019-imagenet"><a class="footnote-ref" href="#fn:bib-Recht2019-imagenet">10</a></sup>,</p>
+<div class="arithmatex">\[
+L_S - L_{S'} = \underbrace{(L_S - L_D)}_{\text{adaptivity gap}} + \underbrace{(L_D - L_{D'})}_{\text{distribution gap}} + \underbrace{(L_{D'} - L_{S'})}_{\text{generalization gap}} .
+\]</div>
+<p>Only the first term is the wear of the test set. The second is that the new data is different, and the third is sampling noise.</p>
+<p>The audits:</p>
+<table>
+<thead>
+<tr>
+<th>Study</th>
+<th>What was compared</th>
+<th>Finding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recht and coauthors<sup id="fnref4:bib-Recht2019-imagenet"><a class="footnote-ref" href="#fn:bib-Recht2019-imagenet">10</a></sup></td>
+<td>image classifiers on the original and on newly built test sets</td>
+<td>accuracy drops of 3% to 15%, but the ranking of models is kept, and later models gain more on new data, which speaks against adaptive overfitting as the cause</td>
+</tr>
+<tr>
+<td>Roelofs and coauthors<sup id="fnref3:bib-Roelofs2019-meta"><a class="footnote-ref" href="#fn:bib-Roelofs2019-meta">21</a></sup></td>
+<td>public leaderboard against private test set in more than one hundred Kaggle competitions</td>
+<td>little evidence of substantial overfitting; the outliers have a non-random split or very small test sets</td>
+</tr>
+<tr>
+<td>Zhang and coauthors<sup id="fnref2:bib-Zhang2024-gsm1k"><a class="footnote-ref" href="#fn:bib-Zhang2024-gsm1k">28</a></sup></td>
+<td>language models on a public arithmetic benchmark and a newly written twin</td>
+<td>drops of up to 8% for some model families, minimal for many models at the frontier</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The picture.</strong> The widget plays the attack in its simplest form. The labels of the holdout are coin flips, so no classifier can do better than 50%. An attacker submits random predictions, keeps the ones the leaderboard scored above chance, and combines them by majority vote.</p>
+<p><strong>Try it.</strong> Press Play to add submissions and watch the holdout accuracy of the combination climb while its true accuracy stays at 50%. Shrink the holdout, then switch to the Ladder.</p>
+<div class="dl-widget" data-widget="leaderboard-climb">
+<p>An interactive chart of an attack on a leaderboard whose holdout labels are random. Random submissions are scored on the holdout, those scoring above chance are kept, and their majority vote is scored on the same holdout. Sliders set the holdout size and the number of submissions, and a switch replaces the plain leaderboard with the Ladder of Blum and Hardt. It needs JavaScript. In short: with a plain leaderboard the holdout accuracy of the combination rises far above 50% as submissions accumulate, faster for a smaller holdout, while its accuracy on new data stays at 50%; with the Ladder it stays close to 50%.</p>
+</div>
+<p><strong>Watch out.</strong></p>
+<ul>
+<li>The worst case and the typical case are different things. The theory is about what an adversary can do. The audits found that large benchmarks with random splits have held up. Neither result covers the long-horizon forecasting benchmarks, whose test sets are a few thousand overlapping windows of one series and so contain far fewer independent samples than their size suggests. None of the papers read for this page reports an audit of them.</li>
+<li>Lones calls the everyday form sequential overfitting: training models in succession, each guided by the test score of the last. His remedy is the classical one, a validation set for guidance and a holdout touched once<sup id="fnref3:bib-Lones2021-pitfalls"><a class="footnote-ref" href="#fn:bib-Lones2021-pitfalls">14</a></sup>.</li>
+<li>Small test sets fail first. In the Kaggle study, the competitions with large gaps between public and private scores had private test sets as small as 100 examples<sup id="fnref:bib-Roelofs2019-meta"><a class="footnote-ref" href="#fn:bib-Roelofs2019-meta">21</a></sup>.</li>
+<li>Brigato and coauthors retrained eight long-horizon forecasting models with equal tuning effort on 14 datasets and found no model that consistently beats the others. Among their recommendations are test sets that are withheld and scored by a third party<sup id="fnref:bib-Brigato2025-champions"><a class="footnote-ref" href="#fn:bib-Brigato2025-champions">29</a></sup>.</li>
+<li>Each look at the test set is also one of the comparisons counted in <a href="../timeseries-evaluation.significance/#many-comparisons-at-once">Is the Difference Real?</a>.</li>
+</ul>
+<h2 id="pretraining-three-meanings-of-zero-shot">Pretraining: Three Meanings of Zero-Shot<a class="headerlink" href="#pretraining-three-meanings-of-zero-shot" title="Permanent link">¶</a></h2>
+<p><strong>The idea.</strong> Pretrained forecasting models are trained once on a large collection of public time series and then applied to new series without further training, which is called zero-shot forecasting. The claim "zero-shot" is a claim about the past of the model: that it has not seen what it is tested on. Public benchmarks are built from public datasets, and so are pretraining collections. When they overlap, the model is tested on data it was trained on, and nobody had to make a mistake in their own code for it to happen. Reading the model papers side by side shows that "has not seen" is used with three different meanings.</p>
+<p><strong>The math.</strong> Let <span class="arithmatex">\(\mathcal C\)</span> be the pretraining corpus and let the benchmark consist of series <span class="arithmatex">\(y^{(i)}\)</span>, each split at a date <span class="arithmatex">\(\tau_i\)</span> into a training part and a test part.</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Condition</th>
+<th>Who uses it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. No dataset overlap</td>
+<td>no part of any <span class="arithmatex">\(y^{(i)}\)</span> is in <span class="arithmatex">\(\mathcal C\)</span></td>
+<td>the zero-shot benchmarks of Chronos<sup id="fnref3:bib-Ansari2024-chronos"><a class="footnote-ref" href="#fn:bib-Ansari2024-chronos">27</a></sup>, Moirai<sup id="fnref4:bib-Woo2024-moirai"><a class="footnote-ref" href="#fn:bib-Woo2024-moirai">25</a></sup>, TimesFM<sup id="fnref3:bib-Das2024-timesfm"><a class="footnote-ref" href="#fn:bib-Das2024-timesfm">26</a></sup>, Lag-Llama<sup id="fnref:bib-Rasul2023-ep"><a class="footnote-ref" href="#fn:bib-Rasul2023-ep">30</a></sup>, Time-MoE<sup id="fnref:bib-Shi2024-timemoe"><a class="footnote-ref" href="#fn:bib-Shi2024-timemoe">31</a></sup> and Sundial<sup id="fnref2:bib-Liu2025-sundial"><a class="footnote-ref" href="#fn:bib-Liu2025-sundial">32</a></sup></td>
+</tr>
+<tr>
+<td>2. No test-split overlap</td>
+<td>only <span class="arithmatex">\(y^{(i)}_{t \le \tau_i}\)</span> is in <span class="arithmatex">\(\mathcal C\)</span></td>
+<td>MOMENT, which pretrains on the training splits of all its datasets<sup id="fnref2:bib-Goswami2024-moment"><a class="footnote-ref" href="#fn:bib-Goswami2024-moment">13</a></sup>; Chronos and Moirai report this case separately as in-domain or in-distribution<sup id="fnref4:bib-Ansari2024-chronos"><a class="footnote-ref" href="#fn:bib-Ansari2024-chronos">27</a></sup><sup id="fnref5:bib-Woo2024-moirai"><a class="footnote-ref" href="#fn:bib-Woo2024-moirai">25</a></sup></td>
+</tr>
+<tr>
+<td>3. No temporal overlap</td>
+<td>nothing in <span class="arithmatex">\(\mathcal C\)</span> is later than the start of any test period</td>
+<td>proposed by Meyer and coauthors as a global temporal barrier<sup id="fnref9:bib-Meyer2025-leak"><a class="footnote-ref" href="#fn:bib-Meyer2025-leak">7</a></sup></td>
+</tr>
+</tbody>
+</table>
+<p>Level 2 keeps the test values out of the corpus and still lets the model learn the earlier part of the very series it will forecast. The fev-bench authors count both cases as leakage: exposure to the test split inflates accuracy directly, and training on the training split violates the zero-shot setting, since the model has already seen the series it is asked to forecast<sup id="fnref:bib-Shchur2025-fevbench"><a class="footnote-ref" href="#fn:bib-Shchur2025-fevbench">6</a></sup>. Sainz and coauthors drew the same line for language models two years earlier: contamination with the evaluation split invalidates the experiment, and contamination with the training split invalidates the zero-shot claim<sup id="fnref:bib-Sainz2023-contam"><a class="footnote-ref" href="#fn:bib-Sainz2023-contam">5</a></sup>.</p>
+<p>Level 3 exists because of indirect leakage. Meyer and coauthors separate direct leakage, where the same samples appear in training and test data, from indirect leakage, where a training series and a test series are correlated and overlap in time. A shock that hits many series at once, such as the start of the pandemic, is then in the training data even though the test series is not<sup id="fnref:bib-Meyer2025-leak"><a class="footnote-ref" href="#fn:bib-Meyer2025-leak">7</a></sup>.</p>
+<p>For the size of the bias, let a fraction <span class="arithmatex">\(f\)</span> of the benchmark be affected. If the model's expected error is <span class="arithmatex">\(E_{\text{seen}}\)</span> on those series and <span class="arithmatex">\(E_{\text{unseen}}\)</span> on the rest, the benchmark reports</p>
+<div class="arithmatex">\[
+E_{\text{benchmark}} = f \, E_{\text{seen}} + (1 - f) \, E_{\text{unseen}},
+\]</div>
+<p>while a new user gets <span class="arithmatex">\(E_{\text{unseen}}\)</span>. The bias <span class="arithmatex">\(f \, (E_{\text{unseen}} - E_{\text{seen}})\)</span> differs from model to model because <span class="arithmatex">\(f\)</span> depends on each model's corpus. Magar and Schwartz measured the two factors separately for a language model and called the difference between seen and unseen test items exploitation. They found that it can be zero even when the model has memorized the data: memorized is not always exploited<sup id="fnref:bib-Magar2022-contam"><a class="footnote-ref" href="#fn:bib-Magar2022-contam">24</a></sup>.</p>
+<p>How much overlap is there, and what is done about it?</p>
+<ul>
+<li>Meyer and coauthors traced the data of 22 published time series foundation models. Of the 401 datasets involved, 6% had never appeared in any model's pretraining or fine-tuning data, and no dataset was reserved for evaluation by everyone<sup id="fnref2:bib-Meyer2025-leak"><a class="footnote-ref" href="#fn:bib-Meyer2025-leak">7</a></sup>.</li>
+<li>The Moirai authors name the root problem: there is no standard held-out split, so it is hard to collect datasets that none of the compared models was trained on<sup id="fnref:bib-Woo2024-moirai"><a class="footnote-ref" href="#fn:bib-Woo2024-moirai">25</a></sup>.</li>
+<li>Subtraction: TimesFM, ProbTS and Sundial drop, for each model, the datasets it was pretrained on, which leaves different models evaluated on different data<sup id="fnref:bib-Das2024-timesfm"><a class="footnote-ref" href="#fn:bib-Das2024-timesfm">26</a></sup><sup id="fnref:bib-Zhang2023-probts"><a class="footnote-ref" href="#fn:bib-Zhang2023-probts">33</a></sup><sup id="fnref:bib-Liu2025-sundial"><a class="footnote-ref" href="#fn:bib-Liu2025-sundial">32</a></sup>.</li>
+<li>Flagging and retraining: GIFT-Eval reports the overlap for three published models, provides a pretraining collection without overlap, and retrains one model on it. On the affected datasets the leaked version scores better in most cases<sup id="fnref:bib-Aksu2024-gift"><a class="footnote-ref" href="#fn:bib-Aksu2024-gift">34</a></sup>.</li>
+<li>Imputation: fev-bench asks contributors to declare overlap, shows it as a column of the leaderboard, and replaces a model's results on leaked tasks with those of a reference model, so that all aggregate scores cover the same tasks<sup id="fnref2:bib-Shchur2025-fevbench"><a class="footnote-ref" href="#fn:bib-Shchur2025-fevbench">6</a></sup>.</li>
+</ul>
+<p><strong>The picture.</strong> Two widgets. The first takes the extreme case of direct leakage: a model that only memorizes, stores windows of its pretraining series and returns what followed the most similar stored context. On a stored series the forecast is an exact recall. The second shows indirect leakage with the same kind of model: the target series is never in the corpus, but another series driven by the same factor is. Real pretrained models are not pure memorizers, and neither widget is a model of any of them.</p>
+<p><strong>Try it.</strong> In the first widget, press Play to move benchmark series into the pretraining data and watch the benchmark score fall while the model stays the same. The blue line is a rival model that is better on unseen series; the second slider sets its error as a ratio of the memorizer's error on unseen series.</p>
+<div class="dl-widget" data-widget="pretrain-overlap">
+<p>An interactive chart of a model that memorizes its pretraining series, evaluated on a benchmark of 40 series. A slider sets what share of the benchmark is in the pretraining data. The upper panel shows one benchmark series with the model's forecast; the lower panel shows the benchmark error as a function of the share, next to the error of a rival model that has seen none of the benchmark. It needs JavaScript. In short: the benchmark error falls in proportion to the share of the benchmark that was memorized, and beyond some share the memorizing model is ranked above a rival that is better on unseen series.</p>
+</div>
+<p>In the second widget, switch between a corpus that ends at the split date and one that runs through the test period. Then press Play to raise the share of variance that the two series have in common.</p>
+<div class="dl-widget" data-widget="common-shock">
+<p>An interactive chart of two series that share a common driver with a shock inside the test period. The target series is never in the pretraining data; the other series is, either up to the split date or through the test period. A memorizing model forecasts the target series by recalling the continuation of the most similar context in its corpus. It needs JavaScript. In short: when the other series is known through the test period and the two series share most of their variance, the forecast of the never-seen target follows the shock and its error is much lower; when they share little, there is no gain.</p>
+</div>
+<p><strong>Watch out.</strong></p>
+<ul>
+<li>Overlap can not be detected from the outside today. The fev-bench authors point out that automatic detection amounts to membership inference over pretraining corpora, an open problem for language models and harder for numerical data, and fall back on self-reporting<sup id="fnref3:bib-Shchur2025-fevbench"><a class="footnote-ref" href="#fn:bib-Shchur2025-fevbench">6</a></sup>. Meyer and coauthors argue the opposite way: since disclosure can not be verified, the benchmark and not the model has to guarantee the separation<sup id="fnref3:bib-Meyer2025-leak"><a class="footnote-ref" href="#fn:bib-Meyer2025-leak">7</a></sup>.</li>
+<li>The same data at another sampling frequency: fev-bench does not count it as leakage<sup id="fnref4:bib-Shchur2025-fevbench"><a class="footnote-ref" href="#fn:bib-Shchur2025-fevbench">6</a></sup>, Meyer and coauthors say frequency variants of one process should be treated as dependent<sup id="fnref4:bib-Meyer2025-leak"><a class="footnote-ref" href="#fn:bib-Meyer2025-leak">7</a></sup>.</li>
+<li>A leak does not always raise the score. In GIFT-Eval the leaked model is better in most cases, not all<sup id="fnref2:bib-Aksu2024-gift"><a class="footnote-ref" href="#fn:bib-Aksu2024-gift">34</a></sup>, and in the experiment of Meyer and coauthors the model with overlapping data was better in eight of ten runs<sup id="fnref5:bib-Meyer2025-leak"><a class="footnote-ref" href="#fn:bib-Meyer2025-leak">7</a></sup>.</li>
+<li>The designs that rule leakage out have costs. Withheld test data needs rate-limited submissions and gives no per-series errors, and prospective evaluation, where forecasts are submitted before the truth exists, means waiting for months<sup id="fnref5:bib-Shchur2025-fevbench"><a class="footnote-ref" href="#fn:bib-Shchur2025-fevbench">6</a></sup>.</li>
+<li>Report in-domain and zero-shot results separately, as the Chronos and Moirai papers do, and say for each compared model which level of the table above it meets<sup id="fnref:bib-Ansari2024-chronos"><a class="footnote-ref" href="#fn:bib-Ansari2024-chronos">27</a></sup><sup id="fnref2:bib-Woo2024-moirai"><a class="footnote-ref" href="#fn:bib-Woo2024-moirai">25</a></sup>.</li>
+</ul>
+<h2 id="language-models-a-feature-with-an-unknown-knowledge-date">Language Models: A Feature with an Unknown Knowledge Date<a class="headerlink" href="#language-models-a-feature-with-an-unknown-knowledge-date" title="Permanent link">¶</a></h2>
+<p><strong>The idea.</strong> When a large language model is used to forecast, or to produce features for a forecaster, the first route of this page returns in a new form. The model is a feature whose knowledge date nobody can state exactly. If its training text includes the period being backtested, it may know the outcome, and a backtest then measures recall. Economists call this look-ahead bias. Sarkar and Vafa define it for language models as the case where the pretraining data contains information about the future, which then leaks into an analysis that should only use information from the past<sup id="fnref:bib-Sarkar2024-lookahead"><a class="footnote-ref" href="#fn:bib-Sarkar2024-lookahead">16</a></sup>.</p>
+<p><strong>The math.</strong> Lopez-Lira, Tang and Zhu state the problem as one of identification. When the model has seen the realized values, any observed forecast accuracy is consistent with skill and with memorization, so the forecasting ability on that period is not identified by the backtest at all<sup id="fnref:bib-LopezLira2025-memo"><a class="footnote-ref" href="#fn:bib-LopezLira2025-memo">17</a></sup>. The remedy is the level-3 condition of the previous section, applied to the model: the test period has to lie after everything the model was trained on.</p>
+<p>Because the corpus is usually not available, a family of tests tries to detect exposure from the model's behaviour.</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Signal of exposure</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Before and after the cutoff</td>
+<td>performance is better on items released before the training cutoff than after</td>
+<td>Roberts and coauthors<sup id="fnref:bib-RobertsM2023-time"><a class="footnote-ref" href="#fn:bib-RobertsM2023-time">35</a></sup>, Li and Flanigan<sup id="fnref:bib-Li2023-task"><a class="footnote-ref" href="#fn:bib-Li2023-task">36</a></sup></td>
+</tr>
+<tr>
+<td>Unpredictable events</td>
+<td>the model predicts something that could not be known from the stated information</td>
+<td>Sarkar and Vafa<sup id="fnref8:bib-Sarkar2024-lookahead"><a class="footnote-ref" href="#fn:bib-Sarkar2024-lookahead">16</a></sup></td>
+</tr>
+<tr>
+<td>Completion</td>
+<td>given the first part of a test item, the model reproduces the rest</td>
+<td>Golchin and Surdeanu<sup id="fnref:bib-Golchin2023-timetravel"><a class="footnote-ref" href="#fn:bib-Golchin2023-timetravel">37</a></sup></td>
+</tr>
+<tr>
+<td>Slot guessing</td>
+<td>the model fills in a masked wrong answer option of a test question</td>
+<td>Deng and coauthors<sup id="fnref:bib-Deng2023-contam"><a class="footnote-ref" href="#fn:bib-Deng2023-contam">38</a></sup></td>
+</tr>
+<tr>
+<td>Canonical order</td>
+<td>the model finds the published order of a dataset more likely than shuffled orders</td>
+<td>Oren and coauthors<sup id="fnref:bib-Oren2023-proving"><a class="footnote-ref" href="#fn:bib-Oren2023-proving">39</a></sup></td>
+</tr>
+<tr>
+<td>Low-probability tokens</td>
+<td>the least likely tokens of a text are less unlikely than for unseen text</td>
+<td>Shi and coauthors<sup id="fnref2:bib-ShiW2023-mink"><a class="footnote-ref" href="#fn:bib-ShiW2023-mink">40</a></sup></td>
+</tr>
+<tr>
+<td>Extraction</td>
+<td>training sequences can be drawn out of the model verbatim</td>
+<td>Carlini and coauthors<sup id="fnref2:bib-Carlini2020-extract"><a class="footnote-ref" href="#fn:bib-Carlini2020-extract">23</a></sup></td>
+</tr>
+</tbody>
+</table>
+<p>The statistic of Shi and coauthors shows how such a test is built. For a text <span class="arithmatex">\(x\)</span> with tokens <span class="arithmatex">\(x_1, \cdots, x_N\)</span>, take the set <span class="arithmatex">\(\text{Min-K\%}(x)\)</span> of the <span class="arithmatex">\(k\)</span>% of tokens to which the model assigns the lowest probability, <span class="arithmatex">\(E\)</span> tokens in all, and average their log-likelihood<sup id="fnref:bib-ShiW2023-mink"><a class="footnote-ref" href="#fn:bib-ShiW2023-mink">40</a></sup>,</p>
+<div class="arithmatex">\[
+\text{Min-K\% Prob}(x) = \frac{1}{E} \sum_{x_i \in \text{Min-K\%}(x)} \log p(x_i \mid x_1, \cdots, x_{i-1}) .
+\]</div>
+<p>A text the model has not seen tends to contain a few tokens it finds very unlikely; a seen text less so.</p>
+<p>Of these tests, the first two carry over to time series without change, because they need only dates. The canonical-order test relies on the examples being exchangeable, which the observations of a time series are not.</p>
+<p><strong>The picture.</strong> The widget shows the before-and-after test from the forecaster's side. Each bar is the error for one month. For the months the model has seen, the answer is partly recalled and the error is low. The backtest uses the months after the stated cutoff.</p>
+<p><strong>Try it.</strong> Press Play to move the true extent of the model's knowledge past its stated cutoff and watch the backtest error fall while the model's real forecasting ability stays the same.</p>
+<div class="dl-widget" data-widget="cutoff-step">
+<p>An interactive bar chart of forecast error by month for a model with a knowledge cutoff. Months the model has seen have a low error because the answer is recalled. One slider sets the stated cutoff, after which the backtest period starts, and another sets how far the model's knowledge really extends. It needs JavaScript. In short: when the model's knowledge extends beyond the stated cutoff, part of the backtest period is recalled, and the backtest error is lower than the error the model would have on a period it has truly not seen.</p>
+</div>
+<p><strong>Watch out.</strong></p>
+<ul>
+<li>A stated cutoff is not a boundary. Paleka and coauthors note that cutoff dates are published to inform users, mean different things for different developers, and are not guarantees; they show a model that reveals an event from after its stated cutoff<sup id="fnref:bib-Paleka2025-pitfalls"><a class="footnote-ref" href="#fn:bib-Paleka2025-pitfalls">18</a></sup>.</li>
+<li>Asking the model to forget does not work. Instructions to ignore later information do not remove the bias<sup id="fnref2:bib-Sarkar2024-lookahead"><a class="footnote-ref" href="#fn:bib-Sarkar2024-lookahead">16</a></sup>, and masking names and dates fails because the model reconstructs them from context<sup id="fnref2:bib-LopezLira2025-memo"><a class="footnote-ref" href="#fn:bib-LopezLira2025-memo">17</a></sup>.</li>
+<li>The tests are one-sided: a detection shows leakage, and a non-detection does not show its absence<sup id="fnref3:bib-Sarkar2024-lookahead"><a class="footnote-ref" href="#fn:bib-Sarkar2024-lookahead">16</a></sup>. Evidence of memorization is a lower bound on what the model has encoded<sup id="fnref3:bib-LopezLira2025-memo"><a class="footnote-ref" href="#fn:bib-LopezLira2025-memo">17</a></sup>.</li>
+<li>The effect is not always large or in one direction. Glasserman and Lin found that, inside the training window, anonymizing company names improved trading signals from news sentiment, so that the model's general knowledge about a company was more of a distraction than a help<sup id="fnref:bib-Glasserman2023-lookahead"><a class="footnote-ref" href="#fn:bib-Glasserman2023-lookahead">41</a></sup>.</li>
+<li>Hindsight also enters through the benchmark. Questions selected because they have resolved by now, or written after the fact from news reports, carry their answers in the selection<sup id="fnref2:bib-Paleka2025-pitfalls"><a class="footnote-ref" href="#fn:bib-Paleka2025-pitfalls">18</a></sup>. Sarkar and Vafa describe the same for training text that has survived, for example about firms that still exist<sup id="fnref4:bib-Sarkar2024-lookahead"><a class="footnote-ref" href="#fn:bib-Sarkar2024-lookahead">16</a></sup>.</li>
+<li>Prevention is by design. Proposals include test data published in encrypted form<sup id="fnref:bib-Jacovi2023-stop"><a class="footnote-ref" href="#fn:bib-Jacovi2023-stop">42</a></sup>, benchmarks that are refreshed monthly from recent sources<sup id="fnref:bib-White2024-livebench"><a class="footnote-ref" href="#fn:bib-White2024-livebench">43</a></sup>, and newly written twins of public test sets<sup id="fnref:bib-Zhang2024-gsm1k"><a class="footnote-ref" href="#fn:bib-Zhang2024-gsm1k">28</a></sup>.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Not Leakage, but the Test Set Still Moves</p>
+<p>Two findings from benchmark studies belong next to this page. Neither passes test information to the model; both change what the reported number means.</p>
+<ul>
+<li>Many long-horizon forecasting codebases batch the test windows and discard the last incomplete batch. Which windows are scored then depends on the batch size. Qiu and coauthors show the reported error of the same models falling steadily as the batch size grows, and do not drop the last batch in their own benchmark<sup id="fnref:bib-Qiu2024-tfb"><a class="footnote-ref" href="#fn:bib-Qiu2024-tfb">44</a></sup>.</li>
+<li>Shao and coauthors collected the numbers reported for the same baselines on the same datasets in several widely cited papers and found that they differ, and traced this to normalization, loss masking and the way metrics are computed. They also note that errors reported on normalized data look small<sup id="fnref:bib-Shao2023-basicts"><a class="footnote-ref" href="#fn:bib-Shao2023-basicts">45</a></sup>.</li>
+</ul>
+</div>
+<h2 id="where-the-literature-disagrees">Where the Literature Disagrees<a class="headerlink" href="#where-the-literature-disagrees" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>One position</th>
+<th>The other</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Is K-fold cross-validation valid for time series?</td>
+<td>yes, for one-step autoregression with uncorrelated errors<sup id="fnref5:bib-Bergmeir2018-cv"><a class="footnote-ref" href="#fn:bib-Bergmeir2018-cv">12</a></sup></td>
+<td>no in general, block the data<sup id="fnref5:bib-Roberts2017-blockcv"><a class="footnote-ref" href="#fn:bib-Roberts2017-blockcv">11</a></sup>; out-of-sample is best for real series<sup id="fnref3:bib-Cerqueira2019-vt"><a class="footnote-ref" href="#fn:bib-Cerqueira2019-vt">22</a></sup></td>
+</tr>
+<tr>
+<td>How harmful is reusing a test set?</td>
+<td>provably harmful in the worst case<sup id="fnref4:bib-Blum2015-ladder"><a class="footnote-ref" href="#fn:bib-Blum2015-ladder">20</a></sup><sup id="fnref3:bib-Dwork2015-holdout"><a class="footnote-ref" href="#fn:bib-Dwork2015-holdout">19</a></sup></td>
+<td>little harm found in large audits<sup id="fnref5:bib-Recht2019-imagenet"><a class="footnote-ref" href="#fn:bib-Recht2019-imagenet">10</a></sup><sup id="fnref4:bib-Roelofs2019-meta"><a class="footnote-ref" href="#fn:bib-Roelofs2019-meta">21</a></sup></td>
+</tr>
+<tr>
+<td>Does contamination raise scores?</td>
+<td>clearly, in before-and-after comparisons<sup id="fnref2:bib-RobertsM2023-time"><a class="footnote-ref" href="#fn:bib-RobertsM2023-time">35</a></sup><sup id="fnref2:bib-Li2023-task"><a class="footnote-ref" href="#fn:bib-Li2023-task">36</a></sup><sup id="fnref5:bib-LopezLira2025-memo"><a class="footnote-ref" href="#fn:bib-LopezLira2025-memo">17</a></sup></td>
+<td>not always: memorized is not always exploited<sup id="fnref3:bib-Magar2022-contam"><a class="footnote-ref" href="#fn:bib-Magar2022-contam">24</a></sup>, and one audit of four models found little evidence of pervasive contamination<sup id="fnref2:bib-Oren2023-proving"><a class="footnote-ref" href="#fn:bib-Oren2023-proving">39</a></sup></td>
+</tr>
+<tr>
+<td>Is pretraining on the training split acceptable?</td>
+<td>yes, it avoids contamination of the test split<sup id="fnref3:bib-Goswami2024-moment"><a class="footnote-ref" href="#fn:bib-Goswami2024-moment">13</a></sup></td>
+<td>it invalidates a zero-shot claim<sup id="fnref8:bib-Shchur2025-fevbench"><a class="footnote-ref" href="#fn:bib-Shchur2025-fevbench">6</a></sup><sup id="fnref4:bib-Sainz2023-contam"><a class="footnote-ref" href="#fn:bib-Sainz2023-contam">5</a></sup></td>
+</tr>
+<tr>
+<td>Who has to guarantee clean data?</td>
+<td>model builders, by disclosure and cooperation<sup id="fnref2:bib-Jacovi2023-stop"><a class="footnote-ref" href="#fn:bib-Jacovi2023-stop">42</a></sup><sup id="fnref9:bib-Shchur2025-fevbench"><a class="footnote-ref" href="#fn:bib-Shchur2025-fevbench">6</a></sup></td>
+<td>the benchmark, because disclosure can not be verified<sup id="fnref10:bib-Meyer2025-leak"><a class="footnote-ref" href="#fn:bib-Meyer2025-leak">7</a></sup></td>
+</tr>
+</tbody>
+</table>
+<p>The disagreements mostly dissolve once the claim is made precise: which prediction task, which notion of "unseen", worst case or typical case. That is the practical lesson of reading the papers together. A statement about leakage needs its definition next to it.</p>
+<h2 id="in-practice">In Practice<a class="headerlink" href="#in-practice" title="Permanent link">¶</a></h2>
+<p>Before trusting a score, including one's own:</p>
+<ol>
+<li>For every feature: on which date did this value become known, and is that before the forecast origin of every example it is used for?</li>
+<li>Is anything in the training data tied to the test data: later in time, the same series, or another series over the same period?</li>
+<li>Was everything that was fitted, including scaling, feature extraction and hyperparameters, fitted without the test data?</li>
+<li>How many times has this test set been used to make a decision, by you and by the papers you build on?</li>
+<li>For a pretrained model: which of the three levels of "unseen" holds for each dataset, and for each model in the comparison?</li>
+<li>For a language model: does the test period lie after everything the model was trained on?</li>
+</ol>
+<p>And one symptom: a result far better than a strong <a href="../timeseries-evaluation.baselines/">baseline</a>, or than anything published on the same data, is more often a leak than a breakthrough.</p>
+<hr />
+<p><strong>Related:</strong> <a href="../timeseries-evaluation.baselines/">Baselines and Skill Scores</a> · <a href="../timeseries-evaluation.significance/">Is the Difference Real?</a> · <a href="../timeseries-evaluation.probabilistic/">Evaluating Probabilistic Forecasts</a></p>
+<!-- markdownlint-disable-file MD041 -->
+<!-- Glossary: appended to every page by pymdownx.snippets (auto_append in
+mkdocs.yml). Each term becomes a tooltip wherever it appears as a word. -->
+
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:bib-Kaufman2011-leak">
+<p>Kaufman S., Rosset S., Perlich C.. Leakage in Data Mining: Formulation, Detection, and Avoidance. <em>Proceedings of the 17th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD '11)</em>. 2011.&#160;<a class="footnote-backref" href="#fnref:bib-Kaufman2011-leak" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Kaufman2011-leak" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Kaufman2011-leak" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Kaufman2011-leak" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Kaufman2011-leak" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:bib-Kaufman2011-leak" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Hewamalage2022-sc">
+<p>Hewamalage H., Ackermann K., Bergmeir C.. Forecast Evaluation for Data Scientists: Common Pitfalls and Best Practices. 2022. <a href="http://arxiv.org/abs/2203.10716">http://arxiv.org/abs/2203.10716</a>&#160;<a class="footnote-backref" href="#fnref:bib-Hewamalage2022-sc" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Hewamalage2022-sc" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Hewamalage2022-sc" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Hewamalage2022-sc" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Hewamalage2022-sc" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:bib-Hewamalage2022-sc" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:bib-Hewamalage2022-sc" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref8:bib-Hewamalage2022-sc" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Kapoor2022-leak">
+<p>Kapoor S., Narayanan A.. Leakage and the Reproducibility Crisis in ML-based Science. 2022. <a href="http://arxiv.org/abs/2207.07048">http://arxiv.org/abs/2207.07048</a>&#160;<a class="footnote-backref" href="#fnref:bib-Kapoor2022-leak" title="Jump back to footnote 3 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Kapoor2022-leak" title="Jump back to footnote 3 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Kapoor2022-leak" title="Jump back to footnote 3 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Kapoor2022-leak" title="Jump back to footnote 3 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Kapoor2022-leak" title="Jump back to footnote 3 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:bib-Kapoor2022-leak" title="Jump back to footnote 3 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:bib-Kapoor2022-leak" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Arp2020-dos">
+<p>Arp D., Quiring E., Pendlebury F. et al.. Dos and Don'ts of Machine Learning in Computer Security. 2020. <a href="http://arxiv.org/abs/2010.09470">http://arxiv.org/abs/2010.09470</a>&#160;<a class="footnote-backref" href="#fnref:bib-Arp2020-dos" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Arp2020-dos" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Arp2020-dos" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Arp2020-dos" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Sainz2023-contam">
+<p>Sainz O., Campos J.A., Garc\'\ia-Ferrero I. et al.. NLP Evaluation in trouble: On the Need to Measure LLM Data Contamination for each Benchmark. 2023. <a href="http://arxiv.org/abs/2310.18018">http://arxiv.org/abs/2310.18018</a>&#160;<a class="footnote-backref" href="#fnref:bib-Sainz2023-contam" title="Jump back to footnote 5 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Sainz2023-contam" title="Jump back to footnote 5 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Sainz2023-contam" title="Jump back to footnote 5 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Sainz2023-contam" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Shchur2025-fevbench">
+<p>Shchur O., Ansari A.F., Turkmen C. et al.. fev-bench: A Realistic Benchmark for Time Series Forecasting. 2025. <a href="http://arxiv.org/abs/2509.26468">http://arxiv.org/abs/2509.26468</a>&#160;<a class="footnote-backref" href="#fnref:bib-Shchur2025-fevbench" title="Jump back to footnote 6 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Shchur2025-fevbench" title="Jump back to footnote 6 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Shchur2025-fevbench" title="Jump back to footnote 6 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Shchur2025-fevbench" title="Jump back to footnote 6 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Shchur2025-fevbench" title="Jump back to footnote 6 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:bib-Shchur2025-fevbench" title="Jump back to footnote 6 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:bib-Shchur2025-fevbench" title="Jump back to footnote 6 in the text">&#8617;</a><a class="footnote-backref" href="#fnref8:bib-Shchur2025-fevbench" title="Jump back to footnote 6 in the text">&#8617;</a><a class="footnote-backref" href="#fnref9:bib-Shchur2025-fevbench" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Meyer2025-leak">
+<p>Meyer M., Kaltenpoth S., Zalipski K. et al.. Rethinking Evaluation in the Era of Time Series Foundation Models: (Un)known Information Leakage Challenges. 2025. <a href="http://arxiv.org/abs/2510.13654">http://arxiv.org/abs/2510.13654</a>&#160;<a class="footnote-backref" href="#fnref:bib-Meyer2025-leak" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Meyer2025-leak" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Meyer2025-leak" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Meyer2025-leak" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Meyer2025-leak" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:bib-Meyer2025-leak" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:bib-Meyer2025-leak" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref8:bib-Meyer2025-leak" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref9:bib-Meyer2025-leak" title="Jump back to footnote 7 in the text">&#8617;</a><a class="footnote-backref" href="#fnref10:bib-Meyer2025-leak" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Varma2006-cv">
+<p>Varma S., Simon R.. Bias in error estimation when using cross-validation for model selection. <em>BMC Bioinformatics</em>. 2006. <a href="https://doi.org/10.1186/1471-2105-7-91">https://doi.org/10.1186/1471-2105-7-91</a>&#160;<a class="footnote-backref" href="#fnref:bib-Varma2006-cv" title="Jump back to footnote 8 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Varma2006-cv" title="Jump back to footnote 8 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Varma2006-cv" title="Jump back to footnote 8 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Varma2006-cv" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Cawley2010-oms">
+<p>Cawley G.C., Talbot N.L.C.. On Over-fitting in Model Selection and Subsequent Selection Bias in Performance Evaluation. <em>Journal of Machine Learning Research</em>. 2010. <a href="https://www.jmlr.org/papers/v11/cawley10a.html">https://www.jmlr.org/papers/v11/cawley10a.html</a>&#160;<a class="footnote-backref" href="#fnref:bib-Cawley2010-oms" title="Jump back to footnote 9 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Cawley2010-oms" title="Jump back to footnote 9 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Cawley2010-oms" title="Jump back to footnote 9 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Cawley2010-oms" title="Jump back to footnote 9 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Recht2019-imagenet">
+<p>Recht B., Roelofs R., Schmidt L. et al.. Do ImageNet Classifiers Generalize to ImageNet?. 2019. <a href="http://arxiv.org/abs/1902.10811">http://arxiv.org/abs/1902.10811</a>&#160;<a class="footnote-backref" href="#fnref:bib-Recht2019-imagenet" title="Jump back to footnote 10 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Recht2019-imagenet" title="Jump back to footnote 10 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Recht2019-imagenet" title="Jump back to footnote 10 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Recht2019-imagenet" title="Jump back to footnote 10 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Recht2019-imagenet" title="Jump back to footnote 10 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Roberts2017-blockcv">
+<p>Roberts D.R., Bahn V., Ciuti S. et al.. Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. <em>Ecography</em>. 2017. <a href="https://doi.org/10.1111/ecog.02881">https://doi.org/10.1111/ecog.02881</a>&#160;<a class="footnote-backref" href="#fnref:bib-Roberts2017-blockcv" title="Jump back to footnote 11 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Roberts2017-blockcv" title="Jump back to footnote 11 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Roberts2017-blockcv" title="Jump back to footnote 11 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Roberts2017-blockcv" title="Jump back to footnote 11 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Roberts2017-blockcv" title="Jump back to footnote 11 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Bergmeir2018-cv">
+<p>Bergmeir C., Hyndman R.J., Koo B.. A Note on the Validity of Cross-Validation for Evaluating Autoregressive Time Series Prediction. 2018. <a href="https://robjhyndman.com/papers/cv-wp.pdf">https://robjhyndman.com/papers/cv-wp.pdf</a>&#160;<a class="footnote-backref" href="#fnref:bib-Bergmeir2018-cv" title="Jump back to footnote 12 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Bergmeir2018-cv" title="Jump back to footnote 12 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Bergmeir2018-cv" title="Jump back to footnote 12 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Bergmeir2018-cv" title="Jump back to footnote 12 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Bergmeir2018-cv" title="Jump back to footnote 12 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Goswami2024-moment">
+<p>Goswami M., Szafer K., Choudhry A. et al.. MOMENT: A Family of Open Time-series Foundation Models. <em>Proceedings of the 41st International Conference on Machine Learning</em>. 2024. <a href="http://arxiv.org/abs/2402.03885">http://arxiv.org/abs/2402.03885</a>&#160;<a class="footnote-backref" href="#fnref:bib-Goswami2024-moment" title="Jump back to footnote 13 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Goswami2024-moment" title="Jump back to footnote 13 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Goswami2024-moment" title="Jump back to footnote 13 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Lones2021-pitfalls">
+<p>Lones M.A.. How to avoid machine learning pitfalls: a guide for academic researchers. 2021. <a href="http://arxiv.org/abs/2108.02497">http://arxiv.org/abs/2108.02497</a>&#160;<a class="footnote-backref" href="#fnref:bib-Lones2021-pitfalls" title="Jump back to footnote 14 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Lones2021-pitfalls" title="Jump back to footnote 14 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Lones2021-pitfalls" title="Jump back to footnote 14 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Lones2021-pitfalls" title="Jump back to footnote 14 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Lones2021-pitfalls" title="Jump back to footnote 14 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Croushore1999-rtds">
+<p>Croushore D., Stark T.. A Real-Time Data Set for Macroeconomists. 1999. <a href="https://www.philadelphiafed.org/-/media/frbp/assets/working-papers/1999/wp99-4.pdf">https://www.philadelphiafed.org/-/media/frbp/assets/working-papers/1999/wp99-4.pdf</a>&#160;<a class="footnote-backref" href="#fnref:bib-Croushore1999-rtds" title="Jump back to footnote 15 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Croushore1999-rtds" title="Jump back to footnote 15 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Croushore1999-rtds" title="Jump back to footnote 15 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Croushore1999-rtds" title="Jump back to footnote 15 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Sarkar2024-lookahead">
+<p>Sarkar S.K., Vafa K.. Lookahead Bias in Pretrained Language Models. 2024. <a href="https://conference.nber.org/conf_papers/f205530/f205530.pdf">https://conference.nber.org/conf_papers/f205530/f205530.pdf</a>&#160;<a class="footnote-backref" href="#fnref:bib-Sarkar2024-lookahead" title="Jump back to footnote 16 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Sarkar2024-lookahead" title="Jump back to footnote 16 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Sarkar2024-lookahead" title="Jump back to footnote 16 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Sarkar2024-lookahead" title="Jump back to footnote 16 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Sarkar2024-lookahead" title="Jump back to footnote 16 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:bib-Sarkar2024-lookahead" title="Jump back to footnote 16 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:bib-Sarkar2024-lookahead" title="Jump back to footnote 16 in the text">&#8617;</a><a class="footnote-backref" href="#fnref8:bib-Sarkar2024-lookahead" title="Jump back to footnote 16 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-LopezLira2025-memo">
+<p>Lopez-Lira A., Tang Y., Zhu M.. The Memorization Problem: Can We Trust LLMs' Economic Forecasts?. 2025. <a href="http://arxiv.org/abs/2504.14765">http://arxiv.org/abs/2504.14765</a>&#160;<a class="footnote-backref" href="#fnref:bib-LopezLira2025-memo" title="Jump back to footnote 17 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-LopezLira2025-memo" title="Jump back to footnote 17 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-LopezLira2025-memo" title="Jump back to footnote 17 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-LopezLira2025-memo" title="Jump back to footnote 17 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-LopezLira2025-memo" title="Jump back to footnote 17 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Paleka2025-pitfalls">
+<p>Paleka D., Goel S., Geiping J. et al.. Pitfalls in Evaluating Language Model Forecasters. 2025. <a href="http://arxiv.org/abs/2506.00723">http://arxiv.org/abs/2506.00723</a>&#160;<a class="footnote-backref" href="#fnref:bib-Paleka2025-pitfalls" title="Jump back to footnote 18 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Paleka2025-pitfalls" title="Jump back to footnote 18 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Paleka2025-pitfalls" title="Jump back to footnote 18 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Paleka2025-pitfalls" title="Jump back to footnote 18 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Dwork2015-holdout">
+<p>Dwork C., Feldman V., Hardt M. et al.. Generalization in Adaptive Data Analysis and Holdout Reuse. 2015. <a href="http://arxiv.org/abs/1506.02629">http://arxiv.org/abs/1506.02629</a>&#160;<a class="footnote-backref" href="#fnref:bib-Dwork2015-holdout" title="Jump back to footnote 19 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Dwork2015-holdout" title="Jump back to footnote 19 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Dwork2015-holdout" title="Jump back to footnote 19 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Blum2015-ladder">
+<p>Blum A., Hardt M.. The Ladder: A Reliable Leaderboard for Machine Learning Competitions. 2015. <a href="http://arxiv.org/abs/1502.04585">http://arxiv.org/abs/1502.04585</a>&#160;<a class="footnote-backref" href="#fnref:bib-Blum2015-ladder" title="Jump back to footnote 20 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Blum2015-ladder" title="Jump back to footnote 20 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Blum2015-ladder" title="Jump back to footnote 20 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Blum2015-ladder" title="Jump back to footnote 20 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Roelofs2019-meta">
+<p>Roelofs R., Fridovich-Keil S., Miller J. et al.. A Meta-Analysis of Overfitting in Machine Learning. <em>33rd Conference on Neural Information Processing Systems (NeurIPS 2019)</em>. 2019.&#160;<a class="footnote-backref" href="#fnref:bib-Roelofs2019-meta" title="Jump back to footnote 21 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Roelofs2019-meta" title="Jump back to footnote 21 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Roelofs2019-meta" title="Jump back to footnote 21 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Roelofs2019-meta" title="Jump back to footnote 21 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Cerqueira2019-vt">
+<p>Cerqueira V., Torgo L., Mozetic I.. Evaluating time series forecasting models: An empirical study on performance estimation methods. 2019. <a href="http://arxiv.org/abs/1905.11744">http://arxiv.org/abs/1905.11744</a>&#160;<a class="footnote-backref" href="#fnref:bib-Cerqueira2019-vt" title="Jump back to footnote 22 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Cerqueira2019-vt" title="Jump back to footnote 22 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Cerqueira2019-vt" title="Jump back to footnote 22 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Carlini2020-extract">
+<p>Carlini N., Tram`er F., Wallace E. et al.. Extracting Training Data from Large Language Models. 2020. <a href="http://arxiv.org/abs/2012.07805">http://arxiv.org/abs/2012.07805</a>&#160;<a class="footnote-backref" href="#fnref:bib-Carlini2020-extract" title="Jump back to footnote 23 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Carlini2020-extract" title="Jump back to footnote 23 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Magar2022-contam">
+<p>Magar I., Schwartz R.. Data Contamination: From Memorization to Exploitation. 2022. <a href="http://arxiv.org/abs/2203.08242">http://arxiv.org/abs/2203.08242</a>&#160;<a class="footnote-backref" href="#fnref:bib-Magar2022-contam" title="Jump back to footnote 24 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Magar2022-contam" title="Jump back to footnote 24 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Magar2022-contam" title="Jump back to footnote 24 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Woo2024-moirai">
+<p>Woo G., Liu C., Kumar A. et al.. Unified Training of Universal Time Series Forecasting Transformers. <em>Proceedings of the 41st International Conference on Machine Learning</em>. 2024. <a href="http://arxiv.org/abs/2402.02592">http://arxiv.org/abs/2402.02592</a>&#160;<a class="footnote-backref" href="#fnref:bib-Woo2024-moirai" title="Jump back to footnote 25 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Woo2024-moirai" title="Jump back to footnote 25 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Woo2024-moirai" title="Jump back to footnote 25 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Woo2024-moirai" title="Jump back to footnote 25 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Woo2024-moirai" title="Jump back to footnote 25 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Das2024-timesfm">
+<p>Das A., Kong W., Sen R. et al.. A decoder-only foundation model for time-series forecasting. 2024. <a href="http://arxiv.org/abs/2310.10688">http://arxiv.org/abs/2310.10688</a>&#160;<a class="footnote-backref" href="#fnref:bib-Das2024-timesfm" title="Jump back to footnote 26 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Das2024-timesfm" title="Jump back to footnote 26 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Das2024-timesfm" title="Jump back to footnote 26 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Ansari2024-chronos">
+<p>Ansari A.F., Stella L., Turkmen C. et al.. Chronos: Learning the Language of Time Series. <em>Transactions on Machine Learning Research</em>. 2024. <a href="https://openreview.net/forum?id=gerNCVqqtR">https://openreview.net/forum?id=gerNCVqqtR</a>&#160;<a class="footnote-backref" href="#fnref:bib-Ansari2024-chronos" title="Jump back to footnote 27 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Ansari2024-chronos" title="Jump back to footnote 27 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Ansari2024-chronos" title="Jump back to footnote 27 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Ansari2024-chronos" title="Jump back to footnote 27 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Zhang2024-gsm1k">
+<p>Zhang H., Da J., Lee D. et al.. A Careful Examination of Large Language Model Performance on Grade School Arithmetic. 2024. <a href="http://arxiv.org/abs/2405.00332">http://arxiv.org/abs/2405.00332</a>&#160;<a class="footnote-backref" href="#fnref:bib-Zhang2024-gsm1k" title="Jump back to footnote 28 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Zhang2024-gsm1k" title="Jump back to footnote 28 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Brigato2025-champions">
+<p>Brigato L., Morand R., Str\ommen K. et al.. There are no Champions in Supervised Long-Term Time Series Forecasting. <em>Transactions on Machine Learning Research</em>. 2026. <a href="http://arxiv.org/abs/2502.14045">http://arxiv.org/abs/2502.14045</a>&#160;<a class="footnote-backref" href="#fnref:bib-Brigato2025-champions" title="Jump back to footnote 29 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Rasul2023-ep">
+<p>Rasul K., Ashok A., Williams A.R. et al.. Lag-Llama: Towards foundation models for time series forecasting. <em>arXiv [cs.LG]</em>. 2023. <a href="http://arxiv.org/abs/2310.08278">http://arxiv.org/abs/2310.08278</a>&#160;<a class="footnote-backref" href="#fnref:bib-Rasul2023-ep" title="Jump back to footnote 30 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Shi2024-timemoe">
+<p>Shi X., Wang S., Nie Y. et al.. Time-MoE: Billion-Scale Time Series Foundation Models with Mixture of Experts. <em>International Conference on Learning Representations (ICLR 2025)</em>. 2025. <a href="http://arxiv.org/abs/2409.16040">http://arxiv.org/abs/2409.16040</a>&#160;<a class="footnote-backref" href="#fnref:bib-Shi2024-timemoe" title="Jump back to footnote 31 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Liu2025-sundial">
+<p>Liu Y., Qin G., Shi Z. et al.. Sundial: A Family of Highly Capable Time Series Foundation Models. <em>Proceedings of the 42nd International Conference on Machine Learning</em>. 2025. <a href="http://arxiv.org/abs/2502.00816">http://arxiv.org/abs/2502.00816</a>&#160;<a class="footnote-backref" href="#fnref:bib-Liu2025-sundial" title="Jump back to footnote 32 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Liu2025-sundial" title="Jump back to footnote 32 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Zhang2023-probts">
+<p>Zhang J., Wen X., Zhang Z. et al.. ProbTS: Benchmarking Point and Distributional Forecasting across Diverse Prediction Horizons. 2023. <a href="http://arxiv.org/abs/2310.07446">http://arxiv.org/abs/2310.07446</a>&#160;<a class="footnote-backref" href="#fnref:bib-Zhang2023-probts" title="Jump back to footnote 33 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Aksu2024-gift">
+<p>Aksu T., Woo G., Liu J. et al.. GIFT-Eval: A Benchmark For General Time Series Forecasting Model Evaluation. 2024. <a href="http://arxiv.org/abs/2410.10393">http://arxiv.org/abs/2410.10393</a>&#160;<a class="footnote-backref" href="#fnref:bib-Aksu2024-gift" title="Jump back to footnote 34 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Aksu2024-gift" title="Jump back to footnote 34 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-RobertsM2023-time">
+<p>Roberts M., Thakur H., Herlihy C. et al.. Data Contamination Through the Lens of Time. 2023. <a href="http://arxiv.org/abs/2310.10628">http://arxiv.org/abs/2310.10628</a>&#160;<a class="footnote-backref" href="#fnref:bib-RobertsM2023-time" title="Jump back to footnote 35 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-RobertsM2023-time" title="Jump back to footnote 35 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Li2023-task">
+<p>Li C., Flanigan J.. Task Contamination: Language Models May Not Be Few-Shot Anymore. 2023. <a href="http://arxiv.org/abs/2312.16337">http://arxiv.org/abs/2312.16337</a>&#160;<a class="footnote-backref" href="#fnref:bib-Li2023-task" title="Jump back to footnote 36 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Li2023-task" title="Jump back to footnote 36 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Golchin2023-timetravel">
+<p>Golchin S., Surdeanu M.. Time Travel in LLMs: Tracing Data Contamination in Large Language Models. <em>International Conference on Learning Representations (ICLR 2024)</em>. 2024. <a href="http://arxiv.org/abs/2308.08493">http://arxiv.org/abs/2308.08493</a>&#160;<a class="footnote-backref" href="#fnref:bib-Golchin2023-timetravel" title="Jump back to footnote 37 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Deng2023-contam">
+<p>Deng C., Zhao Y., Tang X. et al.. Investigating Data Contamination in Modern Benchmarks for Large Language Models. 2023. <a href="http://arxiv.org/abs/2311.09783">http://arxiv.org/abs/2311.09783</a>&#160;<a class="footnote-backref" href="#fnref:bib-Deng2023-contam" title="Jump back to footnote 38 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Oren2023-proving">
+<p>Oren Y., Meister N., Chatterji N. et al.. Proving Test Set Contamination in Black Box Language Models. 2023. <a href="http://arxiv.org/abs/2310.17623">http://arxiv.org/abs/2310.17623</a>&#160;<a class="footnote-backref" href="#fnref:bib-Oren2023-proving" title="Jump back to footnote 39 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Oren2023-proving" title="Jump back to footnote 39 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-ShiW2023-mink">
+<p>Shi W., Ajith A., Xia M. et al.. Detecting Pretraining Data from Large Language Models. <em>International Conference on Learning Representations (ICLR 2024)</em>. 2024. <a href="http://arxiv.org/abs/2310.16789">http://arxiv.org/abs/2310.16789</a>&#160;<a class="footnote-backref" href="#fnref:bib-ShiW2023-mink" title="Jump back to footnote 40 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-ShiW2023-mink" title="Jump back to footnote 40 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Glasserman2023-lookahead">
+<p>Glasserman P., Lin C.. Assessing Look-Ahead Bias in Stock Return Predictions Generated By GPT Sentiment Analysis. 2023. <a href="http://arxiv.org/abs/2309.17322">http://arxiv.org/abs/2309.17322</a>&#160;<a class="footnote-backref" href="#fnref:bib-Glasserman2023-lookahead" title="Jump back to footnote 41 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Jacovi2023-stop">
+<p>Jacovi A., Caciularu A., Goldman O. et al.. Stop Uploading Test Data in Plain Text: Practical Strategies for Mitigating Data Contamination by Evaluation Benchmarks. 2023. <a href="http://arxiv.org/abs/2305.10160">http://arxiv.org/abs/2305.10160</a>&#160;<a class="footnote-backref" href="#fnref:bib-Jacovi2023-stop" title="Jump back to footnote 42 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Jacovi2023-stop" title="Jump back to footnote 42 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-White2024-livebench">
+<p>White C., Dooley S., Roberts M. et al.. LiveBench: A Challenging, Contamination-Limited LLM Benchmark. <em>International Conference on Learning Representations (ICLR 2025)</em>. 2025. <a href="http://arxiv.org/abs/2406.19314">http://arxiv.org/abs/2406.19314</a>&#160;<a class="footnote-backref" href="#fnref:bib-White2024-livebench" title="Jump back to footnote 43 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Qiu2024-tfb">
+<p>Qiu X., Hu J., Zhou L. et al.. TFB: Towards Comprehensive and Fair Benchmarking of Time Series Forecasting Methods. <em>Proceedings of the VLDB Endowment</em>. 2024. <a href="https://doi.org/10.14778/3665844.3665863">https://doi.org/10.14778/3665844.3665863</a>&#160;<a class="footnote-backref" href="#fnref:bib-Qiu2024-tfb" title="Jump back to footnote 44 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Shao2023-basicts">
+<p>Shao Z., Wang F., Xu Y. et al.. Exploring Progress in Multivariate Time Series Forecasting: Comprehensive Benchmarking and Heterogeneity Analysis. 2023. <a href="http://arxiv.org/abs/2310.06119">http://arxiv.org/abs/2310.06119</a>&#160;<a class="footnote-backref" href="#fnref:bib-Shao2023-basicts" title="Jump back to footnote 45 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/emptymalei/deep-learning" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M216.5 362.5c-66-8-112.5-55.5-112.5-117 0-25 9-52 24-70-6.5-16.5-5.5-51.5 2-66 20-2.5 47 8 63 22.5 19-6 39-9 63.5-9s44.5 3 62.5 8.5c15.5-14 43-24.5 63-22 7 13.5 8 48.5 1.5 65.5 16 19 24.5 44.5 24.5 70.5 0 61.5-46.5 108-113.5 116.5 17 11 28.5 35 28.5 62.5v52c0 15 12.5 23.5 27.5 17.5C441 459.5 512 369 512 257 512 115.5 397 0 255.5 0S0 115.5 0 257c0 111 70.5 203 165.5 237.5 13.5 5 26.5-4 26.5-17.5v-40c-7 3-16 5-24 5-33 0-52.5-18-66.5-51.5-5.5-13.5-11.5-21.5-23-23-6-.5-8-3-8-6 0-6 10-10.5 20-10.5 14.5 0 27 9 40 27.5 10 14.5 20.5 21 33 21s20.5-4.5 32-16c8.5-8.5 15-16 21-21"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/leima137/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["content.action.edit","content.action.view","content.action.copy","content.tooltips","navigation.sections","navigation.tabs"],"redirect":null,"search":"../../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.3cb411a8.min.js"></script>
+      
+        <script src="../../assets/js/mathjax.js?v=c4e28f09"></script>
+      
+        <script src="../../assets/js/page-actions.js?v=3d1441e2"></script>
+      
+        <script src="../../assets/js/glossary-panel.js?v=57b923e5"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../assets/widgets/loader.js?v=6124b74a"></script>
+      
+        <script src="../../assets/widgets/embed.js?v=bf5ac4ba"></script>
+      
+        <script src="../../assets/widgets/backtest-windows.js?v=84ad2b5d"></script>
+      
+        <script src="../../assets/widgets/vega.js?v=3b987e35"></script>
+      
+        <script src="../../assets/widgets/plotly.js?v=5c5eef6f"></script>
+      
+        <script src="../../assets/widgets/pendulum-onnx.js?v=d36fbd8b"></script>
+      
+        <script src="../../assets/widgets/metrics-playground.js?v=7a659b1c"></script>
+      
+        <script src="../../assets/widgets/metrics-shift.js?v=51a27df1"></script>
+      
+        <script src="../../assets/widgets/crps-explorer.js?v=d14a4a61"></script>
+      
+        <script src="../../assets/widgets/kit.js?v=9166d86c"></script>
+      
+        <script src="../../assets/widgets/prob-eval.js?v=fcba45df"></script>
+      
+        <script src="../../assets/widgets/significance.js?v=f2e99871"></script>
+      
+        <script src="../../assets/widgets/leakage.js?v=be9c15e2"></script>
+      
+        <script src="../../assets/widgets/baseline-skill.js?v=28c177a9"></script>
+      
+        <script src="../../assets/widgets/baselines.js?v=ed7e433a"></script>
+      
+        <script src="../../assets/widgets/kl-explorer.js?v=3495ed88"></script>
+      
+        <script src="../../assets/widgets/entropy-explorer.js?v=b663f195"></script>
+      
+        <script src="../../assets/widgets/impurity-explorer.js?v=1c12a272"></script>
+      
+        <script src="../../assets/widgets/dtw-explorer.js?v=b8887eec"></script>
+      
+        <script src="../../assets/widgets/window-explorer.js?v=b953a5ee"></script>
+      
+        <script src="../../assets/widgets/positional-encoding.js?v=3a726ca0"></script>
+      
+        <script src="../../assets/widgets/step-diagram.js?v=3900b743"></script>
+      
+        <script src="../../assets/widgets/book-map.js?v=4875d2e1"></script>
+      
+    
+  <a class="dl-preview-badge" href="https://github.com/emptymalei/deep-learning/pull/111" style="position:fixed;left:.6rem;bottom:.6rem;z-index:3;padding:.25rem .6rem;border-radius:1rem;font:600 12px/1.4 system-ui,sans-serif;text-decoration:none;background:#ff6e42;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3)">Preview: PR #111 at 4aac8b5</a><style>@media print{.dl-preview-badge{display:none}}</style></body>
+</html>
