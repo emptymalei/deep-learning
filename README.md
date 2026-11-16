@@ -115,6 +115,9 @@ Available widgets live in `dl/assets/widgets/`:
 | `crps-family` | Twice the pinball loss of a normal forecast at every quantile level, whose mean is the CRPS, against the average over a grid of K levels | `prob-eval.js` |
 | `multi-score` | Two correlated series and a forecast with correct margins and another correlation: expected marginal CRPS, CRPS of the sum and energy score | `prob-eval.js` |
 | `aci-coverage` | Conformal interval width and rolling coverage at a fixed level and with the adaptive level of Gibbs and Candès (2021), when the errors triple for a period | `prob-eval.js` |
+| `resampled-t` | False alarm rates of an ordinary and of the corrected resampled t-test on the results of J overlapping random splits (after Nadeau and Bengio) | `significance.js` |
+| `winners-curse` | The test statistic of the best of many models that are no better than the benchmark, over repeated searches, with a slider for the correlation between models | `significance.js` |
+| `type-m` | The sampling distribution of an estimated difference with its significant regions: power, exaggeration of significant estimates and wrong signs (after Gelman and Carlin 2014) | `significance.js` |
 | `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
 | `entropy-explorer` | Two distributions over six classes, and the cross entropy split into the entropy plus the KL divergence | `entropy-explorer.js` |
 | `gini-explorer` | The Gini impurity of a two-class dataset as its mix changes | `impurity-explorer.js` |

@@ -519,4 +519,280 @@
         render();
         return lifecycle(el, api, render, stop);
     });
+
+    // ==========================================================================
+    // resampled-t: correlated split estimates and the corrected resampled t-test
+    // ==========================================================================
+    dlWidgets.register("resampled-t", (el, api) => {
+        const JS = [3, 5, 8, 10, 15, 20, 30, 50, 100];
+        const REPS = 3000;
+        const state = { frac: 0.2, j: 3, playing: false };
+        // Two-sided 5% critical value of Student's t (Cornish-Fisher expansion around the normal quantile).
+        const tcrit = (nu) => {
+            const z = 1.959964;
+            return z + (z ** 3 + z) / (4 * nu) + (5 * z ** 5 + 16 * z ** 3 + 3 * z) / (96 * nu * nu) + (3 * z ** 7 + 19 * z ** 5 + 17 * z ** 3 - 15 * z) / (384 * nu ** 3);
+        };
+        let rates = [];
+        function simulate() {
+            const g = rng(4711);
+            const rho = state.frac; // Nadeau and Bengio's stand-in: the share of the data used for testing
+            rates = JS.map((J) => {
+                let naive = 0, corr = 0;
+                const crit = tcrit(J - 1);
+                for (let r = 0; r < REPS; r++) {
+                    const z0 = g.normal();
+                    let s = 0, ss = 0;
+                    for (let j = 0; j < J; j++) {
+                        const x = Math.sqrt(rho) * z0 + Math.sqrt(1 - rho) * g.normal();
+                        s += x;
+                        ss += x * x;
+                    }
+                    const m = s / J, v = (ss - J * m * m) / (J - 1);
+                    naive += Math.abs(m / Math.sqrt(v / J)) > crit;
+                    corr += Math.abs(m / Math.sqrt(v * (1 / J + rho / (1 - rho)))) > crit;
+                }
+                return [naive / REPS, corr / REPS];
+            });
+        }
+        el.innerHTML = "";
+        const controls = html("div", "dl-widget__controls", el);
+        slider(controls, "Share of data used for testing", 0.05, 0.5, 0.05, state.frac, 2, (v) => { state.frac = v; stop(); simulate(); render(); });
+        const jS = slider(controls, "Number of splits J", 0, JS.length - 1, 1, state.j, 0, (v) => { state.j = v; stop(); render(); });
+        const play = button(controls, "Play", () => (state.playing ? stop() : start()));
+        const svg = node("svg", { role: "img" }, el);
+        const legendBox = html("div", "dl-widget__legend", el);
+        const caption = html("p", "dl-widget__caption", el);
+        caption.setAttribute("aria-live", "polite");
+        let timer = 0;
+        function start() {
+            state.playing = true;
+            play.textContent = "Pause";
+            state.j = -1;
+            const tick = () => {
+                state.j += 1;
+                jS.set(state.j);
+                render();
+                if (state.j >= JS.length - 1) return stop();
+                timer = setTimeout(tick, 800);
+            };
+            tick();
+        }
+        function stop() {
+            clearTimeout(timer);
+            state.playing = false;
+            play.textContent = "Play";
+        }
+        let W = 640;
+        function render() {
+            const c = api.colors();
+            W = widthOf(el);
+            const padL = 40, padR = 12, H = 230, padB = 32;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.innerHTML = "";
+            const x = (i) => padL + ((W - padL - padR) * i) / (JS.length - 1);
+            const ymax = Math.max(0.3, ...rates.map((r) => r[0])) * 1.08;
+            const y = (v) => 8 + (H - padB - 8) * (1 - v / ymax);
+            for (const v of [0, 0.05, 0.2, 0.4, 0.6, 0.8].filter((q) => q <= ymax)) {
+                node("line", { x1: padL, x2: W - padR, y1: y(v), y2: y(v), stroke: v === 0.05 ? c.fg : c.fgLightest, "stroke-dasharray": v === 0.05 ? "5 4" : "" }, svg);
+                node("text", { x: padL - 5, y: y(v) + 3, "text-anchor": "end", "font-size": 10, fill: c.fgLight }, svg, `${Math.round(v * 100)}%`);
+            }
+            const upto = state.j + 1;
+            for (const [k, col] of [[0, c.accent], [1, c.train]]) {
+                node("polyline", { points: polyline(rates.map((r, i) => [x(i), y(r[k])])), fill: "none", stroke: col, "stroke-width": 1, "stroke-opacity": 0.35 }, svg);
+                node("polyline", { points: polyline(rates.slice(0, upto).map((r, i) => [x(i), y(r[k])])), fill: "none", stroke: col, "stroke-width": 2.4 }, svg);
+                node("circle", { cx: x(state.j), cy: y(rates[state.j][k]), r: 4.5, fill: col }, svg);
+            }
+            JS.forEach((J, i) => node("text", { x: x(i), y: H - padB + 14, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, J));
+            node("text", { x: (padL + W - padR) / 2, y: H - 3, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, "number of random train/test splits J");
+            legend(legendBox, [
+                ["ordinary t-test on the J split results", c.accent],
+                ["corrected resampled t-test", c.train],
+                ["the 5% it should be", c.fg],
+            ]);
+            const J = JS[state.j], r = rates[state.j];
+            svg.setAttribute("aria-label", "False alarm rates of an ordinary and a corrected t-test on the results of repeated random splits, by number of splits.");
+            caption.textContent =
+                `Two algorithms of equal quality, compared on ${J} random splits with ${Math.round(state.frac * 100)}% of the data held out each time. ` +
+                `The ordinary t-test declares a difference in ${(100 * r[0]).toFixed(0)}% of experiments, the corrected test in ${(100 * r[1]).toFixed(0)}%; 5% is the target. ` +
+                "More splits make the ordinary test worse, because they add repetitions and no new data.";
+        }
+        simulate();
+        render();
+        return lifecycle(el, api, render, stop);
+    });
+
+    // ==========================================================================
+    // winners-curse: the best of many models that are all no better than the benchmark
+    // ==========================================================================
+    dlWidgets.register("winners-curse", (el, api) => {
+        const REPS = 3000, LMAX = 200;
+        const state = { l: 20, r: 0, playing: false };
+        const g = rng(2000);
+        const Z0 = Float64Array.from({ length: REPS }, () => g.normal());
+        const Z = Array.from({ length: REPS }, () => Float64Array.from({ length: LMAX }, () => g.normal()));
+        function best() {
+            const a = Math.sqrt(state.r), b = Math.sqrt(1 - state.r);
+            const out = new Float64Array(REPS);
+            for (let i = 0; i < REPS; i++) {
+                let m = -Infinity;
+                for (let k = 0; k < state.l; k++) m = Math.max(m, a * Z0[i] + b * Z[i][k]);
+                out[i] = m;
+            }
+            return out;
+        }
+        el.innerHTML = "";
+        const controls = html("div", "dl-widget__controls", el);
+        const lS = slider(controls, "Models tried", 1, LMAX, 1, state.l, 0, (v) => { state.l = v; stop(); render(); });
+        slider(controls, "Correlation between models", 0, 0.95, 0.05, state.r, 2, (v) => { state.r = v; stop(); render(); });
+        const play = button(controls, "Play", () => (state.playing ? stop() : start()));
+        const svg = node("svg", { role: "img" }, el);
+        const legendBox = html("div", "dl-widget__legend", el);
+        const caption = html("p", "dl-widget__caption", el);
+        caption.setAttribute("aria-live", "polite");
+        let timer = 0;
+        function start() {
+            state.playing = true;
+            play.textContent = "Pause";
+            state.l = 0;
+            const tick = () => {
+                state.l = Math.min(LMAX, state.l + (state.l < 10 ? 1 : state.l < 50 ? 5 : 15));
+                lS.set(state.l);
+                render();
+                if (state.l >= LMAX) return stop();
+                timer = setTimeout(tick, 320);
+            };
+            tick();
+        }
+        function stop() {
+            clearTimeout(timer);
+            state.playing = false;
+            play.textContent = "Play";
+        }
+        let W = 640;
+        function render() {
+            const c = api.colors();
+            W = widthOf(el);
+            const vals = best();
+            const padL = 12, padR = 12, H = 210, padB = 30;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.innerHTML = "";
+            const LO = -3.5, HI = 5, BINS = 51;
+            const counts = new Array(BINS).fill(0);
+            let sig = 0, sum = 0;
+            for (const v of vals) {
+                counts[Math.max(0, Math.min(BINS - 1, Math.floor(((v - LO) / (HI - LO)) * BINS)))]++;
+                sig += v > 1.645;
+                sum += v;
+            }
+            const bw = (HI - LO) / BINS;
+            const dens = counts.map((k) => k / (REPS * bw));
+            const ymax = Math.max(0.42, ...dens) * 1.05;
+            const x = (v) => padL + ((W - padL - padR) * (v - LO)) / (HI - LO);
+            const y = (d) => 8 + (H - padB - 8) * (1 - d / ymax);
+            dens.forEach((d, i) => {
+                const v0 = LO + i * bw;
+                node("rect", { x: x(v0) + 0.5, width: x(v0 + bw) - x(v0) - 1, y: y(d), height: y(0) - y(d), fill: v0 + bw / 2 > 1.645 ? c.accent : c.train, "fill-opacity": 0.6 }, svg);
+            });
+            const curve = [];
+            for (let v = LO; v <= HI; v += 0.05) curve.push([x(v), y(phi(v))]);
+            node("polyline", { points: polyline(curve), fill: "none", stroke: c.fg, "stroke-width": 1.6, "stroke-dasharray": "5 3" }, svg);
+            node("line", { x1: x(1.645), x2: x(1.645), y1: 6, y2: H - padB + 4, stroke: c.fg }, svg);
+            node("text", { x: x(1.645) + 4, y: 16, "font-size": 10, fill: c.fg }, svg, "5% threshold for one model");
+            for (let v = -3; v <= 5; v++) node("text", { x: x(v), y: H - padB + 14, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, v);
+            node("text", { x: (padL + W - padR) / 2, y: H - 3, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, "test statistic of the best model against the benchmark");
+            legend(legendBox, [
+                ["best of the models tried, over repeated searches", c.train],
+                ["searches whose winner looks significant", c.accent],
+                ["what one model chosen in advance would show", c.fg],
+            ]);
+            const mean = sum / REPS;
+            svg.setAttribute("aria-label", `Distribution of the test statistic of the best of ${state.l} models that are all no better than the benchmark.`);
+            caption.textContent =
+                `${state.l} model${state.l > 1 ? "s" : ""}, none better than the benchmark. The best one has an average test statistic of ${mean.toFixed(2)}, and in ${((100 * sig) / REPS).toFixed(0)}% of searches it passes a one-sided 5% test meant for a single model. ` +
+                (state.r > 0.6 ? "Highly correlated models are almost one model tried many times, so the inflation is small." : state.l === 1 ? "With one model chosen in advance the rate is the nominal 5%." : "The right reference for the winner is the distribution of the best of all models tried, not of one.");
+        }
+        render();
+        return lifecycle(el, api, render, stop);
+    });
+
+    // ==========================================================================
+    // type-m: what significant results look like when the power is low (after Gelman and Carlin 2014)
+    // ==========================================================================
+    dlWidgets.register("type-m", (el, api) => {
+        const state = { d: 1, playing: false };
+        el.innerHTML = "";
+        const controls = html("div", "dl-widget__controls", el);
+        const dS = slider(controls, "True difference, in standard errors", 0.1, 4, 0.05, state.d, 2, (v) => { state.d = v; stop(); render(); });
+        const play = button(controls, "Play", () => (state.playing ? stop() : start()));
+        const svg = node("svg", { role: "img" }, el);
+        const legendBox = html("div", "dl-widget__legend", el);
+        const caption = html("p", "dl-widget__caption", el);
+        caption.setAttribute("aria-live", "polite");
+        let raf = 0;
+        function start() {
+            state.playing = true;
+            play.textContent = "Pause";
+            const t0 = performance.now();
+            const frame = (now) => {
+                const u = Math.min(1, (now - t0) / 8000);
+                state.d = Math.round((4 - 3.9 * u) * 20) / 20;
+                dS.set(state.d);
+                render();
+                if (u < 1 && state.playing) raf = requestAnimationFrame(frame);
+                else stop();
+            };
+            raf = requestAnimationFrame(frame);
+        }
+        function stop() {
+            cancelAnimationFrame(raf);
+            state.playing = false;
+            play.textContent = "Play";
+        }
+        let W = 640;
+        function render() {
+            const c = api.colors();
+            W = widthOf(el);
+            const d = state.d, Zc = 1.96;
+            const padL = 12, padR = 12, H = 210, padB = 30;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.innerHTML = "";
+            const LO = -4, HI = 8;
+            const x = (v) => padL + ((W - padL - padR) * (v - LO)) / (HI - LO);
+            const y = (v) => 8 + (H - padB - 8) * (1 - v / 0.42);
+            const xs = range(LO, HI, 300);
+            const area = (a, b, col) => {
+                const seg = xs.filter((v) => v >= a && v <= b);
+                if (seg.length < 2) return;
+                node("polygon", { points: polyline(seg.map((v) => [x(v), y(phi(v - d))]).concat([[x(seg[seg.length - 1]), y(0)], [x(seg[0]), y(0)]])), fill: col, "fill-opacity": 0.45 }, svg);
+            };
+            area(Zc, HI, c.train);
+            area(LO, -Zc, c.accent);
+            node("polyline", { points: polyline(xs.map((v) => [x(v), y(phi(v - d))])), fill: "none", stroke: c.fg, "stroke-width": 1.8 }, svg);
+            node("line", { x1: padL, x2: W - padR, y1: y(0), y2: y(0), stroke: c.fgLighter }, svg);
+            for (const v of [-Zc, Zc]) node("line", { x1: x(v), x2: x(v), y1: 20, y2: y(0), stroke: c.fgLight, "stroke-dasharray": "4 3" }, svg);
+            node("line", { x1: x(d), x2: x(d), y1: 8, y2: y(0) + 4, stroke: c.fg, "stroke-width": 2 }, svg);
+            node("text", { x: x(d) + 4, y: 16, "font-size": 10, fill: c.fg }, svg, "true difference");
+            // Probabilities and the mean absolute size of the significant estimates.
+            const pPos = 1 - Phi(Zc - d), pNeg = Phi(-Zc - d);
+            const power = pPos + pNeg;
+            const ePos = d * pPos + phi(Zc - d), eNeg = -d * pNeg + phi(-Zc - d);
+            const exaggeration = (ePos + eNeg) / power / d;
+            const meanSig = (ePos + eNeg) / power;
+            node("line", { x1: x(meanSig), x2: x(meanSig), y1: 30, y2: y(0) + 4, stroke: c.train, "stroke-width": 2, "stroke-dasharray": "2 2" }, svg);
+            node("text", { x: x(meanSig) + 4, y: 40, "font-size": 10, fill: c.train }, svg, "average significant estimate");
+            for (let v = -4; v <= 8; v += 2) node("text", { x: x(v), y: H - padB + 14, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, v);
+            node("text", { x: (padL + W - padR) / 2, y: H - 3, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, "estimated difference, in standard errors");
+            legend(legendBox, [
+                ["estimates over repeated experiments", c.fg],
+                ["significant, with the right sign", c.train],
+                ["significant, with the wrong sign", c.accent],
+            ]);
+            svg.setAttribute("aria-label", `Sampling distribution of an estimated difference whose true value is ${d.toFixed(2)} standard errors, with the significant regions shaded.`);
+            caption.textContent =
+                `Power ${(100 * power).toFixed(0)}%: that share of experiments reaches significance. Those that do report a difference ${exaggeration.toFixed(2)} times the true one on average, and ${((100 * pNeg) / power).toFixed(1)}% of them have the wrong sign. ` +
+                (power < 0.5 ? "At low power, a significant result is mostly a lucky draw, and it overstates the effect." : "With enough power, significant results are close to the truth.");
+        }
+        render();
+        return lifecycle(el, api, render, stop);
+    });
 })();
