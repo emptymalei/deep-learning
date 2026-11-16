@@ -1,0 +1,221 @@
+@ARTICLE{Breiman2001-oj,
+  title    = "Random Forests",
+  author   = "Breiman, Leo",
+  abstract = "Random forests are a combination of tree predictors such that
+              each tree depends on the values of a random vector sampled
+              independently and with the same distribution for all trees in the
+              forest. The generalization error for forests converges a.s. to a
+              limit as the number of trees in the forest becomes large. The
+              generalization error of a forest of tree classifiers depends on
+              the strength of the individual trees in the forest and the
+              correlation between them. Using a random selection of features to
+              split each node yields error rates that compare favorably to
+              Adaboost (Y. Freund \& R. Schapire, Machine Learning: Proceedings
+              of the Thirteenth International conference, ***, 148--156), but
+              are more robust with respect to noise. Internal estimates monitor
+              error, strength, and correlation and these are used to show the
+              response to increasing the number of features used in the
+              splitting. Internal estimates are also used to measure variable
+              importance. These ideas are also applicable to regression.",
+  journal  = "Machine learning",
+  volume   =  45,
+  number   =  1,
+  pages    = "5--32",
+  month    =  "1~" # oct,
+  year     =  2001,
+  url      = "https://doi.org/10.1023/A:1010933404324",
+  file     = "All Papers/BREIMAN/Breiman 2001 - Random Forests.pdf",
+  keywords = "classification; ensemble; regression",
+  issn     = "0885-6125, 1573-0565",
+  doi      = "10.1023/A:1010933404324"
+}
+
+
+@INPROCEEDINGS{Ho1995-gk,
+  title     = "Random decision forests",
+  booktitle = "Proceedings of 3rd International Conference on Document Analysis
+               and Recognition",
+  author    = "Ho, Tin Kam",
+  abstract  = "Decision trees are attractive classifiers due to their high
+               execution speed. But trees derived with traditional methods
+               often cannot be grown to arbitrary complexity for possible loss
+               of generalization accuracy on unseen data. The limitation on
+               complexity usually means suboptimal accuracy on training data.
+               Following the principles of stochastic modeling, we propose a
+               method to construct tree-based classifiers whose capacity can be
+               arbitrarily expanded for increases in accuracy for both training
+               and unseen data. The essence of the method is to build multiple
+               trees in randomly selected subspaces of the feature space. Trees
+               in, different subspaces generalize their classification in
+               complementary ways, and their combined classification can be
+               monotonically improved. The validity of the method is
+               demonstrated through experiments on the recognition of
+               handwritten digits.",
+  volume    =  1,
+  pages     = "278--282 vol.1",
+  month     =  aug,
+  year      =  1995,
+  url       = "http://dx.doi.org/10.1109/ICDAR.1995.598994",
+  file      = "All Papers/HO/Ho 1995 - Random decision forests.pdf",
+  keywords  = "Classification tree analysis;Decision trees;Training
+               data;Optimization methods;Testing;Tin;Stochastic
+               processes;Handwriting recognition;Hidden Markov
+               models;Multilayer perceptrons",
+  doi       = "10.1109/ICDAR.1995.598994"
+}
+
+
+@ARTICLE{Biau2012-uj,
+  title    = "Analysis of a Random Forests Model",
+  author   = "Biau, G\textbackslash'{e}rard",
+  abstract = "Random forests are a scheme proposed by Leo Breiman in the 2000's
+              for building a predictor ensemble with a set of decision trees
+              that grow in randomly selected subspaces of data. Despite growing
+              interest and practical use, there has been little exploration of
+              the statistical properties of random forests, and little is known
+              about the mathematical forces driving the algorithm. In this
+              paper, we offer an in-depth analysis of a random forests model
+              suggested by Breiman (2004), which is very close to the original
+              algorithm. We show in particular that the procedure is consistent
+              and adapts to sparsity, in the sense that its rate of convergence
+              depends only on the number of strong features and not on how many
+              noise variables are present.",
+  journal  = "Journal of machine learning research: JMLR",
+  volume   =  13,
+  pages    = "1063--1095",
+  year     =  2012,
+  url      = "http://dx.doi.org/10.5555/2188385.2343682",
+  file     = "All Papers/BIAU/Biau 2012 - Analysis of a Random Forests Model.pdf",
+  keywords = "biau2012",
+  issn     = "1532-4435, 1533-7928",
+  doi      = "10.5555/2188385.2343682"
+}
+
+
+@INPROCEEDINGS{Bernard2010-tz,
+  title     = "A Study of Strength and Correlation in Random Forests",
+  booktitle = "Advanced Intelligent Computing Theories and Applications",
+  author    = "Bernard, Simon and Heutte, Laurent and Adam, S{\'e}bastien",
+  abstract  = "In this paper we present a study on the Random Forest (RF)
+               family of classification methods, and more particularly on two
+               important properties called strength and correlation. These two
+               properties have been introduced by Breiman in the calculation of
+               an upper bound of the generalization error. We thus propose to
+               experimentally study the actual relation between these
+               properties and the error rate in order to confirm and extend the
+               Breiman theoretical results. We show that the error rate
+               statistically decreases with the joint maximization of the
+               strength and minimization of the correlation, and this for
+               different sizes of RF.",
+  publisher = "Springer Berlin Heidelberg",
+  pages     = "186--191",
+  year      =  2010,
+  url       = "http://dx.doi.org/10.1007/978-3-642-14831-6_25",
+  file      = "All Papers/BERNARD/Bernard et al. 2010 - A Study of Strength and Correlation in Random Forests.pdf",
+  doi       = "10.1007/978-3-642-14831-6\_25"
+}
+
+
+@online{Chen2016-mi,
+  title         = "{XGBoost}: A Scalable Tree Boosting System",
+  author        = "Chen, Tianqi and Guestrin, Carlos",
+  abstract      = "Tree boosting is a highly effective and widely used machine
+                   learning method. In this paper, we describe a scalable
+                   end-to-end tree boosting system called XGBoost, which is
+                   used widely by data scientists to achieve state-of-the-art
+                   results on many machine learning challenges. We propose a
+                   novel sparsity-aware algorithm for sparse data and weighted
+                   quantile sketch for approximate tree learning. More
+                   importantly, we provide insights on cache access patterns,
+                   data compression and sharding to build a scalable tree
+                   boosting system. By combining these insights, XGBoost scales
+                   beyond billions of examples using far fewer resources than
+                   existing systems.",
+  month         =  "9~" # mar,
+  year          =  2016,
+  url           = "http://arxiv.org/abs/1603.02754",
+  file          = "All Papers/CHEN/Chen and Guestrin 2016 - XGBoost - A Scalable Tree Boosting System.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1603.02754",
+  primaryClass  = "cs.LG",
+  arxivid       = "1603.02754"
+}
+
+
+@INPROCEEDINGS{Ke2017-jv,
+  title     = "{LightGBM}: A Highly Efficient Gradient Boosting Decision Tree",
+  booktitle = "Advances in Neural Information Processing Systems",
+  author    = "Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and
+               Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan",
+  editor    = "Guyon, I and Luxburg, U V and Bengio, S and Wallach, H and
+               Fergus, R and Vishwanathan, S and Garnett, R",
+  publisher = "Curran Associates, Inc.",
+  volume    =  30,
+  year      =  2017,
+  url       = "https://proceedings.neurips.cc/paper/2017/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf",
+  file      = "All Papers/KE/Ke et al. 2017 - LightGBM - A Highly Efficient Gradient Boosting Decision Tree.pdf"
+}
+
+@online{Shi2018-bk,
+  title         = "Gradient Boosting With {Piece-Wise} Linear Regression Trees",
+  author        = "Shi, Yu and Li, Jian and Li, Zhize",
+  abstract      = "Gradient Boosted Decision Trees (GBDT) is a very successful
+                   ensemble learning algorithm widely used across a variety of
+                   applications. Recently, several variants of GBDT training
+                   algorithms and implementations have been designed and
+                   heavily optimized in some very popular open sourced toolkits
+                   including XGBoost, LightGBM and CatBoost. In this paper, we
+                   show that both the accuracy and efficiency of GBDT can be
+                   further enhanced by using more complex base learners.
+                   Specifically, we extend gradient boosting to use piecewise
+                   linear regression trees (PL Trees), instead of piecewise
+                   constant regression trees, as base learners. We show that PL
+                   Trees can accelerate convergence of GBDT and improve the
+                   accuracy. We also propose some optimization tricks to
+                   substantially reduce the training time of PL Trees, with
+                   little sacrifice of accuracy. Moreover, we propose several
+                   implementation techniques to speedup our algorithm on modern
+                   computer architectures with powerful Single Instruction
+                   Multiple Data (SIMD) parallelism. The experimental results
+                   show that GBDT with PL Trees can provide very competitive
+                   testing accuracy with comparable or less training time.",
+  month         =  "15~" # feb,
+  year          =  2018,
+  url           = "http://arxiv.org/abs/1802.05640",
+  file          = "All Papers/SHI/Shi et al. 2018 - Gradient Boosting With Piece-Wise Linear Regression Trees.pdf",
+  archivePrefix = "arXiv",
+  eprint        = "1802.05640",
+  primaryClass  = "cs.LG",
+  arxivid       = "1802.05640"
+}
+
+
+@ARTICLE{Januschowski2022-qr,
+  title    = "Forecasting with trees",
+  author   = "Januschowski, Tim and Wang, Yuyang and Torkkola, Kari and
+              Erkkil{\"a}, Timo and Hasson, Hilaf and Gasthaus, Jan",
+  abstract = "The prevalence of approaches based on gradient boosted trees
+              among the top contestants in the M5 competition is potentially
+              the most eye-catching result. Tree-based methods out-shone other
+              solutions, in particular deep learning-based solutions. The
+              winners in both tracks of the M5 competition heavily relied on
+              them. This prevalence is even more remarkable given the dominance
+              of other methods in the literature and the M4 competition. This
+              article tries to explain why tree-based methods were so widely
+              used in the M5 competition. We see possibilities for future
+              improvements of tree-based models and then distill some learnings
+              for other approaches, including but not limited to neural
+              networks.",
+  journal  = "International journal of forecasting",
+  volume   =  38,
+  number   =  4,
+  pages    = "1473--1481",
+  month    =  "1~" # oct,
+  year     =  2022,
+  url      = "https://www.sciencedirect.com/science/article/pii/S0169207021001679",
+  file     = "All Papers/JANUSCHOWSKI/Januschowski et al. 2022 - Forecasting with trees.pdf",
+  keywords = "Random forests; Probabilistic forecasting; Gradient Boosted
+              Trees; Global forecasting models; Deep Learning",
+  issn     = "0169-2070",
+  doi      = "10.1016/j.ijforecast.2021.10.004"
+}
