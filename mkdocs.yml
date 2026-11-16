@@ -255,5 +255,6 @@ nav:
         - "f-GAN": self-supervised/adversarial/f-gan.md
         - "InfoGAN": self-supervised/adversarial/infogan.md
   - "About":
+    - "Map of the Book": map.md
     - "Roadmap": meta/roadmap.md
     - "Changelog": meta/changelog.md

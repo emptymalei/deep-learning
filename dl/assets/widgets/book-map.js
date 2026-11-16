@@ -187,8 +187,8 @@ dlWidgets.register("book-map", (el, api) => {
 
         function drawGraph() {
             const c = api.colors();
-            W = Math.max(280, Math.min(720, Math.round(el.clientWidth - 2) || 640));
-            const H = Math.round(W < 480 ? W * 1.15 : W * 0.72), pad = 16;
+            W = Math.max(280, Math.min(1000, Math.round(el.clientWidth - 2) || 640));
+            const H = Math.round(W < 480 ? W * 1.15 : W * 0.66), pad = 16;
             const x = (i) => pad + pos[i][0] * (W - 2 * pad), y = (i) => pad + pos[i][1] * (H - 2 * pad);
             svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
             svg.setAttribute("aria-label", `A graph of ${pages.length} pages and ${edges.length} links between them. The List view shows the same pages as buttons.`);

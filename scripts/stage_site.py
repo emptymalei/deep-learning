@@ -628,7 +628,7 @@ TOC_SIDEBAR = '<div class="md-sidebar md-sidebar--secondary"'
 TOC_NAV = '<nav class="md-nav md-nav--secondary"'
 SIDE_MARK = "<!-- dl-side -->"
 # Pages whose only job is to list other pages: left out of the link sections.
-INDEX_PAGES = {"tags"}
+INDEX_PAGES = {"tags", "map"}
 LINKS_SHOWN = 6
 
 
