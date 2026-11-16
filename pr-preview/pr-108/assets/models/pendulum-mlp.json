@@ -1,0 +1,79 @@
+{
+  "name": "pendulum-mlp",
+  "description": "Feedforward network that maps the last k pendulum angles to the next h angles (radians). Trained offline with PyTorch by scripts/pendulum_onnx.py.",
+  "input": {
+    "name": "context",
+    "shape": [
+      "batch",
+      24
+    ],
+    "dtype": "float32",
+    "units": "rad"
+  },
+  "output": {
+    "name": "forecast",
+    "shape": [
+      "batch",
+      24
+    ],
+    "dtype": "float32",
+    "units": "rad"
+  },
+  "opset": 17,
+  "k": 24,
+  "h": 24,
+  "autoregressive_rounds": 3,
+  "dt": 0.5015166701776618,
+  "rk4_dt": 0.05015166701776618,
+  "rk4_substeps": 10,
+  "g": 9.81,
+  "L_range": [
+    50.0,
+    150.0
+  ],
+  "theta0_range_deg": [
+    5.0,
+    170.0
+  ],
+  "damping": 0.001,
+  "equation": "theta'' = -(g/L) sin(theta) - 2 * damping * theta', from rest at theta0",
+  "architecture": {
+    "hidden_widths": [
+      256,
+      128,
+      64,
+      128,
+      256
+    ],
+    "activation": "relu",
+    "n_params": 95320,
+    "amplitude": "a = max|context| + 1e-3",
+    "input_scale": 1.2052327394485474,
+    "mlp_input": "[context / a, a / input_scale] (k + 1 values)",
+    "output": "last context value + a * mlp(...)"
+  },
+  "metrics": {
+    "val_rmse_rad": 0.005756587619208725,
+    "val_naive_rmse_rad": 1.5754325030417227,
+    "val_rmse_deg": 0.3298281749779226,
+    "val_naive_rmse_deg": 90.26563333202193,
+    "val_from_rest_rmse_rad": 0.007603537969236087,
+    "val_from_rest_naive_rmse_rad": 1.4085416392047536,
+    "val_autoregressive_rmse_rad": 0.03887841174963842,
+    "val_autoregressive_naive_rmse_rad": 1.6707626093494303,
+    "notes": "val_*: all windows of held-out trajectories; from_rest: context is the first k samples (what the widget shows); autoregressive: 3 x h steps, forecasts fed back."
+  },
+  "training": {
+    "seed": 7,
+    "train_trajectories": 2400,
+    "val_trajectories": 400,
+    "samples_per_trajectory": 160,
+    "train_windows": 542400,
+    "val_windows": 45200,
+    "epochs": 40,
+    "batch_size": 1024,
+    "seconds": 55.8,
+    "torch": "2.14.1"
+  },
+  "onnx_max_abs_diff_vs_torch": 2.384185791015625e-06
+}

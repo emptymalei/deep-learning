@@ -1,0 +1,83 @@
+/* Sections under the table of contents: the page's glossary terms and its
+   links to and from other pages. The markup is added to every built page by
+   scripts/stage_site.py (add_sidebar_sections). */
+
+.dl-side {
+    margin-top: 0.9rem;
+    margin-left: 0.2rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--md-default-fg-color--lightest);
+    font-size: 0.7rem;
+}
+
+.dl-side__title {
+    margin: 0 0 0.35rem;
+    padding: 0 0.6rem;
+    font-weight: 700;
+}
+
+.dl-side__sub {
+    margin: 0.5rem 0 0.1rem;
+    padding: 0 0.6rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--md-default-fg-color--light);
+}
+
+.dl-side .md-nav__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.dl-side .md-nav__link {
+    margin: 0;
+    padding: 0.2rem 0.6rem;
+}
+
+.dl-side__terms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin: 0;
+    padding: 0 0.6rem;
+    list-style: none;
+}
+
+.dl-side__term {
+    padding: 0.1rem 0.5rem;
+    border: 1px solid var(--md-default-fg-color--lighter);
+    border-radius: 1rem;
+    background: transparent;
+    color: var(--md-default-fg-color);
+    font: inherit;
+    font-size: 0.65rem;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.dl-side__term:hover,
+.dl-side__term:focus-visible,
+.dl-side__term[aria-expanded="true"] {
+    border-color: var(--md-accent-fg-color);
+    color: var(--md-accent-fg-color);
+}
+
+.dl-side__term:focus-visible {
+    outline: 2px solid var(--md-accent-fg-color);
+    outline-offset: 1px;
+}
+
+.dl-side__more summary {
+    padding: 0.2rem 0.6rem;
+    color: var(--md-default-fg-color--light);
+    cursor: pointer;
+}
+
+@media print {
+    .dl-side {
+        display: none;
+    }
+}
