@@ -106,6 +106,9 @@ Available widgets live in `dl/assets/widgets/`:
 | `pretrain-overlap` | A memorizing model scored on a benchmark that partly overlaps with its pretraining data, next to a rival that saw none of it | `leakage.js` |
 | `baseline-forecasts` | The mean, naive, seasonal naive and drift forecasts on a series with trend and weekly pattern, from a movable origin | `baselines.js` |
 | `mase-scale` | A forecast's absolute errors against the training data's absolute one-step changes: MAE moves with the unit, MASE does not | `baselines.js` |
+| `leaderboard-climb` | Random submissions kept by their leaderboard score and combined: holdout accuracy climbs while true accuracy stays at 50%; a switch applies the Ladder of Blum and Hardt (2015) | `leakage.js` |
+| `common-shock` | Indirect leakage: a never-seen series forecast by a memorizing model that has seen a correlated series through the test period | `leakage.js` |
+| `cutoff-step` | Forecast error by month around a model's knowledge cutoff, with a backtest period that starts at the stated cutoff | `leakage.js` |
 | `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
 | `entropy-explorer` | Two distributions over six classes, and the cross entropy split into the entropy plus the KL divergence | `entropy-explorer.js` |
 | `gini-explorer` | The Gini impurity of a two-class dataset as its mix changes | `impurity-explorer.js` |
