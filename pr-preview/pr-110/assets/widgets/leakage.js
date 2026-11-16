@@ -1,0 +1,757 @@
+/*
+ * Four explainers for the page "Leakage and Contamination".
+ *
+ *   feature-timeline  which features are known at the forecast origin
+ *   split-leak        the same local model scored with and without access
+ *                     to the observation after each test point
+ *   selection-leak    picking the best of many noise features on all the
+ *                     data, against picking it on the training part only
+ *   pretrain-overlap  a model that memorizes its pretraining corpus, scored
+ *                     on a benchmark that partly overlaps with the corpus
+ *   leaderboard-climb random submissions combined by their leaderboard scores,
+ *                     with and without the Ladder of Blum and Hardt (2015)
+ *   common-shock      a series that is never trained on, forecast by a model
+ *                     that has seen a correlated series through the test period
+ *   cutoff-step       forecast error before and after a knowledge cutoff
+ *
+ * All data is simulated in the browser from seeded random numbers. The
+ * feature list in feature-timeline is an illustration, not from a dataset.
+ */
+(function () {
+    const { rng, node, html, slider, seg, button, legend, widthOf, lifecycle, polyline } = window.dlWidgetKit;
+    const mean = (a) => a.reduce((s, v) => s + v, 0) / (a.length || 1);
+
+    // ==========================================================================
+    // feature-timeline
+    // ==========================================================================
+    dlWidgets.register("feature-timeline", (el, api) => {
+        const state = { h: 3, delay: 5, playing: false };
+        // [name, day the value refers to, day it becomes known]; the target day is 0.
+        const features = () => [
+            ["Promotion plan for the target day", 0, -14],
+            ["Weather forecast for the target day", 0, -state.h],
+            ["Sales seven days before the target", -7, -7],
+            ["Price index, period ending on day −10", -10, -10 + state.delay],
+            ["Sales on the day before the target", -1, -1],
+            ["Observed weather on the target day", 0, 0],
+            ["Returns of the target day's sales", 0, 7],
+        ];
+        el.innerHTML = "";
+        const controls = html("div", "dl-widget__controls", el);
+        const hS = slider(controls, "Horizon h (days)", 1, 10, 1, state.h, 0, (v) => { state.h = v; stop(); render(); });
+        slider(controls, "Publication delay (days)", 0, 12, 1, state.delay, 0, (v) => { state.delay = v; stop(); render(); });
+        const play = button(controls, "Play", () => (state.playing ? stop() : start()));
+        const svg = node("svg", { role: "img" }, el);
+        const legendBox = html("div", "dl-widget__legend", el);
+        const caption = html("p", "dl-widget__caption", el);
+        caption.setAttribute("aria-live", "polite");
+        let timer = 0;
+        function start() {
+            state.playing = true;
+            play.textContent = "Pause";
+            state.h = 0;
+            const tick = () => {
+                state.h += 1;
+                hS.set(state.h);
+                render();
+                if (state.h >= 10) return stop();
+                timer = setTimeout(tick, 900);
+            };
+            tick();
+        }
+        function stop() {
+            clearTimeout(timer);
+            state.playing = false;
+            play.textContent = "Play";
+        }
+        let W = 640;
+        function render() {
+            const c = api.colors();
+            W = widthOf(el);
+            const narrow = W < 520;
+            const list = features();
+            const rowH = narrow ? 34 : 24;
+            const nameW = narrow ? 0 : 236;
+            const padR = 12, top = 30;
+            const H = top + list.length * rowH + 24;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.innerHTML = "";
+            const D0 = -15, D1 = 9;
+            const x = (d) => nameW + 10 + ((W - nameW - 10 - padR) * (Math.max(D0, Math.min(D1, d)) - D0)) / (D1 - D0);
+            const origin = -state.h;
+            // What is known at the origin lies to the left of it.
+            node("rect", { x: x(D0), y: top - 6, width: x(origin) - x(D0), height: list.length * rowH + 6, fill: c.train, "fill-opacity": 0.1 }, svg);
+            for (const [d, name, col] of [[origin, "forecast made", c.train], [0, "target day", c.fg]]) {
+                node("line", { x1: x(d), x2: x(d), y1: top - 10, y2: top + list.length * rowH, stroke: col, "stroke-width": 2 }, svg);
+                node("text", { x: x(d), y: top - 14, "text-anchor": d === 0 ? "start" : "end", "font-size": 10, "font-weight": 700, fill: col }, svg, name);
+            }
+            let ok = 0;
+            list.forEach(([name, ref, known], i) => {
+                const y = top + i * rowH + (narrow ? 22 : rowH / 2);
+                const legit = known <= origin;
+                ok += legit;
+                const col = legit ? c.train : c.accent;
+                node("text", narrow ? { x: 4, y: y - 10, "font-size": 10, fill: c.fg } : { x: nameW, y: y + 3.5, "text-anchor": "end", "font-size": 10.5, fill: c.fg }, svg, name);
+                node("line", { x1: x(ref), x2: x(known), y1: y, y2: y, stroke: col, "stroke-width": 1.5, "stroke-dasharray": "3 3" }, svg);
+                node("circle", { cx: x(ref), cy: y, r: 3.5, fill: "none", stroke: col, "stroke-width": 1.5 }, svg);
+                node("rect", { x: x(known) - 4.5, y: y - 4.5, width: 9, height: 9, fill: col }, svg);
+                node("text", { x: W - 2, y: y + 3.5, "text-anchor": "end", "font-size": 10, "font-weight": 700, fill: col }, svg, legit ? "ok" : "leak");
+            });
+            for (let d = -14; d <= 8; d += 2) node("text", { x: x(d), y: H - 6, "text-anchor": "middle", "font-size": 9.5, fill: c.fgLight }, svg, d);
+            legend(legendBox, [
+                ["known when the forecast is made: legitimate", c.train],
+                ["known only later: using it is leakage", c.accent],
+                ["circle: the day the value refers to; square: the day it becomes known", c.fgLight],
+            ]);
+            svg.setAttribute("aria-label", `Seven candidate features on a timeline for a forecast made ${state.h} days before the target day.`);
+            caption.textContent =
+                `A forecast made ${state.h} day${state.h > 1 ? "s" : ""} before the target day may use ${ok} of these ${list.length} features. ` +
+                (state.h > 1 ? "Yesterday's sales are a fine feature for a one-day horizon and a leak for any longer one. " : "") +
+                (-10 + state.delay > origin ? "The price index refers to a period long past, but it is published after the forecast is made, so the forecaster does not have it." : "What decides is the day a value becomes known, not the day it refers to.");
+        }
+        render();
+        return lifecycle(el, api, render, stop);
+    });
+
+    // ==========================================================================
+    // split-leak
+    // ==========================================================================
+    dlWidgets.register("split-leak", (el, api) => {
+        const N = 400;
+        const SHOW = 90;
+        const state = { rho: 0.95, seed: 3, runs: 0, sumLeak: 0, sumHonest: 0, playing: false };
+        let xs = [], test = [], leakPred = [], honestPred = [], cur = { leak: 0, honest: 0 };
+        function simulate() {
+            const g = rng(state.seed);
+            xs = [0];
+            const s = Math.sqrt(1 - state.rho * state.rho);
+            for (let t = 1; t < N; t++) xs.push(state.rho * xs[t - 1] + s * g.normal());
+            // Random split: a quarter of the points become test points.
+            test = xs.map((_, t) => t > 0 && t < N - 1 && g.u() < 0.25);
+            leakPred = [];
+            honestPred = [];
+            const eL = [], eH = [];
+            for (let t = 1; t < N - 1; t++) {
+                if (!test[t]) continue;
+                let a = t - 1, b = t + 1;
+                while (a > 0 && test[a]) a--;
+                while (b < N - 1 && test[b]) b++;
+                // Leaky: the nearest training points on both sides. Honest: the last value before t.
+                leakPred[t] = 0.5 * (xs[a] + xs[b]);
+                honestPred[t] = xs[t - 1];
+                eL.push(Math.abs(xs[t] - leakPred[t]));
+                eH.push(Math.abs(xs[t] - honestPred[t]));
+            }
+            cur = { leak: mean(eL), honest: mean(eH) };
+            state.runs++;
+            state.sumLeak += cur.leak;
+            state.sumHonest += cur.honest;
+        }
+        const reset = () => {
+            stop();
+            state.runs = state.sumLeak = state.sumHonest = 0;
+            simulate();
+            render();
+        };
+        el.innerHTML = "";
+        const controls = html("div", "dl-widget__controls", el);
+        slider(controls, "Autocorrelation ρ", 0, 0.99, 0.01, state.rho, 2, (v) => { state.rho = v; reset(); });
+        button(controls, "New series", () => { stop(); state.seed++; simulate(); render(); });
+        const play = button(controls, "Play", () => (state.playing ? stop() : start()));
+        const svg = node("svg", { role: "img" }, el);
+        const legendBox = html("div", "dl-widget__legend", el);
+        const caption = html("p", "dl-widget__caption", el);
+        caption.setAttribute("aria-live", "polite");
+        let timer = 0;
+        function start() {
+            state.playing = true;
+            play.textContent = "Pause";
+            const tick = () => {
+                state.seed++;
+                simulate();
+                render();
+                if (state.runs >= 200) return stop();
+                timer = setTimeout(tick, state.runs < 6 ? 600 : 70);
+            };
+            tick();
+        }
+        function stop() {
+            clearTimeout(timer);
+            state.playing = false;
+            play.textContent = "Play";
+        }
+        let W = 640;
+        function render() {
+            const c = api.colors();
+            W = widthOf(el);
+            const padL = 8, padR = 8;
+            const topH = 170, gap = 34, barH = 16;
+            const H = topH + gap + 2 * (barH + 20) + 4;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.innerHTML = "";
+            const seg = xs.slice(0, SHOW);
+            const lo = Math.min(...seg) - 0.3, hi = Math.max(...seg) + 0.3;
+            const x = (t) => padL + ((W - padL - padR) * t) / (SHOW - 1);
+            const y = (v) => 6 + (topH - 12) * (1 - (v - lo) / (hi - lo));
+            node("polyline", { points: polyline(seg.map((v, t) => [x(t), y(v)])), fill: "none", stroke: c.fgLighter, "stroke-width": 1.2 }, svg);
+            seg.forEach((v, t) => {
+                if (test[t]) {
+                    node("line", { x1: x(t), x2: x(t), y1: y(v), y2: y(leakPred[t]), stroke: c.accent, "stroke-width": 1.5 }, svg);
+                    node("circle", { cx: x(t), cy: y(leakPred[t]), r: 2.6, fill: c.accent }, svg);
+                    node("circle", { cx: x(t), cy: y(honestPred[t]), r: 2.6, fill: c.train }, svg);
+                    node("circle", { cx: x(t), cy: y(v), r: 3.6, fill: "none", stroke: c.fg, "stroke-width": 1.5 }, svg);
+                } else {
+                    node("circle", { cx: x(t), cy: y(v), r: 1.8, fill: c.fgLight }, svg);
+                }
+            });
+            node("text", { x: padL, y: topH + 12, "font-size": 10, fill: c.fgLight }, svg, `first ${SHOW} of ${N} time steps`);
+            const full = W - padL - padR;
+            const top = Math.max(cur.honest, cur.leak, state.sumHonest / state.runs) * 1.1;
+            let yb = topH + gap;
+            for (const [name, v, avg, col] of [
+                ["Random split, model sees both neighbours", cur.leak, state.sumLeak / state.runs, c.accent],
+                ["Forecasting forward, model sees the past only", cur.honest, state.sumHonest / state.runs, c.train],
+            ]) {
+                node("text", { x: padL, y: yb - 4, "font-size": 10, fill: c.fg }, svg, `${name}: MAE ${v.toFixed(3)}` + (state.runs > 1 ? ` (average of ${state.runs} series: ${avg.toFixed(3)})` : ""));
+                node("rect", { x: padL, y: yb, width: full, height: barH, fill: c.fgLightest }, svg);
+                node("rect", { x: padL, y: yb, width: (full * v) / top, height: barH, fill: col, "fill-opacity": 0.75 }, svg);
+                yb += barH + 20;
+            }
+            legend(legendBox, [
+                ["training points", c.fgLight],
+                ["test points (open circles)", c.fg],
+                ["prediction from the neighbours on both sides", c.accent],
+                ["prediction from the previous value only", c.train],
+            ]);
+            const ratio = cur.honest / cur.leak;
+            svg.setAttribute("aria-label", `An autocorrelated series with randomly chosen test points and two predictions for each.`);
+            caption.textContent =
+                `Same series, same test points, same kind of model. With access to the value after each test point the error is ${cur.leak.toFixed(3)}; without it, ${cur.honest.toFixed(3)}` +
+                (ratio > 1.05 ? `, ${ratio.toFixed(2)} times larger. The random split reports an accuracy that no forecast made in real time can have.` : ". With little autocorrelation the neighbours carry no information, and the leak does no harm.");
+        }
+        simulate();
+        render();
+        return lifecycle(el, api, render, stop);
+    });
+
+    // ==========================================================================
+    // selection-leak
+    // ==========================================================================
+    dlWidgets.register("selection-leak", (el, api) => {
+        const state = { n: 100, p: 200, leak: [], clean: [], playing: false };
+        let g = rng(19);
+        function corr(a, b, from, to) {
+            let sa = 0, sb = 0, saa = 0, sbb = 0, sab = 0;
+            const m = to - from;
+            for (let i = from; i < to; i++) {
+                sa += a[i]; sb += b[i]; saa += a[i] * a[i]; sbb += b[i] * b[i]; sab += a[i] * b[i];
+            }
+            return (sab - (sa * sb) / m) / Math.sqrt((saa - (sa * sa) / m) * (sbb - (sb * sb) / m));
+        }
+        function experiment() {
+            const { n, p } = state;
+            const half = n >> 1;
+            const y = Float64Array.from({ length: n }, () => g.normal());
+            let bestAll = -1, bestTrain = -1, testOfAll = 0, testOfTrain = 0;
+            for (let j = 0; j < p; j++) {
+                // Every feature is pure noise: none of them can predict y.
+                const f = Float64Array.from({ length: n }, () => g.normal());
+                const cTrain = Math.abs(corr(f, y, 0, half));
+                const cAll = Math.abs(corr(f, y, 0, n));
+                const cTest = Math.abs(corr(f, y, half, n));
+                if (cAll > bestAll) { bestAll = cAll; testOfAll = cTest; }
+                if (cTrain > bestTrain) { bestTrain = cTrain; testOfTrain = cTest; }
+            }
+            state.leak.push(testOfAll);
+            state.clean.push(testOfTrain);
+        }
+        const reset = () => {
+            stop();
+            state.leak = [];
+            state.clean = [];
+            experiment();
+            render();
+        };
+        el.innerHTML = "";
+        const controls = html("div", "dl-widget__controls", el);
+        slider(controls, "Samples n", 40, 400, 20, state.n, 0, (v) => { state.n = v; reset(); });
+        slider(controls, "Noise features p", 5, 500, 5, state.p, 0, (v) => { state.p = v; reset(); });
+        button(controls, "New experiment", () => { stop(); experiment(); render(); });
+        const play = button(controls, "Play", () => (state.playing ? stop() : start()));
+        const svg = node("svg", { role: "img" }, el);
+        const legendBox = html("div", "dl-widget__legend", el);
+        const caption = html("p", "dl-widget__caption", el);
+        caption.setAttribute("aria-live", "polite");
+        let timer = 0;
+        function start() {
+            state.playing = true;
+            play.textContent = "Pause";
+            const tick = () => {
+                const batch = state.leak.length < 6 ? 1 : 4;
+                for (let i = 0; i < batch; i++) experiment();
+                render();
+                if (state.leak.length >= 300) return stop();
+                timer = setTimeout(tick, state.leak.length < 6 ? 500 : 50);
+            };
+            tick();
+        }
+        function stop() {
+            clearTimeout(timer);
+            state.playing = false;
+            play.textContent = "Play";
+        }
+        let W = 640;
+        function render() {
+            const c = api.colors();
+            W = widthOf(el);
+            const padL = 10, padR = 14, rowH = 78;
+            const H = 2 * rowH + 34;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.innerHTML = "";
+            const xmax = Math.max(0.5, ...state.leak, ...state.clean) * 1.05;
+            const x = (v) => padL + ((W - padL - padR) * v) / xmax;
+            [["Feature chosen on all the data, scored on the test half", state.leak, c.accent], ["Feature chosen on the training half, scored on the test half", state.clean, c.train]].forEach(([name, vals, col], k) => {
+                const y0 = 16 + k * rowH;
+                node("text", { x: padL, y: y0, "font-size": 10.5, fill: c.fg }, svg, `${name}: mean |r| = ${mean(vals).toFixed(3)}`);
+                node("line", { x1: padL, x2: W - padR, y1: y0 + 50, y2: y0 + 50, stroke: c.fgLighter }, svg);
+                vals.forEach((v, i) => node("circle", { cx: x(v), cy: y0 + 46 - ((i * 5) % 34), r: i === vals.length - 1 ? 4.5 : 2.4, fill: col, "fill-opacity": i === vals.length - 1 ? 1 : 0.5 }, svg));
+                node("line", { x1: x(mean(vals)), x2: x(mean(vals)), y1: y0 + 8, y2: y0 + 54, stroke: c.fg, "stroke-width": 2 }, svg);
+            });
+            for (let v = 0; v <= xmax; v += 0.1) node("text", { x: x(v), y: H - 6, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, v.toFixed(1));
+            node("text", { x: W - padR, y: H - 20, "text-anchor": "end", "font-size": 10, fill: c.fgLight }, svg, "|correlation| with the target on the test half");
+            legend(legendBox, [
+                ["selection saw the test half", c.accent],
+                ["selection saw the training half only", c.train],
+                ["mean over the experiments", c.fg],
+            ]);
+            svg.setAttribute("aria-label", `Test correlation of the best of ${state.p} noise features chosen with and without the test data, over ${state.leak.length} experiments.`);
+            caption.textContent =
+                `${state.leak.length} experiment${state.leak.length > 1 ? "s" : ""}, each with ${state.p} features of pure noise and ${state.n} samples, half of them for testing. ` +
+                `No feature has any relation to the target. Chosen cleanly, the best feature has a test correlation of ${mean(state.clean).toFixed(2)} on average, which is what chance gives for ${state.n >> 1} test samples. ` +
+                `Chosen on all the data, it has ${mean(state.leak).toFixed(2)}: the test half helped to pick it, so it looks predictive on the test half.`;
+        }
+        experiment();
+        render();
+        return lifecycle(el, api, render, stop);
+    });
+
+    // ==========================================================================
+    // pretrain-overlap
+    // ==========================================================================
+    dlWidgets.register("pretrain-overlap", (el, api) => {
+        const CTX = 48, HOR = 16, NB = 40, NC = 150;
+        const state = { share: 0, rival: 0.8, playing: false };
+        const g = rng(2024);
+        function makeSeries(len) {
+            const period = 8 + 22 * g.u(), amp = 0.5 + g.u(), ph = 2 * Math.PI * g.u(), slope = (g.u() - 0.5) * 0.02;
+            return Array.from({ length: len }, (_, t) => amp * Math.sin((2 * Math.PI * t) / period + ph) + slope * t + 0.15 * g.normal());
+        }
+        const bench = Array.from({ length: NB }, () => makeSeries(CTX + HOR));
+        // The clean corpus: other series from the same generator, cut into windows.
+        const windows = [];
+        for (let i = 0; i < NC; i++) {
+            const s = makeSeries(CTX + HOR + 56);
+            for (let o = 0; o <= 56; o += 4) windows.push(s.slice(o, o + CTX + HOR));
+        }
+        /** The memorizing model: return what followed the most similar context in the corpus. */
+        function recall(context) {
+            let best = Infinity, out = null;
+            for (const w of windows) {
+                let d = 0;
+                for (let t = 0; t < CTX && d < best; t++) d += (w[t] - context[t]) * (w[t] - context[t]);
+                if (d < best) { best = d; out = w; }
+            }
+            return out.slice(CTX);
+        }
+        const unseen = bench.map((s) => recall(s.slice(0, CTX)));
+        const mae = (s, f) => mean(f.map((v, t) => Math.abs(v - s[CTX + t])));
+        const errUnseen = bench.map((s, i) => mae(s, unseen[i]));
+        const clean = mean(errUnseen);
+        // Which benchmark series enter the corpus as the leaked share grows: a fixed random order.
+        const order = bench.map((_, i) => i).sort((a, b) => ((a * 7919) % NB) - ((b * 7919) % NB));
+
+        el.innerHTML = "";
+        const controls = html("div", "dl-widget__controls", el);
+        const sS = slider(controls, "Leaked share (%)", 0, 100, 5, state.share, 0, (v) => { state.share = v; stop(); render(); });
+        slider(controls, "Rival's error (ratio)", 0.5, 1, 0.05, state.rival, 2, (v) => { state.rival = v; stop(); render(); });
+        const play = button(controls, "Play", () => (state.playing ? stop() : start()));
+        const svg = node("svg", { role: "img" }, el);
+        const legendBox = html("div", "dl-widget__legend", el);
+        const caption = html("p", "dl-widget__caption", el);
+        caption.setAttribute("aria-live", "polite");
+        let timer = 0;
+        function start() {
+            state.playing = true;
+            play.textContent = "Pause";
+            state.share = -5;
+            const tick = () => {
+                state.share += 5;
+                sS.set(state.share);
+                render();
+                if (state.share >= 100) return stop();
+                timer = setTimeout(tick, 350);
+            };
+            tick();
+        }
+        function stop() {
+            clearTimeout(timer);
+            state.playing = false;
+            play.textContent = "Play";
+        }
+        let W = 640;
+        function render() {
+            const c = api.colors();
+            W = widthOf(el);
+            const padL = 8, padR = 8;
+            const topH = 150, gap = 40, botH = 110, padB = 28;
+            const H = topH + gap + botH + padB;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.innerHTML = "";
+            const nLeak = Math.round((state.share / 100) * NB);
+            const leaked = new Set(order.slice(0, nLeak));
+            // A series that is in the corpus is recalled exactly.
+            const score = mean(bench.map((_, i) => (leaked.has(i) ? 0 : errUnseen[i])));
+            const rival = state.rival * clean;
+
+            // Top: one benchmark series, with the forecast when it was not seen and when it was.
+            const ex = order[0];
+            const s = bench[ex];
+            const lo = Math.min(...s, ...unseen[ex]) - 0.2, hi = Math.max(...s, ...unseen[ex]) + 0.2;
+            const x = (t) => padL + ((W - padL - padR) * t) / (CTX + HOR - 1);
+            const y = (v) => 14 + (topH - 20) * (1 - (v - lo) / (hi - lo));
+            node("rect", { x: x(CTX - 0.5), y: 4, width: x(CTX + HOR - 1) - x(CTX - 0.5), height: topH - 4, fill: c.fgLightest }, svg);
+            node("text", { x: x(CTX), y: 13, "font-size": 10, fill: c.fgLight }, svg, "test horizon");
+            node("polyline", { points: polyline(s.map((v, t) => [x(t), y(v)])), fill: "none", stroke: c.fg, "stroke-width": 1.5 }, svg);
+            const seen = leaked.has(ex);
+            const f = seen ? s.slice(CTX) : unseen[ex];
+            node("polyline", { points: polyline(f.map((v, t) => [x(CTX + t), y(v)])), fill: "none", stroke: seen ? c.accent : c.train, "stroke-width": 2.4, "stroke-dasharray": seen ? "" : "5 3" }, svg);
+            node("text", { x: padL, y: topH + 13, "font-size": 10, fill: c.fgLight }, svg, `one benchmark series: ${seen ? "it is in the pretraining data, and the forecast is a recall" : "not in the pretraining data"}`);
+
+            // Bottom: the benchmark score over the leaked share.
+            const y0 = topH + gap;
+            const xb = (p) => padL + 26 + ((W - padL - padR - 30) * p) / 100;
+            const yb = (v) => y0 + botH * (1 - v / (clean * 1.15));
+            node("line", { x1: xb(0), x2: xb(100), y1: yb(0), y2: yb(0), stroke: c.fgLighter }, svg);
+            const curve = [];
+            for (let p = 0; p <= 100; p += 5) {
+                const set = new Set(order.slice(0, Math.round((p / 100) * NB)));
+                curve.push([xb(p), yb(mean(bench.map((_, i) => (set.has(i) ? 0 : errUnseen[i]))))]);
+            }
+            node("polyline", { points: polyline(curve), fill: "none", stroke: c.accent, "stroke-width": 2.2 }, svg);
+            node("line", { x1: xb(0), x2: xb(100), y1: yb(clean), y2: yb(clean), stroke: c.accent, "stroke-dasharray": "5 4" }, svg);
+            node("text", { x: xb(100), y: yb(clean) - 4, "text-anchor": "end", "font-size": 10, fill: c.accent }, svg, "memorizer on series it has never seen");
+            node("line", { x1: xb(0), x2: xb(100), y1: yb(rival), y2: yb(rival), stroke: c.train, "stroke-width": 2 }, svg);
+            node("text", { x: xb(100), y: yb(rival) + 12, "text-anchor": "end", "font-size": 10, fill: c.train }, svg, "rival that saw none of the benchmark");
+            node("circle", { cx: xb(state.share), cy: yb(score), r: 5, fill: c.accent }, svg);
+            for (const p of [0, 25, 50, 75, 100]) node("text", { x: xb(p), y: yb(0) + 13, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, p + "%");
+            node("text", { x: xb(50), y: H - 3, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, "share of the benchmark that is in the pretraining data");
+            node("text", { x: padL, y: y0 + 4, "font-size": 10, fill: c.fgLight }, svg, "MAE");
+
+            legend(legendBox, [
+                ["benchmark series", c.fg],
+                ["memorizing model: its benchmark score", c.accent],
+                ["its forecast for a series it has not seen", c.train],
+            ]);
+            svg.setAttribute("aria-label", `Benchmark error of a memorizing model when ${state.share} percent of the benchmark series are in its pretraining data.`);
+            caption.textContent =
+                `${nLeak} of ${NB} benchmark series are in the pretraining data. Benchmark MAE of the memorizer: ${score.toFixed(3)}; on unseen series it is ${clean.toFixed(3)}. The rival scores ${rival.toFixed(3)}. ` +
+                (score < rival
+                    ? "The benchmark ranks the memorizer first, although the rival is the better model on series that neither has seen."
+                    : "The benchmark still ranks the rival first; raise the share to see the ranking flip.");
+        }
+        render();
+        return lifecycle(el, api, render, stop);
+    });
+
+    // ==========================================================================
+    // leaderboard-climb: adaptive reuse of a holdout (after Blum & Hardt 2015)
+    // ==========================================================================
+    dlWidgets.register("leaderboard-climb", (el, api) => {
+        const KMAX = 1500;
+        const state = { n: 1000, k: 300, ladder: false, playing: false };
+        let curve = [], kept = 0;
+        function simulate() {
+            const g = rng(99 + state.n);
+            const n = state.n;
+            // Labels are coin flips, so every classifier has a true accuracy of 50%.
+            const y = Int8Array.from({ length: n }, () => (g.u() < 0.5 ? 1 : -1));
+            const votes = new Float64Array(n);
+            const eta = Math.pow(n, -1 / 3);
+            let best = Infinity;
+            kept = 0;
+            curve = [];
+            for (let t = 1; t <= KMAX; t++) {
+                const f = Int8Array.from({ length: n }, () => (g.u() < 0.5 ? 1 : -1));
+                let wrong = 0;
+                for (let i = 0; i < n; i++) wrong += f[i] !== y[i];
+                const loss = wrong / n;
+                let released = loss, informative = true;
+                if (state.ladder) {
+                    // The Ladder: release a new score only for a clear improvement, else repeat the best so far.
+                    if (loss < best - eta) best = Math.round(loss / eta) * eta;
+                    else informative = false;
+                    released = best;
+                }
+                // The attacker keeps a submission when the leaderboard says it beat chance.
+                if (informative && released < 0.5) {
+                    kept++;
+                    for (let i = 0; i < n; i++) votes[i] += f[i];
+                }
+                let ok = 0;
+                for (let i = 0; i < n; i++) ok += (votes[i] === 0 ? (i % 2 ? 1 : -1) : Math.sign(votes[i])) === y[i];
+                curve.push([ok / n, kept]);
+            }
+        }
+        el.innerHTML = "";
+        const controls = html("div", "dl-widget__controls", el);
+        slider(controls, "Holdout size n", 200, 3000, 100, state.n, 0, (v) => { state.n = v; stop(); simulate(); render(); });
+        const kS = slider(controls, "Submissions k", 1, KMAX, 1, state.k, 0, (v) => { state.k = v; stop(); render(); });
+        const mode = seg(controls, "Leaderboard", ["Plain leaderboard", "Ladder"], (i) => { state.ladder = i === 1; stop(); simulate(); render(); });
+        const play = button(controls, "Play", () => (state.playing ? stop() : start()));
+        const svg = node("svg", { role: "img" }, el);
+        const legendBox = html("div", "dl-widget__legend", el);
+        const caption = html("p", "dl-widget__caption", el);
+        caption.setAttribute("aria-live", "polite");
+        let timer = 0;
+        function start() {
+            state.playing = true;
+            play.textContent = "Pause";
+            state.k = 0;
+            const tick = () => {
+                state.k = Math.min(KMAX, state.k + (state.k < 20 ? 1 : 25));
+                kS.set(state.k);
+                render();
+                if (state.k >= KMAX) return stop();
+                timer = setTimeout(tick, state.k < 20 ? 200 : 60);
+            };
+            tick();
+        }
+        function stop() {
+            clearTimeout(timer);
+            state.playing = false;
+            play.textContent = "Play";
+        }
+        let W = 640;
+        function render() {
+            const c = api.colors();
+            W = widthOf(el);
+            mode.select(state.ladder ? 1 : 0);
+            const padL = 40, padR = 10, H = 230, padB = 30;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.innerHTML = "";
+            const x = (k) => padL + ((W - padL - padR) * k) / KMAX;
+            const y = (a) => 8 + (H - padB - 8) * (1 - (a - 0.45) / 0.5);
+            for (const a of [0.5, 0.6, 0.7, 0.8, 0.9]) {
+                node("line", { x1: padL, x2: W - padR, y1: y(a), y2: y(a), stroke: a === 0.5 ? c.train : c.fgLightest, "stroke-width": a === 0.5 ? 2 : 1 }, svg);
+                node("text", { x: padL - 5, y: y(a) + 3, "text-anchor": "end", "font-size": 10, fill: c.fgLight }, svg, `${Math.round(a * 100)}%`);
+            }
+            node("text", { x: W - padR, y: y(0.5) + 13, "text-anchor": "end", "font-size": 10, fill: c.train }, svg, "accuracy on new data: 50%, whatever is submitted");
+            const pts = curve.slice(0, state.k).map((v, i) => [x(i + 1), y(Math.min(0.95, v[0]))]);
+            node("polyline", { points: polyline(curve.map((v, i) => [x(i + 1), y(Math.min(0.95, v[0]))])), fill: "none", stroke: c.fgLighter, "stroke-width": 1 }, svg);
+            if (pts.length) {
+                node("polyline", { points: polyline(pts), fill: "none", stroke: c.accent, "stroke-width": 2.2 }, svg);
+                node("circle", { cx: pts[pts.length - 1][0], cy: pts[pts.length - 1][1], r: 4.5, fill: c.accent }, svg);
+            }
+            for (const k of [0, 500, 1000, 1500]) node("text", { x: x(k), y: H - padB + 13, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, k);
+            node("text", { x: (padL + W - padR) / 2, y: H - 3, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, "number of submissions k");
+            legend(legendBox, [
+                ["holdout accuracy of the combined submission", c.accent],
+                ["true accuracy", c.train],
+            ]);
+            const cur = curve[Math.max(0, state.k - 1)];
+            svg.setAttribute("aria-label", `Holdout accuracy of a combination of random submissions after ${state.k} submissions to a holdout of ${state.n} examples.`);
+            caption.textContent =
+                `After ${state.k} random submissions to a holdout of ${state.n} labels, the attacker has kept ${cur[1]} of them and their majority vote scores ${(100 * cur[0]).toFixed(1)}% on the holdout. ` +
+                `No information about the task was used; on new data it scores 50%. For comparison, the square root of k/n is ${Math.sqrt(state.k / state.n).toFixed(2)}. ` +
+                (state.ladder
+                    ? "With the Ladder, a submission learns its score only when it clearly beats the best so far, so there is almost nothing to climb on."
+                    : "Each leaderboard score reveals a little about the holdout labels, and the attacker adds those bits up.");
+        }
+        simulate();
+        render();
+        return lifecycle(el, api, render, stop);
+    });
+
+    // ==========================================================================
+    // common-shock: indirect leakage through a correlated series (after Meyer et al. 2025)
+    // ==========================================================================
+    dlWidgets.register("common-shock", (el, api) => {
+        const N = 160, SPLIT = 120, CTX = 24, HOR = 24;
+        const state = { share: 0.8, through: true, playing: false };
+        const g = rng(515);
+        const E1 = Array.from({ length: N }, () => g.normal());
+        const E2 = Array.from({ length: N }, () => g.normal());
+        const E3 = Array.from({ length: N }, () => g.normal());
+        function build() {
+            const a = Math.sqrt(state.share), b = Math.sqrt(1 - state.share);
+            let c = 0, ex = 0, ey = 0;
+            const x = [], y = [];
+            for (let t = 0; t < N; t++) {
+                // A common driver with a shock inside the test period, plus a walk of its own for each series.
+                c += 0.35 * E1[t] + (t >= SPLIT + 6 && t < SPLIT + 12 ? -1.6 : 0);
+                ex += 0.35 * E2[t];
+                ey += 0.35 * E3[t];
+                x.push(a * c + b * ex);
+                y.push(a * c + b * ey);
+            }
+            return { x, y };
+        }
+        /** A memorizer: recall what followed the most similar stored context (levels removed). */
+        function recall(corpusEnd, x, ctx) {
+            let best = Infinity, out = null;
+            for (let s = 0; s + CTX + HOR <= corpusEnd; s++) {
+                let d = 0;
+                for (let i = 0; i < CTX; i++) {
+                    const diff = x[s + i] - x[s + CTX - 1] - (ctx[i] - ctx[CTX - 1]);
+                    d += diff * diff;
+                }
+                if (d < best) { best = d; out = s; }
+            }
+            return Array.from({ length: HOR }, (_, j) => ctx[CTX - 1] + x[out + CTX + j] - x[out + CTX - 1]);
+        }
+        el.innerHTML = "";
+        const controls = html("div", "dl-widget__controls", el);
+        const sS = slider(controls, "Shared driver (share of variance)", 0, 1, 0.05, state.share, 2, (v) => { state.share = v; stop(); render(); });
+        const mode = seg(controls, "Pretraining data of the other series", ["Ends at the split date", "Runs through the test period"], (i) => { state.through = i === 1; render(); });
+        const play = button(controls, "Play", () => (state.playing ? stop() : start()));
+        const svg = node("svg", { role: "img" }, el);
+        const legendBox = html("div", "dl-widget__legend", el);
+        const caption = html("p", "dl-widget__caption", el);
+        caption.setAttribute("aria-live", "polite");
+        let timer = 0;
+        function start() {
+            state.playing = true;
+            play.textContent = "Pause";
+            state.share = -0.05;
+            const tick = () => {
+                state.share = Math.min(1, Math.round((state.share + 0.05) * 100) / 100);
+                sS.set(state.share);
+                render();
+                if (state.share >= 1) return stop();
+                timer = setTimeout(tick, 300);
+            };
+            tick();
+        }
+        function stop() {
+            clearTimeout(timer);
+            state.playing = false;
+            play.textContent = "Play";
+        }
+        let W = 640;
+        function render() {
+            const c = api.colors();
+            W = widthOf(el);
+            mode.select(state.through ? 1 : 0);
+            const { x: xs, y: ys } = build();
+            const ctx = ys.slice(SPLIT - CTX, SPLIT);
+            const fClean = recall(SPLIT, xs, ctx);
+            const fLeak = recall(N, xs, ctx);
+            const truth = ys.slice(SPLIT, SPLIT + HOR);
+            const mae = (f) => mean(f.map((v, j) => Math.abs(v - truth[j])));
+            const f = state.through ? fLeak : fClean;
+            const padL = 8, padR = 8, H = 240, padB = 20;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.innerHTML = "";
+            const T0 = 60;
+            const all = xs.slice(T0).concat(ys.slice(T0), fClean, fLeak);
+            const lo = Math.min(...all) - 0.3, hi = Math.max(...all) + 0.3;
+            const x = (t) => padL + ((W - padL - padR) * (t - T0)) / (N - 1 - T0);
+            const y = (v) => 14 + (H - padB - 14) * (1 - (v - lo) / (hi - lo));
+            node("rect", { x: x(SPLIT - 0.5), y: 4, width: x(N - 1) - x(SPLIT - 0.5), height: H - padB - 4, fill: c.fgLightest }, svg);
+            node("text", { x: x(SPLIT) + 3, y: 13, "font-size": 10, fill: c.fgLight }, svg, "test period");
+            const xEnd = state.through ? N : SPLIT;
+            node("polyline", { points: polyline(xs.slice(T0, xEnd).map((v, i) => [x(T0 + i), y(v)])), fill: "none", stroke: c.train, "stroke-width": 1.4 }, svg);
+            node("polyline", { points: polyline(ys.slice(T0).map((v, i) => [x(T0 + i), y(v)])), fill: "none", stroke: c.fg, "stroke-width": 1.6 }, svg);
+            node("polyline", { points: polyline(f.map((v, j) => [x(SPLIT + j), y(v)])), fill: "none", stroke: c.accent, "stroke-width": 2.4 }, svg);
+            node("text", { x: x(SPLIT), y: H - 5, "text-anchor": "middle", "font-size": 10, fill: c.fg }, svg, "split date");
+            legend(legendBox, [
+                ["target series: never in the pretraining data", c.fg],
+                ["another series with the same driver: in the pretraining data", c.train],
+                ["forecast for the target series", c.accent],
+            ]);
+            svg.setAttribute("aria-label", "Two series with a shared driver; one is in the pretraining data, the other is forecast.");
+            caption.textContent =
+                `The target series is never trained on. MAE of its forecast: ${mae(fClean).toFixed(2)} when the other series stops at the split date, ${mae(fLeak).toFixed(2)} when it runs through the test period. ` +
+                (mae(fLeak) < 0.8 * mae(fClean)
+                    ? "The model recalls how the other series moved during the test period, shock included, and the shared driver makes that a forecast of the target."
+                    : "With little in common between the two series, knowing the other one's future does not help.");
+        }
+        render();
+        return lifecycle(el, api, render, stop);
+    });
+
+    // ==========================================================================
+    // cutoff-step: error before and after a model's knowledge cutoff
+    // ==========================================================================
+    dlWidgets.register("cutoff-step", (el, api) => {
+        const M = 36;
+        const state = { stated: 18, actual: 18, playing: false };
+        const g = rng(64);
+        const BASE = Array.from({ length: M }, () => 1 + 0.18 * g.normal());
+        el.innerHTML = "";
+        const controls = html("div", "dl-widget__controls", el);
+        slider(controls, "Stated cutoff (month)", 6, 30, 1, state.stated, 0, (v) => { state.stated = v; stop(); render(); });
+        const aS = slider(controls, "What the model has seen (month)", 6, 34, 1, state.actual, 0, (v) => { state.actual = v; stop(); render(); });
+        const play = button(controls, "Play", () => (state.playing ? stop() : start()));
+        const svg = node("svg", { role: "img" }, el);
+        const legendBox = html("div", "dl-widget__legend", el);
+        const caption = html("p", "dl-widget__caption", el);
+        caption.setAttribute("aria-live", "polite");
+        let timer = 0;
+        function start() {
+            state.playing = true;
+            play.textContent = "Pause";
+            state.actual = state.stated - 1;
+            const tick = () => {
+                state.actual += 1;
+                aS.set(state.actual);
+                render();
+                if (state.actual >= 34) return stop();
+                timer = setTimeout(tick, 350);
+            };
+            tick();
+        }
+        function stop() {
+            clearTimeout(timer);
+            state.playing = false;
+            play.textContent = "Play";
+        }
+        let W = 640;
+        function render() {
+            const c = api.colors();
+            W = widthOf(el);
+            const padL = 30, padR = 8, H = 210, padB = 30;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.innerHTML = "";
+            // Months the model has seen are recalled, not forecast: a fraction of the honest error.
+            const err = BASE.map((b, m) => (m < state.actual ? 0.2 * b : b));
+            const x = (m) => padL + ((W - padL - padR) * m) / M;
+            const y = (v) => 10 + (H - padB - 10) * (1 - v / 1.6);
+            const bw = (W - padL - padR) / M - 2;
+            node("rect", { x: x(state.stated), y: 6, width: x(M) - x(state.stated), height: H - padB - 6, fill: c.fgLightest }, svg);
+            node("text", { x: x(state.stated) + 4, y: 16, "font-size": 10, fill: c.fgLight }, svg, "backtest period");
+            err.forEach((v, m) => node("rect", { x: x(m) + 1, y: y(v), width: bw, height: y(0) - y(v), fill: m < state.actual ? c.accent : c.train, "fill-opacity": 0.75 }, svg));
+            node("line", { x1: x(state.stated), x2: x(state.stated), y1: 6, y2: H - padB + 4, stroke: c.fg, "stroke-width": 2 }, svg);
+            node("line", { x1: x(state.actual), x2: x(state.actual), y1: 6, y2: H - padB + 4, stroke: c.accent, "stroke-width": 2, "stroke-dasharray": "5 3" }, svg);
+            for (const v of [0, 0.5, 1, 1.5]) node("text", { x: padL - 5, y: y(v) + 3, "text-anchor": "end", "font-size": 10, fill: c.fgLight }, svg, v);
+            for (let m = 0; m <= M; m += 6) node("text", { x: x(m), y: H - padB + 14, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, m);
+            node("text", { x: (padL + W - padR) / 2, y: H - 3, "text-anchor": "middle", "font-size": 10, fill: c.fgLight }, svg, "month of the forecast target");
+            legend(legendBox, [
+                ["months the model has seen: the answer is recalled", c.accent],
+                ["months it has not seen: a real forecast", c.train],
+                ["stated cutoff (solid) and what was really seen (dashed)", c.fg],
+            ]);
+            const back = err.slice(state.stated);
+            const honest = BASE.slice(state.stated);
+            const leaked = Math.max(0, Math.min(M, state.actual) - state.stated);
+            svg.setAttribute("aria-label", "Forecast error by month for a model with a knowledge cutoff, with a backtest period after the stated cutoff.");
+            caption.textContent =
+                `The backtest uses the ${M - state.stated} months after the stated cutoff. Its mean error is ${mean(back).toFixed(2)}; a model that had truly seen nothing of them would score ${mean(honest).toFixed(2)}. ` +
+                (leaked > 0
+                    ? `${leaked} of those months are inside what the model has seen, so the backtest mixes recall with forecasting. The step in the bars is where the knowledge really ends.`
+                    : "Here the stated cutoff is a real boundary, and the backtest measures forecasting.");
+        }
+        render();
+        return lifecycle(el, api, render, stop);
+    });
+})();

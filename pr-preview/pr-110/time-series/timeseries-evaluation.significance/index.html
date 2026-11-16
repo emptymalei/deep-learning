@@ -1,0 +1,5241 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head><meta name="robots" content="noindex, nofollow">
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Time Series with Deep Learning Quick Bite">
+      
+      
+        <meta name="author" content="Lei Ma">
+      
+      
+        <link rel="canonical" href="https://dl.leima.is/time-series/timeseries-evaluation.significance/">
+      
+      
+        <link rel="describedby" href="../../llms.txt">
+        
+          <link rel="alternate" type="text/markdown" href="./index.md">
+        
+      
+      
+        <link rel="prev" href="../timeseries-evaluation.leakage/">
+      
+      
+        <link rel="next" href="../timeseries-evaluation.baselines/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/logo_badge.svg">
+      <meta name="generator" content="zensical-0.1.1">
+    
+    
+      
+        <title>Is the Difference Real? - Time Series with Deep Learning Quick Bite</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.ebb7f775.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.b60ce83d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/widgets/widgets.css?v=8c31d725">
+    
+      <link rel="stylesheet" href="../../assets/widgets/sidebar.css?v=33796648">
+    
+    <script>__md_scope=new URL("../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        Skip to content
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Time Series with Deep Learning Quick Bite" class="md-header__button md-logo" aria-label="Time Series with Deep Learning Quick Bite" data-md-component="logo">
+      
+  <img src="../../assets/logo_badge.svg" alt="Time Series with Deep Learning Quick Bite">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      <span class="md-visually-hidden">Navigation</span>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Time Series with Deep Learning Quick Bite
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Is the Difference Real?
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="md-visually-hidden">Search</span>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/emptymalei/deep-learning" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    emptymalei/deep-learning
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../engineering/" class="md-tabs__link">
+          
+  
+  Engineering Tips
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  Fundamentals of Time Series Forecasting
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../trees/tree.basics/" class="md-tabs__link">
+          
+  
+  Trees
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deep-learning-fundamentals/" class="md-tabs__link">
+          
+  
+  Fundamentals of Deep Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../time-series-deep-learning/" class="md-tabs__link">
+          
+  
+  Time Series Forecasting with Deep Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../supplementary/" class="md-tabs__link">
+          
+  
+  Supplementary
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../map/" class="md-tabs__link">
+          
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Time Series with Deep Learning Quick Bite" class="md-nav__button md-logo" aria-label="Time Series with Deep Learning Quick Bite" data-md-component="logo">
+      
+  <img src="../../assets/logo_badge.svg" alt="Time Series with Deep Learning Quick Bite">
+
+    </a>
+    Time Series with Deep Learning Quick Bite
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/emptymalei/deep-learning" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    emptymalei/deep-learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Home
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Engineering Tips
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Engineering Tips
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Coding Tips
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Python
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Fundamentals of Time Series Forecasting
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Fundamentals of Time Series Forecasting
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Data and Statistical Forecasting Methods
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Data
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Time Series Data
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Terminologies of Time Series Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.box-cox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Box-Cox Transformation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.analysis.twfe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Two-way Fixed Effects
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.time-delayed-embedding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Delayed Embedding
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Data Generating Process
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Data Generating Process
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.dgp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DGP
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.dgp.langevin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DGP: Langevin Equation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Kindergarten Models
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Kindergarten Models
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.statistical-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Statistical Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.ar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  AR
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-basics.var/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  VAR
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Synthetic Datasets
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Synthetic Datasets
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-synthetic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Synthetic Time Series
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.synthetic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Creating Synthetic Dataset
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-data.data-augmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Augmentation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Forecasting
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-forecast.tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting Tasks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-forecast.naive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Naive Forecasts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Evaluation and Metrics
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="true">
+            <label class="md-nav__title" for="__nav_3_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Evaluation and Metrics
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-evaluation.forecasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting Evaluation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-metrics.forecasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting Metrics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-metrics.forecasting.crps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  CRPS
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-evaluation.probabilistic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Evaluating Probabilistic Forecasts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-evaluation.leakage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Leakage and Contamination
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Is the Difference Real?
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Is the Difference Real?
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a-score-is-a-random-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        A Score Is a Random Variable
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-forecasts-on-one-series-the-diebold-mariano-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Two Forecasts on One Series: The Diebold-Mariano Test
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#many-datasets-the-wilcoxon-signed-ranks-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Many Datasets: The Wilcoxon Signed-Ranks Test
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#many-comparisons-at-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Many Comparisons at Once
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        In Practice
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-evaluation.baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Baselines and Skill Scores
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Time Series
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Hierarchical Time Series
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-hierarchical.data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Time Series Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-hierarchical.reconciliation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Time Series Reconciliation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Useful Datasets
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_9">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Useful Datasets
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Datasets
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.ecb-exchange-rate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Exchange Rate
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.nrel-solar-energy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  NREL Solar Power Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.uci-electricity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Electricity
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-datasets.pems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  PeMS Traffic Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Trees
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Trees
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Tree-based Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.random-forest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Random Forest
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.gbdt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Gradient Boosted Trees
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.darts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Trees
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Fundamentals of Deep Learning
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Fundamentals of Deep Learning
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Deep Learning Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Learning from Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/neural-net/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/recurrent-neural-networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Recurrent Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/convolutional-neural-networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Convolutional Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Transformers
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Transformers
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../transformers/transformers.vanilla/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Vanilla Transformers
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Dynamical Systems
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Dynamical Systems
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dynamical-systems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Why Dynamical Systems
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dynamical-systems/neural-ode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Neural ODE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Energy-based Models
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Energy-based Models
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energy-based-models/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energy-based-models/ebm.diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Diffusion Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_9" id="__nav_5_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generative Models
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_9_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_9">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Generative Models
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/autoregressive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Autoregressive
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/ae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  AE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  VAE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Flow
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/gan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  GAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting with Deep Learning
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Time Series Forecasting with Deep Learning
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.dataset.pendulum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Pendulum Dataset
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.feedforward/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with MLP
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.rnn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with RNN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.transformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Transformers
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.cnn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with CNN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with VAE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Flow
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.gan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with GAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.neural-ode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Neural ODE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.deep-learning.timegrad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Diffusion Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Supplementary
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Supplementary
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../supplementary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  About Supplementary Materials
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utilities/notebooks-and-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  How to Run Our Notebooks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Notebooks
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Notebooks
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/timeseries_data_box-cox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Box-Cox Transformation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/pendulum_dataset/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Pendulum Dataset
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/hierarchical_forecasting_mint/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Forecasting Using MinT
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Tree Basics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_random_forest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Random Forest Basics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_darts_random_forest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Random Forest using Darts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tree_darts_boosted_tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with GBDT using Darts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/creating_time_series_datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Creating Time Series Dataset (PyTorch)
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/feedforward_neural_netwroks_timeseries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Feedforward Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/rnn_timeseries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with RNN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/transformer_timeseries_univariate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Transformer
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/neuralode_timeseries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with NeuralODE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time-series-data-generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generate Time Series Using Statistics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time_vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generate Time Series Using VAE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/timeseries-comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Comparing Time Series
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/tabpfn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Pretrained Models: TabPFN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/diffusion_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Diffusion Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/time_series_data_and_embedding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Data Embedding Classical Methods
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_4" id="__nav_7_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Small Yet Powerful Concepts
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Small Yet Powerful Concepts
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Appendices
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/entropy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Entropy
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/mutual-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Mutual Information
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/kl-divergence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  KL Divergence
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/f-divergence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  f-divergence
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/elbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  ELBO
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/alignment-and-uniformity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Alignment and Uniformity
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/gini-impurity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Gini Impurity
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/information-gain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Information Gain
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/generalization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generalization
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/timeseries-data.dtw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DTW
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/timeseries-data.dtw-barycenter-averaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DBA
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5" id="__nav_7_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Other Deep Learning Topics
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Other Deep Learning Topics
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5_1" id="__nav_7_5_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Contrastive
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_7_5_1_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_5_1">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Contrastive
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/deep-infomax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Deep Infomax
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/contrastive-predictive-coding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Contrastive Predictive Coding
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/made/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  MADE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/maf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  MAF
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/f-gan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  f-GAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/infogan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  InfoGAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  About
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  About
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Map of the Book
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meta/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Roadmap
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meta/changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Changelog
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a-score-is-a-random-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        A Score Is a Random Variable
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-forecasts-on-one-series-the-diebold-mariano-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Two Forecasts on One Series: The Diebold-Mariano Test
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#many-datasets-the-wilcoxon-signed-ranks-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Many Datasets: The Wilcoxon Signed-Ranks Test
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#many-comparisons-at-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Many Comparisons at Once
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        In Practice
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav><!-- dl-side --><nav class="md-nav dl-side" aria-label="Links"><p class="dl-side__title">Links</p><p class="dl-side__sub">This page links to</p><ul class="md-nav__list"><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.forecasting/">Time Series Forecasting Evaluation</a></li><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-metrics.forecasting/">Time Series Forecasting Metrics</a></li><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.probabilistic/">Evaluating Probabilistic Forecasts</a></li><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.baselines/">Baselines and Skill Scores</a></li></ul><p class="dl-side__sub">Linked from</p><ul class="md-nav__list"><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.baselines/">Baselines and Skill Scores</a></li><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.probabilistic/">Evaluating Probabilistic Forecasts</a></li><li class="md-nav__item"><a class="md-nav__link" href="../timeseries-evaluation.leakage/">Leakage and Contamination</a></li></ul></nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+  <button type="button" title="Copy as Markdown" aria-label="Copy as Markdown" class="md-content__button md-icon" data-md-copy-url="./index.md">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z"/></svg>
+  </button>
+
+
+  
+    <a href="https://github.com/emptymalei/deep-learning/edit/main/dl/time-series/timeseries-evaluation.significance.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-pen" viewBox="0 0 24 24"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/emptymalei/deep-learning/raw/main/dl/time-series/timeseries-evaluation.significance.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-code-2" viewBox="0 0 24 24"><path d="M4 12.15V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5M5 16l-3 3 3 3M9 22l3-3-3-3"/></svg>
+    </a>
+  
+
+
+<h1 id="is-the-difference-real">Is the Difference Real?<a class="headerlink" href="#is-the-difference-real" title="Permanent link">¶</a></h1>
+<div class="admonition abstract">
+<p class="admonition-title">In one minute</p>
+<p>One model scores 0.412 and another 0.405. Whether that gap means anything depends on how much the scores move when the experiment is repeated. The page covers run-to-run variance, the Diebold-Mariano test for two forecasts on one series, the Wilcoxon signed-ranks test across many datasets, and corrections for multiple comparisons.</p>
+<p><strong>Read first:</strong> <a href="../timeseries-evaluation.forecasting/">Time Series Forecasting Evaluation</a> · <a href="../timeseries-metrics.forecasting/">Time Series Forecasting Metrics</a></p>
+</div>
+<p>A results table says that model A has an error of 0.405 and model B has 0.412. A is in bold. The table does not say what would happen with another random seed, another test period or another set of series. If the answer is "B would be in bold about half of the time", the table has shown nothing.</p>
+<p>This page is about the size of a difference relative to its noise. Which tool applies depends on what is being compared and what can be repeated.</p>
+<pre class="mermaid"><code>flowchart TD
+    Q["Two results differ.&lt;br/&gt;Is it more than noise?"] --&gt; R{"What was repeated?"}
+    R --&gt;|"training runs&lt;br/&gt;(seeds, splits)"| V["Run-to-run variance"]
+    R --&gt;|"forecasts over time,&lt;br/&gt;one series"| D["Diebold-Mariano test"]
+    R --&gt;|"datasets or series"| W["Wilcoxon signed-ranks test"]
+    V --&gt; M{"More than&lt;br/&gt;two methods?"}
+    D --&gt; M
+    W --&gt; M
+    M --&gt;|yes| C["Correct for&lt;br/&gt;multiple comparisons"]</code></pre>
+<div class="admonition info">
+<p class="admonition-title">How This Page Is Organized</p>
+<p>As in <a href="../timeseries-evaluation.probabilistic/">Evaluating Probabilistic Forecasts</a>, each concept is treated in the same five steps: <strong>the idea</strong>, <strong>the math</strong>, <strong>the picture</strong>, <strong>try it</strong>, <strong>watch out</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Compares</th>
+<th>The sample is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Run-to-run variance</td>
+<td>two training procedures</td>
+<td>repeated runs</td>
+</tr>
+<tr>
+<td>Diebold-Mariano test</td>
+<td>two sets of forecasts</td>
+<td>time steps</td>
+</tr>
+<tr>
+<td>Wilcoxon signed-ranks test</td>
+<td>two methods</td>
+<td>datasets</td>
+</tr>
+<tr>
+<td>Multiple comparisons</td>
+<td>many methods</td>
+<td>many tests at once</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Scores are errors: lower is better.</p>
+<h2 id="a-score-is-a-random-variable">A Score Is a Random Variable<a class="headerlink" href="#a-score-is-a-random-variable" title="Permanent link">¶</a></h2>
+<p><strong>The idea.</strong> Training a deep learning model involves choices that nobody intends to matter: the random initial weights, the order of the batches, which observations ended up in the training and the test set. Change any of them and the test score changes. The reported score is one draw from a distribution, and two models can only be told apart when the gap between them is large compared with the width of those distributions.</p>
+<p><strong>The math.</strong> Bouthillier and coauthors measured these sources of variation on five deep learning tasks, randomizing one source at a time with 200 seeds each. Their findings<sup id="fnref:bib-Bouthillier2021-var"><a class="footnote-ref" href="#fn:bib-Bouthillier2021-var">1</a></sup>:</p>
+<ul>
+<li>The sampling of the data, measured with bootstrap resamples, was the largest source of variance.</li>
+<li>The weight initialization, the source most often varied in papers, was generally below half of the variance from data sampling, and about as large as the effect of the data order.</li>
+<li>For classification, the variance from data sampling matched a simple binomial model of a test set of finite size: a small test set by itself limits how small a difference can be detected.</li>
+</ul>
+<p>Suppose a score has standard deviation <span class="arithmatex">\(\sigma\)</span> from run to run. The average of <span class="arithmatex">\(k\)</span> runs has standard error <span class="arithmatex">\(\sigma / \sqrt{k}\)</span>. For two methods compared on <span class="arithmatex">\(k\)</span> runs each, the paper gives the smallest difference of averages that a <span class="arithmatex">\(z\)</span>-test can call at the 5% level,</p>
+<div class="arithmatex">\[
+z_{0.05} \sqrt{\frac{\sigma_A^2 + \sigma_B^2}{k}},
+\]</div>
+<p>and notes that a smaller observed difference could be due to noise alone<sup id="fnref2:bib-Bouthillier2021-var"><a class="footnote-ref" href="#fn:bib-Bouthillier2021-var">1</a></sup>. With <span class="arithmatex">\(k = 1\)</span>, the usual single run, that threshold is <span class="arithmatex">\(z_{0.05} \sqrt{2}\, \sigma\)</span>.</p>
+<p>Instead of comparing averages against a threshold, the authors propose to estimate how often one method beats the other,</p>
+<div class="arithmatex">\[
+P(A &gt; B) = \frac{1}{k} \sum_{i=1}^{k} \mathbb 1 \{ A \text{ beats } B \text{ on pair } i \},
+\]</div>
+<p>over <span class="arithmatex">\(k\)</span> pairs of runs, and to call A better only when this probability is both significantly above 0.5 and above a threshold <span class="arithmatex">\(\gamma\)</span> that says what counts as a meaningful improvement; they report that <span class="arithmatex">\(\gamma = 0.75\)</span> worked well in their case studies<sup id="fnref3:bib-Bouthillier2021-var"><a class="footnote-ref" href="#fn:bib-Bouthillier2021-var">1</a></sup>.</p>
+<p><strong>The picture.</strong> If the two score distributions are normal with the same <span class="arithmatex">\(\sigma\)</span> and means that differ by <span class="arithmatex">\(\Delta\)</span>, two formulas follow directly: a single run of A beats a single run of B with probability <span class="arithmatex">\(\Phi\left( \Delta / (\sigma \sqrt 2) \right)\)</span>, and the method that is truly worse has the better <span class="arithmatex">\(k\)</span>-run average with probability <span class="arithmatex">\(\Phi\left( -\Delta \sqrt{k} / (\sigma \sqrt 2) \right)\)</span>. The widget draws both distributions, one experiment of <span class="arithmatex">\(k\)</span> runs per model, and the distribution of the difference of the two averages.</p>
+<p><strong>Try it.</strong> Press Play to repeat the experiment and count how often B looks better although A is the better model. Then raise the number of runs.</p>
+<div class="dl-widget" data-widget="run-noise">
+<p>An interactive chart of two models whose test errors vary from run to run. Sliders set the true advantage of model A, the run-to-run spread and the number of runs per model; repeated experiments are drawn as dots on the distribution of the difference of the two averages. It needs JavaScript. In short: with a true advantage of 0.05, a spread of 0.10 and 3 runs per model, the worse model has the better average in about 27% of experiments; with 30 runs, in about 3%.</p>
+</div>
+<p><strong>Watch out.</strong></p>
+<ul>
+<li>Varying only the seed of the weight initialization understates the variance, because it leaves the larger source, the data sampling, fixed. The paper's first recommendation is to randomize as many sources of variation as possible, including data splits and the hyperparameter search<sup id="fnref4:bib-Bouthillier2021-var"><a class="footnote-ref" href="#fn:bib-Bouthillier2021-var">1</a></sup>.</li>
+<li>A fixed held-out test set hides the uncertainty from data sampling. The authors recommend resampling, with several random splits, over a single fixed test set when small improvements have to be detected<sup id="fnref5:bib-Bouthillier2021-var"><a class="footnote-ref" href="#fn:bib-Bouthillier2021-var">1</a></sup>.</li>
+<li>A threshold on the difference of averages that ignores the variance, such as "better by at least 0.5 points", does not separate real effects from chance<sup id="fnref6:bib-Bouthillier2021-var"><a class="footnote-ref" href="#fn:bib-Bouthillier2021-var">1</a></sup>.</li>
+<li>With enough runs, any tiny difference becomes statistically significant. Significant and meaningful are two separate questions, which is why the proposal above has two conditions.</li>
+</ul>
+<h2 id="two-forecasts-on-one-series-the-diebold-mariano-test">Two Forecasts on One Series: The Diebold-Mariano Test<a class="headerlink" href="#two-forecasts-on-one-series-the-diebold-mariano-test" title="Permanent link">¶</a></h2>
+<p><strong>The idea.</strong> In forecasting, the natural repetition is time: two forecasters each produce a forecast for every time step of a test period. At each step one of them loses less than the other. If the two are equally good, these loss differences scatter around zero. The Diebold-Mariano test asks whether their average is further from zero than chance allows. The complication is that forecast errors at neighbouring time steps are correlated, so there is less independent information in the test period than its length suggests.</p>
+<p><strong>The math.</strong> Let <span class="arithmatex">\(e_{1t}\)</span> and <span class="arithmatex">\(e_{2t}\)</span> be the errors of the two forecasts at time <span class="arithmatex">\(t\)</span>, and <span class="arithmatex">\(g\)</span> a loss function, for example <span class="arithmatex">\(g(e) = e^2\)</span> or <span class="arithmatex">\(g(e) = \lvert e \rvert\)</span>. The loss differential is</p>
+<div class="arithmatex">\[
+d_t = g(e_{1t}) - g(e_{2t}), \qquad \bar d = \frac{1}{T} \sum_{t=1}^{T} d_t.
+\]</div>
+<p>The null hypothesis is equal expected loss, <span class="arithmatex">\(\mathbb E\, d_t = 0\)</span>. Diebold and Mariano show that, when <span class="arithmatex">\(d_t\)</span> is covariance stationary, the statistic<sup id="fnref:bib-Diebold1995-dm"><a class="footnote-ref" href="#fn:bib-Diebold1995-dm">2</a></sup></p>
+<div class="arithmatex">\[
+\operatorname{DM} = \frac{\bar d}{\sqrt{\widehat{V} / T}}
+\]</div>
+<p>is asymptotically standard normal under the null, where <span class="arithmatex">\(\widehat V\)</span> estimates the long-run variance of <span class="arithmatex">\(d_t\)</span>. With independent <span class="arithmatex">\(d_t\)</span>, <span class="arithmatex">\(\widehat V\)</span> would be the sample variance <span class="arithmatex">\(\hat\gamma_d(0)\)</span>. With serial correlation the autocovariances enter,</p>
+<div class="arithmatex">\[
+\widehat V = \hat\gamma_d(0) + 2 \sum_{\tau = 1}^{h - 1} \hat\gamma_d(\tau), \qquad
+\hat\gamma_d(\tau) = \frac{1}{T} \sum_{t = \tau + 1}^{T} (d_t - \bar d)(d_{t - \tau} - \bar d).
+\]</div>
+<p>The number of autocovariances comes from the forecasting problem: the errors of optimal <span class="arithmatex">\(h\)</span>-step-ahead forecasts are correlated up to lag <span class="arithmatex">\(h - 1\)</span> and not beyond, and the authors take this as the benchmark<sup id="fnref2:bib-Diebold1995-dm"><a class="footnote-ref" href="#fn:bib-Diebold1995-dm">2</a></sup>. This is the uniform lag window of the paper, written out. The test rejects equal accuracy at the 5% level when <span class="arithmatex">\(\lvert \operatorname{DM} \rvert &gt; 1.96\)</span>.</p>
+<p>Diebold later summarized the test as "simply an asymptotic z-test of the hypothesis that the mean of an observed series (the loss differential) is zero", with a standard error that is robust to serial correlation<sup id="fnref:bib-Diebold2012-dm"><a class="footnote-ref" href="#fn:bib-Diebold2012-dm">3</a></sup>.</p>
+<p><strong>The picture.</strong> The widget plots a loss differential series for forecasts at horizon <span class="arithmatex">\(h\)</span>: a bar above zero is a time step where forecast 1 lost more. The thick line is <span class="arithmatex">\(\bar d\)</span>. Longer horizons give longer runs of bars on the same side, which is the serial correlation the standard error has to account for.</p>
+<p><strong>Try it.</strong> Keep the true mean difference at 0, set the horizon to 4 or more, and press "Repeat 2000 times". Both tests are run on 2000 fresh samples, and the bars show how often each one declares a difference that does not exist.</p>
+<div class="dl-widget" data-widget="dm-test">
+<p>An interactive chart of a simulated loss differential between two forecasts over time, with its mean, the Diebold-Mariano statistic and a z statistic that ignores serial correlation. Sliders set the true mean difference, the forecast horizon and the number of forecasts. A button repeats the experiment 2000 times and shows how often each test rejects. It needs JavaScript. In short: with no true difference and a horizon of 4, the test that ignores serial correlation rejects in roughly a third of the samples and not in 5%, while the Diebold-Mariano test stays much closer to 5%.</p>
+</div>
+<p><strong>Watch out.</strong></p>
+<ul>
+<li>The test compares forecasts, not models. Its only assumption is on the loss differential, which makes it usable for forecasts from any source, including forecasts with no model behind them. Diebold warns that using it to select between models estimated on the same data is a different problem with different answers<sup id="fnref2:bib-Diebold2012-dm"><a class="footnote-ref" href="#fn:bib-Diebold2012-dm">3</a></sup>.</li>
+<li>The assumption is that the loss differential is covariance stationary. Diebold suggests checking it the direct way: plot the loss differential and look at its autocorrelations<sup id="fnref3:bib-Diebold2012-dm"><a class="footnote-ref" href="#fn:bib-Diebold2012-dm">3</a></sup>.</li>
+<li>With the uniform window, <span class="arithmatex">\(\widehat V\)</span> can come out negative. Diebold and Mariano treat that case as a rejection, and mention a Bartlett window as the alternative when a nonnegative estimate is required<sup id="fnref3:bib-Diebold1995-dm"><a class="footnote-ref" href="#fn:bib-Diebold1995-dm">2</a></sup>.</li>
+<li>The normal distribution is a large-sample result. For short test periods Diebold and Mariano turn to exact tests on the same loss differentials: the sign test and the Wilcoxon signed-rank test<sup id="fnref4:bib-Diebold1995-dm"><a class="footnote-ref" href="#fn:bib-Diebold1995-dm">2</a></sup>. The second is the subject of the next section.</li>
+</ul>
+<h2 id="many-datasets-the-wilcoxon-signed-ranks-test">Many Datasets: The Wilcoxon Signed-Ranks Test<a class="headerlink" href="#many-datasets-the-wilcoxon-signed-ranks-test" title="Permanent link">¶</a></h2>
+<p><strong>The idea.</strong> A method is often evaluated on many datasets, or on many series. On each one, method 2 is better or worse than method 1 by some amount. Averaging these amounts is tempting and fragile: errors on different datasets are on different scales, and one dataset with a huge difference can decide the average. The Wilcoxon signed-ranks test keeps only the order of the differences. It asks whether the large differences tend to be on one side.</p>
+<p><strong>The math.</strong> Following Demšar, let <span class="arithmatex">\(d_i\)</span> be the difference between the scores of the two methods on the <span class="arithmatex">\(i\)</span>-th of <span class="arithmatex">\(N\)</span> datasets. Rank the differences by absolute value, with average ranks for ties, and sum the ranks on each side<sup id="fnref:bib-Demsar2006-sc"><a class="footnote-ref" href="#fn:bib-Demsar2006-sc">4</a></sup>:</p>
+<div class="arithmatex">\[
+R^+ = \sum_{d_i &gt; 0} \operatorname{rank}(d_i) + \frac{1}{2} \sum_{d_i = 0} \operatorname{rank}(d_i), \qquad
+R^- = \sum_{d_i &lt; 0} \operatorname{rank}(d_i) + \frac{1}{2} \sum_{d_i = 0} \operatorname{rank}(d_i).
+\]</div>
+<p>The test statistic is <span class="arithmatex">\(T = \min(R^+, R^-)\)</span>. If the two methods are equivalent, the ranks fall on either side at random and the two sums are similar; a small <span class="arithmatex">\(T\)</span> is evidence against that. For small <span class="arithmatex">\(N\)</span> the critical values come from a table. For larger <span class="arithmatex">\(N\)</span>,</p>
+<div class="arithmatex">\[
+z = \frac{T - \frac{1}{4} N (N + 1)}{\sqrt{\frac{1}{24} N (N + 1)(2N + 1)}}
+\]</div>
+<p>is approximately standard normal, and the null hypothesis is rejected at the 5% level when <span class="arithmatex">\(z &lt; -1.96\)</span><sup id="fnref2:bib-Demsar2006-sc"><a class="footnote-ref" href="#fn:bib-Demsar2006-sc">4</a></sup>.</p>
+<p>Demšar recommends this test over the paired <span class="arithmatex">\(t\)</span>-test for comparing two classifiers over multiple datasets, for three reasons: the <span class="arithmatex">\(t\)</span>-test assumes that the differences are commensurable across datasets, it needs normally distributed differences unless there are about 30 datasets or more, and it is affected by outliers. The Wilcoxon test assumes commensurability only qualitatively: larger differences count more, but their magnitudes are ignored<sup id="fnref3:bib-Demsar2006-sc"><a class="footnote-ref" href="#fn:bib-Demsar2006-sc">4</a></sup>.</p>
+<p><strong>The picture.</strong> The widget uses the worked example from Demšar's paper: the AUC of the C4.5 decision tree with and without tuning one of its parameters, on 14 datasets. The differences are sorted by absolute size, and the rank of each goes to the side of its sign. For these data <span class="arithmatex">\(R^+ = 93\)</span> and <span class="arithmatex">\(R^- = 12\)</span>, so <span class="arithmatex">\(T = 12\)</span>; the paper gives 21 as the critical value for 14 datasets at the 5% level, so the difference is significant<sup id="fnref4:bib-Demsar2006-sc"><a class="footnote-ref" href="#fn:bib-Demsar2006-sc">4</a></sup>.</p>
+<p><strong>Try it.</strong> Press Play to watch the ranks being handed out. Then multiply the largest difference by 10 and compare what happens to the two statistics. Click rows to flip signs and find out how many datasets have to change sides before the result is no longer significant.</p>
+<div class="dl-widget" data-widget="signed-rank">
+<p>An interactive chart of the differences between two classifiers on 14 datasets, from Demšar (2006), sorted by absolute size and labelled with their ranks. The sums of ranks for positive and negative differences, the Wilcoxon statistic and the paired t statistic are shown. A slider enlarges the largest difference and clicking a row flips its sign. It needs JavaScript. In short: the rank sums are 93 and 12, which is significant at the 5% level; enlarging the largest difference changes no rank and so does not change the Wilcoxon result, while the t statistic drops because the standard deviation grows.</p>
+</div>
+<p><strong>Watch out.</strong></p>
+<ul>
+<li>The test needs enough datasets. Bouthillier and coauthors point out that machine learning papers typically use as few as 3 to 5 datasets, where this test has very little power<sup id="fnref7:bib-Bouthillier2021-var"><a class="footnote-ref" href="#fn:bib-Bouthillier2021-var">1</a></sup>. With 5 datasets, even five wins out of five cannot be significant at the 5% level in a two-sided test: there are <span class="arithmatex">\(2^5 = 32\)</span> equally likely sign patterns under the null, so the most extreme result has probability <span class="arithmatex">\(2/32 \approx 0.06\)</span>.</li>
+<li>Differences should not be rounded before ranking. Rounding creates ties, and ties cost power<sup id="fnref9:bib-Demsar2006-sc"><a class="footnote-ref" href="#fn:bib-Demsar2006-sc">4</a></sup>.</li>
+<li>The datasets are treated as a sample of independent problems. Many series from one source, for example the stores of one retail chain, are less independent than their number suggests.</li>
+<li>Counting wins is weaker still: it ignores the size of the differences altogether. Demšar discusses it as the sign test and notes that it is weaker than the Wilcoxon test<sup id="fnref10:bib-Demsar2006-sc"><a class="footnote-ref" href="#fn:bib-Demsar2006-sc">4</a></sup>.</li>
+</ul>
+<h2 id="many-comparisons-at-once">Many Comparisons at Once<a class="headerlink" href="#many-comparisons-at-once" title="Permanent link">¶</a></h2>
+<p><strong>The idea.</strong> A test at the 5% level raises a false alarm in one of twenty cases where there is nothing to find. Compare a new method against ten others, or seven methods against each other in all 21 pairs, and false alarms are no longer rare events. Some of the "significant" entries in a large results table are there by chance. The remedy is to make each single test stricter, so that the chance of any false alarm in the whole family of tests stays at 5%.</p>
+<p><strong>The math.</strong> The family-wise error is the probability of making at least one false rejection among all the comparisons<sup id="fnref5:bib-Demsar2006-sc"><a class="footnote-ref" href="#fn:bib-Demsar2006-sc">4</a></sup>. For <span class="arithmatex">\(m\)</span> independent tests at level <span class="arithmatex">\(\alpha\)</span> where no real difference exists, it is</p>
+<div class="arithmatex">\[
+1 - (1 - \alpha)^m,
+\]</div>
+<p>which is 40% for <span class="arithmatex">\(m = 10\)</span> and 64% for <span class="arithmatex">\(m = 20\)</span> at <span class="arithmatex">\(\alpha = 0.05\)</span>. Two corrections, both described by Demšar for comparing <span class="arithmatex">\(k - 1\)</span> methods with a control<sup id="fnref6:bib-Demsar2006-sc"><a class="footnote-ref" href="#fn:bib-Demsar2006-sc">4</a></sup>:</p>
+<ul>
+<li><strong>Bonferroni</strong>: compare every p-value with <span class="arithmatex">\(\alpha / m\)</span>, where <span class="arithmatex">\(m\)</span> is the number of comparisons.</li>
+<li><strong>Holm</strong>: sort the p-values, <span class="arithmatex">\(p_1 \le p_2 \le \cdots \le p_m\)</span>. Compare <span class="arithmatex">\(p_1\)</span> with <span class="arithmatex">\(\alpha / m\)</span>; if it is below, reject and compare <span class="arithmatex">\(p_2\)</span> with <span class="arithmatex">\(\alpha / (m - 1)\)</span>, and so on. Stop at the first p-value that is not below its threshold and retain all remaining hypotheses.</li>
+</ul>
+<p>Holm's procedure rejects everything Bonferroni rejects and possibly more, and it makes no additional assumptions, so Demšar describes it as the more powerful of the two<sup id="fnref7:bib-Demsar2006-sc"><a class="footnote-ref" href="#fn:bib-Demsar2006-sc">4</a></sup>.</p>
+<p>When all methods are compared with each other over many datasets, Demšar recommends starting with the Friedman test, which works on the ranks of the methods within each dataset, followed by a post-hoc test. In the Nemenyi test, two of <span class="arithmatex">\(k\)</span> methods compared on <span class="arithmatex">\(N\)</span> datasets differ significantly when their average ranks differ by at least the critical difference</p>
+<div class="arithmatex">\[
+\operatorname{CD} = q_\alpha \sqrt{\frac{k (k + 1)}{6 N}},
+\]</div>
+<p>with <span class="arithmatex">\(q_\alpha\)</span> from a table in the paper<sup id="fnref8:bib-Demsar2006-sc"><a class="footnote-ref" href="#fn:bib-Demsar2006-sc">4</a></sup>. The same paper shows that the tests have much more power when all methods are compared with one control than when all pairs are compared, and concludes that pairwise comparisons should not be made when the question is only whether a new method is better than the existing ones.</p>
+<p><strong>The picture.</strong> Each cell of the widget is one comparison with its p-value. A filled orange cell is a false discovery: declared significant although the two methods do not differ. Outlined blue cells are comparisons with a real difference, filled when the procedure detects them.</p>
+<p><strong>Try it.</strong> With no real differences, press Play and watch how often at least one cell lights up without a correction. Then add a few real differences and compare how many of them Bonferroni and Holm still find.</p>
+<div class="dl-widget" data-widget="multiple-tests">
+<p>An interactive grid of p-values from many comparisons made at once. Sliders set the number of comparisons and how many of them have a real difference; buttons choose no correction, the Bonferroni correction or Holm's procedure. Bars show in what share of repeated experiments at least one false discovery occurs under each procedure. It needs JavaScript. In short: with 10 comparisons and no real differences, at least one comes out significant at the 5% level in about 40% of experiments without a correction, and in about 5% with either correction.</p>
+</div>
+<p><strong>Watch out.</strong></p>
+<ul>
+<li>Corrections cost power: with many comparisons, real differences are missed more often. Fewer, planned comparisons are better than all possible ones.</li>
+<li>The comparisons that were tried and not reported count as well. A hyperparameter search that evaluates a hundred configurations on the test set and reports the best is a multiple comparison without a correction.</li>
+<li>Bouthillier and coauthors note the limit of the approach for leaderboards: with hundreds of entries, corrections become so strict that the choice of a winner is necessarily somewhat arbitrary, and a different test set might have given a different ranking<sup id="fnref8:bib-Bouthillier2021-var"><a class="footnote-ref" href="#fn:bib-Bouthillier2021-var">1</a></sup>.</li>
+</ul>
+<h2 id="in-practice">In Practice<a class="headerlink" href="#in-practice" title="Permanent link">¶</a></h2>
+<ol>
+<li>Decide what the unit of repetition is: runs, time steps or datasets. That decides the tool.</li>
+<li>Report a measure of spread next to every score: the standard deviation over runs, or a confidence interval.</li>
+<li>Randomize more than the weight initialization when the budget allows it: data splits first.</li>
+<li>For two forecasters on one test period, look at the loss differential over time before testing it.</li>
+<li>For many datasets, compare with ranks, and say how many datasets there were.</li>
+<li>Count the comparisons that were made, including the ones left out of the table.</li>
+<li>Report the size of the difference, not only whether it is significant, with a <a href="../timeseries-evaluation.baselines/">baseline</a> for scale.</li>
+</ol>
+<hr />
+<p><strong>Related:</strong> <a href="../timeseries-evaluation.baselines/">Baselines and Skill Scores</a> · <a href="../timeseries-evaluation.probabilistic/">Evaluating Probabilistic Forecasts</a></p>
+<!-- markdownlint-disable-file MD041 -->
+<!-- Glossary: appended to every page by pymdownx.snippets (auto_append in
+mkdocs.yml). Each term becomes a tooltip wherever it appears as a word. -->
+
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:bib-Bouthillier2021-var">
+<p>Bouthillier X., Delaunay P., Bronzi M. et al.. Accounting for Variance in Machine Learning Benchmarks. 2021. <a href="http://arxiv.org/abs/2103.03098">http://arxiv.org/abs/2103.03098</a>&#160;<a class="footnote-backref" href="#fnref:bib-Bouthillier2021-var" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Bouthillier2021-var" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Bouthillier2021-var" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Bouthillier2021-var" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Bouthillier2021-var" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:bib-Bouthillier2021-var" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:bib-Bouthillier2021-var" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref8:bib-Bouthillier2021-var" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Diebold1995-dm">
+<p>Diebold F.X., Mariano R.S.. Comparing Predictive Accuracy. 1994. <a href="https://www.nber.org/papers/t0169">https://www.nber.org/papers/t0169</a>&#160;<a class="footnote-backref" href="#fnref:bib-Diebold1995-dm" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Diebold1995-dm" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Diebold1995-dm" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Diebold1995-dm" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Diebold2012-dm">
+<p>Diebold F.X.. Comparing Predictive Accuracy, Twenty Years Later: A Personal Perspective on the Use and Abuse of Diebold-Mariano Tests. 2012. <a href="http://www.nber.org/papers/w18391">http://www.nber.org/papers/w18391</a>&#160;<a class="footnote-backref" href="#fnref:bib-Diebold2012-dm" title="Jump back to footnote 3 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Diebold2012-dm" title="Jump back to footnote 3 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Diebold2012-dm" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bib-Demsar2006-sc">
+<p>Dem\v sar J.. Statistical Comparisons of Classifiers over Multiple Data Sets. <em>Journal of Machine Learning Research</em>. 2006. <a href="https://www.jmlr.org/papers/v7/demsar06a.html">https://www.jmlr.org/papers/v7/demsar06a.html</a>&#160;<a class="footnote-backref" href="#fnref:bib-Demsar2006-sc" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:bib-Demsar2006-sc" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:bib-Demsar2006-sc" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:bib-Demsar2006-sc" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref5:bib-Demsar2006-sc" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref6:bib-Demsar2006-sc" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref7:bib-Demsar2006-sc" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref8:bib-Demsar2006-sc" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref9:bib-Demsar2006-sc" title="Jump back to footnote 4 in the text">&#8617;</a><a class="footnote-backref" href="#fnref10:bib-Demsar2006-sc" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/emptymalei/deep-learning" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M216.5 362.5c-66-8-112.5-55.5-112.5-117 0-25 9-52 24-70-6.5-16.5-5.5-51.5 2-66 20-2.5 47 8 63 22.5 19-6 39-9 63.5-9s44.5 3 62.5 8.5c15.5-14 43-24.5 63-22 7 13.5 8 48.5 1.5 65.5 16 19 24.5 44.5 24.5 70.5 0 61.5-46.5 108-113.5 116.5 17 11 28.5 35 28.5 62.5v52c0 15 12.5 23.5 27.5 17.5C441 459.5 512 369 512 257 512 115.5 397 0 255.5 0S0 115.5 0 257c0 111 70.5 203 165.5 237.5 13.5 5 26.5-4 26.5-17.5v-40c-7 3-16 5-24 5-33 0-52.5-18-66.5-51.5-5.5-13.5-11.5-21.5-23-23-6-.5-8-3-8-6 0-6 10-10.5 20-10.5 14.5 0 27 9 40 27.5 10 14.5 20.5 21 33 21s20.5-4.5 32-16c8.5-8.5 15-16 21-21"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/leima137/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["content.action.edit","content.action.view","content.action.copy","content.tooltips","navigation.sections","navigation.tabs"],"redirect":null,"search":"../../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.3cb411a8.min.js"></script>
+      
+        <script src="../../assets/js/mathjax.js?v=c4e28f09"></script>
+      
+        <script src="../../assets/js/page-actions.js?v=3d1441e2"></script>
+      
+        <script src="../../assets/js/glossary-panel.js?v=57b923e5"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../assets/widgets/loader.js?v=6124b74a"></script>
+      
+        <script src="../../assets/widgets/embed.js?v=bf5ac4ba"></script>
+      
+        <script src="../../assets/widgets/backtest-windows.js?v=84ad2b5d"></script>
+      
+        <script src="../../assets/widgets/vega.js?v=3b987e35"></script>
+      
+        <script src="../../assets/widgets/plotly.js?v=5c5eef6f"></script>
+      
+        <script src="../../assets/widgets/pendulum-onnx.js?v=d36fbd8b"></script>
+      
+        <script src="../../assets/widgets/metrics-playground.js?v=7a659b1c"></script>
+      
+        <script src="../../assets/widgets/metrics-shift.js?v=51a27df1"></script>
+      
+        <script src="../../assets/widgets/crps-explorer.js?v=d14a4a61"></script>
+      
+        <script src="../../assets/widgets/kit.js?v=9166d86c"></script>
+      
+        <script src="../../assets/widgets/prob-eval.js?v=fcba45df"></script>
+      
+        <script src="../../assets/widgets/significance.js?v=865c77d3"></script>
+      
+        <script src="../../assets/widgets/leakage.js?v=be9c15e2"></script>
+      
+        <script src="../../assets/widgets/baseline-skill.js?v=28c177a9"></script>
+      
+        <script src="../../assets/widgets/baselines.js?v=ed7e433a"></script>
+      
+        <script src="../../assets/widgets/kl-explorer.js?v=3495ed88"></script>
+      
+        <script src="../../assets/widgets/entropy-explorer.js?v=b663f195"></script>
+      
+        <script src="../../assets/widgets/impurity-explorer.js?v=1c12a272"></script>
+      
+        <script src="../../assets/widgets/dtw-explorer.js?v=b8887eec"></script>
+      
+        <script src="../../assets/widgets/window-explorer.js?v=b953a5ee"></script>
+      
+        <script src="../../assets/widgets/positional-encoding.js?v=3a726ca0"></script>
+      
+        <script src="../../assets/widgets/step-diagram.js?v=3900b743"></script>
+      
+        <script src="../../assets/widgets/book-map.js?v=4875d2e1"></script>
+      
+    
+  <a class="dl-preview-badge" href="https://github.com/emptymalei/deep-learning/pull/110" style="position:fixed;left:.6rem;bottom:.6rem;z-index:3;padding:.25rem .6rem;border-radius:1rem;font:600 12px/1.4 system-ui,sans-serif;text-decoration:none;background:#ff6e42;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3)">Preview: PR #110 at 9718196</a><style>@media print{.dl-preview-badge{display:none}}</style></body>
+</html>
