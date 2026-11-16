@@ -100,6 +100,7 @@ extra_javascript:
   - assets/widgets/significance.js
   - assets/widgets/leakage.js
   - assets/widgets/baseline-skill.js
+  - assets/widgets/baselines.js
   - assets/widgets/kl-explorer.js
   - assets/widgets/entropy-explorer.js
   - assets/widgets/impurity-explorer.js

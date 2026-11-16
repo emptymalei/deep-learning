@@ -367,8 +367,8 @@
 
         el.innerHTML = "";
         const controls = html("div", "dl-widget__controls", el);
-        const sS = slider(controls, "Benchmark series in the pretraining data (%)", 0, 100, 5, state.share, 0, (v) => { state.share = v; stop(); render(); });
-        slider(controls, "Rival's error (× the memorizer's honest error)", 0.5, 1, 0.05, state.rival, 2, (v) => { state.rival = v; stop(); render(); });
+        const sS = slider(controls, "Leaked share (%)", 0, 100, 5, state.share, 0, (v) => { state.share = v; stop(); render(); });
+        slider(controls, "Rival's error (ratio)", 0.5, 1, 0.05, state.rival, 2, (v) => { state.rival = v; stop(); render(); });
         const play = button(controls, "Play", () => (state.playing ? stop() : start()));
         const svg = node("svg", { role: "img" }, el);
         const legendBox = html("div", "dl-widget__legend", el);
