@@ -92,6 +92,10 @@ Available widgets live in `dl/assets/widgets/`:
 | `metrics-shift` | Shift truth and forecast by the same constant and see which metrics stay the same (MAE, MSE, RMSE) and which change with the level (MAPE, sMAPE, RMSLE) | `metrics-shift.js` |
 | `crps-explorer` | A normal forecast's CDF against the observed value, with the exact CRPS | `crps-explorer.js` |
 | `baseline-skill` | A model's forecast against the naive and seasonal naive baselines: MAE, skill against each, and MASE with both scalings | `baseline-skill.js` |
+| `pit-explorer` | Forecasters against nature, after Gneiting, Balabdaoui and Raftery (2007): each forecast's PIT value, the PIT histogram, interval coverage and width, and the mean CRPS; plays forecast by forecast | `prob-eval.js` |
+| `proper-score` | Expected log score, CRPS and linear score of a reported normal forecast when the truth is N(0, 1), over the reported spread | `prob-eval.js` |
+| `quantile-loss` | The pinball loss of a quoted quantile on 15 observations, and the average loss over every quoted value | `prob-eval.js` |
+| `interval-score` | A quoted prediction interval against N(0, 1) observations: the expected interval score split into width and penalties | `prob-eval.js` |
 | `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
 | `entropy-explorer` | Two distributions over six classes, and the cross entropy split into the entropy plus the KL divergence | `entropy-explorer.js` |
 | `gini-explorer` | The Gini impurity of a two-class dataset as its mix changes | `impurity-explorer.js` |
