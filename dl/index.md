@@ -124,7 +124,7 @@ The following is my first version of the blueprint.
 
 ## Map of the Book
 
-Every page of the book, grouped by chapter. Select a page to see which pages it links to and which pages link to it.
+Every page of the book as a dot, coloured by chapter, with a line for every link between two pages. Select a page to see which pages it links to and which pages link to it. The List view shows the same pages as buttons.
 
 <div class="dl-widget" data-widget="book-map" markdown>
 

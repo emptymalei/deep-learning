@@ -99,7 +99,7 @@ Available widgets live in `dl/assets/widgets/`:
 | `window-explorer` | Time delay embedding: slide input and target windows along a series and see the rows it produces. `data-gap` adds a gap slider and `data-labels="dataset"` shows the same thing as `DataFrameDataset` data points | `window-explorer.js` |
 | `positional-encoding` | The transformer's sinusoidal positional encodings as a heatmap, with the similarity between positions | `positional-encoding.js` |
 | `step-diagram` | A box-and-arrow diagram that builds up step by step, with a sentence per step (`data-diagram`: `rnn`, `attention`, `diffusion`, `vae`). Diagrams are data in the script: nodes, edges and steps | `step-diagram.js` |
-| `book-map` | Every page as a chip grouped by chapter; selecting one highlights the pages it links to and from. Reads `assets/book-map.json`, written at build time | `scripts/stage_site.py` |
+| `book-map` | The pages and the links between them, as a graph (dots coloured by chapter, laid out in the browser) and as a list of chips; selecting a page highlights the pages it links to and from. Reads `assets/book-map.json`, written at build time | `scripts/stage_site.py` |
 
 To add a widget:
 
