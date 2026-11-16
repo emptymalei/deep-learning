@@ -1,0 +1,5802 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head><meta name="robots" content="noindex, nofollow">
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Time Series with Deep Learning Quick Bite">
+      
+      
+        <meta name="author" content="Lei Ma">
+      
+      
+        <link rel="canonical" href="https://dl.leima.is/notebooks/diffusion_model_timegrad/">
+      
+      
+        <link rel="describedby" href="../../llms.txt">
+        
+          <link rel="alternate" type="text/markdown" href="./index.md">
+        
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/logo_badge.svg">
+      <meta name="generator" content="zensical-0.1.1">
+    
+    
+      
+        <title>Diffusion Model - Time Series with Deep Learning Quick Bite</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.ebb7f775.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.b60ce83d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/widgets/widgets.css?v=8c31d725">
+    
+      <link rel="stylesheet" href="../../assets/widgets/sidebar.css?v=33796648">
+    
+    <script>__md_scope=new URL("../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-hidden="true"></label>
+    <div data-md-component="skip">
+      <a href="#__skip" class="md-skip">
+        Skip to content
+      </a>
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Time Series with Deep Learning Quick Bite" class="md-header__button md-logo" aria-label="Time Series with Deep Learning Quick Bite" data-md-component="logo">
+      
+  <img src="../../assets/logo_badge.svg" alt="Time Series with Deep Learning Quick Bite">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      <span class="md-visually-hidden">Navigation</span>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Time Series with Deep Learning Quick Bite
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Diffusion Model
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="md-visually-hidden">Search</span>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/emptymalei/deep-learning" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    emptymalei/deep-learning
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../engineering/" class="md-tabs__link">
+          
+  
+  Engineering Tips
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../time-series/" class="md-tabs__link">
+          
+  
+  Fundamentals of Time Series Forecasting
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../trees/tree.basics/" class="md-tabs__link">
+          
+  
+  Trees
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deep-learning-fundamentals/" class="md-tabs__link">
+          
+  
+  Fundamentals of Deep Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../time-series-deep-learning/" class="md-tabs__link">
+          
+  
+  Time Series Forecasting with Deep Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../supplementary/" class="md-tabs__link">
+          
+  
+  Supplementary
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+      
+    
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../map/" class="md-tabs__link">
+          
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Time Series with Deep Learning Quick Bite" class="md-nav__button md-logo" aria-label="Time Series with Deep Learning Quick Bite" data-md-component="logo">
+      
+  <img src="../../assets/logo_badge.svg" alt="Time Series with Deep Learning Quick Bite">
+
+    </a>
+    Time Series with Deep Learning Quick Bite
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/emptymalei/deep-learning" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    emptymalei/deep-learning
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Home
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Engineering Tips
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Engineering Tips
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Coding Tips
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Python
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Fundamentals of Time Series Forecasting
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Fundamentals of Time Series Forecasting
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Data and Statistical Forecasting Methods
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Data
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_2">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Time Series Data
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-data.analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Terminologies of Time Series Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-data.box-cox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Box-Cox Transformation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-data.analysis.twfe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Two-way Fixed Effects
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-data.time-delayed-embedding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Delayed Embedding
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Data Generating Process
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Data Generating Process
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-datasets.dgp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DGP
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-datasets.dgp.langevin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DGP: Langevin Equation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Kindergarten Models
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Kindergarten Models
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-basics.statistical-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Statistical Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-basics.ar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  AR
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-basics.var/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  VAR
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Synthetic Datasets
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Synthetic Datasets
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-synthetic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Synthetic Time Series
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-datasets.synthetic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Creating Synthetic Dataset
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-data.data-augmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Augmentation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Forecasting
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-forecast.tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting Tasks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-forecast.naive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Naive Forecasts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Evaluation and Metrics
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Evaluation and Metrics
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-evaluation.forecasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting Evaluation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-metrics.forecasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting Metrics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-metrics.forecasting.crps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  CRPS
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-evaluation.probabilistic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Evaluating Probabilistic Forecasts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-evaluation.baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Baselines and Skill Scores
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Time Series
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Hierarchical Time Series
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-hierarchical.data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Time Series Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-hierarchical.reconciliation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Time Series Reconciliation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Useful Datasets
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_3_9">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Useful Datasets
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Datasets
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-datasets.ecb-exchange-rate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Exchange Rate
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-datasets.nrel-solar-energy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  NREL Solar Power Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-datasets.uci-electricity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Electricity
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series/timeseries-datasets.pems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  PeMS Traffic Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Trees
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Trees
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Tree-based Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.random-forest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Random Forest
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.gbdt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Gradient Boosted Trees
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trees/tree.darts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Trees
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Fundamentals of Deep Learning
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Fundamentals of Deep Learning
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Deep Learning Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Learning from Data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/neural-net/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/recurrent-neural-networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Recurrent Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deep-learning-fundamentals/convolutional-neural-networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Convolutional Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Transformers
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Transformers
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../transformers/transformers.vanilla/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Vanilla Transformers
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Dynamical Systems
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Dynamical Systems
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dynamical-systems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Why Dynamical Systems
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dynamical-systems/neural-ode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Neural ODE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Energy-based Models
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Energy-based Models
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energy-based-models/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energy-based-models/ebm.diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Diffusion Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_9" id="__nav_5_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generative Models
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_9_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_5_9">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Generative Models
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/autoregressive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Autoregressive
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/ae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  AE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  VAE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Flow
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/gan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  GAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Forecasting with Deep Learning
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Time Series Forecasting with Deep Learning
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.dataset.pendulum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Pendulum Dataset
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.feedforward/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with MLP
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.rnn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with RNN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.transformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Transformers
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.cnn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with CNN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with VAE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Flow
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.gan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with GAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.neural-ode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Neural ODE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../time-series-deep-learning/timeseries.deep-learning.timegrad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Diffusion Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Supplementary
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Supplementary
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../supplementary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  About Supplementary Materials
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utilities/notebooks-and-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  How to Run Our Notebooks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Notebooks
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_3">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Notebooks
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries_data_box-cox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Box-Cox Transformation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pendulum_dataset/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Pendulum Dataset
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hierarchical_forecasting_mint/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hierarchical Forecasting Using MinT
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tree_basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Tree Basics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tree_random_forest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Random Forest Basics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tree_darts_random_forest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Random Forest using Darts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tree_darts_boosted_tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with GBDT using Darts
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../creating_time_series_datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Creating Time Series Dataset (PyTorch)
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../feedforward_neural_netwroks_timeseries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Feedforward Neural Networks
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rnn_timeseries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with RNN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transformer_timeseries_univariate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with Transformer
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neuralode_timeseries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Forecasting with NeuralODE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../time-series-data-generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generate Time Series Using Statistics
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../time_vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generate Time Series Using VAE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timeseries-comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Comparing Time Series
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tabpfn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Pretrained Models: TabPFN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diffusion_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Diffusion Models
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../time_series_data_and_embedding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Time Series Data Embedding Classical Methods
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_4" id="__nav_7_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Small Yet Powerful Concepts
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_4">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Small Yet Powerful Concepts
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Appendices
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/entropy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Entropy
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/mutual-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Mutual Information
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/kl-divergence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  KL Divergence
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/f-divergence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  f-divergence
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/elbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  ELBO
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/alignment-and-uniformity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Alignment and Uniformity
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/gini-impurity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Gini Impurity
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/information-gain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Information Gain
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/generalization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Generalization
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/timeseries-data.dtw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DTW
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/timeseries-data.dtw-barycenter-averaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  DBA
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5" id="__nav_7_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Other Deep Learning Topics
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_5_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_5">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Other Deep Learning Topics
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_5_1" id="__nav_7_5_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Contrastive
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_7_5_1_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_7_5_1">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  Contrastive
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Introduction
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/deep-infomax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Deep Infomax
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/contrastive/contrastive-predictive-coding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Contrastive Predictive Coding
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/made/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  MADE
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/generative/maf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  MAF
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/f-gan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  f-GAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../self-supervised/adversarial/infogan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  InfoGAN
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  About
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        
+          <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+            <label class="md-nav__title" for="__nav_8">
+              <span class="md-nav__icon md-icon"></span>
+              
+  
+  About
+
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix>
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Map of the Book
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meta/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Roadmap
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meta/changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Changelog
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+            </ul>
+          </nav>
+        
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#forward-process-step-by-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Forward process step by step
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculate-state-at-time-t-in-one-batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Calculate State at time t in one batch
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reverse-step-by-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Reverse step by step
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diffusion-distributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Diffusion Distributions
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-visuals" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Create Visuals
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                <a id="__skip" tabindex="-1"></a>
+                
+                  
+  <button type="button" title="Copy as Markdown" aria-label="Copy as Markdown" class="md-content__button md-icon" data-md-copy-url="./index.md">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z"/></svg>
+  </button>
+
+
+  
+    <a href="https://github.com/emptymalei/deep-learning/edit/main/dl/notebooks/diffusion_model_timegrad.py" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-pen" viewBox="0 0 24 24"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/emptymalei/deep-learning/raw/main/dl/notebooks/diffusion_model_timegrad.py" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-code-2" viewBox="0 0 24 24"><path d="M4 12.15V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5M5 16l-3 3 3 3M9 22l3-3-3-3"/></svg>
+    </a>
+  
+
+
+<h1 id="diffusion-model">Diffusion Model<a class="headerlink" href="#diffusion-model" title="Permanent link">¶</a></h1>
+<p>References:
+1. <a href="https://github.com/zalandoresearch/pytorch-ts/blob/master/pts/model/time_grad/time_grad_network.py"><code>pts/model/time_grad/time_grad_network.py</code></a></p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DiffusionParams</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">""" """</span>
+
+    <span class="n">steps</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">""" """</span>
+        <span class="k">return</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_bar_by_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">""" """</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_by_step</span><span class="p">)</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beta_by_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">""" """</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">)</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_by_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">""" """</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">)</span>
+
+    <span class="c1"># @cached_property</span>
+    <span class="c1"># def sigma_q_squared(self) -&gt; float:</span>
+    <span class="c1">#     r"""</span>
+
+    <span class="c1">#     $$</span>
+    <span class="c1">#     \sigma_q^2(t) = \frac{</span>
+    <span class="c1">#         (1 - \alpha(t))(1 - \bar\alpha(t-1))</span>
+    <span class="c1">#     }{1 - \bar\alpha(t)}</span>
+    <span class="c1">#     $$</span>
+    <span class="c1">#     """</span>
+    <span class="c1">#     sigma_q_squared = (</span>
+    <span class="c1">#         1 - self.alpha_by_step[1:]</span>
+    <span class="c1">#     ) * (1 - self.alpha_bar_by_step[:-1]) / (1 - self.alpha_bar_by_step[1:])</span>
+    <span class="c1">#     return np.insert(sigma_q_squared, 0, 0)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Diffusion</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">DiffusionParams</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_bar_by_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">alpha_bar_by_step</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_by_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">alpha_by_step</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+
+    <span class="c1"># @cached_property</span>
+    <span class="c1"># def sigma_q_squared(self) -&gt; torch.Tensor:</span>
+    <span class="c1">#     return torch.tensor(self.params.sigma_q_squared, dtype=self.dtype)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_var</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_var</span><span class="p">,</span> <span class="n">length</span><span class="p">))</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">noise</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">steps</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_forward_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span>
+                <span class="n">initial</span><span class="p">,</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_bar_by_step</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_bar_by_step</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_forward_process_by_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Assuming that we know the noise at step $t$,</span>
+
+<span class="sd">        $$</span>
+<span class="sd">        x(t) = \sqrt{\alpha(t)}x(t-1) + \sqrt{1 - \alpha(t)}\epsilon(t)</span>
+<span class="sd">        $$</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_by_step</span><span class="p">[</span><span class="n">step</span><span class="p">])</span> <span class="o">*</span> <span class="n">state</span>
+            <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_by_step</span><span class="p">[</span><span class="n">step</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">[:,</span> <span class="n">step</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_inverse_process_by_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Assuming that we know the noise at step $t$,</span>
+
+<span class="sd">        $$</span>
+<span class="sd">        x(t-1) = \frac{1}{\sqrt{\alpha(t)}}</span>
+<span class="sd">        (x(t) - \sqrt{1 - \alpha(t)}\epsilon(t))</span>
+<span class="sd">        $$</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">state</span> <span class="o">-</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_by_step</span><span class="p">[</span><span class="n">step</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">[:,</span> <span class="n">step</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_by_step</span><span class="p">[</span><span class="n">step</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">diffusion_params</span> <span class="o">=</span> <span class="n">DiffusionParams</span><span class="p">(</span>
+    <span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+    <span class="c1"># beta=0,</span>
+<span class="p">)</span>
+<span class="n">diffusion_batch_size</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="c1"># diffusion_batch_size = 2</span>
+<span class="n">diffusion_process</span> <span class="o">=</span> <span class="n">Diffusion</span><span class="p">(</span><span class="n">diffusion_batch_size</span><span class="p">,</span> <span class="n">diffusion_params</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># diffusion_initial_x = torch.sin(</span>
+<span class="c1">#     torch.linspace(0, 1, diffusion_batch_size)</span>
+<span class="c1">#     .reshape(diffusion_batch_size)</span>
+<span class="c1"># )</span>
+
+<span class="n">diffusion_initial_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">diffusion_batch_size</span><span class="p">)</span>
+<span class="c1"># diffusion_initial_x = (</span>
+<span class="c1">#     torch.distributions.Beta(torch.tensor([0.5]), torch.tensor([0.5]))</span>
+<span class="c1">#     .sample((diffusion_batch_size, 1))</span>
+<span class="c1">#     .reshape(diffusion_batch_size)</span>
+<span class="c1"># )</span>
+
+<span class="n">diffusion_initial_x</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>tensor([7.7775e-01, 2.5996e-03, 8.9573e-01, 2.8487e-02, 8.6702e-01, 6.3107e-01,
+        1.4697e-02, 5.6454e-01, 4.8029e-01, 3.7040e-01, 1.6683e-01, 1.2759e-01,
+        2.5198e-01, 7.2493e-01, 5.6882e-01, 6.8986e-01, 2.5026e-01, 4.2498e-01,
+        1.4950e-01, 6.0333e-02, 9.6513e-01, 7.2014e-01, 5.3760e-01, 2.4866e-01,
+        6.2440e-02, 3.5743e-01, 6.3690e-01, 5.4904e-01, 6.6745e-01, 2.7166e-01,
+        8.4943e-02, 5.8873e-01, 5.2532e-01, 8.4310e-01, 4.8329e-01, 2.1650e-01,
+        7.9686e-01, 6.1594e-01, 6.0277e-01, 9.7054e-01, 3.9735e-02, 9.0588e-01,
+        9.9158e-01, 7.8630e-01, 8.5138e-01, 2.3773e-01, 6.2784e-01, 7.2167e-01,
+        3.2273e-01, 1.7800e-01, 4.6897e-01, 1.3501e-01, 7.2497e-01, 6.2923e-01,
+        6.0175e-01, 7.1988e-01, 4.4167e-01, 7.4963e-01, 5.7014e-01, 9.5285e-01,
+        1.9862e-01, 2.0671e-01, 5.4677e-01, 4.3996e-02, 1.8597e-01, 6.6931e-01,
+        4.9900e-01, 7.9565e-01, 3.7688e-01, 5.2546e-01, 2.0067e-01, 1.4955e-01,
+        7.3732e-01, 3.2959e-01, 4.9122e-01, 9.3785e-01, 6.2275e-01, 6.8126e-01,
+        7.0630e-01, 6.1048e-01, 6.0603e-02, 4.7585e-01, 5.8108e-01, 2.2769e-01,
+        5.3971e-01, 6.8321e-01, 1.6413e-01, 1.9077e-01, 8.4308e-01, 2.9310e-01,
+        8.6060e-01, 5.1602e-01, 6.7872e-01, 9.7942e-01, 7.3843e-01, 8.1786e-01,
+        7.7456e-04, 4.9613e-01, 1.0111e-01, 9.8224e-01, 9.1857e-01, 2.4136e-01,
+        3.7621e-01, 2.4404e-01, 1.3175e-01, 3.8267e-01, 1.3462e-01, 2.7758e-01,
+        7.7329e-01, 6.2881e-01, 9.2023e-01, 9.2068e-01, 9.7770e-01, 9.0131e-01,
+        2.2477e-01, 5.4225e-01, 5.4110e-01, 1.6160e-02, 6.3782e-01, 3.3365e-01,
+        9.5199e-01, 5.7746e-01, 8.4396e-01, 4.8976e-01, 6.4052e-01, 9.0340e-01,
+        5.0595e-01, 6.4192e-01, 8.8458e-01, 2.5237e-01, 9.3700e-01, 1.4786e-01,
+        2.3235e-01, 8.7961e-01, 1.9093e-01, 8.6167e-01, 7.8171e-01, 9.7507e-01,
+        7.7072e-01, 9.9421e-01, 8.8434e-01, 2.1071e-01, 8.7159e-01, 2.4253e-01,
+        4.7680e-01, 6.6068e-01, 6.2021e-01, 2.2684e-01, 3.5826e-01, 6.4616e-01,
+        7.6931e-01, 2.6578e-01, 6.0351e-01, 8.5048e-01, 4.4067e-01, 6.2625e-01,
+        7.5104e-01, 2.7441e-01, 8.8279e-01, 6.9316e-01, 1.1449e-01, 5.2794e-01,
+        6.7864e-01, 2.3386e-01, 8.4397e-01, 7.9805e-01, 6.1662e-03, 8.2585e-02,
+        2.1492e-01, 4.6439e-01, 6.6296e-02, 7.6129e-01, 8.2308e-01, 5.4854e-01,
+        5.7754e-01, 3.5968e-01, 9.7841e-01, 6.4619e-02, 6.0760e-01, 6.8189e-01,
+        6.0830e-01, 7.3125e-01, 6.1340e-01, 9.1391e-01, 8.8631e-01, 2.2860e-01,
+        3.2060e-01, 2.3429e-01, 3.0797e-01, 5.4123e-01, 9.4756e-02, 7.6480e-01,
+        5.4720e-01, 7.9341e-01, 2.3891e-01, 1.0985e-01, 4.8592e-02, 4.8016e-01,
+        4.3936e-01, 3.2796e-01, 6.4088e-01, 4.0451e-02, 2.5374e-01, 1.5751e-01,
+        8.4985e-01, 5.4544e-04, 6.6412e-01, 9.9078e-01, 2.6698e-01, 9.1085e-01,
+        1.1263e-01, 6.0111e-02, 1.0284e-01, 3.7929e-01, 5.8882e-01, 3.9850e-01,
+        5.8496e-01, 7.2087e-01, 9.5728e-01, 5.9866e-01, 5.5852e-01, 5.3049e-01,
+        1.0203e-01, 6.8761e-01, 9.5779e-01, 9.8760e-01, 3.0381e-01, 6.5888e-01,
+        7.5650e-01, 8.7441e-01, 9.9628e-01, 6.2763e-01, 1.6729e-01, 5.5852e-01,
+        7.6903e-01, 5.1704e-02, 5.2176e-01, 8.3529e-01, 2.0617e-01, 9.1318e-01,
+        6.5168e-01, 7.1317e-01, 4.5139e-01, 9.4695e-01, 3.9636e-01, 7.5042e-01,
+        6.7440e-01, 8.9903e-01, 1.7006e-01, 3.3402e-01, 7.0436e-01, 9.0939e-01,
+        6.8231e-01, 7.9774e-01, 5.3023e-01, 5.1610e-01, 7.6396e-01, 5.1958e-01,
+        3.2967e-01, 3.5324e-01, 6.9631e-01, 7.1903e-01, 9.7596e-01, 9.2130e-03,
+        4.2002e-01, 6.5758e-02, 8.3896e-01, 6.7460e-02, 8.5848e-01, 8.6921e-01,
+        2.8666e-01, 7.7573e-01, 6.9970e-01, 4.3003e-01, 2.7693e-01, 4.2843e-01,
+        5.2535e-01, 6.5434e-02, 2.5410e-01, 9.5170e-01, 3.6324e-01, 7.7636e-01,
+        7.8613e-01, 1.7817e-01, 4.0108e-01, 7.6408e-01, 4.5393e-01, 8.9434e-01,
+        5.1267e-01, 7.5307e-01, 2.5809e-01, 1.5458e-01, 2.7147e-01, 7.3079e-01,
+        3.8734e-01, 3.8298e-01, 3.0626e-02, 3.1052e-01, 7.3706e-01, 8.8986e-01,
+        5.7330e-01, 4.3292e-01, 2.0249e-01, 4.1284e-01, 6.5766e-01, 1.8121e-01,
+        4.2965e-01, 5.8626e-01, 3.6327e-01, 4.0321e-01, 6.9334e-01, 6.5409e-01,
+        4.2427e-01, 1.6489e-01, 8.5117e-02, 6.3145e-01, 3.2458e-01, 7.8721e-01,
+        3.0656e-01, 5.8722e-01, 3.0550e-01, 6.4041e-01, 1.6568e-02, 8.7289e-01,
+        4.2902e-02, 6.4242e-01, 7.3430e-01, 3.8101e-01, 7.0357e-01, 7.5356e-02,
+        2.1209e-01, 8.9619e-01, 9.7166e-01, 3.9159e-01, 6.3906e-01, 6.8285e-01,
+        4.2104e-01, 4.6377e-01, 6.8677e-01, 3.2269e-01, 6.6650e-01, 2.4675e-01,
+        2.9736e-01, 4.8034e-01, 4.9603e-01, 2.6741e-01, 7.9447e-01, 3.0797e-01,
+        1.5957e-01, 3.4549e-01, 6.9508e-01, 8.8407e-01, 9.1275e-02, 3.7905e-01,
+        8.1314e-01, 8.8868e-01, 4.8188e-01, 9.5437e-01, 7.9598e-01, 4.1531e-01,
+        7.0536e-01, 9.0533e-01, 6.8560e-01, 8.9861e-01, 1.0241e-01, 6.3237e-01,
+        7.3239e-01, 4.3845e-01, 9.8481e-02, 5.7864e-01, 9.6508e-01, 6.0801e-01,
+        3.5014e-01, 5.1751e-01, 8.0159e-01, 1.1674e-01, 2.4511e-01, 8.7595e-01,
+        4.9931e-01, 2.0810e-01, 4.6225e-01, 3.1085e-02, 2.4318e-01, 5.6451e-01,
+        8.3331e-01, 3.9343e-01, 5.2788e-01, 9.6819e-01, 2.0900e-01, 9.3971e-01,
+        6.4002e-01, 2.4179e-02, 2.9278e-01, 3.5854e-01, 1.6630e-01, 4.4320e-01,
+        4.8403e-01, 9.9841e-01, 4.0711e-01, 5.2067e-01, 9.4308e-02, 1.5326e-01,
+        9.2903e-01, 4.2009e-01, 3.5016e-01, 3.8493e-01, 4.1645e-01, 5.0718e-01,
+        9.2889e-01, 5.9775e-01, 6.6466e-02, 6.0154e-01, 7.5452e-01, 7.1951e-02,
+        5.3474e-01, 3.4430e-01, 3.2890e-01, 6.7426e-02, 9.7682e-01, 1.0032e-01,
+        7.3257e-01, 3.2214e-01, 4.6050e-01, 8.2653e-01, 2.6279e-01, 3.5414e-02,
+        9.9554e-01, 9.5582e-01, 5.4223e-01, 3.2331e-01, 8.2948e-01, 4.7821e-02,
+        5.5640e-01, 6.6080e-01, 5.7909e-01, 4.5128e-01, 9.6965e-01, 7.8449e-01,
+        5.8548e-01, 9.4105e-01, 7.1899e-01, 6.7650e-01, 2.9274e-01, 7.0456e-01,
+        8.8447e-01, 8.0095e-01, 4.6605e-01, 7.8801e-01, 5.4600e-01, 8.7844e-01,
+        8.1421e-02, 1.8782e-01, 9.0921e-01, 1.1820e-01, 6.8928e-01, 7.1021e-01,
+        8.9415e-01, 1.0278e-01, 7.3842e-01, 1.5351e-01, 1.1304e-01, 7.7400e-01,
+        2.6465e-01, 1.8265e-01, 7.6791e-01, 8.6094e-01, 8.7606e-01, 1.0116e-01,
+        2.2351e-01, 8.2986e-01, 6.7074e-01, 2.2733e-01, 2.8505e-01, 4.6601e-01,
+        4.1463e-01, 6.8858e-01, 3.0736e-01, 3.4557e-01, 9.9313e-01, 3.6972e-01,
+        1.8696e-01, 1.0080e-01, 3.4693e-01, 1.5132e-01, 3.4358e-01, 9.3118e-01,
+        4.8359e-02, 7.4505e-01, 7.5342e-01, 4.9223e-01, 6.8864e-01, 1.1586e-01,
+        1.0392e-01, 2.9166e-02, 4.0281e-01, 2.6653e-01, 8.7507e-02, 3.5574e-01,
+        4.9399e-01, 3.8885e-01, 1.6902e-02, 7.9361e-01, 6.3418e-02, 1.1974e-01,
+        4.8186e-01, 7.5273e-01, 1.6932e-01, 7.9584e-01, 3.6735e-01, 4.8952e-01,
+        7.6881e-01, 3.0617e-01, 6.2502e-01, 8.8967e-01, 8.3056e-01, 7.3021e-01,
+        2.8281e-01, 6.3301e-01, 4.9556e-02, 4.3477e-01, 5.1404e-01, 9.4736e-01,
+        3.7648e-01, 4.2239e-01, 1.6176e-02, 8.2439e-01, 1.2797e-01, 7.1985e-01,
+        7.1590e-01, 7.0463e-01, 9.8746e-01, 8.2056e-01, 5.2468e-01, 1.5252e-01,
+        3.0611e-01, 7.2840e-01, 9.6575e-01, 8.0366e-01, 3.1065e-01, 7.0294e-01,
+        1.8660e-01, 8.7565e-04, 7.2417e-01, 3.4084e-01, 5.4660e-02, 3.6320e-01,
+        6.8421e-01, 3.5242e-02, 6.5374e-01, 2.8833e-02, 3.3636e-01, 5.7133e-01,
+        2.7856e-01, 9.4240e-01, 1.8305e-01, 6.0760e-01, 1.2833e-01, 4.7069e-01,
+        3.0750e-01, 2.2685e-01, 7.3897e-01, 3.7941e-01, 8.8522e-01, 7.2371e-01,
+        5.3601e-03, 2.9866e-01, 1.4292e-01, 1.4680e-01, 6.4781e-02, 5.7554e-01,
+        4.2656e-01, 6.8550e-01, 6.6180e-01, 5.5994e-01, 1.0606e-01, 2.0924e-01,
+        3.2525e-01, 7.5358e-01, 9.9037e-03, 6.5474e-01, 7.1112e-01, 2.6596e-01,
+        7.4475e-01, 5.3266e-01, 1.6579e-01, 2.2054e-01, 5.1728e-02, 7.0911e-02,
+        8.3083e-01, 1.8573e-01, 2.9299e-01, 1.9889e-01, 8.9104e-01, 7.2713e-01,
+        8.4764e-01, 4.3802e-01, 5.4559e-01, 5.1432e-01, 9.4528e-01, 5.4897e-01,
+        2.1803e-01, 3.7670e-01, 7.9393e-02, 8.0621e-01, 7.3804e-01, 4.9906e-01,
+        6.1492e-01, 7.6444e-01, 3.8084e-01, 7.8545e-01, 9.4032e-01, 8.0139e-01,
+        9.1406e-01, 3.4410e-02, 6.7650e-01, 4.8422e-01, 5.1009e-03, 3.4851e-01,
+        1.3183e-01, 5.0791e-01, 2.7883e-01, 9.0753e-01, 7.5274e-01, 1.1187e-01,
+        7.2958e-02, 4.2475e-01, 4.6859e-01, 3.7485e-01, 1.5859e-01, 9.2948e-01,
+        6.1692e-01, 2.8492e-01, 3.7137e-03, 5.0841e-01, 4.2595e-01, 7.2586e-01,
+        4.0947e-01, 4.5109e-01, 9.3411e-01, 5.2250e-01, 1.4618e-02, 7.6092e-01,
+        6.2295e-01, 8.0388e-01, 5.9361e-01, 5.5299e-01, 4.2948e-01, 9.3728e-01,
+        3.8873e-01, 2.0691e-01, 5.4546e-01, 6.5319e-01, 6.8088e-01, 4.8318e-01,
+        9.8598e-01, 9.4376e-01, 4.6390e-01, 6.5581e-02, 4.4518e-01, 8.5712e-01,
+        1.2211e-01, 8.6805e-01, 6.4558e-01, 1.8900e-01, 7.4766e-01, 6.8070e-01,
+        7.1700e-01, 3.7970e-01, 1.8861e-02, 1.0999e-01, 7.1632e-01, 1.3020e-01,
+        3.0324e-01, 7.4707e-01, 8.6258e-01, 6.5321e-02, 3.6113e-01, 5.5212e-01,
+        3.0473e-01, 6.5039e-01, 1.4016e-01, 7.1889e-01, 2.7115e-01, 4.7970e-01,
+        1.8653e-02, 9.2409e-01, 3.7443e-01, 8.6519e-01, 8.1863e-01, 1.9659e-01,
+        6.2090e-02, 2.6739e-01, 4.4408e-01, 4.9536e-02, 3.1252e-01, 4.8672e-01,
+        4.0193e-01, 8.3799e-01, 7.3112e-01, 1.1773e-01, 8.6357e-01, 7.8174e-01,
+        6.3846e-01, 9.7087e-01, 8.8215e-01, 9.8100e-01, 4.0457e-02, 7.4636e-01,
+        6.4701e-01, 9.6748e-01, 8.5181e-01, 8.4270e-01, 2.5210e-01, 5.5618e-01,
+        6.1268e-01, 2.9049e-01, 5.8486e-03, 8.3614e-01, 5.2293e-01, 7.5307e-01,
+        3.4375e-01, 6.9141e-01, 5.1986e-01, 8.8886e-02, 4.4001e-01, 8.0642e-01,
+        6.9916e-01, 3.4141e-01, 4.8531e-01, 1.5386e-01, 8.8560e-01, 7.7011e-01,
+        3.5852e-01, 4.0197e-01, 1.6917e-01, 9.0410e-01, 5.6652e-02, 8.9739e-02,
+        8.3546e-01, 1.4231e-01, 7.5872e-01, 1.9298e-01, 2.2334e-01, 6.6317e-01,
+        6.8090e-01, 2.9787e-01, 4.9769e-01, 7.2268e-01, 2.6624e-01, 8.3895e-02,
+        2.1302e-03, 2.6899e-01, 3.2295e-01, 4.3568e-01, 7.4568e-01, 9.8571e-01,
+        2.3218e-01, 5.5723e-01, 9.0697e-01, 2.0891e-02, 6.2216e-01, 5.6822e-01,
+        6.7836e-01, 7.0153e-01, 7.3307e-02, 7.8713e-01, 8.6419e-01, 2.2157e-01,
+        3.8879e-01, 8.5876e-01, 7.0462e-01, 4.5412e-01, 4.1135e-03, 1.0077e-03,
+        6.9164e-02, 9.5048e-01, 7.0820e-01, 5.0619e-01, 2.0390e-02, 8.4203e-01,
+        1.4392e-01, 7.9174e-01, 1.6168e-01, 1.0209e-01, 9.2645e-02, 7.6759e-01,
+        3.5858e-01, 9.3251e-01, 5.2742e-01, 4.8935e-01, 3.6429e-01, 2.3940e-01,
+        3.8057e-01, 3.4109e-01, 9.2896e-02, 4.4226e-01, 6.1727e-01, 1.7108e-01,
+        8.4865e-01, 5.1920e-01, 7.7916e-01, 1.6543e-01, 6.6999e-01, 8.7431e-01,
+        4.8421e-01, 6.1869e-01, 3.1869e-01, 5.4427e-01, 2.8945e-01, 6.5180e-01,
+        8.8363e-01, 2.2613e-01, 3.8391e-01, 8.3005e-01, 8.0331e-01, 6.6010e-01,
+        8.8596e-01, 7.2263e-01, 8.4103e-01, 8.8009e-01, 2.3610e-01, 6.6927e-01,
+        2.5128e-01, 1.1817e-01, 3.9681e-01, 4.7718e-01, 2.5893e-01, 4.3495e-01,
+        1.3493e-01, 2.4773e-01, 3.3844e-01, 7.9895e-01, 9.5699e-01, 6.3362e-02,
+        8.1743e-01, 8.9984e-01, 9.5229e-01, 1.8843e-01, 2.7876e-01, 9.0028e-01,
+        2.2192e-01, 5.3296e-01, 8.4839e-01, 1.0904e-02, 8.4025e-01, 8.6112e-01,
+        1.1830e-01, 4.2930e-01, 4.2108e-01, 2.9025e-01, 8.6971e-01, 5.4962e-01,
+        7.6904e-01, 6.3845e-01, 8.0178e-01, 6.7694e-02, 6.6343e-01, 1.8530e-01,
+        6.4330e-01, 6.8002e-01, 8.7087e-01, 5.2740e-02, 1.4102e-01, 5.3180e-01,
+        6.9374e-01, 3.5666e-01, 3.5258e-01, 8.7790e-01, 7.5954e-01, 5.0547e-01,
+        3.5620e-01, 4.5835e-01, 3.7510e-01, 4.4056e-01, 2.3522e-01, 7.1087e-01,
+        6.1566e-01, 2.3742e-01, 5.5114e-01, 4.9269e-02, 4.3503e-01, 4.2648e-01,
+        2.0570e-01, 8.5944e-01, 6.4330e-01, 8.6874e-02, 2.8968e-01, 3.5790e-01,
+        7.9048e-01, 8.1321e-01, 4.9819e-01, 7.6190e-03, 9.1852e-01, 1.3581e-01,
+        7.5183e-01, 3.2399e-01, 1.3880e-01, 7.9173e-02, 6.9724e-01, 9.8917e-01,
+        8.5540e-01, 1.9553e-01, 1.5356e-01, 8.0217e-01, 7.6672e-01, 1.8106e-01,
+        7.8420e-01, 1.2492e-02, 8.2971e-02, 8.3922e-01, 3.8834e-01, 2.2546e-01,
+        3.7024e-01, 7.1171e-01, 8.0455e-02, 3.4067e-01, 7.0084e-01, 6.8490e-01,
+        3.6791e-01, 8.7797e-01, 7.7800e-01, 5.9188e-01, 5.8658e-01, 7.4175e-02,
+        9.0019e-01, 6.5421e-01, 3.3252e-01, 2.2889e-01, 9.7904e-01, 3.3549e-01,
+        6.9161e-01, 9.4515e-01, 1.7380e-01, 6.1230e-01, 4.3354e-01, 5.2601e-01,
+        8.4111e-01, 3.8420e-02, 8.1740e-01, 1.6980e-01, 9.1878e-01, 2.1792e-01,
+        5.7883e-01, 6.4201e-01, 8.2646e-01, 7.1636e-01, 4.8284e-01, 2.6438e-01,
+        2.7945e-01, 5.9324e-01, 3.7198e-01, 5.5136e-01, 7.4510e-01, 5.8621e-01,
+        4.6951e-01, 7.7834e-02, 5.6186e-01, 3.6304e-01, 9.2944e-01, 1.4286e-01,
+        2.4521e-02, 9.9506e-01, 9.5994e-01, 1.3745e-01, 2.5560e-01, 5.9027e-01,
+        7.3438e-01, 8.7141e-03, 8.6143e-01, 8.5607e-01, 8.7939e-01, 3.8756e-02,
+        6.6746e-01, 1.2815e-01, 5.1976e-01, 8.9897e-01, 9.5882e-02, 6.2630e-01,
+        6.9545e-01, 8.4795e-01, 9.7535e-01, 4.2693e-01, 7.6053e-01, 9.1041e-01,
+        6.0815e-01, 7.3042e-01, 8.5945e-01, 4.9286e-01, 7.5139e-01, 2.1239e-01,
+        7.7489e-01, 4.9297e-01, 5.0023e-01, 8.8323e-01, 6.4429e-01, 7.9237e-01,
+        2.4938e-01, 4.6155e-01, 8.8885e-01, 2.1184e-01])
+</code></pre></div>
+<h2 id="forward-process-step-by-step">Forward process step by step<a class="headerlink" href="#forward-process-step-by-step" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">diffusion_steps_step_by_step</span> <span class="o">=</span> <span class="p">[</span><span class="n">diffusion_initial_x</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">diffusion_params</span><span class="o">.</span><span class="n">steps</span><span class="p">):</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"step </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">i_state</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">diffusion_process</span><span class="o">.</span><span class="n">_forward_process_by_step</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">diffusion_steps_step_by_step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">step</span><span class="o">=</span><span class="n">i</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"i_state </span><span class="si">{</span><span class="n">i_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">diffusion_steps_step_by_step</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i_state</span><span class="p">)</span>
+</code></pre></div>
+<details class="note">
+<summary>Output (61 lines)</summary>
+<div class="highlight"><pre><span></span><code>... (80 earlier lines)
+[32m2025-04-18 23:16:25.281[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 40[0m
+[32m2025-04-18 23:16:25.282[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.8094039  -0.33473575][0m
+[32m2025-04-18 23:16:25.282[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 41[0m
+[32m2025-04-18 23:16:25.283[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.83325726 -0.35788843][0m
+... (66 lines omitted) ...
+[32m2025-04-18 23:16:25.319[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.7483727  -0.08260181][0m
+[32m2025-04-18 23:16:25.320[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 73[0m
+[32m2025-04-18 23:16:25.320[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.7065493  -0.07097664][0m
+[32m2025-04-18 23:16:25.321[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 74[0m
+[32m2025-04-18 23:16:25.322[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6612688  -0.08965354][0m
+[32m2025-04-18 23:16:25.329[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 75[0m
+[32m2025-04-18 23:16:25.363[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6666412  -0.08845518][0m
+[32m2025-04-18 23:16:25.364[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 76[0m
+[32m2025-04-18 23:16:25.366[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.63734996 -0.16654542][0m
+[32m2025-04-18 23:16:25.368[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 77[0m
+[32m2025-04-18 23:16:25.374[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6595737  -0.17816634][0m
+[32m2025-04-18 23:16:25.375[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 78[0m
+[32m2025-04-18 23:16:25.377[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.59145856 -0.26650017][0m
+[32m2025-04-18 23:16:25.377[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 79[0m
+[32m2025-04-18 23:16:25.378[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.61713743 -0.2778223 ][0m
+[32m2025-04-18 23:16:25.379[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 80[0m
+[32m2025-04-18 23:16:25.380[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6666499  -0.31620997][0m
+[32m2025-04-18 23:16:25.380[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 81[0m
+[32m2025-04-18 23:16:25.381[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.78685683 -0.28278515][0m
+[32m2025-04-18 23:16:25.381[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 82[0m
+[32m2025-04-18 23:16:25.382[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.75152725 -0.19486004][0m
+[32m2025-04-18 23:16:25.382[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 83[0m
+[32m2025-04-18 23:16:25.383[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.74986356 -0.14494139][0m
+[32m2025-04-18 23:16:25.384[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 84[0m
+[32m2025-04-18 23:16:25.384[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.78781325 -0.1104292 ][0m
+[32m2025-04-18 23:16:25.385[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 85[0m
+[32m2025-04-18 23:16:25.385[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.80012774 -0.03022134][0m
+[32m2025-04-18 23:16:25.386[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 86[0m
+[32m2025-04-18 23:16:25.386[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.88045436 -0.06423807][0m
+[32m2025-04-18 23:16:25.387[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 87[0m
+[32m2025-04-18 23:16:25.387[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [0.8984322  0.01694922][0m
+[32m2025-04-18 23:16:25.388[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 88[0m
+[32m2025-04-18 23:16:25.388[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.9198323  -0.09139688][0m
+[32m2025-04-18 23:16:25.389[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 89[0m
+[32m2025-04-18 23:16:25.390[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.98721087 -0.06547409][0m
+[32m2025-04-18 23:16:25.390[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 90[0m
+[32m2025-04-18 23:16:25.391[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 1.0306114 -0.0627986][0m
+[32m2025-04-18 23:16:25.391[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 91[0m
+[32m2025-04-18 23:16:25.392[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.9438532  -0.01546319][0m
+[32m2025-04-18 23:16:25.392[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 92[0m
+[32m2025-04-18 23:16:25.393[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.9463828  -0.04726296][0m
+[32m2025-04-18 23:16:25.393[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 93[0m
+[32m2025-04-18 23:16:25.394[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.99907434 -0.04744781][0m
+[32m2025-04-18 23:16:25.395[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 94[0m
+[32m2025-04-18 23:16:25.396[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.9595288  -0.04881873][0m
+[32m2025-04-18 23:16:25.396[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 95[0m
+[32m2025-04-18 23:16:25.397[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.98240954 -0.09129829][0m
+[32m2025-04-18 23:16:25.397[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 96[0m
+[32m2025-04-18 23:16:25.398[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 1.0371981  -0.13770024][0m
+[32m2025-04-18 23:16:25.398[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 97[0m
+[32m2025-04-18 23:16:25.399[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 1.0262175 -0.1635927][0m
+[32m2025-04-18 23:16:25.399[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 98[0m
+[32m2025-04-18 23:16:25.400[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 1.0525571  -0.17633782][0m
+[32m2025-04-18 23:16:25.401[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 99[0m
+[32m2025-04-18 23:16:25.401[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 1.0235711  -0.19368996][0m
+</code></pre></div>
+</details>
+<div class="highlight"><pre><span></span><code><span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">diffusion_initial_x</span><span class="p">)</span>
+</code></pre></div>
+<div class="dl-widget" data-spec="notebooks/assets/diffusion_model_timegrad/cell7-0.plotly.json" data-widget="plotly">
+<p><em>Interactive Plotly figure: enable JavaScript to view it.</em></p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">diffusion_steps_step_by_step</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<div class="dl-widget" data-spec="notebooks/assets/diffusion_model_timegrad/cell8-0.plotly.json" data-widget="plotly">
+<p><em>Interactive Plotly figure: enable JavaScript to view it.</em></p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">diffusion_steps_step_by_step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div>
+<div class="dl-widget" data-spec="notebooks/assets/diffusion_model_timegrad/cell9-0.plotly.json" data-widget="plotly">
+<p><em>Interactive Plotly figure: enable JavaScript to view it.</em></p>
+</div>
+<h2 id="calculate-state-at-time-t-in-one-batch">Calculate State at time t in one batch<a class="headerlink" href="#calculate-state-at-time-t-in-one-batch" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">diffusion_steps</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">_forward_process</span><span class="p">(</span><span class="n">diffusion_initial_x</span><span class="p">)</span>
+
+<span class="n">diffusion_initial_x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">diffusion_steps</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>(torch.Size([1000]), torch.Size([1000, 100]))
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">diffusion_steps</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+</code></pre></div>
+<div class="dl-widget" data-spec="notebooks/assets/diffusion_model_timegrad/cell12-0.plotly.json" data-widget="plotly">
+<p><em>Interactive Plotly figure: enable JavaScript to view it.</em></p>
+</div>
+<h2 id="reverse-step-by-step">Reverse step by step<a class="headerlink" href="#reverse-step-by-step" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">diffusion_steps_reverse</span> <span class="o">=</span> <span class="p">[</span><span class="n">diffusion_steps_step_by_step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">diffusion_params</span><span class="o">.</span><span class="n">steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"step </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">i_state</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">diffusion_process</span><span class="o">.</span><span class="n">_inverse_process_by_step</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">diffusion_steps_reverse</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">step</span><span class="o">=</span><span class="n">i</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"i_state </span><span class="si">{</span><span class="n">i_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">diffusion_steps_reverse</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i_state</span><span class="p">)</span>
+</code></pre></div>
+<details class="note">
+<summary>Output (61 lines)</summary>
+<div class="highlight"><pre><span></span><code>... (80 earlier lines)
+[32m2025-04-18 23:16:25.681[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 59[0m
+[32m2025-04-18 23:16:25.682[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6951474  -0.38879928][0m
+[32m2025-04-18 23:16:25.682[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 58[0m
+[32m2025-04-18 23:16:25.683[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.73595834 -0.41042498][0m
+... (66 lines omitted) ...
+[32m2025-04-18 23:16:25.724[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.69292307 -0.45350495][0m
+[32m2025-04-18 23:16:25.724[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 26[0m
+[32m2025-04-18 23:16:25.725[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6937502  -0.60519886][0m
+[32m2025-04-18 23:16:25.725[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 25[0m
+[32m2025-04-18 23:16:25.726[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.7822882 -0.8576625][0m
+[32m2025-04-18 23:16:25.726[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 24[0m
+[32m2025-04-18 23:16:25.727[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.88714874 -0.76542556][0m
+[32m2025-04-18 23:16:25.727[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 23[0m
+[32m2025-04-18 23:16:25.728[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.8904635  -0.72792196][0m
+[32m2025-04-18 23:16:25.728[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 22[0m
+[32m2025-04-18 23:16:25.729[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.92258674 -0.72440726][0m
+[32m2025-04-18 23:16:25.729[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 21[0m
+[32m2025-04-18 23:16:25.730[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.88699913 -0.84595186][0m
+[32m2025-04-18 23:16:25.730[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 20[0m
+[32m2025-04-18 23:16:25.731[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.7618088  -0.80919963][0m
+[32m2025-04-18 23:16:25.731[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 19[0m
+[32m2025-04-18 23:16:25.732[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.78601956 -0.81135654][0m
+[32m2025-04-18 23:16:25.738[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 18[0m
+[32m2025-04-18 23:16:25.743[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.680832  -0.5877883][0m
+[32m2025-04-18 23:16:25.745[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 17[0m
+[32m2025-04-18 23:16:25.750[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6215372 -0.5862306][0m
+[32m2025-04-18 23:16:25.752[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 16[0m
+[32m2025-04-18 23:16:25.757[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.5862276  -0.50796723][0m
+[32m2025-04-18 23:16:25.759[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 15[0m
+[32m2025-04-18 23:16:25.760[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.5905369  -0.31537208][0m
+[32m2025-04-18 23:16:25.760[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 14[0m
+[32m2025-04-18 23:16:25.761[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.58957505 -0.2877775 ][0m
+[32m2025-04-18 23:16:25.762[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 13[0m
+[32m2025-04-18 23:16:25.763[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.5959704  -0.25140628][0m
+[32m2025-04-18 23:16:25.764[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 12[0m
+[32m2025-04-18 23:16:25.767[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6318918 -0.2134175][0m
+[32m2025-04-18 23:16:25.767[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 11[0m
+[32m2025-04-18 23:16:25.768[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6900686 -0.2123212][0m
+[32m2025-04-18 23:16:25.768[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 10[0m
+[32m2025-04-18 23:16:25.769[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.74115765 -0.12743005][0m
+[32m2025-04-18 23:16:25.769[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 9[0m
+[32m2025-04-18 23:16:25.770[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6804571  -0.17437676][0m
+[32m2025-04-18 23:16:25.771[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 8[0m
+[32m2025-04-18 23:16:25.772[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6416513  -0.07735392][0m
+[32m2025-04-18 23:16:25.772[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 7[0m
+[32m2025-04-18 23:16:25.773[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6909528  -0.14884506][0m
+[32m2025-04-18 23:16:25.773[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 6[0m
+[32m2025-04-18 23:16:25.774[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.7000388  -0.16155608][0m
+[32m2025-04-18 23:16:25.774[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 5[0m
+[32m2025-04-18 23:16:25.775[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.60679346 -0.19287485][0m
+[32m2025-04-18 23:16:25.776[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 4[0m
+[32m2025-04-18 23:16:25.777[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.63962066 -0.17235725][0m
+[32m2025-04-18 23:16:25.777[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 3[0m
+[32m2025-04-18 23:16:25.778[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.6361206  -0.05406848][0m
+[32m2025-04-18 23:16:25.778[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 2[0m
+[32m2025-04-18 23:16:25.779[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.7482846  -0.05167478][0m
+[32m2025-04-18 23:16:25.779[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 1[0m
+[32m2025-04-18 23:16:25.780[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [ 0.7793836  -0.10398894][0m
+[32m2025-04-18 23:16:25.780[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m4[0m - [1mstep 0[0m
+[32m2025-04-18 23:16:25.781[0m | [1mINFO    [0m | [36m__main__[0m:[36m&lt;module&gt;[0m:[36m8[0m - [1mi_state [0.77775383 0.00259962][0m
+</code></pre></div>
+</details>
+<div class="highlight"><pre><span></span><code><span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">diffusion_steps_reverse</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div>
+<div class="dl-widget" data-spec="notebooks/assets/diffusion_model_timegrad/cell15-0.plotly.json" data-widget="plotly">
+<p><em>Interactive Plotly figure: enable JavaScript to view it.</em></p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">diffusion_steps_reverse</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<div class="dl-widget" data-spec="notebooks/assets/diffusion_model_timegrad/cell16-0.plotly.json" data-widget="plotly">
+<p><em>Interactive Plotly figure: enable JavaScript to view it.</em></p>
+</div>
+<h2 id="diffusion-distributions">Diffusion Distributions<a class="headerlink" href="#diffusion-distributions" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">diffusion_params</span><span class="o">.</span><span class="n">alpha_bar_by_step</span><span class="p">)</span>
+</code></pre></div>
+<div class="dl-widget" data-spec="notebooks/assets/diffusion_model_timegrad/cell18-0.plotly.json" data-widget="plotly">
+<p><em>Interactive Plotly figure: enable JavaScript to view it.</em></p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="n">df_diffusion_example</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">diffusion_initial_x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">diffusion_batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+            <span class="n">diffusion_steps</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+        <span class="p">]</span>
+    <span class="p">),</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">"x_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">diffusion_steps</span><span class="p">))],</span>
+<span class="p">)</span>
+<span class="n">df_diffusion_example</span><span class="p">[</span><span class="s2">"step"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_diffusion_example</span><span class="o">.</span><span class="n">index</span>
+
+<span class="n">df_diffusion_example_melted</span> <span class="o">=</span> <span class="n">df_diffusion_example</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
+    <span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s2">"step"</span><span class="p">],</span> <span class="n">var_name</span><span class="o">=</span><span class="s2">"variable"</span><span class="p">,</span> <span class="n">value_name</span><span class="o">=</span><span class="s2">"value"</span>
+<span class="p">)</span>
+<span class="n">df_diffusion_example_melted</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span>
+</code></pre></div>
+<div class="nb-output" markdown="0">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>step</th>
+      <th>variable</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>100995</th>
+      <td>96</td>
+      <td>x_999</td>
+      <td>0.147864</td>
+    </tr>
+    <tr>
+      <th>100996</th>
+      <td>97</td>
+      <td>x_999</td>
+      <td>-0.425635</td>
+    </tr>
+    <tr>
+      <th>100997</th>
+      <td>98</td>
+      <td>x_999</td>
+      <td>-0.156875</td>
+    </tr>
+    <tr>
+      <th>100998</th>
+      <td>99</td>
+      <td>x_999</td>
+      <td>-0.942937</td>
+    </tr>
+    <tr>
+      <th>100999</th>
+      <td>100</td>
+      <td>x_999</td>
+      <td>-1.025280</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="highlight"><pre><span></span><code><span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
+    <span class="n">df_diffusion_example_melted</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"value"</span><span class="p">,</span>
+    <span class="n">histnorm</span><span class="o">=</span><span class="s2">"probability density"</span><span class="p">,</span>
+    <span class="n">animation_frame</span><span class="o">=</span><span class="s2">"step"</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>/Users/leima/git/github/emptymalei/deep-learning/.venv/lib/python3.10/site-packages/plotly/express/_core.py:1985: FutureWarning:
+When grouping with a length-1 list-like, you will need to pass a length-1 tuple to get_group in a future version of pandas. Pass `(name,)` instead of `name` to silence this warning.
+</code></pre></div>
+<div class="dl-widget" data-spec="notebooks/assets/diffusion_model_timegrad/cell20-1.plotly.json" data-widget="plotly">
+<p><em>Interactive Plotly figure: enable JavaScript to view it.</em></p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="n">px</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span>
+    <span class="n">df_diffusion_example_melted</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="n">df_diffusion_example_melted</span><span class="p">[</span><span class="s2">"step"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"step"</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">"value"</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="dl-widget" data-spec="notebooks/assets/diffusion_model_timegrad/cell21-0.plotly.json" data-widget="plotly">
+<p><em>Interactive Plotly figure: enable JavaScript to view it.</em></p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span>
+    <span class="n">df_diffusion_example_melted</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"step"</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">"value"</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"variable"</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>/Users/leima/git/github/emptymalei/deep-learning/.venv/lib/python3.10/site-packages/plotly/express/_core.py:1985: FutureWarning:
+When grouping with a length-1 list-like, you will need to pass a length-1 tuple to get_group in a future version of pandas. Pass `(name,)` instead of `name` to silence this warning.
+</code></pre></div>
+<div class="dl-widget" data-spec="notebooks/assets/diffusion_model_timegrad/cell22-1.plotly.json" data-widget="plotly">
+<p><em>Interactive Plotly figure: enable JavaScript to view it.</em></p>
+</div>
+<h2 id="create-visuals">Create Visuals<a class="headerlink" href="#create-visuals" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span>
+    <span class="n">df_diffusion_example_melted</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_diffusion_example_melted</span><span class="p">[</span><span class="s2">"step"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"value"</span><span class="p">,</span>
+    <span class="n">stat</span><span class="o">=</span><span class="s2">"probability"</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">"Initial Distribution"</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Initial Distribution"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Position"</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Text(0.5, 0, 'Position')
+</code></pre></div>
+<p><img alt="output" src="../assets/diffusion_model_timegrad/cell25-1.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span>
+    <span class="n">df_diffusion_example_melted</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="n">df_diffusion_example_melted</span><span class="p">[</span><span class="s2">"step"</span><span class="p">]</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">df_diffusion_example_melted</span><span class="p">[</span><span class="s2">"step"</span><span class="p">])</span>
+    <span class="p">],</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"value"</span><span class="p">,</span>
+    <span class="n">stat</span><span class="o">=</span><span class="s2">"probability"</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Final Distribution"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Position"</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Text(0.5, 0, 'Position')
+</code></pre></div>
+<p><img alt="output" src="../assets/diffusion_model_timegrad/cell26-1.png" /></p>
+<h1 id="model">Model<a class="headerlink" href="#model" title="Permanent link">¶</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">lightning</span><span class="w"> </span><span class="kn">import</span> <span class="n">LightningModule</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DiffusionEncoderParams</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Parameters for VAEEncoder and VAEDecoder</span>
+
+<span class="sd">    :param latent_size: latent space dimension</span>
+<span class="sd">    :param history_length: input sequence length</span>
+<span class="sd">    :param n_features: number of features</span>
+<span class="sd">    """</span>
+
+    <span class="n">latent_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">40</span>
+    <span class="n">num_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">history_length</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">n_features</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">initial_state</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The dimension of the input data</span>
+<span class="sd">        when flattened.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Encoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">""" """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">DiffusionEncoderParams</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hparams</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">asdict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span>
+            <span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">history_length</span><span class="p">,</span>
+            <span class="n">hidden_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">latent_size</span><span class="p">,</span>
+            <span class="n">num_layers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+
+<span class="sd">        :param x: input data, shape (batch_size, history_length, n_features)</span>
+<span class="sd">        """</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">outputs</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">initial_state</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">state</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Distribution</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">""" """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">DiffusionEncoderParams</span><span class="p">,</span> <span class="n">samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hparams</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">asdict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">latent_size</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DiffusionModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">""" """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">encoder_params</span><span class="p">:</span> <span class="n">DiffusionEncoderParams</span><span class="p">,</span>
+        <span class="n">diffusion_params</span><span class="p">:</span> <span class="n">DiffusionParams</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">outputs</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">distribution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">distribution</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Model</span><span class="p">(</span><span class="n">LightningModule</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">encoder_params</span><span class="p">:</span> <span class="n">DiffusionEncoderParams</span><span class="p">,</span>
+        <span class="n">diffusion_params</span><span class="p">:</span> <span class="n">DiffusionParams</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">Encoder</span><span class="p">(</span><span class="n">encoder_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">=</span> <span class="n">Diffusion</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">diffusion_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">=</span> <span class="n">Distribution</span><span class="p">(</span><span class="n">encoder_params</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">outputs</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">distribution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">distribution</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">training_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"x"</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"y"</span><span class="p">]</span>
+
+        <span class="n">distribution</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">loss</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+
+        <span class="k">return</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">diffusion_params</span><span class="o">.</span><span class="n">steps</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>100
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">enc_params</span> <span class="o">=</span> <span class="n">DiffusionEncoderParams</span><span class="p">(</span>
+    <span class="n">latent_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">history_length</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">n_features</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">initial_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">encoder</span> <span class="o">=</span> <span class="n">Encoder</span><span class="p">(</span>
+    <span class="n">params</span><span class="o">=</span><span class="n">enc_params</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">encoder</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">encoder</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>(torch.Size([8, 1, 10]), torch.Size([1, 1, 10]))
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">DiffusionEmbedding</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">proj_dim</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span>
+            <span class="s2">"embedding"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_embedding</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">),</span> <span class="n">persistent</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">projection1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">proj_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">projection2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">proj_dim</span><span class="p">,</span> <span class="n">proj_dim</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffusion_step</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">[</span><span class="n">diffusion_step</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projection1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">silu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projection2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">silu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">):</span>
+        <span class="n">steps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">max_steps</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [T,1]</span>
+        <span class="n">dims</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># [1,dim]</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">*</span> <span class="mf">10.0</span> <span class="o">**</span> <span class="p">(</span><span class="n">dims</span> <span class="o">*</span> <span class="mf">4.0</span> <span class="o">/</span> <span class="n">dim</span><span class="p">)</span>  <span class="c1"># [T,dim]</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">table</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">table</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">table</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EpsilonTheta</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target_dim</span><span class="p">,</span>
+        <span class="n">cond_length</span><span class="p">,</span>
+        <span class="n">time_emb_dim</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+        <span class="n">residual_layers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">residual_channels</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">dilation_cycle_length</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">residual_hidden</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_projection</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">,</span> <span class="n">residual_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding_mode</span><span class="o">=</span><span class="s2">"circular"</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_embedding</span> <span class="o">=</span> <span class="n">DiffusionEmbedding</span><span class="p">(</span>
+            <span class="n">time_emb_dim</span><span class="p">,</span> <span class="n">proj_dim</span><span class="o">=</span><span class="n">residual_hidden</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cond_upsampler</span> <span class="o">=</span> <span class="n">CondUpsampler</span><span class="p">(</span>
+            <span class="n">target_dim</span><span class="o">=</span><span class="n">target_dim</span><span class="p">,</span> <span class="n">cond_length</span><span class="o">=</span><span class="n">cond_length</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residual_layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">ResidualBlock</span><span class="p">(</span>
+                    <span class="n">residual_channels</span><span class="o">=</span><span class="n">residual_channels</span><span class="p">,</span>
+                    <span class="n">dilation</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="n">dilation_cycle_length</span><span class="p">),</span>
+                    <span class="n">hidden_size</span><span class="o">=</span><span class="n">residual_hidden</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">residual_layers</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_projection</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">residual_channels</span><span class="p">,</span> <span class="n">residual_channels</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_projection</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">residual_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">kaiming_normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_projection</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">kaiming_normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_projection</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_projection</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">cond</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_projection</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">leaky_relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+
+        <span class="n">diffusion_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_embedding</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+        <span class="n">cond_up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cond_upsampler</span><span class="p">(</span><span class="n">cond</span><span class="p">)</span>
+        <span class="n">skip</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_layers</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">skip_connection</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cond_up</span><span class="p">,</span> <span class="n">diffusion_step</span><span class="p">)</span>
+            <span class="n">skip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">skip_connection</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">skip</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residual_layers</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_projection</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">leaky_relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_projection</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
+    <span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="n">mm</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="n">mm</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">q_sample</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">default</span><span class="p">(</span><span class="n">noise</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x_start</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">extract</span><span class="p">(</span><span class="n">sqrt_alphas_cumprod</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x_start</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_start</span>
+        <span class="o">+</span> <span class="n">extract</span><span class="p">(</span><span class="n">sqrt_one_minus_alphas_cumprod</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x_start</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">noise</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">p_losses</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">loss_type</span> <span class="o">=</span> <span class="s2">"l2"</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">default</span><span class="p">(</span><span class="n">noise</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x_start</span><span class="p">))</span>
+
+    <span class="n">x_noisy</span> <span class="o">=</span> <span class="n">q_sample</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="n">x_start</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">)</span>
+    <span class="n">x_recon</span> <span class="o">=</span> <span class="n">denoise_fn</span><span class="p">(</span><span class="n">x_noisy</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">cond</span><span class="o">=</span><span class="n">cond</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">loss_type</span> <span class="o">==</span> <span class="s2">"l1"</span><span class="p">:</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">l1_loss</span><span class="p">(</span><span class="n">x_recon</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">loss_type</span> <span class="o">==</span> <span class="s2">"l2"</span><span class="p">:</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">x_recon</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">loss_type</span> <span class="o">==</span> <span class="s2">"huber"</span><span class="p">:</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">smooth_l1_loss</span><span class="p">(</span><span class="n">x_recon</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">loss</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">log_prob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
+
+    <span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">time</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_timesteps</span><span class="p">,</span> <span class="p">(</span><span class="n">B</span> <span class="o">*</span> <span class="n">T</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">p_losses</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span> <span class="o">*</span> <span class="n">T</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">cond</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span> <span class="o">*</span> <span class="n">T</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">time</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">loss</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">tmp_x_start</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">tmp_x_start</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>tensor([[1., 1., 1.],
+        [1., 1., 1.]])
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">tmp_a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">tmp_a</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>tensor([1., 2., 3., 4., 5.])
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">extract</span><span class="p">(</span><span class="n">tmp_a</span><span class="p">,</span> <span class="n">tmp_a</span><span class="p">,</span> <span class="n">x_shape</span><span class="o">=</span><span class="n">tmp_x_start</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</code></pre></div>
+<!-- markdownlint-disable-file MD041 -->
+<!-- Glossary: appended to every page by pymdownx.snippets (auto_append in
+mkdocs.yml). Each term becomes a tooltip wherever it appears as a word. -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/emptymalei/deep-learning" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M216.5 362.5c-66-8-112.5-55.5-112.5-117 0-25 9-52 24-70-6.5-16.5-5.5-51.5 2-66 20-2.5 47 8 63 22.5 19-6 39-9 63.5-9s44.5 3 62.5 8.5c15.5-14 43-24.5 63-22 7 13.5 8 48.5 1.5 65.5 16 19 24.5 44.5 24.5 70.5 0 61.5-46.5 108-113.5 116.5 17 11 28.5 35 28.5 62.5v52c0 15 12.5 23.5 27.5 17.5C441 459.5 512 369 512 257 512 115.5 397 0 255.5 0S0 115.5 0 257c0 111 70.5 203 165.5 237.5 13.5 5 26.5-4 26.5-17.5v-40c-7 3-16 5-24 5-33 0-52.5-18-66.5-51.5-5.5-13.5-11.5-21.5-23-23-6-.5-8-3-8-6 0-6 10-10.5 20-10.5 14.5 0 27 9 40 27.5 10 14.5 20.5 21 33 21s20.5-4.5 32-16c8.5-8.5 15-16 21-21"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/leima137/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog" role="status" aria-atomic="true">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      
+        
+        
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["content.action.edit","content.action.view","content.action.copy","content.tooltips","navigation.sections","navigation.tabs"],"redirect":null,"search":"../../assets/javascripts/workers/search.719e0d91.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.3cb411a8.min.js"></script>
+      
+        <script src="../../assets/js/mathjax.js?v=c4e28f09"></script>
+      
+        <script src="../../assets/js/page-actions.js?v=3d1441e2"></script>
+      
+        <script src="../../assets/js/glossary-panel.js?v=57b923e5"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../assets/widgets/loader.js?v=6124b74a"></script>
+      
+        <script src="../../assets/widgets/embed.js?v=bf5ac4ba"></script>
+      
+        <script src="../../assets/widgets/backtest-windows.js?v=84ad2b5d"></script>
+      
+        <script src="../../assets/widgets/vega.js?v=3b987e35"></script>
+      
+        <script src="../../assets/widgets/plotly.js?v=5c5eef6f"></script>
+      
+        <script src="../../assets/widgets/pendulum-onnx.js?v=d36fbd8b"></script>
+      
+        <script src="../../assets/widgets/metrics-playground.js?v=7a659b1c"></script>
+      
+        <script src="../../assets/widgets/metrics-shift.js?v=51a27df1"></script>
+      
+        <script src="../../assets/widgets/crps-explorer.js?v=d14a4a61"></script>
+      
+        <script src="../../assets/widgets/prob-eval.js?v=b7a460e9"></script>
+      
+        <script src="../../assets/widgets/baseline-skill.js?v=32e45d84"></script>
+      
+        <script src="../../assets/widgets/kl-explorer.js?v=3495ed88"></script>
+      
+        <script src="../../assets/widgets/entropy-explorer.js?v=b663f195"></script>
+      
+        <script src="../../assets/widgets/impurity-explorer.js?v=1c12a272"></script>
+      
+        <script src="../../assets/widgets/dtw-explorer.js?v=b8887eec"></script>
+      
+        <script src="../../assets/widgets/window-explorer.js?v=b953a5ee"></script>
+      
+        <script src="../../assets/widgets/positional-encoding.js?v=3a726ca0"></script>
+      
+        <script src="../../assets/widgets/step-diagram.js?v=3900b743"></script>
+      
+        <script src="../../assets/widgets/book-map.js?v=4875d2e1"></script>
+      
+    
+  <a class="dl-preview-badge" href="https://github.com/emptymalei/deep-learning/pull/104" style="position:fixed;left:.6rem;bottom:.6rem;z-index:3;padding:.25rem .6rem;border-radius:1rem;font:600 12px/1.4 system-ui,sans-serif;text-decoration:none;background:#ff6e42;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3)">Preview: PR #104 at 8a8731b</a><style>@media print{.dl-preview-badge{display:none}}</style></body>
+</html>
