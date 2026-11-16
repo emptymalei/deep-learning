@@ -1,7 +1,18 @@
 /*
- * Book map: every page of the book as a chip, grouped by chapter. Selecting
- * a page highlights the pages it links to and the pages that link to it,
- * and lists them with links.
+ * Book map: the pages of the book and the links between them, in two views.
+ *
+ *   Graph  every page is a dot coloured by chapter, every link a line. The
+ *          layout is computed in the browser: linked pages pull together,
+ *          all pages push apart, and each chapter has its own corner.
+ *   List   every page is a chip, grouped by chapter. This view is also the
+ *          keyboard-friendly one.
+ *
+ * The graph can be zoomed and panned: the + and − buttons, a pinch, or the
+ * wheel with Ctrl or ⌘ zoom; dragging pans once it is zoomed in. Dots and
+ * labels keep their size, so zooming spreads a crowded area out.
+ *
+ * Selecting a page, in either view, highlights the pages it links to and
+ * the pages that link to it, and lists them with links.
  *
  * The data is assets/book-map.json, written at build time by
  * scripts/stage_site.py from the links in the built pages.
@@ -11,6 +22,10 @@
  *     </div>
  */
 dlWidgets.register("book-map", (el, api) => {
+    const NS = "http://www.w3.org/2000/svg";
+    // One colour per chapter, readable on light and dark backgrounds.
+    const PALETTE = ["#8a8f98", "#4a90d9", "#e8743b", "#2e9e6b", "#b05cc6", "#d9a400", "#d94a6a", "#3aa7b8", "#7a8b2e", "#946b4a"];
+    const OUT = "var(--md-accent-fg-color)", IN = "#4a90d9";
     const style = document.createElement("style");
     style.textContent = `
 .dl-map__chapter { margin: .5rem 0 .2rem; font-size: .62rem; font-weight: 700; color: var(--md-default-fg-color--light); }
@@ -27,36 +42,196 @@ dlWidgets.register("book-map", (el, api) => {
 .dl-map__chip[data-role="both"] { background: linear-gradient(90deg, var(--md-accent-fg-color) 50%, #4a90d9 50%); color: #fff; border-color: transparent; }
 .dl-map__detail { margin: .6rem 0 0; padding: .5rem .7rem; border-radius: .3rem; background: var(--md-default-fg-color--lightest); font-size: .68rem; line-height: 1.6; }
 .md-typeset .dl-map__detail p { margin: 0 0 .2rem; }
-.dl-map__detail a { margin-right: .6rem; }`;
+.dl-map__detail a { margin-right: .6rem; }
+.dl-map__graph circle[data-i] { cursor: pointer; }
+.dl-map__graph text { pointer-events: none; paint-order: stroke; stroke: var(--md-default-bg-color); stroke-width: 3px; stroke-linejoin: round; }`;
     const status = document.createElement("p");
     status.className = "dl-widget__caption";
     status.textContent = "Loading the map…";
     el.innerHTML = "";
     el.append(style, status);
 
+    let cleanup = () => {};
     fetch(api.resolve("assets/book-map.json"))
         .then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.status))))
-        .then(build)
+        .then((data) => {
+            cleanup = build(data);
+        })
         .catch(() => {
             status.textContent = "The map could not be loaded.";
         });
+    return () => cleanup();
+
+    // Positions in a unit square. Deterministic, so the picture is the same on every visit.
+    function layout(pages, chapters) {
+        const n = pages.length;
+        const used = [...new Set(pages.map((p) => p.c))];
+        const home = {};
+        used.forEach((c, k) => {
+            const a = (2 * Math.PI * k) / used.length - Math.PI / 2;
+            home[c] = [0.5 + 0.3 * Math.cos(a), 0.5 + 0.3 * Math.sin(a)];
+        });
+        let seed = 7;
+        const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647 - 0.5);
+        const pos = pages.map((p) => [home[p.c][0] + rand() * 0.2, home[p.c][1] + rand() * 0.2]);
+        const edges = [];
+        pages.forEach((p, i) => p.o.forEach((t) => edges.push([i, t])));
+        for (let it = 0; it < 320; it++) {
+            const heat = 0.02 * (1 - it / 320) + 0.002;
+            const f = pos.map(() => [0, 0]);
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    let dx = pos[i][0] - pos[j][0], dy = pos[i][1] - pos[j][1];
+                    const d2 = dx * dx + dy * dy + 1e-5, k = 0.0004 / d2;
+                    dx *= k; dy *= k;
+                    f[i][0] += dx; f[i][1] += dy; f[j][0] -= dx; f[j][1] -= dy;
+                }
+            }
+            for (const [a, b] of edges) {
+                const dx = pos[b][0] - pos[a][0], dy = pos[b][1] - pos[a][1];
+                const d = Math.hypot(dx, dy) + 1e-6, k = (d - 0.06) * 0.35;
+                f[a][0] += (dx / d) * k; f[a][1] += (dy / d) * k; f[b][0] -= (dx / d) * k; f[b][1] -= (dy / d) * k;
+            }
+            for (let i = 0; i < n; i++) {
+                const h = home[pages[i].c];
+                f[i][0] += (h[0] - pos[i][0]) * 0.16;
+                f[i][1] += (h[1] - pos[i][1]) * 0.16;
+                const len = Math.hypot(f[i][0], f[i][1]) + 1e-9, step = Math.min(len, heat);
+                pos[i][0] += (f[i][0] / len) * step;
+                pos[i][1] += (f[i][1] / len) * step;
+            }
+        }
+        let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+        for (const [x, y] of pos) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+        return { pos: pos.map(([x, y]) => [(x - x0) / (x1 - x0 || 1), (y - y0) / (y1 - y0 || 1)]), edges };
+    }
 
     function build(data) {
         const { chapters, pages } = data;
         const incoming = pages.map(() => []);
         pages.forEach((p, i) => p.o.forEach((t) => incoming[t].push(i)));
+        const degree = pages.map((p, i) => p.o.length + incoming[i].length);
         const base = api.resolve("");
         const href = (p) => base + (p.u ? p.u + "/" : "");
-        const root = document.createElement("div");
-        root.className = "dl-map";
+        const color = (c) => PALETTE[c % PALETTE.length];
+        const { pos, edges } = layout(pages, chapters);
+        let picked = -1, view = "graph", W = 640, H = 460;
+        const zoom = { k: 1, tx: 0, ty: 0 };
+        const K_MAX = 6;
+
+        // View switch.
+        const controls = document.createElement("div");
+        controls.className = "dl-widget__controls";
+        const seg = document.createElement("div");
+        seg.className = "dl-widget__seg";
+        seg.setAttribute("role", "group");
+        seg.setAttribute("aria-label", "View");
+        const viewButtons = ["graph", "list"].map((v) => {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.textContent = v === "graph" ? "Graph" : "List";
+            b.addEventListener("click", () => {
+                view = v;
+                render();
+            });
+            seg.appendChild(b);
+            return [v, b];
+        });
+        controls.appendChild(seg);
+        const zoomButtons = document.createElement("span");
+        const zb = (text, label, fn) => {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "dl-widget__btn";
+            b.textContent = text;
+            b.setAttribute("aria-label", label);
+            b.addEventListener("click", fn);
+            zoomButtons.appendChild(b);
+            return b;
+        };
+        zoomButtons.style.cssText = "display: inline-flex; gap: .3rem;";
+        const zoomIn = zb("+", "Zoom in", () => zoomAt(W / 2, H / 2, zoom.k * 1.5));
+        const zoomOut = zb("−", "Zoom out", () => zoomAt(W / 2, H / 2, zoom.k / 1.5));
+        const zoomReset = zb("Reset", "Reset the zoom", () => zoomAt(W / 2, H / 2, 1));
+        controls.appendChild(zoomButtons);
+
+        // Zoom towards a point (in viewBox units) and keep the graph inside the frame.
+        function zoomAt(px, py, k) {
+            k = Math.max(1, Math.min(K_MAX, k));
+            zoom.tx = px - ((px - zoom.tx) * k) / zoom.k;
+            zoom.ty = py - ((py - zoom.ty) * k) / zoom.k;
+            zoom.k = k;
+            clampPan();
+            drawGraph();
+        }
+        function clampPan() {
+            zoom.tx = Math.min(0, Math.max(W - W * zoom.k, zoom.tx));
+            zoom.ty = Math.min(0, Math.max(H - H * zoom.k, zoom.ty));
+        }
+
         const legend = document.createElement("div");
         legend.className = "dl-widget__legend";
-        for (const [t, col] of [["selected", "var(--md-default-fg-color)"], ["it links to", "var(--md-accent-fg-color)"], ["links to it", "#4a90d9"]]) {
-            const s = document.createElement("span");
-            s.style.setProperty("--swatch", col);
-            s.textContent = t;
-            legend.appendChild(s);
-        }
+        const svg = document.createElementNS(NS, "svg");
+        svg.setAttribute("role", "img");
+        svg.setAttribute("class", "dl-map__graph");
+        // Pointer position in viewBox units.
+        const local = (event) => {
+            const r = svg.getBoundingClientRect();
+            return [((event.clientX - r.left) * W) / r.width, ((event.clientY - r.top) * H) / r.height];
+        };
+        const pointers = new Map();
+        let dragged = false, pinch = null;
+        svg.addEventListener("pointerdown", (event) => {
+            pointers.set(event.pointerId, local(event));
+            dragged = false;
+            if (pointers.size === 2) {
+                const [a, b] = [...pointers.values()];
+                pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, k: zoom.k };
+            }
+        });
+        svg.addEventListener("pointermove", (event) => {
+            if (!pointers.has(event.pointerId)) return;
+            const before = pointers.get(event.pointerId), now = local(event);
+            pointers.set(event.pointerId, now);
+            if (pointers.size === 2 && pinch) {
+                const [a, b] = [...pointers.values()];
+                dragged = true;
+                zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (pinch.k * Math.hypot(a[0] - b[0], a[1] - b[1])) / pinch.d);
+            } else if (pointers.size === 1 && zoom.k > 1) {
+                const dx = now[0] - before[0], dy = now[1] - before[1];
+                if (!dragged && Math.hypot(dx, dy) < 2) return;
+                if (!dragged) svg.setPointerCapture(event.pointerId);
+                dragged = true;
+                zoom.tx += dx;
+                zoom.ty += dy;
+                clampPan();
+                drawGraph();
+            }
+        });
+        const release = (event) => {
+            pointers.delete(event.pointerId);
+            if (pointers.size < 2) pinch = null;
+        };
+        svg.addEventListener("pointerup", release);
+        svg.addEventListener("pointercancel", release);
+        // The wheel zooms only with Ctrl or ⌘ (a trackpad pinch sends that), so the page still scrolls.
+        svg.addEventListener("wheel", (event) => {
+            if (!event.ctrlKey && !event.metaKey) return;
+            event.preventDefault();
+            const [px, py] = local(event);
+            zoomAt(px, py, zoom.k * Math.exp(-event.deltaY * 0.01));
+        }, { passive: false });
+        svg.addEventListener("click", (event) => {
+            if (dragged) {
+                dragged = false;
+                return;
+            }
+            const i = event.target.dataset ? event.target.dataset.i : undefined;
+            pick(i === undefined ? -1 : +i === picked ? -1 : +i);
+        });
+
+        const list = document.createElement("div");
+        list.className = "dl-map";
         const chips = [];
         chapters.forEach((name, c) => {
             const members = pages.map((p, i) => [p, i]).filter(([p]) => p.c === c);
@@ -72,24 +247,100 @@ dlWidgets.register("book-map", (el, api) => {
                 b.className = "dl-map__chip";
                 b.textContent = p.t;
                 b.title = p.t;
-                b.setAttribute("aria-pressed", "false");
                 b.addEventListener("click", () => pick(picked === i ? -1 : i));
                 chips[i] = b;
                 row.appendChild(b);
             }
-            root.append(h, row);
+            list.append(h, row);
         });
         const detail = document.createElement("div");
         detail.className = "dl-map__detail";
         detail.setAttribute("aria-live", "polite");
         status.remove();
-        el.append(legend, root, detail);
+        el.append(controls, legend, svg, list, detail);
 
-        let picked = -1;
-        function links(list) {
+        function node(tag, attrs, parent) {
+            const n = document.createElementNS(NS, tag);
+            for (const k in attrs) n.setAttribute(k, attrs[k]);
+            if (parent) parent.appendChild(n);
+            return n;
+        }
+        const roleOf = (k) => {
+            if (picked < 0) return "";
+            if (k === picked) return "self";
+            const o = pages[picked].o.includes(k), i = incoming[picked].includes(k);
+            return o && i ? "both" : o ? "out" : i ? "in" : "";
+        };
+
+        function drawGraph() {
+            const c = api.colors();
+            W = Math.max(280, Math.min(1000, Math.round(el.clientWidth - 2) || 640));
+            const newH = Math.round(W < 480 ? W * 1.15 : W * 0.66), pad = 16;
+            if (newH !== H) {
+                H = newH;
+                clampPan();
+            }
+            const x = (i) => zoom.tx + zoom.k * (pad + pos[i][0] * (W - 2 * pad));
+            const y = (i) => zoom.ty + zoom.k * (pad + pos[i][1] * (H - 2 * pad));
+            // One finger scrolls the page until the graph is zoomed in; then it pans.
+            svg.style.touchAction = zoom.k > 1 ? "none" : "pan-y";
+            svg.style.overflow = "hidden";
+            svg.style.cursor = zoom.k > 1 ? "grab" : "";
+            zoomOut.disabled = zoomReset.disabled = zoom.k <= 1;
+            zoomIn.disabled = zoom.k >= K_MAX;
+            svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+            svg.setAttribute("aria-label", `A graph of ${pages.length} pages and ${edges.length} links between them. The List view shows the same pages as buttons.`);
+            svg.innerHTML = "";
+            const any = picked >= 0;
+            for (const [a, b] of edges) {
+                const mine = a === picked || b === picked;
+                node("line", {
+                    x1: x(a), y1: y(a), x2: x(b), y2: y(b),
+                    stroke: mine ? (a === picked ? OUT : IN) : c.fgLighter,
+                    "stroke-width": mine ? 1.8 : 1, "stroke-opacity": any ? (mine ? 0.95 : 0.12) : 0.5,
+                }, svg);
+            }
+            const labels = [];
+            pages.forEach((p, i) => {
+                const role = roleOf(i), r = 3.5 + Math.sqrt(degree[i]) * 1.1 + (role === "self" ? 2.5 : 0);
+                const dot = node("circle", {
+                    cx: x(i), cy: y(i), r, fill: color(p.c), "fill-opacity": any && !role ? 0.18 : 1,
+                    stroke: role === "self" ? c.fg : role === "out" || role === "both" ? OUT : role === "in" ? IN : c.bg,
+                    "stroke-width": role ? 2.2 : 1,
+                }, svg);
+                node("title", {}, dot).textContent = p.t;
+                // A larger, invisible target for fingers.
+                node("circle", { cx: x(i), cy: y(i), r: Math.max(r, 11), fill: "transparent", "data-i": i }, svg);
+                if (role) labels.push([i, role]);
+            });
+            for (const [i, role] of labels) {
+                const right = x(i) < W * 0.62;
+                const t = node("text", {
+                    x: x(i) + (right ? 9 : -9), y: y(i) + 3, "text-anchor": right ? "start" : "end",
+                    "font-size": role === "self" ? 11 : 9.5, "font-weight": role === "self" ? 700 : 400, fill: c.fg,
+                }, svg);
+                const title = pages[i].t;
+                t.textContent = title.length > 30 ? title.slice(0, 28) + "…" : title;
+            }
+        }
+
+        function drawLegend() {
+            legend.innerHTML = "";
+            const items = view === "graph"
+                ? [...new Set(pages.map((p) => p.c))].sort((a, b) => a - b).map((c) => [chapters[c], color(c)])
+                : [["selected", "var(--md-default-fg-color)"], ["it links to", OUT], ["links to it", IN]];
+            for (const [t, col] of items) {
+                const s = document.createElement("span");
+                s.style.setProperty("--swatch", col);
+                s.textContent = t;
+                legend.appendChild(s);
+            }
+        }
+
+        function links(items) {
             const span = document.createElement("span");
-            if (!list.length) span.textContent = "none";
-            for (const i of list) {
+            if (!items.length) span.textContent = "none";
+            for (const i of items) {
                 const a = document.createElement("a");
                 a.href = href(pages[i]);
                 a.textContent = pages[i].t;
@@ -97,37 +348,73 @@ dlWidgets.register("book-map", (el, api) => {
             }
             return span;
         }
-        function pick(i) {
-            picked = i;
-            root.classList.toggle("dl-map--picked", i >= 0);
-            chips.forEach((b, k) => {
-                if (!b) return;
-                b.removeAttribute("data-role");
-                b.setAttribute("aria-pressed", String(k === i));
-            });
+
+        function drawDetail() {
             detail.innerHTML = "";
-            if (i < 0) {
-                detail.textContent = `${pages.length} pages in ${chapters.length} chapters. Select a page to see what it links to and what links to it.`;
+            if (picked < 0) {
+                detail.textContent = `${pages.length} pages and ${edges.length} links. Select a page to see what it links to (orange) and what links to it (blue).`;
                 return;
             }
-            const out = pages[i].o, inn = incoming[i];
-            for (const k of out) chips[k].dataset.role = "out";
-            for (const k of inn) chips[k].dataset.role = chips[k].dataset.role === "out" ? "both" : "in";
-            chips[i].dataset.role = "self";
             const head = document.createElement("p");
             const open = document.createElement("a");
-            open.href = href(pages[i]);
-            open.textContent = pages[i].t;
+            open.href = href(pages[picked]);
+            open.textContent = pages[picked].t;
             const strong = document.createElement("strong");
             strong.appendChild(open);
-            head.append(strong, document.createTextNode(` (${chapters[pages[i].c]})`));
-            const row = (label, list) => {
+            head.append(strong, document.createTextNode(` (${chapters[pages[picked].c]})`));
+            const row = (label, items) => {
                 const p = document.createElement("p");
-                p.append(document.createTextNode(label + " "), links(list));
+                p.append(document.createTextNode(label + " "), links(items));
                 return p;
             };
-            detail.append(head, row("Links to:", out), row("Linked from:", inn));
+            detail.append(head, row("Links to:", pages[picked].o), row("Linked from:", incoming[picked]));
         }
-        pick(-1);
+
+        function render() {
+            for (const [v, b] of viewButtons) b.setAttribute("aria-pressed", String(v === view));
+            svg.style.display = view === "graph" ? "" : "none";
+            zoomButtons.style.display = view === "graph" ? "inline-flex" : "none";
+            list.style.display = view === "list" ? "" : "none";
+            list.classList.toggle("dl-map--picked", picked >= 0);
+            chips.forEach((b, k) => {
+                if (!b) return;
+                const role = roleOf(k);
+                if (role) b.dataset.role = role;
+                else b.removeAttribute("data-role");
+                b.setAttribute("aria-pressed", String(k === picked));
+            });
+            drawLegend();
+            if (view === "graph") drawGraph();
+            drawDetail();
+        }
+        function pick(i) {
+            picked = i;
+            // When zoomed in, bring a page picked off-screen into the middle.
+            if (i >= 0 && zoom.k > 1) {
+                const pad = 16;
+                const px = zoom.tx + zoom.k * (pad + pos[i][0] * (W - 2 * pad));
+                const py = zoom.ty + zoom.k * (pad + pos[i][1] * (H - 2 * pad));
+                if (px < 20 || px > W - 20 || py < 20 || py > H - 20) {
+                    zoom.tx += W / 2 - px;
+                    zoom.ty += H / 2 - py;
+                    clampPan();
+                }
+            }
+            render();
+        }
+
+        render();
+        const ro = "ResizeObserver" in window
+            ? new ResizeObserver(() => {
+                  const w = Math.round(el.clientWidth - 2);
+                  if (w && Math.abs(w - W) > 8 && view === "graph") drawGraph();
+              })
+            : null;
+        if (ro) ro.observe(el);
+        const offTheme = api.onThemeChange(render);
+        return () => {
+            if (ro) ro.disconnect();
+            offTheme();
+        };
     }
 });

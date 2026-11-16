@@ -34,6 +34,8 @@ Pick the path that fits what you came for.
 - **I need to judge a forecast.** [Time Series Forecasting Evaluation](time-series/timeseries-evaluation.forecasting.md) → [Time Series Forecasting Metrics](time-series/timeseries-metrics.forecasting.md) → [CRPS](time-series/timeseries-metrics.forecasting.crps.md)
 - **I want the theory behind the models.** [Neural Networks](deep-learning-fundamentals/neural-net.md) → [Recurrent Neural Networks](deep-learning-fundamentals/recurrent-neural-networks.md) → [Vanilla Transformers](transformers/transformers.vanilla.md) → [Diffusion Models](energy-based-models/ebm.diffusion.md)
 
+Or see the whole book at once: the **[Map of the Book](map.md)** shows every page as a dot and every link between two pages as a line.
+
 
 ## :material-floor-plan: Blueprint
 
@@ -120,14 +122,3 @@ The following is my first version of the blueprint.
     - [ ] ...
 
 [^nixtla-m3-ensemble]: Nixtla. statsforecast/experiments/m3 at main · Nixtla/statsforecast. In: GitHub [Internet]. [cited 12 Dec 2022]. Available: https://github.com/Nixtla/statsforecast/tree/main/experiments/m3
-
-
-## Map of the Book
-
-Every page of the book, grouped by chapter. Select a page to see which pages it links to and which pages link to it.
-
-<div class="dl-widget" data-widget="book-map" markdown>
-
-An interactive map of the pages of this book and the links between them. It needs JavaScript; the navigation and the blueprint above list the same pages.
-
-</div>
