@@ -104,6 +104,8 @@ Available widgets live in `dl/assets/widgets/`:
 | `split-leak` | An autocorrelated series with random test points, predicted from both neighbours and from the past only | `leakage.js` |
 | `selection-leak` | The best of many noise features, selected on all the data or on the training half, scored on the test half | `leakage.js` |
 | `pretrain-overlap` | A memorizing model scored on a benchmark that partly overlaps with its pretraining data, next to a rival that saw none of it | `leakage.js` |
+| `baseline-forecasts` | The mean, naive, seasonal naive and drift forecasts on a series with trend and weekly pattern, from a movable origin | `baselines.js` |
+| `mase-scale` | A forecast's absolute errors against the training data's absolute one-step changes: MAE moves with the unit, MASE does not | `baselines.js` |
 | `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
 | `entropy-explorer` | Two distributions over six classes, and the cross entropy split into the entropy plus the KL divergence | `entropy-explorer.js` |
 | `gini-explorer` | The Gini impurity of a two-class dataset as its mix changes | `impurity-explorer.js` |
@@ -117,7 +119,7 @@ Available widgets live in `dl/assets/widgets/`:
 To add a widget:
 
 1. Create `dl/assets/widgets/<name>.js` that calls `dlWidgets.register("<name>", (el, api) => { ... })`. The `api` gives theme colours (`api.colors()`, `api.onThemeChange(cb)`), `api.reducedMotion()`, `api.resolve(path)` for files relative to the docs root, and `api.loadScript(url)` for pinned CDN libraries.
-2. Add the file to `extra_javascript` in `mkdocs.yml` after `assets/widgets/loader.js`.
+2. Add the file to `extra_javascript` in `mkdocs.yml` after `assets/widgets/loader.js` (and after `assets/widgets/kit.js` if it uses the shared helpers in `window.dlWidgetKit`: normal-distribution math, a seeded random generator, sliders, button groups, legends and the resize/theme lifecycle).
 3. Respect `prefers-reduced-motion` (no autoplay) and check the widget in light mode, dark mode and at phone width.
 
 To regenerate Altair charts, run `uv run --python 3.14 scripts/build_charts.py`.

@@ -99,6 +99,30 @@ dlWidgets.register("baseline-skill", (el, api) => {
         return wrap;
     }
     controls.append(slider("Weekly pattern", "season", 0, 3, 0.1), slider("Model error", "error", 0, 2, 0.1));
+    // Play: sweep the strength of the weekly pattern from none to strong.
+    let timer = 0;
+    const play = document.createElement("button");
+    play.type = "button";
+    play.className = "dl-widget__btn";
+    play.textContent = "Play";
+    function stop() {
+        clearTimeout(timer);
+        timer = 0;
+        play.textContent = "Play";
+    }
+    play.addEventListener("click", () => {
+        if (timer) return stop();
+        play.textContent = "Pause";
+        state.season = 0;
+        const tick = () => {
+            render();
+            if (state.season >= 3) return stop();
+            state.season = Math.min(3, Math.round((state.season + 0.1) * 10) / 10);
+            timer = setTimeout(tick, 160);
+        };
+        tick();
+    });
+    controls.appendChild(play);
     const svg = document.createElementNS(NS, "svg");
     svg.setAttribute("role", "img");
     const legend = document.createElement("div");
@@ -206,6 +230,7 @@ dlWidgets.register("baseline-skill", (el, api) => {
     if (ro) ro.observe(el);
     const offTheme = api.onThemeChange(render);
     return () => {
+        clearTimeout(timer);
         if (ro) ro.disconnect();
         offTheme();
     };

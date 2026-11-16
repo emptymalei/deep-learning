@@ -171,7 +171,7 @@ Two papers show how this is handled in practice.
 
 **The picture.** The widget takes the extreme case to make the mechanism visible: a model that only memorizes. It stores windows of its pretraining series and, for a new context, returns what followed the most similar stored context. On a series it has stored, the forecast is an exact recall, $E_{\text{seen}} = 0$. Real pretrained models are not pure memorizers, and the widget is not a model of any of them.
 
-**Try it.** Press Play to move benchmark series into the pretraining data, 5% at a time, and watch the benchmark score fall while the model stays the same. The blue line is a rival model that is better on unseen series.
+**Try it.** Press Play to move benchmark series into the pretraining data, 5% at a time, and watch the benchmark score fall while the model stays the same. The blue line is a rival model that is better on unseen series; the second slider sets its error as a ratio of the memorizer's error on unseen series.
 
 <div class="dl-widget" data-widget="pretrain-overlap" markdown>
 
